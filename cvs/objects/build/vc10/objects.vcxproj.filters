@@ -155,9 +155,6 @@
     <ClCompile Include="..\..\containers\source\batch_runner.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\containers\source\gdp.cpp">
-      <Filter>Source Files\containers</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\containers\source\info.cpp">
       <Filter>Source Files\containers</Filter>
     </ClCompile>
@@ -281,6 +278,9 @@
     <ClCompile Include="..\..\sectors\source\energy_final_demand.cpp">
       <Filter>Source Files\sectors</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\sectors\source\fixed_final_demand.cpp">
+      <Filter>Source Files\sectors</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\sectors\source\sector.cpp">
       <Filter>Source Files\sectors</Filter>
     </ClCompile>
@@ -390,9 +390,6 @@
       <Filter>Source Files\technology</Filter>
     </ClCompile>
     <ClCompile Include="..\..\technologies\source\empty_technology.cpp">
-      <Filter>Source Files\technology</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\technologies\source\expenditure.cpp">
       <Filter>Source Files\technology</Filter>
     </ClCompile>
     <ClCompile Include="..\..\technologies\source\fixed_production_state.cpp">
@@ -551,16 +548,10 @@
     <ClCompile Include="..\..\reporting\source\batch_csv_outputter.cpp">
       <Filter>Source Files\reporting</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\reporting\source\energy_balance_table.cpp">
-      <Filter>Source Files\reporting</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\reporting\source\graph_printer.cpp">
       <Filter>Source Files\reporting</Filter>
     </ClCompile>
     <ClCompile Include="..\..\reporting\source\land_allocator_printer.cpp">
-      <Filter>Source Files\reporting</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\reporting\source\storage_table.cpp">
       <Filter>Source Files\reporting</Filter>
     </ClCompile>
     <ClCompile Include="..\..\reporting\source\xml_db_outputter.cpp">
@@ -908,23 +899,45 @@
     <ClCompile Include="..\..\functions\source\food_demand_input.cpp">
       <Filter>Source Files\functions</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\solution\util\source\fdjac.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\util\base\source\mapped_file.cpp">
       <Filter>Source Files\util\base</Filter>
     </ClCompile>
     <ClCompile Include="..\..\util\base\source\xml_parse_helper.cpp">
       <Filter>Source Files\util\base</Filter>
+    </ClCompile>
     <ClCompile Include="..\..\functions\source\building_gompertz_function.cpp">
       <Filter>Source Files\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\solution\util\source\fdjac.cpp">
+      <Filter>Source Files\solution\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\containers\source\calc_base_price.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\containers\source\national_account_container.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\containers\source\national_account_container_activity.cpp">
+      <Filter>Source Files\containers</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\technologies\source\exogenous_shutdown_decider.cpp">
+      <Filter>Source Files\technology</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\technologies\source\output_accounting.cpp">
+      <Filter>Source Files\technology</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\functions\source\input_accounting.cpp">
+      <Filter>Source Files\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\functions\source\nested_ces_production_function_macro.cpp">
+      <Filter>Source Files\functions</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\resources\source\trial_value_resource.cpp">
+      <Filter>Source Files\resources</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\containers\include\batch_runner.h">
-      <Filter>Header Files\containers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\containers\include\gdp.h">
       <Filter>Header Files\containers</Filter>
     </ClInclude>
     <ClInclude Include="..\..\containers\include\iinfo.h">
@@ -1068,6 +1081,9 @@
     <ClInclude Include="..\..\sectors\include\energy_final_demand.h">
       <Filter>Header Files\sectors</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\sectors\include\fixed_final_demand.h">
+      <Filter>Header Files\sectors</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\sectors\include\ibackup_calculator.h">
       <Filter>Header Files\sectors</Filter>
     </ClInclude>
@@ -1183,9 +1199,6 @@
       <Filter>Header Files\technologies</Filter>
     </ClInclude>
     <ClInclude Include="..\..\technologies\include\empty_technology.h">
-      <Filter>Header Files\technologies</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\technologies\include\expenditure.h">
       <Filter>Header Files\technologies</Filter>
     </ClInclude>
     <ClInclude Include="..\..\technologies\include\fixed_production_state.h">
@@ -1419,13 +1432,7 @@
     <ClInclude Include="..\..\reporting\include\batch_csv_outputter.h">
       <Filter>Header Files\reporting</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\reporting\include\energy_balance_table.h">
-      <Filter>Header Files\reporting</Filter>
-    </ClInclude>
     <ClInclude Include="..\..\reporting\include\graph_printer.h">
-      <Filter>Header Files\reporting</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\reporting\include\storage_table.h">
       <Filter>Header Files\reporting</Filter>
     </ClInclude>
     <ClInclude Include="..\..\reporting\include\xml_db_outputter.h">
@@ -1862,8 +1869,33 @@
     </ClInclude>
     <ClInclude Include="..\..\util\base\include\xml_parse_helper.h">
       <Filter>Header Files\util\base</Filter>
+    </ClInclude>
     <ClInclude Include="..\..\functions\include\building_gompertz_function.h">
       <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\technologies\include\exogenous_shutdown_decider.h">
+      <Filter>Header Files\technologies</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\containers\include\calc_base_price.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\containers\include\national_account_container.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\containers\include\national_account_container_activity.h">
+      <Filter>Header Files\containers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\functions\include\input_accounting.h">
+      <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\functions\include\nested_ces_production_function_macro.h">
+      <Filter>Header Files\functions</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\resources\include\trial_value_resource.h">
+      <Filter>Header Files\resources</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\technologies\include\output_accounting.h">
+      <Filter>Header Files\technologies</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
