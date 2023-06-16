@@ -20,6 +20,7 @@ FeedCrops,OtherGrain,-6,start-year,1,share-weight,final-calibration-year,end-yea
 FeedCrops,OilPalm,-6,start-year,1,share-weight,final-calibration-year,end-year,,fixed,
 FeedCrops,Rice,-6,start-year,1,share-weight,final-calibration-year,end-year,,fixed,
 FeedCrops,RootTuber,-6,start-year,1,share-weight,final-calibration-year,end-year,,fixed,
+FeedCrops,AntiVampire,-6,start-year,1,share-weight,final-calibration-year,end-year,,fixed,
 FeedCrops,Soybean,-6,start-year,1,share-weight,final-calibration-year,end-year,,fixed,
 FeedCrops,SugarCrop,-6,start-year,1,share-weight,final-calibration-year,end-year,,fixed,
 FeedCrops,Vegetables,-6,start-year,1,share-weight,final-calibration-year,end-year,,fixed,

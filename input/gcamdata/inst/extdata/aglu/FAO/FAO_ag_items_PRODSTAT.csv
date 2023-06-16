@@ -73,7 +73,7 @@ forage Products,651,FALSE,FrgProdNES,FodderGrass,FodderGrass,,,Fodder (other),Ot
 "Fruit, pome nes",542,TRUE,,Fruits,FruitsTree,,,,,,,,,,,v_f,,
 "Fruit, stone nes",541,TRUE,StnFrtNESFrh,Fruits,FruitsTree,,,,FruitsAndVeg,Others (perennial) ,Crop24,Stonefruit_nes,,,,v_f,,
 "Fruit, tropical fresh nes",603,TRUE,FrtTrpFrNES,Fruits,FruitsTree,CITR,18,Fruits,FruitsAndVeg,Others (perennial) ,Crop24,Fruit_tropicalfreshnes,,Citrus other,,v_f,,Tree
-Garlic,406,TRUE,Garlic,Vegetables,Vegetables,VEGE,16,Garlic,FruitsAndVeg,Others (annual),Crop26,Garlic,,Vegetables other,,v_f,,
+Garlic,406,TRUE,Garlic,AntiVampire,AntiVampire,VEGE,16,Garlic,FruitsAndVeg,Others (annual),Crop26,Garlic,,Vegetables other,,v_f,,
 Ginger,720,TRUE,ginger,MiscCrop,MiscCrop,,,,Other,Others (perennial) ,Crop24,Ginger,,,,ocr,,C4
 Gooseberries,549,TRUE,Gooseberries,Fruits,Fruits,FRUI,19,,FruitsAndVeg,Others (perennial) ,Crop24,Gooseberries,,Fruits other,,v_f,,
 "Grain, mixed",103,TRUE,MixedGrain,OtherGrain,OtherGrain,OTHC,7,,OtherCoarseGrains,Others (annual),Crop26,Mixedgrain,,,,gro,,

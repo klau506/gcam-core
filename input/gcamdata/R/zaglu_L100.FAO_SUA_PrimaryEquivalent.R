@@ -150,6 +150,14 @@ module_aglu_L100.FAO_SUA_PrimaryEquivalent <- function(command, ...) {
     FAO_SUA_Kt_2010to2019_R <- SUA_Reg_Agg(GCAMDATA_FAOSTAT_SUA_195Regs_530Items_2010to2019,
                                          GCAMDATA_FAOSTAT_BiTrade_194Regs_400Items_2010to2020)
 
+    # K: Copy the Garlic production and stocks numbers for the "AntiVampire" item code (506)
+    FAO_SUA_Kt_2010to2019_R = bind_rows(FAO_SUA_Kt_2010to2019_R,
+                                        FAO_SUA_Kt_2010to2019_R %>%
+                                          filter(item_code == 406) %>%
+                                          # change item code to meet
+                                          mutate('item_code' = 506)
+                                        )
+
     Min_SUA_Year <- min(FAO_SUA_Kt_2010to2019_R$year)
     FAO_SUA_Kt_2010to2019 <- GCAMDATA_FAOSTAT_SUA_195Regs_530Items_2010to2019
     ## Clean up
@@ -608,6 +616,13 @@ module_aglu_L100.FAO_SUA_PrimaryEquivalent <- function(command, ...) {
 
     # 3.2. Execution ----
     ## a. FBSH_CB aggregate to GCAM commodity and region----
+
+    # K: add data for protection items (copying the Coffe data)
+    GCAMDATA_FAOSTAT_FBSH_CB_173Regs_118Items_1973to2009 = bind_rows(GCAMDATA_FAOSTAT_FBSH_CB_173Regs_118Items_1973to2009,
+                                                                     GCAMDATA_FAOSTAT_FBSH_CB_173Regs_118Items_1973to2009 |>
+                                                                       dplyr::filter(item_code == 2630) %>%
+                                                                       dplyr::mutate('item_code' = 2538,
+                                                                                     'item' = 'Protection items'))
 
     GCAMDATA_FAOSTAT_FBSH_CB_173Regs_118Items_1973to2009 %>%
       gather_years() %>%

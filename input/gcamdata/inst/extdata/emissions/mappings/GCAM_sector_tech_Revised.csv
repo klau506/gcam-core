@@ -102,6 +102,7 @@ resid others,refined liquids,refined liquids,resid others,refined liquids,refine
 resid others,traditional biomass,traditional biomass,resid others,traditional biomass,traditional biomass,bld_resid,biomass,biomass,bld,dom,bld_resid,biomass,,bld_bio
 Rice,,,Rice,,,,,,,,,,Rice Cultivation,
 RootTuber,,,RootTuber,,,,,,,,,,Cropland Management,
+AntiVampire,,,AntiVampire,,,,,,,,,,Cropland Management,
 SheepGoat,Mixed,FeedCrops,SheepGoat,Mixed,FeedCrops,SheepGoat,all,all,Animals,,SheepGoat,all,Livestock,
 SheepGoat,Mixed,FodderHerb_Residue,SheepGoat,Mixed,FodderHerb_Residue,SheepGoat,all,all,Animals,,SheepGoat,all,Livestock,
 SheepGoat,Mixed,Pasture_FodderGrass,SheepGoat,Mixed,Pasture_FodderGrass,SheepGoat,all,all,Animals,,SheepGoat,all,Livestock,

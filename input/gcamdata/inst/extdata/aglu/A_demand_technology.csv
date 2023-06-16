@@ -18,6 +18,7 @@ FoodDemand_Staples,OtherGrain,OtherGrain,OtherGrain,share-weight,final-calibrati
 FoodDemand_NonStaples,Oil,OilPalm,OilPalm,share-weight,final-calibration-year,end-year,fixed,regional oilpalm,1
 FoodDemand_Staples,Rice,Rice,Rice,share-weight,final-calibration-year,end-year,fixed,regional rice,1
 FoodDemand_Staples,RootTuber,RootTuber,RootTuber,share-weight,final-calibration-year,end-year,fixed,regional root_tuber,1
+FoodDemand_Staples,AntiVampire,AntiVampire,AntiVampire,share-weight,final-calibration-year,end-year,fixed,regional anti_vampire,1
 FoodDemand_NonStaples,SugarCrop,SugarCrop,SugarCrop,share-weight,final-calibration-year,end-year,fixed,regional sugarcrop,1
 FoodDemand_NonStaples,FruitsVeg,Vegetables,Vegetables,share-weight,final-calibration-year,end-year,fixed,regional vegetables,1
 FoodDemand_Staples,Wheat,Wheat,Wheat,share-weight,final-calibration-year,end-year,fixed,regional wheat,1
@@ -40,6 +41,7 @@ NonFoodDemand_Crops,OtherGrain,OtherGrain,OtherGrain,share-weight,final-calibrat
 NonFoodDemand_Crops,OilPalm,OilPalm,OilPalm,share-weight,final-calibration-year,end-year,fixed,regional oilpalm,1
 NonFoodDemand_Crops,Rice,Rice,Rice,share-weight,final-calibration-year,end-year,fixed,regional rice,1
 NonFoodDemand_Crops,RootTuber,RootTuber,RootTuber,share-weight,final-calibration-year,end-year,fixed,regional root_tuber,1
+NonFoodDemand_Crops,AntiVampire,AntiVampire,AntiVampire,share-weight,final-calibration-year,end-year,fixed,regional anti_vampire,1
 NonFoodDemand_Crops,Soybean,Soybean,Soybean,share-weight,final-calibration-year,end-year,fixed,regional soybean,1
 NonFoodDemand_Crops,SugarCrop,SugarCrop,SugarCrop,share-weight,final-calibration-year,end-year,fixed,regional sugarcrop,1
 NonFoodDemand_Crops,Vegetables,Vegetables,Vegetables,share-weight,final-calibration-year,end-year,fixed,regional vegetables,1
