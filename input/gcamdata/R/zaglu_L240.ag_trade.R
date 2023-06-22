@@ -45,6 +45,7 @@ module_aglu_L240.ag_trade <- function(command, ...) {
       "L240.Production_tra",
       "L240.Supplysector_reg",
       "L240.SubsectorAll_reg",
+      "L240.SubsectorInterpTo_reg",
       "L240.TechShrwt_reg",
       "L240.TechCoef_reg",
       "L240.Production_reg_imp",
@@ -61,7 +62,7 @@ module_aglu_L240.ag_trade <- function(command, ...) {
     year <- region <- supplysector <- subsector <- GCAM_commodity <- GrossExp_Mt <-
       calOutputValue <- subs.share.weight <- market.name <- minicam.energy.input <-
       GrossImp_Mt <- Prod_Mt <- GCAM_region_ID <- NetExp_Mt <- Prod_bm3 <-
-      NetExp_bm3 <- value <- flow <- GrossExp <- NULL # silence package check notes
+      NetExp_bm3 <- value <- flow <- GrossExp <- to.value <- NULL # silence package check notes
 
     # Load required inputs ----
     get_data_list(all_data, MODULE_INPUTS, strip_attributes = TRUE)
@@ -150,6 +151,15 @@ module_aglu_L240.ag_trade <- function(command, ...) {
     L240.SubsectorAll_reg <- write_to_all_regions(A_agRegionalSubsector,
                                                   c(LEVEL2_DATA_NAMES[["SubsectorAll"]], "logit.type"),
                                                   filter(GCAM_region_names, !region %in% aglu.NO_AGLU_REGIONS))
+
+    # If any subsectors have a to-value provided, generate another table: L202.SubsectorInterpTo_in
+    if(any(!is.na(A_agRegionalSubsector$to.value))) {
+      A_agRegionalSubsector %>%
+        filter(!is.na(to.value)) %>%
+        write_to_all_regions(LEVEL2_DATA_NAMES[["SubsectorInterpTo"]], GCAM_region_names = GCAM_region_names) ->
+        L240.SubsectorInterpTo_reg
+    }
+
 
     # Base technology-level table for several tables to be written out")
     A_agRegionalTechnology_R_Y <- repeat_add_columns(A_agRegionalTechnology,
@@ -284,6 +294,19 @@ module_aglu_L240.ag_trade <- function(command, ...) {
       add_precursors("common/GCAM_region_names",
                      "aglu/A_agRegionalSubsector") ->
       L240.SubsectorAll_reg
+    if(exists("L240.SubsectorInterpTo_reg")) {
+      L240.SubsectorInterpTo_reg %>%
+        add_title("Subsector interpolation rules with to-value specified") %>%
+        add_units("NA") %>%
+        add_comments("From A_an_input_subsector, written to all regions if used") %>%
+        same_precursors_as(L240.SubsectorAll_reg) ->
+        L240.SubsectorInterpTo_reg
+    } else {
+      missing_data()  %>%
+        add_comments("Empty data table") ->
+        L240.SubsectorInterpTo_reg
+    }
+
 
     L240.TechShrwt_reg %>%
       add_title("Technology share-weights for traded ag commodities") %>%

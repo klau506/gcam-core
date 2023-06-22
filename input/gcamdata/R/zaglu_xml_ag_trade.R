@@ -21,6 +21,7 @@ module_aglu_ag_trade_xml <- function(command, ...) {
       "L240.Production_tra",
       "L240.Supplysector_reg",
       "L240.SubsectorAll_reg",
+      "L240.SubsectorInterpTo_reg",
       "L240.TechShrwt_reg",
       "L240.TechCoef_reg",
       "L240.Production_reg_imp",
@@ -53,6 +54,7 @@ module_aglu_ag_trade_xml <- function(command, ...) {
       add_xml_data(L240.Production_tra, "Production") %>%
       add_logit_tables_xml(L240.Supplysector_reg, "Supplysector") %>%
       add_logit_tables_xml(L240.SubsectorAll_reg, "SubsectorAll", base_logit_header = "SubsectorLogit") %>%
+      add_xml_data(L240.SubsectorInterpTo_reg, "SubsectorInterpTo") %>%
       add_xml_data(L240.TechShrwt_reg, "TechShrwt") %>%
       add_xml_data(L240.TechCoef_reg, "TechCoef") %>%
       add_xml_data(L240.Production_reg_imp, "Production") %>%
@@ -66,6 +68,7 @@ module_aglu_ag_trade_xml <- function(command, ...) {
                      "L240.Production_tra",
                      "L240.Supplysector_reg",
                      "L240.SubsectorAll_reg",
+                     "L240.SubsectorInterpTo_reg",
                      "L240.TechShrwt_reg",
                      "L240.TechCoef_reg",
                      "L240.Production_reg_imp",

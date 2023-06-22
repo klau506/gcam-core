@@ -105,14 +105,16 @@
         <Value name = "prune_ag">../input/gcamdata/xml/prune_empty_ag.xml</Value>
 
 		<!-- Policies -->
-		<Value name = "new_ref">../input/policy/diets/nonstaple_incelas_0.4.xml</Value>
+		<Value name = "new_ref">../input/policy/diets/nonstaple_incelas_0.4.xml</Value>	
+        <Value name = "protein_preference_change">../input/policy/diets/fuelprefelast_0.45.xml</Value>
+        <Value name = "beef-poultry">../input/policy/diets/beef-poultry.xml</Value>
 
 		<!-- Solver -->
 		<Value name = "solver">../input/solution/cal_broyden_config.xml</Value>
 		
 	</ScenarioComponents>
 	<Strings>
-		<Value name="scenarioName">Diets_Trade.adj4</Value>
+		<Value name="scenarioName">Diets_Protein.Beef.adj4</Value>
 		<Value name="debug-region">USA</Value>
 		<Value name="MAGICC-input-dir">../input/magicc/inputs</Value>
 		<Value name="MAGICC-output-dir">../output</Value>
