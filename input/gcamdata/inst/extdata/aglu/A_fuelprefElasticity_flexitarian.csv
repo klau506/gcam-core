@@ -1,0 +1,10 @@
+# File: A_fuelprefElasticity_flexitarian.csv
+# Title: Fuel preference elasticities for flexitarian scenario protein demand
+# Unit: NA
+# Description: Fuel preference elasticities for flexitarian scenario protein demand
+# Source: TOCHECK assumptions
+# Column types: cccnn
+# ----------
+supplysector,subsector0,subsector,year.fillout,fuelprefElasticity
+FoodDemand_NonStaples,Protein,Animal,2020,-0.45
+FoodDemand_NonStaples,Protein,Plant,2020,0.45

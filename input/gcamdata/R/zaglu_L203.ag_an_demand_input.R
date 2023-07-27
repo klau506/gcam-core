@@ -15,7 +15,8 @@
 #'   \code{L203.NonStapleBaseService}, \code{L203.GlobalTechCoef_demand}, \code{L203.GlobalTechShrwt_demand}, \code{L203.GlobalTechInterp_demand},
 #'   \code{L203.StubTechProd_food}, \code{L203.StubTechProd_nonfood_crop}, \code{L203.StubTechProd_nonfood_meat},
 #'   \code{L203.StubTechProd_For}, \code{L203.StubCalorieContent},
-#'   \code{L203.PerCapitaBased}, \code{L203.BaseService}, \code{L203.IncomeElasticity}, \code{L203.PriceElasticity}. The
+#'   \code{L203.PerCapitaBased}, \code{L203.BaseService}, \code{L203.IncomeElasticity}, \code{L203.PriceElasticity},
+#'   \code{L203.FuelPrefElast_ssp1}, \code{L203.FuelPrefElast_flexitarian}. The
 #'   corresponding file in the original data system was \code{L203.demand_input.R} (aglu level2).
 #' @details This chunk specifies the input tables for agriculture demand: generic information for supply sector, subsector and technology,
 #' food and non-food demand in calibration years, forest product demand, net exports and caloric contents in calibration and future years,
@@ -35,6 +36,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       FILE = "aglu/A_demand_subsector",
       FILE = "aglu/A_demand_technology",
       FILE = "aglu/A_fuelprefElasticity_ssp1",
+      FILE = "aglu/A_fuelprefElasticity_flexitarian",
       FILE = "aglu/A_diet_bias",
       "L101.CropMeat_Food_Pcal_R_C_Y",
       "L109.ag_ALL_Mt_R_C_Y",
@@ -71,6 +73,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
              "L203.IncomeElasticity",
              "L203.PriceElasticity",
              "L203.FuelPrefElast_ssp1",
+             "L203.FuelPrefElast_flexitarian",
              "L203.GlobalTechInterp_demand"))
   } else if(command == driver.MAKE) {
 
@@ -123,7 +126,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       L101.CropMeat_Food_kcalg_R_C_Y
 
 
-      # Build L203.Supplysector_demand: generic info for demand sectors by region
+    # Build L203.Supplysector_demand: generic info for demand sectors by region
     A_demand_supplysector %>%
       write_to_all_regions(c(LEVEL2_DATA_NAMES[["Supplysector"]], LOGIT_TYPE_COLNAME), GCAM_region_names = GCAM_region_names) %>%
       filter(!region %in% aglu.NO_AGLU_REGIONS) -> # Remove any regions for which agriculture and land use are not modeled
@@ -176,7 +179,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       L203.GlobalTechShrwt_demand
 
     # Build L203.GlobalTechInterp_demand: Interpolation rule to fix initial shareweights
-     A_demand_technology %>%
+    A_demand_technology %>%
       filter(subsector != technology) %>%
       mutate(from.year = MODEL_FINAL_BASE_YEAR,
              to.year = max(MODEL_YEARS)) %>%
@@ -323,6 +326,15 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       filter(!region %in% aglu.NO_AGLU_REGIONS) ->           # Remove any regions for which agriculture and land use are not modeled
       L203.FuelPrefElast_ssp1
 
+    # Fuel preference elasticity
+    # Build L203.FuelPrefElast_flexitarian: Fuel preference elasticities for protein in flexitarian scenario
+    #Keep the nesting subsector
+    names_FuelPrefElast_nest <- c("region", "supplysector", "subsector0", "subsector",  "year.fillout", "fuelprefElasticity")
+    A_fuelprefElasticity_flexitarian %>%
+      write_to_all_regions(names_FuelPrefElast_nest, GCAM_region_names = GCAM_region_names) %>%
+      filter(!region %in% aglu.NO_AGLU_REGIONS) ->           # Remove any regions for which agriculture and land use are not modeled
+      L203.FuelPrefElast_flexitarian
+
 
     # Build L203.BaseService: base service of (standard) final demands
     # This excludes food demands, which have a different demand formulation
@@ -365,10 +377,10 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       filter(!region %in% aglu.NO_AGLU_REGIONS)
 
     if(nrow(A_diet_bias) > 0) {
-    L203.DemandStapleRegBias <- select(L203.DemandStapleParams, region, gcam.consumer, nodeInput, staples.food.demand.input) %>%
-      left_join_error_no_match(A_diet_bias,
-                               by = c(staples.food.demand.input = "demand_type")) %>%
-      select(LEVEL2_DATA_NAMES[["DemandStapleRegBias"]])
+      L203.DemandStapleRegBias <- select(L203.DemandStapleParams, region, gcam.consumer, nodeInput, staples.food.demand.input) %>%
+        left_join_error_no_match(A_diet_bias,
+                                 by = c(staples.food.demand.input = "demand_type")) %>%
+        select(LEVEL2_DATA_NAMES[["DemandStapleRegBias"]])
     } else {
       # no convergence values, just return an empty tibble
       L203.DemandStapleRegBias <- as_tibble(sapply(LEVEL2_DATA_NAMES[['DemandStapleRegBias']], function(d) {character()}))
@@ -376,10 +388,10 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
 
 
     if(nrow(A_diet_bias) > 0) {
-    L203.DemandNonStapleRegBias <- select(L203.DemandNonStapleParams, region, gcam.consumer, nodeInput, non.staples.food.demand.input) %>%
-      left_join_error_no_match(A_diet_bias,
-                               by = c(non.staples.food.demand.input = "demand_type")) %>%
-      select(LEVEL2_DATA_NAMES[["DemandNonStapleRegBias"]])
+      L203.DemandNonStapleRegBias <- select(L203.DemandNonStapleParams, region, gcam.consumer, nodeInput, non.staples.food.demand.input) %>%
+        left_join_error_no_match(A_diet_bias,
+                                 by = c(non.staples.food.demand.input = "demand_type")) %>%
+        select(LEVEL2_DATA_NAMES[["DemandNonStapleRegBias"]])
       #select(c("region", "gcam.consumer", "nodeInput", "non.staples.food.demand.input", "regional.bias.year", "regional.bias"))
     } else {
       # no convergence values, just return an empty tibble
@@ -394,7 +406,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
     L203.StapleBaseService <- filter(L203.Demand, supplysector %in% A_demand_food_staples$staples.food.demand.input) %>%
       rename(staples.food.demand.input = supplysector) %>%
       left_join_error_no_match(select(L203.DemandStapleParams, region, gcam.consumer, nodeInput, staples.food.demand.input),
-                             by = c("region", "staples.food.demand.input")) %>%
+                               by = c("region", "staples.food.demand.input")) %>%
       select(LEVEL2_DATA_NAMES[["StapleBaseService"]])
 
     L203.NonStapleBaseService <- filter(L203.Demand, supplysector %in% A_demand_food_nonstaples$non.staples.food.demand.input) %>%
@@ -600,6 +612,15 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       add_precursors("aglu/A_fuelprefElasticity_ssp1") ->
       L203.FuelPrefElast_ssp1
 
+    L203.FuelPrefElast_flexitarian %>%
+      add_title("Fuel preference elasticities for protein in flexitarian scenario") %>%
+      add_units("Unitless") %>%
+      add_comments("Specify the minimum base year value") %>%
+      add_comments("Remove any regions for which agriculture and land use are not modeled") %>%
+      add_legacy_name("L203.FuelPrefElast_flexitarian") %>%
+      add_precursors("aglu/A_fuelprefElasticity_flexitarian") ->
+      L203.FuelPrefElast_flexitarian
+
     L203.SubregionalShares %>%
       add_title("Subregional population and income shares for food demand") %>%
       add_units("Unitless") %>%
@@ -663,7 +684,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
                 L203.GlobalTechCoef_demand, L203.GlobalTechShrwt_demand, L203.GlobalTechInterp_demand, L203.StubTechProd_food,
                 L203.StubTechProd_nonfood_crop, L203.StubTechProd_nonfood_meat, L203.StubTechProd_For,
                 L203.StubCalorieContent, L203.PerCapitaBased, L203.BaseService,
-                L203.IncomeElasticity, L203.PriceElasticity, L203.FuelPrefElast_ssp1,
+                L203.IncomeElasticity, L203.PriceElasticity, L203.FuelPrefElast_ssp1, L203.FuelPrefElast_flexitarian,
                 L203.SubregionalShares, L203.DemandFunction_food, L203.DemandStapleParams, L203.DemandNonStapleParams,
                 L203.DemandStapleRegBias, L203.DemandNonStapleRegBias, L203.StapleBaseService, L203.NonStapleBaseService)
   } else {
