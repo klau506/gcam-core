@@ -36,12 +36,12 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       FILE = "aglu/A_demand_subsector",
       FILE = "aglu/A_demand_technology",
       FILE = "aglu/A_fuelprefElasticity_ssp1",
-      FILE = "aglu/A_fuelprefElasticity_flexitarian",
       FILE = "aglu/A_diet_bias",
       "L101.CropMeat_Food_Pcal_R_C_Y",
       "L109.ag_ALL_Mt_R_C_Y",
       "L109.an_ALL_Mt_R_C_Y",
-      "L110.For_ALL_bm3_R_Y")
+      "L110.For_ALL_bm3_R_Y",
+      "L202.Flexitarian_population")
 
 
   if(command == driver.DECLARE_INPUTS) {
@@ -318,7 +318,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
 
     # Fuel preference elasticity
     # Build L203.FuelPrefElast_ssp1: Fuel preference elasticities for meat in SSP1
-    #Keep the nesting subsector
+    # Keep the nesting subsector
     names_FuelPrefElast_nest <- c("region", "supplysector", "subsector0", "subsector",  "year.fillout", "fuelprefElasticity")
     A_fuelprefElasticity_ssp1 %>%
       mutate(year.fillout = min(MODEL_BASE_YEARS)) %>%
@@ -328,13 +328,32 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
 
     # Fuel preference elasticity
     # Build L203.FuelPrefElast_flexitarian: Fuel preference elasticities for protein in flexitarian scenario
-    #Keep the nesting subsector
+    # Keep the nesting subsector
+    L202.Flexitarian_population = L202.Flexitarian_population %>%
+      filter(year >= min(MODEL_FUTURE_YEARS))
     names_FuelPrefElast_nest <- c("region", "supplysector", "subsector0", "subsector",  "year.fillout", "fuelprefElasticity")
-    A_fuelprefElasticity_flexitarian %>%
+    # scale nº of flexitarian to fuelPrefElasticity
+    min_value <- min(L202.Flexitarian_population$value)
+    max_value <- max(L202.Flexitarian_population$value)
+    min_range <- 0.45
+    max_range <- 0.9
+    L202.Flexitarian_population = L202.Flexitarian_population %>%
+      mutate(value_scaled = min_range +
+               (max_range - min_range) / (max_value - min_value) * (value - min_value))
+    # create fuelprefElasticity dataset
+    bind_rows(L202.Flexitarian_population %>%
+                select(year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                mutate(subsector = 'Animal') %>%
+                mutate(fuelprefElasticity = -fuelprefElasticity),
+              L202.Flexitarian_population %>%
+                select(year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                mutate(subsector = 'Plant')) %>%
+      mutate(supplysector = 'FoodDemand_NonStaples') %>%
+      mutate(subsector0 = 'Protein') %>%
+      select(region, supplysector, subsector0, subsector, year.fillout, fuelprefElasticity) %>%
       write_to_all_regions(names_FuelPrefElast_nest, GCAM_region_names = GCAM_region_names) %>%
       filter(!region %in% aglu.NO_AGLU_REGIONS) ->           # Remove any regions for which agriculture and land use are not modeled
       L203.FuelPrefElast_flexitarian
-
 
     # Build L203.BaseService: base service of (standard) final demands
     # This excludes food demands, which have a different demand formulation
@@ -618,7 +637,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       add_comments("Specify the minimum base year value") %>%
       add_comments("Remove any regions for which agriculture and land use are not modeled") %>%
       add_legacy_name("L203.FuelPrefElast_flexitarian") %>%
-      add_precursors("aglu/A_fuelprefElasticity_flexitarian") ->
+      add_precursors("L202.Flexitarian_population") ->
       L203.FuelPrefElast_flexitarian
 
     L203.SubregionalShares %>%
