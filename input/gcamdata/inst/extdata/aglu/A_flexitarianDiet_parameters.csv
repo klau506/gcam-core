@@ -1,0 +1,44 @@
+# File: A_flexitarianDiet_parameters.csv
+# Title: Flexitarian diet models' parameters
+# Unit: NA
+# Description: parameters used in flexitarian's diet computation
+# s: 'scale' binom. param (fixed) --> models the slope of the curve (if bigger, softer)
+# t0: 'location' binom. param --> models peak year where more people will become flexetarian
+# wf: flexetarians' weight --> models the social pressure of the flexitarians' group
+# k: percentage of flexitarian population by 2100
+# Source: TOCHECK assumptions
+# Column types: cnnn
+# ----------
+region,s,t0,wf,k
+USA,20,2050,20,50
+Africa_Eastern,20,2050,20,50
+Africa_Northern,20,2050,20,50
+Africa_Southern,20,2050,20,50
+Africa_Western,20,2050,20,50
+Australia_NZ,20,2050,20,50
+Brazil,20,2050,20,50
+Canada,20,2050,20,50
+Central America and Caribbean,20,2050,20,50
+Central Asia,20,2050,20,50
+China,20,2050,20,50
+EU-12,20,2050,20,50
+EU-15,20,2050,20,50
+Europe_Eastern,20,2050,20,50
+Europe_Non_EU,20,2050,20,50
+European Free Trade Association,20,2050,20,50
+India,20,2050,20,50
+Indonesia,20,2050,20,50
+Japan,20,2050,20,50
+Mexico,20,2050,20,50
+Middle East,20,2050,20,50
+Pakistan,20,2050,20,50
+Russia,20,2050,20,50
+South Africa,20,2050,20,50
+South America_Northern,20,2050,20,50
+South America_Southern,20,2050,20,50
+South Asia,20,2050,20,50
+South Korea,20,2050,20,50
+Southeast Asia,20,2050,20,50
+Taiwan,20,2050,20,50
+Argentina,20,2050,20,50
+Colombia,20,2050,20,50

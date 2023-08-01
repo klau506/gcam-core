@@ -330,28 +330,32 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
     # Build L203.FuelPrefElast_flexitarian: Fuel preference elasticities for protein in flexitarian scenario
     # Keep the nesting subsector
     L202.Flexitarian_population = L202.Flexitarian_population %>%
-      filter(year >= min(MODEL_FUTURE_YEARS))
-    names_FuelPrefElast_nest <- c("region", "supplysector", "subsector0", "subsector",  "year.fillout", "fuelprefElasticity")
-    # scale nº of flexitarian to fuelPrefElasticity
-    min_value <- min(L202.Flexitarian_population$value)
-    max_value <- max(L202.Flexitarian_population$value)
-    min_range <- 0.45
-    max_range <- 0.9
-    L202.Flexitarian_population = L202.Flexitarian_population %>%
+      filter(year >= min(MODEL_FUTURE_YEARS)) %>%
+      group_by(region, year) %>%
+      summarise(flex = sum(flex),
+                population = sum(population)) %>%
+      mutate(value = 100 * flex / population) %>%
+      ungroup() %>%
+      # scale % of flexitarian to fuelPrefElasticity
+      mutate(min_range = beh.min.fuelPriceElasticity) %>%
+      mutate(max_range = beh.max.fuelPriceElasticity) %>%
+      mutate(min_value = 0.1) %>%
+      mutate(max_value = 100) %>%
       mutate(value_scaled = min_range +
                (max_range - min_range) / (max_value - min_value) * (value - min_value))
+
+    names_FuelPrefElast_nest <- c("region", "supplysector", "subsector0", "subsector",  "year.fillout", "fuelprefElasticity")
     # create fuelprefElasticity dataset
     bind_rows(L202.Flexitarian_population %>%
-                select(year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
                 mutate(subsector = 'Animal') %>%
                 mutate(fuelprefElasticity = -fuelprefElasticity),
               L202.Flexitarian_population %>%
-                select(year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
                 mutate(subsector = 'Plant')) %>%
       mutate(supplysector = 'FoodDemand_NonStaples') %>%
       mutate(subsector0 = 'Protein') %>%
       select(region, supplysector, subsector0, subsector, year.fillout, fuelprefElasticity) %>%
-      write_to_all_regions(names_FuelPrefElast_nest, GCAM_region_names = GCAM_region_names) %>%
       filter(!region %in% aglu.NO_AGLU_REGIONS) ->           # Remove any regions for which agriculture and land use are not modeled
       L203.FuelPrefElast_flexitarian
 

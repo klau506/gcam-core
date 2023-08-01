@@ -17,6 +17,8 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
 
   MODULE_INPUTS <-
     c(FILE = "common/iso_GCAM_regID",
+      FILE = "common/GCAM_region_names",
+      FILE = "aglu/A_flexitarianDiet_parameters",
       "L101.Pop_thous_GCAM3_ctry_Y")
 
   if(command == driver.DECLARE_INPUTS) {
@@ -32,20 +34,18 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
       subsector <- L202.Flexitarian_population <- NULL   # silence package check notes
 
     iso_GCAM_regID <- get_data(all_data, "common/iso_GCAM_regID")
+    GCAM_region_names <- get_data(all_data, "common/GCAM_region_names")
+    A_flexitarianDiet_parameters <- get_data(all_data, "aglu/A_flexitarianDiet_parameters")
     L101.Pop_thous_GCAM3_ctry_Y <- get_data(all_data, "L101.Pop_thous_GCAM3_ctry_Y")
-
-    L101.Pop_thous_GCAM3_ctry_Y = L101.Pop_thous_GCAM3_ctry_Y %>%
-      group_by(year) %>%
-      summarise(value = sum(value)) %>%
-      mutate(iso = 'world')
+    set.seed(123)
 
     # helper function: computes dynamically the probability of becoming flexitarian
     # following a logistic probability function of location parameter t_0 and scale k
     dynamic_probability_logistic <- function(dat) {
       dat <- dat %>%
         mutate(x = year - t0) %>%
-        mutate(vegans.factor = wv * flex/population) %>%
-        mutate(prob = exp(-x/s) / ( s * (1 + exp(-x/s))^2 ) * (vegans.factor))
+        mutate(flex.factor = wf * flex/population) %>%
+        mutate(prob = exp(-x/s) / ( s * (1 + exp(-x/s))^2 ) * (flex.factor))
 
       return(invisible(dat))
     }
@@ -58,48 +58,68 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
       dat <- dat %>%
         mutate(no.flex = population - flex) %>%
         as.data.table()
-      dat_new = data.table()
 
-      for (t in min(MODEL_FUTURE_YEARS):max(MODEL_FUTURE_YEARS)) {
-        dat_tmp <- dat %>%
-          filter(year == t) %>%
-          mutate(no.flex = population - flex) %>%
-          # compute the probability of changing to a flexitarian diet
-          dynamic_probability_logistic() %>%
-          # add the new flexitarian people estimated as the result of the binomial prob fun.
-          mutate(new.flex = mean(rbinom(n = no.flex, prob = prob, size = 1000))) %>%
-          mutate(percent.new.flex = 100 * new.flex / population)
+      for (i in unique(dat$iso)) {
+        print(i)
+        for (t in min(MODEL_FUTURE_YEARS):max(MODEL_FUTURE_YEARS)) {
+          dat_tmp <- dat %>%
+            filter(year == t, iso == i) %>%
+            mutate(no.flex = population - flex) %>%
+            # compute the probability of changing to a flexitarian diet
+            dynamic_probability_logistic() %>%
+            # add the new flexitarian people estimated as the result of the binomial prob fun.
+            mutate(new.flex = round(mean(rbinom(1, no.flex, prob)))) %>%
+            # rescale new.flex
+            mutate(percent.new.flex = 100 * (1 - (flex - new.flex) / flex)) %>%
+            mutate(percent.flex = 100 * (new.flex / population)) %>%
+            mutate(new.flex = round(population * percent.flex/100 * k/100))
 
-        # update data
-        dat[year == t,] = dat_tmp
-        dat[year == t+1,]$flex = dat[year == t,]$percent.new.flex * dat[year == t+1,]$population + dat[year == t,]$flex
+          # update data
+          dat[year == t & iso == i,] = dat_tmp
+
+          # add nº of flex
+          dat[year == t+1 & iso == i,]$flex =
+            dat[year == t & iso == i,]$new.flex +
+            dat[year == t & iso == i,]$flex
+        }
       }
+
 
       return(invisible(dat))
     }
 
 
     # Estimate the cumulative flexitarian people over time by country
-    # TODO: fix assumptions
-    L202.Flexitarian_population <- L101.Pop_thous_GCAM3_ctry_Y %>%
+    L202.Flexitarian_population <- L101.Pop_thous_GCAM3_ctry_Y %>% filter(iso %in% c('can','usa','ind')) %>%
       rename(population = value) %>%
-      mutate(flex = if_else(year <= min(MODEL_FUTURE_YEARS), 1e-3*population, 0)) %>%   # flexitarian people (add some data)
-      mutate(s = 20) %>%     # scale; fixed
-      mutate(t0 = 2050) %>%  # add sensitivity; year where the max nº of population will shift to flexitarian
-      mutate(wv = 20) %>%    # add sensitivity; weight of the social pressure due to nº of flexitarian
-      mutate(prob = 0) %>% mutate(x = 0) %>% mutate(vegans.factor = 0) %>% mutate(new.flex = 0) %>% mutate(percent.new.flex = 0) %>%   # void column to keep the probability of the dietary shift
+      mutate(population = round(1e3 * population)) %>%  # units: nº of people
+      left_join_error_no_match(iso_GCAM_regID %>%
+                                 select(iso, GCAM_region_ID) %>%
+                                 left_join_error_no_match(GCAM_region_names, by = 'GCAM_region_ID'), by = 'iso') %>%
+      left_join_error_no_match(A_flexitarianDiet_parameters, by = 'region') %>%
+      mutate(flex = round(if_else(year <= min(MODEL_FUTURE_YEARS), 1e-3*population, 0))) %>%   # flexitarian people (add some data)
+      mutate(prob = 0, x = 0, flex.factor = 0, new.flex = 0, percent.new.flex = 0, percent.flex = 0) %>% # void columns
       flex_model() %>%
-      mutate(percent.flex = 100 * flex / population)
+      mutate(percent.flex = 100 * flex / population) %>%
+      mutate(flex = 1e-3 * flex) %>% # units: in thousands
+      mutate(population = 1e-3 * population)     # units: in thousands
 
+
+    attr(L202.Flexitarian_population, "title") <- NULL
+    attr(L202.Flexitarian_population, "units") <- NULL
+    attr(L202.Flexitarian_population, "comments") <- NULL
+    attr(L202.Flexitarian_population, "legacy_name") <- NULL
+    attr(L202.Flexitarian_population, "precursors") <- NULL
 
     L202.Flexitarian_population %>%
-      select(iso, year, value = flex) %>% tibble::as_tibble() %>%
+      select(iso, year, flex, population, region) %>% tibble::as_tibble() %>%
       add_title("Number of people following a flexitarian diet") %>%
       add_units("in thousands") %>%
       add_comments("Estimation of the dietary shift through a binomial distribution") %>%
       add_comments("with dynamic probability computed by a logistic probability function") %>%
       add_legacy_name("L202.Flexitarian_population") %>%
       add_precursors("common/iso_GCAM_regID",
+                     "common/GCAM_region_names",
                      "L101.Pop_thous_GCAM3_ctry_Y") ->
       L202.Flexitarian_population
 
