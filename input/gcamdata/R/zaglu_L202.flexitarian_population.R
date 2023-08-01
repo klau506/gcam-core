@@ -7,7 +7,8 @@
 #' @param command API command to execute
 #' @param ... other optional parameters, depending on command
 #' @return Depends on \code{command}: either a vector of required inputs, a vector of output names, or (if
-#'   \code{command} is "MAKE") all the generated outputs: \code{L202.Flexitarian_population} (aglu level2).
+#'   \code{command} is "MAKE") all the generated outputs: \code{L202.Flexitarian_population_1},
+#'   \code{L202.Flexitarian_population_2},\code{L202.Flexitarian_population_3} (aglu level2).
 #' @details This chunk specifies the cumulative number of people by region that adopts the flexitarian scenario tables for agriculture demand: generic information for supply sector, subsector and technology,
 #' @importFrom assertthat assert_that
 #' @importFrom dplyr bind_rows filter if_else group_by lag left_join mutate select summarise
@@ -18,13 +19,15 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
   MODULE_INPUTS <-
     c(FILE = "common/iso_GCAM_regID",
       FILE = "common/GCAM_region_names",
-      FILE = "aglu/A_flexitarianDiet_parameters",
+      "L201.flexitarian_parameters",
       "L101.Pop_thous_GCAM3_ctry_Y")
 
   if(command == driver.DECLARE_INPUTS) {
     return(MODULE_INPUTS)
   } else if(command == driver.DECLARE_OUTPUTS) {
-    return(c("L202.Flexitarian_population"))
+    return(c("L202.Flexitarian_population_1",
+             "L202.Flexitarian_population_2",
+             "L202.Flexitarian_population_3"))
   } else if(command == driver.MAKE) {
 
     all_data <- list(...)[[1]]
@@ -35,7 +38,7 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
 
     iso_GCAM_regID <- get_data(all_data, "common/iso_GCAM_regID")
     GCAM_region_names <- get_data(all_data, "common/GCAM_region_names")
-    A_flexitarianDiet_parameters <- get_data(all_data, "aglu/A_flexitarianDiet_parameters")
+    L201.flexitarian_parameters <- get_data(all_data, "L201.flexitarian_parameters")
     L101.Pop_thous_GCAM3_ctry_Y <- get_data(all_data, "L101.Pop_thous_GCAM3_ctry_Y")
     set.seed(123)
 
@@ -59,11 +62,11 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
         mutate(no.flex = population - flex) %>%
         as.data.table()
 
-      for (i in unique(dat$iso)) {
-        print(i)
+      for (r in unique(dat$region)) {
+        print(r)
         for (t in min(MODEL_FUTURE_YEARS):max(MODEL_FUTURE_YEARS)) {
           dat_tmp <- dat %>%
-            filter(year == t, iso == i) %>%
+            filter(year == t, region == r) %>%
             mutate(no.flex = population - flex) %>%
             # compute the probability of changing to a flexitarian diet
             dynamic_probability_logistic() %>%
@@ -75,12 +78,12 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
             mutate(new.flex = round(population * percent.flex/100 * k/100))
 
           # update data
-          dat[year == t & iso == i,] = dat_tmp
+          dat[year == t & region == r,] = dat_tmp
 
           # add nº of flex
-          dat[year == t+1 & iso == i,]$flex =
-            dat[year == t & iso == i,]$new.flex +
-            dat[year == t & iso == i,]$flex
+          dat[year == t+1 & region == r,]$flex =
+            dat[year == t & region == r,]$new.flex +
+            dat[year == t & region == r,]$flex
         }
       }
 
@@ -89,41 +92,50 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
     }
 
 
-    # Estimate the cumulative flexitarian people over time by country
-    L202.Flexitarian_population <- L101.Pop_thous_GCAM3_ctry_Y %>% filter(iso %in% c('can','usa','ind')) %>%
-      rename(population = value) %>%
-      mutate(population = round(1e3 * population)) %>%  # units: nº of people
-      left_join_error_no_match(iso_GCAM_regID %>%
-                                 select(iso, GCAM_region_ID) %>%
-                                 left_join_error_no_match(GCAM_region_names, by = 'GCAM_region_ID'), by = 'iso') %>%
-      left_join_error_no_match(A_flexitarianDiet_parameters, by = 'region') %>%
-      mutate(flex = round(if_else(year <= min(MODEL_FUTURE_YEARS), 1e-3*population, 0))) %>%   # flexitarian people (add some data)
-      mutate(prob = 0, x = 0, flex.factor = 0, new.flex = 0, percent.new.flex = 0, percent.flex = 0) %>% # void columns
-      flex_model() %>%
-      mutate(percent.flex = 100 * flex / population) %>%
-      mutate(flex = 1e-3 * flex) %>% # units: in thousands
-      mutate(population = 1e-3 * population)     # units: in thousands
+    for (i in 1:beh.NUM_RANDOM_TRIALS) {
+      # Estimate the cumulative flexitarian people over time by country
+      L202.Flexitarian_population <- L101.Pop_thous_GCAM3_ctry_Y %>%
+        rename(population = value) %>%
+        mutate(population = round(1e3 * population)) %>%  # units: nº of people
+        # read the parameters to define the variability of the behavior change
+        left_join_error_no_match(iso_GCAM_regID %>%
+                                   select(iso, GCAM_region_ID) %>%
+                                   left_join_error_no_match(GCAM_region_names, by = 'GCAM_region_ID'), by = 'iso') %>%
+        group_by(year, region) %>%
+        summarise(population = sum(population)) %>% ungroup() %>%
+        left_join_error_no_match(L201.flexitarian_parameters %>%
+                                   select(region, s, paste0("t0_", i), paste0("wf_", i), paste0("k_", i)) %>%
+                                   rename(t0 = paste0("t0_", i), wf = paste0("wf_", i), k = paste0("k_", i)),
+                                 by = 'region') %>%
+        mutate(flex = round(if_else(year <= min(MODEL_FUTURE_YEARS), 1e-3*population, 0))) %>%   # flexitarian people (add some data)
+        mutate(prob = 0, x = 0, flex.factor = 0, new.flex = 0, percent.new.flex = 0, percent.flex = 0) %>% # void columns
+        flex_model() %>%
+        mutate(percent.flex = 100 * flex / population) %>%
+        mutate(flex = 1e-3 * flex) %>%           # units: in thousands
+        mutate(population = 1e-3 * population)   # units: in thousands
+
+      ## - save results
+      attr(L202.Flexitarian_population, "title") <- NULL
+      attr(L202.Flexitarian_population, "units") <- NULL
+      attr(L202.Flexitarian_population, "comments") <- NULL
+      attr(L202.Flexitarian_population, "legacy_name") <- NULL
+      attr(L202.Flexitarian_population, "precursors") <- NULL
 
 
-    attr(L202.Flexitarian_population, "title") <- NULL
-    attr(L202.Flexitarian_population, "units") <- NULL
-    attr(L202.Flexitarian_population, "comments") <- NULL
-    attr(L202.Flexitarian_population, "legacy_name") <- NULL
-    attr(L202.Flexitarian_population, "precursors") <- NULL
+      assign(paste0('L202.Flexitarian_population_',i), L202.Flexitarian_population %>%
+               select(region, year, flex, population) %>% tibble::as_tibble() %>%
+               add_title("Number of people following a flexitarian diet") %>%
+               add_units("in thousands") %>%
+               add_comments("Estimation of the dietary shift through a binomial distribution") %>%
+               add_comments("with dynamic probability computed by a logistic probability function") %>%
+               add_legacy_name("L202.Flexitarian_population") %>%
+               add_precursors("common/iso_GCAM_regID","common/GCAM_region_names",
+                              "L201.flexitarian_parameters","L101.Pop_thous_GCAM3_ctry_Y"))
+    }
 
-    L202.Flexitarian_population %>%
-      select(iso, year, flex, population, region) %>% tibble::as_tibble() %>%
-      add_title("Number of people following a flexitarian diet") %>%
-      add_units("in thousands") %>%
-      add_comments("Estimation of the dietary shift through a binomial distribution") %>%
-      add_comments("with dynamic probability computed by a logistic probability function") %>%
-      add_legacy_name("L202.Flexitarian_population") %>%
-      add_precursors("common/iso_GCAM_regID",
-                     "common/GCAM_region_names",
-                     "L101.Pop_thous_GCAM3_ctry_Y") ->
-      L202.Flexitarian_population
 
-    return_data(L202.Flexitarian_population)
+    return_data(L202.Flexitarian_population_1,L202.Flexitarian_population_2,
+                L202.Flexitarian_population_3)
   } else {
     stop("Unknown command")
   }

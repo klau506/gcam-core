@@ -1,44 +1,47 @@
 # File: A_flexitarianDiet_parameters.csv
 # Title: Flexitarian diet models' parameters
-# Unit: NA
+# Unit: Unitless
 # Description: parameters used in flexitarian's diet computation
-# s: 'scale' binom. param (fixed) --> models the slope of the curve (if bigger, softer)
+# s: 'scale' binom. param (fixed) --> models the slope of the curve (if bigger; softer)
 # t0: 'location' binom. param --> models peak year where more people will become flexetarian
+# t0_mu; t0_m; t0_M; t0_sigma
 # wf: flexetarians' weight --> models the social pressure of the flexitarians' group
-# k: percentage of flexitarian population by 2100
+# wf_mu; wf_m; wf_M; wf_sigma
+# k: percentage of flexitarian population by 2100; value computed based on wf; k_m; k_M; and k_sigma
+# k_m; k_M; k_sigma
 # Source: TOCHECK assumptions
 # Column types: cnnn
 # ----------
-region,s,t0,wf,k
-USA,20,2050,20,50
-Africa_Eastern,20,2050,20,50
-Africa_Northern,20,2050,20,50
-Africa_Southern,20,2050,20,50
-Africa_Western,20,2050,20,50
-Australia_NZ,20,2050,20,50
-Brazil,20,2050,20,50
-Canada,20,2050,20,50
-Central America and Caribbean,20,2050,20,50
-Central Asia,20,2050,20,50
-China,20,2050,20,50
-EU-12,20,2050,20,50
-EU-15,20,2050,20,50
-Europe_Eastern,20,2050,20,50
-Europe_Non_EU,20,2050,20,50
-European Free Trade Association,20,2050,20,50
-India,20,2050,20,50
-Indonesia,20,2050,20,50
-Japan,20,2050,20,50
-Mexico,20,2050,20,50
-Middle East,20,2050,20,50
-Pakistan,20,2050,20,50
-Russia,20,2050,20,50
-South Africa,20,2050,20,50
-South America_Northern,20,2050,20,50
-South America_Southern,20,2050,20,50
-South Asia,20,2050,20,50
-South Korea,20,2050,20,50
-Southeast Asia,20,2050,20,50
-Taiwan,20,2050,20,50
-Argentina,20,2050,20,50
-Colombia,20,2050,20,50
+region,s,t0_mu,t0_m,t0_M,t0_sigma,wf_mu,wf_m,wf_M,wf_sigma,k_m,k_M,k_sigma
+USA,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Africa_Eastern,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Africa_Northern,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Africa_Southern,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Africa_Western,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Australia_NZ,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Brazil,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Canada,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Central America and Caribbean,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Central Asia,20,2050,2025,2100,5,20,15,25,5,5,60,5
+China,20,2050,2025,2100,5,20,15,25,5,5,60,5
+EU-12,20,2050,2025,2100,5,20,15,25,5,5,60,5
+EU-15,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Europe_Eastern,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Europe_Non_EU,20,2050,2025,2100,5,20,15,25,5,5,60,5
+European Free Trade Association,20,2050,2025,2100,5,20,15,25,5,5,60,5
+India,20,2050,2025,2100,5,20,15,25,5,25,80,5
+Indonesia,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Japan,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Mexico,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Middle East,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Pakistan,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Russia,20,2050,2025,2100,5,20,15,25,5,5,60,5
+South Africa,20,2050,2025,2100,5,20,15,25,5,5,60,5
+South America_Northern,20,2050,2025,2100,5,20,15,25,5,5,60,5
+South America_Southern,20,2050,2025,2100,5,20,15,25,5,5,60,5
+South Asia,20,2050,2025,2100,5,20,15,25,5,5,60,5
+South Korea,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Southeast Asia,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Taiwan,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Argentina,20,2050,2025,2100,5,20,15,25,5,5,60,5
+Colombia,20,2050,2025,2100,5,20,15,25,5,5,60,5
