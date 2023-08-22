@@ -344,7 +344,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
         # scale % of flexitarian to fuelPrefElasticity
         mutate(min_range = beh.min.fuelPriceElasticity) %>%
         mutate(max_range = beh.max.fuelPriceElasticity) %>%
-        mutate(min_value = 0.1) %>%
+        mutate(min_value = 10) %>%
         mutate(max_value = 100) %>%
         mutate(value_scaled = min_range +
                  (max_range - min_range) / (max_value - min_value) * (value - min_value))

@@ -59,31 +59,41 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
     # probability following a binomial distribution
     flex_model = function(dat) {
       dat <- dat %>%
+        # no flex people
         mutate(no.flex = population - flex) %>%
+        # no flex people that can shift to flex (it can not be more than the expected number of people at the end of the century)
+        mutate(no.flex.can.change = population * pmin(no.flex/population, k/100 - flex/population)) %>%
+        # mutate(no.flex.can.change = round(min(no.flex, no.flex.diff))) %>%
         as.data.table()
 
       for (r in unique(dat$region)) {
         print(r)
-        for (t in min(MODEL_FUTURE_YEARS):max(MODEL_FUTURE_YEARS)) {
+        for (t in max(MODEL_BASE_YEARS):max(MODEL_FUTURE_YEARS)) {
           dat_tmp <- dat %>%
             filter(year == t, region == r) %>%
+            # update no.flex population
             mutate(no.flex = population - flex) %>%
+            mutate(no.flex.can.change = population * pmin(no.flex/population, k/100 - flex/population)) %>%
             # compute the probability of changing to a flexitarian diet
             dynamic_probability_logistic() %>%
             # add the new flexitarian people estimated as the result of the binomial prob fun.
-            mutate(new.flex = round(mean(rbinom(1, no.flex, prob)))) %>%
+            mutate(new.flex = round(mean(rbinom(1, as.integer(no.flex.can.change), prob)))) %>%
             # rescale new.flex
             mutate(percent.new.flex = 100 * (1 - (flex - new.flex) / flex)) %>%
             mutate(percent.flex = 100 * (new.flex / population)) %>%
             mutate(new.flex = round(population * percent.flex/100 * k/100))
 
-          # update data
-          dat[year == t & region == r,] = dat_tmp
+          if (sum(is.na(dat_tmp)) == 0) {          # update data
+            dat[year == t & region == r,] = dat_tmp
 
-          # add nº of flex
-          dat[year == t+1 & region == r,]$flex =
-            dat[year == t & region == r,]$new.flex +
-            dat[year == t & region == r,]$flex
+            # add nº of flex
+            dat[year == t+1 & region == r,]$flex =
+              dat[year == t & region == r,]$new.flex +
+              dat[year == t & region == r,]$flex
+          } else {
+            dat[year == t+1 & region == r,]$flex =
+              dat[year == t & region == r,]$flex
+          }
         }
       }
 
@@ -96,7 +106,7 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
       # Estimate the cumulative flexitarian people over time by country
       L202.Flexitarian_population <- L101.Pop_thous_GCAM3_ctry_Y %>%
         rename(population = value) %>%
-        mutate(population = round(1e3 * population)) %>%  # units: nº of people
+        mutate(population = round(CONV_THOUS_VALUE * population)) %>%  # units: nº of people
         # read the parameters to define the variability of the behavior change
         left_join_error_no_match(iso_GCAM_regID %>%
                                    select(iso, GCAM_region_ID) %>%
@@ -104,15 +114,16 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
         group_by(year, region) %>%
         summarise(population = sum(population)) %>% ungroup() %>%
         left_join_error_no_match(L201.flexitarian_parameters %>%
-                                   select(region, s, paste0("t0_", i), paste0("wf_", i), paste0("k_", i)) %>%
+                                   select(region, percent.flex.ini, s, paste0("t0_", i), paste0("wf_", i), paste0("k_", i)) %>%
                                    rename(t0 = paste0("t0_", i), wf = paste0("wf_", i), k = paste0("k_", i)),
                                  by = 'region') %>%
-        mutate(flex = round(if_else(year <= min(MODEL_FUTURE_YEARS), 1e-3*population, 0))) %>%   # flexitarian people (add some data)
+        mutate(flex = round(if_else(year <= max(MODEL_BASE_YEARS), ( percent.flex.ini/100 )*population, 0))) %>%   # flexitarian people
+        mutate(max.flex = population[which(year == 2100)] * k/100) %>%  # max nº of people that can become flex
         mutate(prob = 0, x = 0, flex.factor = 0, new.flex = 0, percent.new.flex = 0, percent.flex = 0) %>% # void columns
         flex_model() %>%
         mutate(percent.flex = 100 * flex / population) %>%
-        mutate(flex = 1e-3 * flex) %>%           # units: in thousands
-        mutate(population = 1e-3 * population)   # units: in thousands
+        mutate(flex = CONV_VALUE_THOUS * flex) %>%           # units: in thousands
+        mutate(population = CONV_VALUE_THOUS * population)   # units: in thousands
 
       ## - save results
       attr(L202.Flexitarian_population, "title") <- NULL

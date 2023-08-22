@@ -95,6 +95,8 @@ CONV_BIL_THOUS  <- 1e6
 CONV_THOUS_BIL  <- 1 / CONV_BIL_THOUS
 CONV_MIL_THOUS  <- 1000
 CONV_ONES_THOUS <- 0.001
+CONV_THOUS_VALUE <- 1e3
+CONV_VALUE_THOUS <- 1 / CONV_THOUS_VALUE
 
 # Mass
 CONV_TON_MEGATON <- 1e-6
@@ -1130,6 +1132,6 @@ gcamusa.DUST <- TRUE
 
 
 # Behavior and trends ======================================================================
-beh.min.fuelPriceElasticity = 0.4
+beh.min.fuelPriceElasticity = 0
 beh.max.fuelPriceElasticity = 1
 beh.NUM_RANDOM_TRIALS = 3

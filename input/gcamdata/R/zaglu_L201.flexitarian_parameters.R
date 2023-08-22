@@ -36,7 +36,7 @@ module_aglu_L201.flexitarian_parameters <- function(command, ...) {
 
     # Save the computed the parameters
     L201.flexitarian_parameters <- A_flexitarianDiet_parameters %>%
-      select(region,s)
+      select(region,percent.flex.ini,s)
 
 
     # helper function: generate random values, filter them, and return 3 selected values
@@ -97,7 +97,7 @@ module_aglu_L201.flexitarian_parameters <- function(command, ...) {
                                   1, generate_random_values, trials = 1))
 
       column_name <- paste0("k_", i)
-      L201.flexitarian_parameters[[column_name]] <- random_values_df[, i]
+      L201.flexitarian_parameters[[column_name]] <- random_values_df[1,]
     }
 
 
