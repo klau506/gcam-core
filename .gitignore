@@ -70,6 +70,9 @@ DerivedData
 !default.perspectivev3
 xcuserdata
 
+## Model interface
+ModelInterface/*
+
 ## Other
 *.xccheckout
 *.moved-aside
