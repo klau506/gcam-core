@@ -1,0 +1,1617 @@
+
+R version 4.1.0 (2021-05-18) -- "Camp Pontanezen"
+Copyright (C) 2021 The R Foundation for Statistical Computing
+Platform: x86_64-w64-mingw32/x64 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> library(rgcam)
+> library(dplyr)
+
+Attaching package: 'dplyr'
+
+The following objects are masked from 'package:stats':
+
+    filter, lag
+
+The following objects are masked from 'package:base':
+
+    intersect, setdiff, setequal, union
+
+Warning message:
+package 'dplyr' was built under R version 4.1.3 
+> library(ggplot2)
+Warning message:
+package 'ggplot2' was built under R version 4.1.3 
+> 
+> basic_path = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata'
+> gcam_path <- substr(basic_path, start = 1, stop = regexpr("gcam-core/", basic_path) + 9)
+> tmp_output_data_path = paste0(gcam_path, "/input/gcamdata/outputs_binomial/")
+> figures_path = paste0(gcam_path, "/input/gcamdata/figures_binomial/")
+> folder_analysis_path = paste0(gcam_path, "input/gcamdata/study7_analysis/")
+> source(paste0(folder_analysis_path,'zzz.R'))
+> source(paste0(folder_analysis_path,'fun_cobenefits.R'))
+> 
+> db_path <- paste0(gcam_path, "output")
+> db_name_base = 'behaviour_basexdb'
+> prj_name = 'behavioral_change_x5.dat'
+> query_path = paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
+> queries = 'queries_beh.xml'
+> desired_scen = c('Reference', paste0("Flex.ds.beh", 1:25))
+> 
+> final_db_year = 2100
+> 
+> 
+> ## create prj
+> for (sc in desired_scen) {
++   if (sc == 'Reference') {
++     db_name = paste0(db_name_base,'_ref')
++   } else {
++     sc_num <- sub(".*beh(.*)$", "\\1", sc)
++ 
++     if (sc_num <= 5) {
++       db_name = paste0(db_name_base,'_1_5')
++     } else if (sc_num > 5 & sc_num <= 10) {
++       db_name = paste0(db_name_base,'_6_10')
++     } else if (sc_num > 10 & sc_num <= 15) {
++       db_name = paste0(db_name_base,'_11_15')
++     } else if (sc_num > 15 & sc_num <= 20) {
++       db_name = paste0(db_name_base,'_16_20')
++     } else if (sc_num > 20 & sc_num <= 25) {
++       db_name = paste0(db_name_base,'_21_25')
++     }
++   }
++ 
++   conn <- localDBConn(db_path, db_name)
++   prj <- addScenario(conn, prj_name, sc,
++                      paste0(query_path, queries),
++                      clobber = FALSE)
++ }
+Database scenarios:  Reference
+Scenario Reference does not exist in this project.  Creating.
+New names:
+* `subsector` -> `subsector...4`
+* `subsector` -> `subsector...5`
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Scenario Flex.ds.beh1 does not exist in this project.  Creating.
+New names:
+* `subsector` -> `subsector...4`
+* `subsector` -> `subsector...5`
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc791a4b8d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3a7d503e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc62ac11f4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc31844fe5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc257e592d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcc874308, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71b87c10, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc68f53190, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc15e45cff, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7db53f42, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4bae5c50, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3e84542, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc8dd77fb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc199362e7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc109187, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2b6051c1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc40bef31, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4d48e8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc57e8295e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5f9e7b86, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2f203d43, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5cce7ea7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc243f63d1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc29b5223f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc306013e6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc26fb97c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc66a232b2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6e004e4d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc571f2d66, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc50783c32, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1227823, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc62b63316, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc600e669a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7e0e160e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc18962ece, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc16e77648, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc46164c51, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc45745384, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4794a78, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcecc76e0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4e7e5ffe, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc559947f2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc77856bbf, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc50002029, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc189575b3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ed23865, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3cb17028, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc61f4cd4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc585d3543, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc260b530e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc586b7cb9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc476c5e74, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc540945c9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4642ec5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2e0f717c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc48002501, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3185920, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc20a1a82, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75736d01, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc99e5657, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc13ec676a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc35075ce3, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc66296875, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc11dc5728, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4ee31cd7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2fe93564, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4c9744f6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5a955223, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc793535e5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcf294185, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7bdb7a00, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc263d594, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc312b5377, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc61b56ee9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1dea2618, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6afe299, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7dc545c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3d891165, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc50df5bb5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc39886c22, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc70463c16, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5ae86165, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc267876c2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc508e7073, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc46c83058, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6fd55d67, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3396421e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc404612a4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc68a6468d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1b997b7d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2fbf6d1e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1deb4423, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5b872153, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc18b54c5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6f4bdfd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37d83ced, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc691048af, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc70716bcd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6516551f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc43c54c4b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7ae53cef, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc685b67dd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc44875bec, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1ccc204c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc45743867, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5dca6dac, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc72bd25d8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4b6fc9b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4877db0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc49c718b8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc186a7a7d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc289f4f66, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7dfa4144, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5e8f76c2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2355651a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc234524e1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc43dd1104, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7513634e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc17d84410, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc55bb6ac3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1555bb4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4a797326, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc32616866, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6b5153c6, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc519f41c6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3e4b13e1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4b7347d6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc54565d6e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71442b34, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4950570b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5cd56284, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3c4c446b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc176c363e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7e913787, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc24cb225c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7b385367, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2e6b2d46, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc750c722c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4afb5ffd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc369d7a61, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1e184b86, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc10a56f83, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4c4d4799, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc42a09cd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7f4d568a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc29a66148, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc766e5a76, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc518b7813, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5f697b2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc44392fee, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc73504070, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc334c770d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc13cf45b3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc57ee381a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc64a66974, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dceba3be1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc140435ed, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4ac01aef, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6c0c11ba, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc59472f3b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc343c5c3f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc19096ab, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc15a25f73, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc44327901, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4d111c9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc84a4535, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dce25134, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2f622911, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71ca3e5e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc46814f0e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc31de3423, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6d512e6e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcea31754, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3b05399b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4cda7aa9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc648d76be, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7bcb5306, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcffc5ea1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc23d137f2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1381dc9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1c266c53, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcbe413cf, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc13ef2b6f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc768a2cfe, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1a8a761f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3b0d7233, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcf9f6e62, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5d89380a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc597923e1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc487fa5c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc17cb6981, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc29f325a2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc395c1f11, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1d984d83, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5fd95d11, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ecb121c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7c715082, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc70d457e4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc72b169ef, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc635e70de, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5da02bbb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5f333301, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc531e23ac, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc73b37e4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc41795bb8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc79b631ad, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc43504e0f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3db913b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5ac2868, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc28e67991, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1c5c6a8f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc396f7c86, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc60912c2e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc204c5caa, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc35b915db, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc77bb307a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc509f5963, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2bc828eb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc444c58ea, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dca71f81, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc38ee3389, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc15ad4910, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc65b16e95, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4d326dcb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1da13585, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2c817a93, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc25185bb5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc63dd78f6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3be82906, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc65d3576c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc14ca2cb3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc19c17dd0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc66063276, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75a66a1c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7f6335db, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcb2b5169, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc11516fe3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc53f2125, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc11545adc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc491e7c96, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc67b3487f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1222128e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5261664a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc56ce676f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc292b4c1f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc962f62, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6f23711d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc772414d3, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7bd472c6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc77f262fc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1f4263f2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc25684107, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc9cf4dc5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4b9e15c1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1b5b33db, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc86746f4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7ca1332f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc42c76658, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc64747b0b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc72cf29a4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc593d4731, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3bbd71d2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ab4474a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc34536db2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1fdd1f8e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc797623b1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc15466eb4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc670b6eea, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc77e51c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc130e3b6d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc45d8393a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc66f3dcf, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4961545, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc734121f2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6c1e5a20, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc596b2d14, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7c8a5388, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc67f1f1d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc694e397f, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3f4e78c4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc654126ce, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc683219fe, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2327db9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc56921171, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4d2a2231, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7f1a60b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc640b7944, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc39b5b4b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7f95ddd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6cb662e7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc8d74602, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc154774a1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1ce4449, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc59111866, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4c16319b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcd2bea8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5501b2d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5e4842fc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc234840ba, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc61c34f6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc17996f05, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3a0e2344, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc345f428e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3f245509, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc78d47e93, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4f2a1d7b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1b446449, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3b2475bf, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ea3765b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc76f64904, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc61f48ae, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc10c8d8c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc652a209b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc27f46b17, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc59e52f8a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7904afd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc55de3f4e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5b765fdd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75ad311a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7c52091, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc9a93e8b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc764635c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc450579f5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc32b65658, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4b2759f2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6a9e11d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc374b1c28, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc63b63bb5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7a59b5a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcdca46c0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2b0274b2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc539a70e2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2421584c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ed17575, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcd4f2105, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4c3f6c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc29c76f85, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3c5e384, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc97c448a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6c0448b1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc78791676, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3017198c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc87b30cc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2f9175, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4aa43e43, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcae8242f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6c256d65, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3edf40b6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6539d99, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7db54914, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3741a29, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc57674499, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4330171b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc51a65e5a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc22387051, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc73a35beb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc57b536e4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2519785f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1d5958bc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2c9c5f80, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75ca2e73, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5920454b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1c517b6c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc22cc55ae, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc9c33c2e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4f007884, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3aaf5f05, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc63a325d1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc22c842db, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75b24639, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc79941853, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1f055bc6, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc448b2e01, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2c532a7c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc782b4afc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc9445ebb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1d535de0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc20477f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc18b647ad, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc72d61035, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5583538e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1dc24521, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcdd3306, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1bcbcb4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5d954761, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc78be5c0d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2c29645a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6dea72cc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc63017808, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc24fc2a1e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc32e8440e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1d1c6304, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc13c81402, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dce481fe6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc55a91d1d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc66ef1559, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71ec7323, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3fd03e2c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc18c33e95, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc62153eb8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc36f32015, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3baa2368, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6fcd6d19, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc686fc66, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc36b37be, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7a1f264c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc230d6390, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2d892ca7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3ac4806, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37fa7683, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc54d0406, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1f07487e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc59509ed, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc22fc56a4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc48265b0c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1283788c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc313bb67, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc73986bb3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc257459ac, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2dac4017, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6dfd1771, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc21174b17, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5ed35db2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc57c33c89, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc10974989, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3b16321d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcd913d2f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7b1f64f1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3e026132, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc13044d74, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1faf61f8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc16ab597f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc14aa2574, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc35a710b0, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6268502a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6682681c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6d0d70e3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcbfd10bc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4950826, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc320c5f66, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7e351658, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc74a91058, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc17dd5928, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc40f3117, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc40a47ddc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75eaade, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc187b3ee0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4969464a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6686388b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2d632443, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcf9133, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc316182d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc72f5074, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1c3b4f4f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4a0b41bc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3a167183, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7e937e1b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1a9d271f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc16c95948, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3b834022, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5ccd2df6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5b3818a2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2c30558, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6fea5675, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc659a55f1, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcb224050, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6678d11, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc49764860, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc414d7324, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1c607a8f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2390642c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcc4a85e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2b984dd9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc11a378f8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc326277ff, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6b6e31ad, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc60394da8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1d0e46ab, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6aa6477, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1f50ffd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6ba75e3f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc10ba3ec9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71f9e3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71126ec5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4aea2070, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc34306ffb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1d333778, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc380744bd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4d2349b0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc69f1fea, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc52106ccd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc273a6f62, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4502139a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc24ef7ec6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc149e775d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6ae87e74, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7415a5f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc36d47ed1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc272a5106, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2dd24122, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc563510e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71fe7973, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc68713486, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc12fe59c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5b3265b4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc42611c7e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5a92a85, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3000148b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7788934, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc70935195, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2957523e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4a9165da, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4c031b85, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc54d3250, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc71078c2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc164e122d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc18817d2f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc48ee5dba, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc40105275, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3c365059, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc46a970d3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc52f71dd3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5e2d648f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc722c42e6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc55644ca1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc298f5d0e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5c427e9d, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4a677853, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc394362e9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4ab7e6f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc62b67ea, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6ad12ef5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2613006, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc528d206e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6eae50f6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5859722f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc78dd71c5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc16e11a79, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc128b2890, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc38022d4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6b2d4c7f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc20f11ea7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc59627803, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6ba6681c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3f7a3750, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc598e5f32, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37451f1d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2b716723, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1120479a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcaa11df7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc723d67b2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6f63a68, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1e32c82, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc30a23bf9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37c52919, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc28d13951, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4f57a70, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1c2058dc, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc666c5c94, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc16b64576, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc14493992, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dce56bed, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6ea32b4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc40576ef0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcc6634be, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2b643646, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6e1622e7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ea6194d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1f30266c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6bf364a1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc11c36558, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3997150f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc10493c92, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7dd673bb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc61ca1927, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc22a17f90, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7c344cd8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1d974fe8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc60f429e6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc483e5c7c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7fd8721d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc481568d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3c28651e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc696d7f53, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc700179f0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc742727a5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc9f5fc9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc793144ea, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc20e02219, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc24d21bb7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc24f1a5b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc417b73f3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc11d51984, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6494652b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6a8e7caf, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3a005d62, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc55171e77, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc55127321, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7414812, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc20601032, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1ff82ac, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc60c9409b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc74712303, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc17c461d9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1a976b43, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc50ea2e5e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5cb65f23, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc26c6614c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2682640, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcadc6e72, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1ac018b8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1cf6a86, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc33b5520a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1db67fa4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ad0662d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4858a06, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc31814ee, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1fc73905, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6c3d178e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7ae31050, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6bb3e03, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7d972fd4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc52ff148a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcad87e8c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc48152fad, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1399200c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5957573, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7f1626a8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc983636c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc50306524, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcc535556, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc36094e84, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6d20710e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc62e36918, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2a2763b8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc453a20c8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc21895c31, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7f1f49c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc16416eb4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37d63b8e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc35624dcb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc23b33c93, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1796479, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5e3115e6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7ad31da5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc72534f97, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc305e64c8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2d3f3554, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7b052bda, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc17181376, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc59984278, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc25dc30fa, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc42006c6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4df2ba, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1fa35236, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6780154f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc86825f6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3215685a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7bec5cb, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37612dc6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc787d50ed, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc38222a23, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc47234dfd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5a4e7345, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc16ef4747, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc481771c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc73833338, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc12a864d6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc62e22521, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4fee5433, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc367822e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc61e74727, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5b6c36a0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc10fb61b5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc36256752, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1a14740a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc551a5b6a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc758a32d8, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6dd1a5e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3f4e39f5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1f6a7a2a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2c553533, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc34e04989, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1a5a34ab, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc38e2ca7, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37a81812, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7a5a4046, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc660f4323, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4ef488f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc26c35e5b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc67605890, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1e95d5b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5f98b08, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2f2a4bd1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5623e6e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4c80ba2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc666d6042, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4aa35c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4cb21397, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1fab43dc, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc45093ee0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc55f9403b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcc0a4cfa, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ab1afd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7d266d7a, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc147a1d7c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc60056038, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2e741691, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3021181c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc437a7184, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3aa34127, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75995e35, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2e7c75c4, 1/87:
+[basex:error] Could not find scenarios to run.
+Database scenarios:  Flex.ds.beh1, Flex.ds.beh1
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5ea93cbd, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc75bfbba, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4f8c11d3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4a8c4341, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc29f51eae, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc32097d9b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc7089220f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc52884127, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6010625b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4b58799b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc447b3690, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3f02da0, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcd324f87, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc185d2aab, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc2ca23d6b, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dceed431d, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dcf076d79, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc431b7a9e, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc34751bf9, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc31bd3cb6, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc3a2d767c, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc126d79ac, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc5f1d6a57, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc6a3445a3, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc4fb75b5f, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc37d55f1, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc44f73ee5, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc773878c2, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc42ae56f4, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc334c62ed, 1/87:
+[basex:error] Could not find scenarios to run.
+Stopped at C:/Users/CLAUDI~1.ROD/AppData/Local/Temp/7/RtmpG0dLG4/file28dc1149c9, 1/87:
+[basex:error] Could not find scenarios to run.
+There were 50 or more warnings (use warnings() to see the first 50)
+> 
+> saveProject(prj, file = prj_name)
+> 
+> # ## add premature mortalities
+> # mort = add_mort_scen('Reference')
+> # for (i in unique(desired_scen)[2:length(desired_scen)]) {
+> #   mort = dplyr::bind_rows(mort,add_mort_scen(i))
+> # }
+> # save(mort, file = paste0(tmp_output_data_path,'mort_',prj_name,'.RData'))
+> 
+> proc.time()
+   user  system elapsed 
+1097.71   18.71 3211.51 
