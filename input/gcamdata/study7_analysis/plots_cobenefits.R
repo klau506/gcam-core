@@ -157,7 +157,6 @@ water_consumption_total <- rgcam::getQuery(prj, "water consumption by subsector"
 
 
 ## -- rfasst
-mort = add_mort_scen('Flex.ds.beh1')
 mort = add_mort_scen('Reference')
 for (i in unique(selected_scen)[2:length(selected_scen)]) {
   mort = dplyr::bind_rows(mort,add_mort_scen(i))
@@ -168,7 +167,7 @@ save(mort, file = paste0(tmp_output_data_path,'mort_',prj_name,'.RData'))
 mort_simpl = mort %>%
   filter(scenario %in% selected_scen) %>%
   filter(year >= year_s, year <= year_e) %>%
-  # compute mean mortality accross all imp fun
+  # compute mean mortality across all imp fun
   dplyr::group_by(region,year,scenario,pollutant) %>%
   dplyr::summarise('mean_mort' = mean(as.numeric(mort), na.rm = TRUE)) %>%
   dplyr::ungroup() %>%
