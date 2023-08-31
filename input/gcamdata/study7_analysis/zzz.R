@@ -6,12 +6,12 @@ protein_scenario_palette = c('plant protein.Reference' = '#00771E',
                              'animal protein.Behavior change' = '#DB0000')
 
 ### staples vs non-staples & scenario type palette
-staples_non_staples_scenario_palette =
+staples_vs_nonstaples_scenario_palette =
   c('Behavior change.FoodDemand_NonStaples' = '#0085A5',
     'Behavior change.FoodDemand_Staples' = '#BDB400',
     'Reference.FoodDemand_NonStaples' = '#002787',
     'Reference.FoodDemand_Staples' = '#876400')
-staples_non_staples_order_palette =
+staples_vs_nonstaples_order_palette =
 c('Behavior change.FoodDemand_Staples',
   'Reference.FoodDemand_Staples',
   'Behavior change.FoodDemand_NonStaples',
@@ -40,6 +40,74 @@ c('Behavior change.Beef',
   'Reference.Poultry',
   'Reference.SheepGoat',
   'Reference.Dairy')
+
+### food items & scenario type palette
+food_items_scenario_palette =
+  c('Behavior change.Corn' = '#CCCCFF',
+    'Behavior change.FiberCrop' = '#DE3163',
+    'Behavior change.FodderGrass' = '#6495ED',
+    'Behavior change.FodderHerb' = '#40E0D0',
+    'Behavior change.Fruits' = '#72F3B0',
+    'Behavior change.Legumes' = '#E77BE3',
+    'Behavior change.MiscCrop' = '#E77B95',
+    'Behavior change.NutsSeeds' = '#F1ED62',
+    'Behavior change.OilCrop' = '#F1B662',
+    'Behavior change.OilPalm' = '#EE814B',
+    'Behavior change.Rice' = '#8BEE4B',
+    'Behavior change.RootTuber' = '#62F7EC',
+    'Behavior change.Soybean' = '#5BD3F7',
+    'Behavior change.SugarCrop' = '#7B7DF4',
+    'Behavior change.Vegetables' = '#B170F2',
+    'Behavior change.Wheat' = '#5050FF',
+    'Reference.Corn' = '#6666A8',
+    'Reference.FiberCrop' = '#92002A',
+    'Reference.FodderGrass' = '#2355AF',
+    'Reference.FodderHerb' = '#007F72',
+    'Reference.Fruits' = '#209A5A',
+    'Reference.Legumes' = '#9A2096',
+    'Reference.MiscCrop' = '#BC0B36',
+    'Reference.NutsSeeds' = '#BCB70B',
+    'Reference.OilCrop' = '#BD730B',
+    'Reference.OilPalm' = '#BD460B',
+    'Reference.Rice' = '#56C012',
+    'Reference.RootTuber' = '#0CC4B7',
+    'Reference.Soybean' = '#0C9AC4',
+    'Reference.SugarCrop' = '#080BC6',
+    'Reference.Vegetables' = '#6708C6',
+    'Reference.Wheat' = '#000080')
+food_items_order_palette =
+c('Behavior change.Corn',
+  'Behavior change.FiberCrop',
+  'Behavior change.FodderGrass',
+  'Behavior change.FodderHerb',
+  'Behavior change.Fruits',
+  'Behavior change.Legumes',
+  'Behavior change.MiscCrop',
+  'Behavior change.NutsSeeds',
+  'Reference.Corn',
+  'Reference.FiberCrop',
+  'Reference.FodderGrass',
+  'Reference.FodderHerb',
+  'Reference.Fruits',
+  'Reference.Legumes',
+  'Reference.MiscCrop',
+  'Reference.NutsSeeds',
+  'Behavior change.OilCrop',
+  'Behavior change.OilPalm',
+  'Behavior change.Rice',
+  'Behavior change.RootTuber',
+  'Behavior change.Soybean',
+  'Behavior change.SugarCrop',
+  'Behavior change.Vegetables',
+  'Behavior change.Wheat',
+  'Reference.OilCrop',
+  'Reference.OilPalm',
+  'Reference.Rice',
+  'Reference.RootTuber',
+  'Reference.Soybean',
+  'Reference.SugarCrop',
+  'Reference.Vegetables',
+  'Reference.Wheat')
 
 ### scen color palette
 mypal_scen = c("Reference" = "grey4", "Behavior change" = "seagreen4")
@@ -286,9 +354,16 @@ load_queries = function() {
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
-  ag_production <<- rgcam::getQuery(prj, "ag production by crop type") %>%
-    filter(scenario %in% selected_scen) %>%
+  ag_production_world <<- rgcam::getQuery(prj, "ag production by crop type") %>%
+    filter(scenario %in% selected_scen, sector %in% food_sector) %>%
     group_by(scenario, sector, year) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+  ag_production_regional <<- rgcam::getQuery(prj, "ag production by crop type") %>%
+    filter(scenario %in% selected_scen, sector %in% food_sector) %>%
+    group_by(region, scenario, sector, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
@@ -354,9 +429,16 @@ load_queries = function() {
     filter(year >= year_s, year <= year_e)
 
   ###### ==== water ====
-  water_withdrawals <<- rgcam::getQuery(prj, "water withdrawals by region") %>%
+  water_withdrawals_world <<- rgcam::getQuery(prj, "water withdrawals by region") %>%
     filter(scenario %in% selected_scen) %>%
     group_by(scenario, year) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+  water_withdrawals_regional <<- rgcam::getQuery(prj, "water withdrawals by region") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(region, scenario, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
@@ -391,7 +473,7 @@ load_queries = function() {
 
 
   ###### ==== emissions ====
-  GWP <- readr::read_csv(paste0(folder_analysis_path,"data/GWP_AR5.csv"))
+  GWP <<- readr::read_csv(paste0(folder_analysis_path,"data/GWP_AR5.csv"))
 
   co2_emiss <<- getQuery(prj,"CO2 emissions by region") %>%
     group_by(scenario, region, year, Units) %>%
@@ -413,11 +495,20 @@ load_queries = function() {
 
 
   ###### ==== GHG emissions ====
-  ghg_by_ghg <<- bind_rows(luc,co2_emiss,nonco2) %>%
+  ghg_by_ghg_world <<- bind_rows(luc,co2_emiss,nonco2) %>%
     left_join(GWP, by = c("Units", "ghg")) %>%
     mutate(value = value * GWP,
            Units = "MtCO2e") %>%
     group_by(group, scenario, year, Units) %>%
+    summarise(value = sum(value, na.rm = T)) %>%
+    ungroup() %>%
+    filter(!is.na(group))
+
+  ghg_by_ghg_regional <<- bind_rows(luc,co2_emiss,nonco2) %>%
+    left_join(GWP, by = c("Units", "ghg")) %>%
+    mutate(value = value * GWP,
+           Units = "MtCO2e") %>%
+    group_by(region, group, scenario, year, Units) %>%
     summarise(value = sum(value, na.rm = T)) %>%
     ungroup() %>%
     filter(!is.na(group))
