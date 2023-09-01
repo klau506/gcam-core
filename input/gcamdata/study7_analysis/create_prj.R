@@ -18,8 +18,11 @@ tmp_output_data_path <<- paste0(gcam_path, "/input/gcamdata/outputs_binomial/")
 figures_path <<- paste0(gcam_path, "/input/gcamdata/figures_binomial/")
 folder_analysis_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/")
 
-arg1 = commandArgs(trailingOnly = TRUE)[1]
-arg2 = commandArgs(trailingOnly = TRUE)[2]
+args = commandArgs(trailingOnly=TRUE)
+arg1 = args[1]
+arg2 = args[2]
+print(arg1)
+print(arg2)
 
 db_path <<- paste0(gcam_path, "output")
 db_name_base <<- 'behaviour_basexdb_v2'
@@ -29,8 +32,8 @@ queries <<- 'queries_beh.xml'
 desired_scen <<- c(paste0("Flex.ds.beh", arg1:arg2))
 
 iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
-id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv")) %>%
-  rename('GCAM_region_id' = 'ï..GCAM_region_ID')
+id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
+colnames(id_gcam_regions) = c('GCAM_region_id', 'region')
 
 source(paste0(folder_analysis_path,'zzz.R'))
 #####
