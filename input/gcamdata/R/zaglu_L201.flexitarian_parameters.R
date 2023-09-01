@@ -107,6 +107,8 @@ module_aglu_L201.flexitarian_parameters <- function(command, ...) {
       add_precursors("aglu/A_flexitarianDiet_parameters") ->
       L201.flexitarian_parameters
 
+    save(L201.flexitarian_parameters, file = 'outputs_binomial/L201.flexitarian_parameters.RData')
+
     return_data(L201.flexitarian_parameters)
   } else {
     stop("Unknown command")

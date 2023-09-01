@@ -16,7 +16,14 @@
 #'   \code{L203.StubTechProd_food}, \code{L203.StubTechProd_nonfood_crop}, \code{L203.StubTechProd_nonfood_meat},
 #'   \code{L203.StubTechProd_For}, \code{L203.StubCalorieContent},
 #'   \code{L203.PerCapitaBased}, \code{L203.BaseService}, \code{L203.IncomeElasticity}, \code{L203.PriceElasticity},
-#'   \code{L203.FuelPrefElast_ssp1}, \code{L203.FuelPrefElast_flexitarian_1}, \code{L203.FuelPrefElast_flexitarian_2}, \code{L203.FuelPrefElast_flexitarian_3}.
+#'   \code{L203.FuelPrefElast_ssp1},
+#'   \code{L203.FuelPrefElast_flexitarian_1},\code{L203.FuelPrefElast_flexitarian_2},\code{L203.FuelPrefElast_flexitarian_3},\code{L203.FuelPrefElast_flexitarian_4},
+#'   \code{L203.FuelPrefElast_flexitarian_5},\code{L203.FuelPrefElast_flexitarian_6},\code{L203.FuelPrefElast_flexitarian_7},\code{L203.FuelPrefElast_flexitarian_8},
+#'   \code{L203.FuelPrefElast_flexitarian_9},\code{L203.FuelPrefElast_flexitarian_10},\code{L203.FuelPrefElast_flexitarian_11},\code{L203.FuelPrefElast_flexitarian_12},
+#'   \code{L203.FuelPrefElast_flexitarian_13},\code{L203.FuelPrefElast_flexitarian_14},\code{L203.FuelPrefElast_flexitarian_15},\code{L203.FuelPrefElast_flexitarian_16},
+#'   \code{L203.FuelPrefElast_flexitarian_17},\code{L203.FuelPrefElast_flexitarian_18},\code{L203.FuelPrefElast_flexitarian_19},\code{L203.FuelPrefElast_flexitarian_20},
+#'   \code{L203.FuelPrefElast_flexitarian_21},\code{L203.FuelPrefElast_flexitarian_22},\code{L203.FuelPrefElast_flexitarian_23},\code{L203.FuelPrefElast_flexitarian_24},
+#'   \code{L203.FuelPrefElast_flexitarian_25}.
 #'   The corresponding file in the original data system was \code{L203.demand_input.R} (aglu level2).
 #' @details This chunk specifies the input tables for agriculture demand: generic information for supply sector, subsector and technology,
 #' food and non-food demand in calibration years, forest product demand, net exports and caloric contents in calibration and future years,
@@ -75,9 +82,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
              "L203.IncomeElasticity",
              "L203.PriceElasticity",
              "L203.FuelPrefElast_ssp1",
-             "L203.FuelPrefElast_flexitarian_1",
-             "L203.FuelPrefElast_flexitarian_2",
-             "L203.FuelPrefElast_flexitarian_3",
+             paste0("L203.FuelPrefElast_flexitarian_", FLEX_NUMS),
              "L203.GlobalTechInterp_demand"))
   } else if(command == driver.MAKE) {
 
@@ -335,7 +340,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
     # Keep the nesting subsector
     for (fn in FLEX_NUMS) {
       L202.Flexitarian_population = get(paste0('L202.Flexitarian_population_',fn)) %>%
-        filter(year >= min(MODEL_FUTURE_YEARS)) %>%
+        filter(year > MODEL_FINAL_BASE_YEAR) %>%
         group_by(region, year) %>%
         summarise(flex = sum(flex),
                   population = sum(population)) %>%
@@ -714,7 +719,13 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
                 L203.StubTechProd_nonfood_crop, L203.StubTechProd_nonfood_meat, L203.StubTechProd_For,
                 L203.StubCalorieContent, L203.PerCapitaBased, L203.BaseService,
                 L203.IncomeElasticity, L203.PriceElasticity, L203.FuelPrefElast_ssp1,
-                L203.FuelPrefElast_flexitarian_1, L203.FuelPrefElast_flexitarian_2, L203.FuelPrefElast_flexitarian_3,
+                L203.FuelPrefElast_flexitarian_1,L203.FuelPrefElast_flexitarian_2,L203.FuelPrefElast_flexitarian_3,L203.FuelPrefElast_flexitarian_4,
+                L203.FuelPrefElast_flexitarian_5,L203.FuelPrefElast_flexitarian_6,L203.FuelPrefElast_flexitarian_7,L203.FuelPrefElast_flexitarian_8,
+                L203.FuelPrefElast_flexitarian_9,L203.FuelPrefElast_flexitarian_10,L203.FuelPrefElast_flexitarian_11,L203.FuelPrefElast_flexitarian_12,
+                L203.FuelPrefElast_flexitarian_13,L203.FuelPrefElast_flexitarian_14,L203.FuelPrefElast_flexitarian_15,L203.FuelPrefElast_flexitarian_16,
+                L203.FuelPrefElast_flexitarian_17,L203.FuelPrefElast_flexitarian_18,L203.FuelPrefElast_flexitarian_19,L203.FuelPrefElast_flexitarian_20,
+                L203.FuelPrefElast_flexitarian_21,L203.FuelPrefElast_flexitarian_22,L203.FuelPrefElast_flexitarian_23,L203.FuelPrefElast_flexitarian_24,
+                L203.FuelPrefElast_flexitarian_25,
                 L203.SubregionalShares, L203.DemandFunction_food, L203.DemandStapleParams, L203.DemandNonStapleParams,
                 L203.DemandStapleRegBias, L203.DemandNonStapleRegBias, L203.StapleBaseService, L203.NonStapleBaseService)
   } else {

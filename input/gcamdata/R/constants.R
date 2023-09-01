@@ -1134,4 +1134,4 @@ gcamusa.DUST <- TRUE
 # Behavior and trends ======================================================================
 beh.min.fuelPriceElasticity = 0
 beh.max.fuelPriceElasticity = 1
-beh.NUM_RANDOM_TRIALS = 3
+beh.NUM_RANDOM_TRIALS = 25
