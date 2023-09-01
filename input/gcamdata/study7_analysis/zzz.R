@@ -301,14 +301,15 @@ compute_premature_mortalities_diff = function(mort) {
 
 ## compute premature mortalities using rfasst
 load_premature_mortalities = function() {
-  if (!file.exists(paste0(tmp_output_data_path,'mort_',prj_name,'.RData'))) {
+  if (!file.exists(paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))) {
     mort = add_mort_scen(desired_scen[1])
     for (i in unique(desired_scen)[2:length(desired_scen)]) {
+      print(i)
       mort = dplyr::bind_rows(mort,add_mort_scen(i))
     }
-    save(mort, file = paste0(tmp_output_data_path,'mort_',prj_name,'.RData'))
+    save(mort, file = paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))
   } else {
-    load(paste0(tmp_output_data_path,'mort_',prj_name,'.RData'))
+    load(paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))
   }
 
   return(mort)

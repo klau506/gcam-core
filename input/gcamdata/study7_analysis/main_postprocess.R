@@ -7,7 +7,7 @@ library(rgcam)
 library(dplyr)
 library(ggplot2)
 library(rfasst)
-
+#####
 
 #### Paths =====================================================================
 # ==============================================================================
@@ -23,9 +23,14 @@ query_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
 queries <<- 'queries_beh.xml'
 desired_scen <<- c('Reference', paste0("Flex.ds.beh", 1:25))
 
-source(paste0(folder_analysis_path,'zzz.R'))
-source(paste0(folder_analysis_path,'fun_cobenefits.R'))
+iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
+id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv")) %>%
+  rename('GCAM_region_id' = 'ï..GCAM_region_ID')
 
+source(paste0(folder_analysis_path,'zzz.R'))
+#####
+
+#### SYSTEM-WIDE EFFECTS SECTION ===============================================
 #### Create prj ================================================================
 # ==============================================================================
 
@@ -73,10 +78,26 @@ selected_scen = desired_scen
 load_queries()
 
 # # compute premature mortalities
-# mort = load_premature_mortalities()
-# mort = compute_premature_mortalities_diff(mort)
+mort = load_premature_mortalities() %>%
+  rename('value' = 'mort',
+         'fasst_region' = 'region')
 
-#### System-wide effects =======================================================
+# mort_by_poll = mort %>%
+#   mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+#   group_by(year, fasst_region, scenario_type, pollutant) %>%
+#   summarise(median_value = median(value),
+#          min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+#          max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+#   ungroup()
+#
+# mort_total = mort_by_poll %>%
+#   group_by(year, fasst_region, scenario_type) %>%
+#   summarise(median_value = sum(median_value),
+#          min_value = sum(min_value),
+#          max_value = sum(max_value)) %>%
+#   ungroup()
+
+#### System-wide effects figures ===============================================
 # ==============================================================================
 
 if (!dir.exists(paste0(figures_path,"tmp_figs"))) dir.create(paste0(figures_path,"tmp_figs"))
@@ -908,12 +929,216 @@ ggsave(pl_ghg_diffPer_world_bars, file = paste0(figures_path,'tmp_figs/pl2_ghg_d
 
 #### Fig: avoided deaths ===========================
 # =============================
-# ## map av deaths
-# deaths.labs <- c("d1", "d2")
-# names(deaths.labs) <- c("Protein", "Trade")
-# # pl2_A_p = do_fig2_plA(mort_diff_percentage,'percentage')
-# do_fig2_plA(mort_diff_absNum,'abs_numbers')
+### MAPS
+## -- map (abs difference)
+mort_diffAbs_regional = tidyr::pivot_wider(mort, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ . - Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select('fasst_region','year','method','pollutant',matches("_diff$")) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by region and pollutant
+  group_by(year, fasst_region, pollutant) %>%
+  summarise(median_value = median(value),
+            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # compute the total deaths by region (pm25 + o3)
+  group_by(year, fasst_region) %>%
+  summarise(median_value = sum(median_value),
+            min_value = sum(min_value),
+            max_value = sum(max_value)) %>%
+  ungroup() %>%
+  # filter desired year
+  dplyr::filter(year == selected_year) %>%
+  # merge with GCAM regions
+  left_join(rfasst::fasst_reg %>%
+              dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+            multiple = 'all') %>%
+  # merge with world data
+  dplyr::rename('adm0_a3' = 'ISO3')
 
+
+mort_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                              mort_diffAbs_regional, by = 'adm0_a3')
+
+# plot
+pl_mort_diffAbs_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = mort_diffAbs_regional, aes(fill = median_value)) +
+  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
+                       mid = '#C2DAC1', midpoint = 0,
+                       name = expression(paste("Avoided deaths (nº)","\n"))) +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 30, angle = 90, vjust = 0.5, hjust=0.5), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # title
+  labs(title = expression(paste("Annual avoided deaths in ", selected_year, "\n")))
+ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,'tmp_figs/pl2_pl_mort_diffAbs_regional_map.pdf'), width = 500, height = 300, units = 'mm')
+
+
+## -- map (per difference)
+mort_diffPer_regional = tidyr::pivot_wider(mort, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select('fasst_region','year','method','pollutant',matches("_diff$")) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by region and pollutant
+  group_by(year, fasst_region, pollutant) %>%
+  summarise(median_value = median(value),
+            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # compute the total deaths by region (pm25 + o3)
+  group_by(year, fasst_region) %>%
+  summarise(median_value = sum(median_value),
+            min_value = sum(min_value),
+            max_value = sum(max_value)) %>%
+  ungroup() %>%
+  # filter desired year
+  dplyr::filter(year == selected_year) %>%
+  # merge with GCAM regions
+  left_join(rfasst::fasst_reg %>%
+              dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+            multiple = 'all') %>%
+  # merge with world data
+  dplyr::rename('adm0_a3' = 'ISO3')
+
+
+mort_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                              mort_diffPer_regional, by = 'adm0_a3')
+
+# plot
+pl_mort_diffPer_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = mort_diffPer_regional, aes(fill = median_value)) +
+  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
+                       mid = '#C2DAC1', midpoint = 0,
+                       name = expression(paste("Avoided deaths (%)","\n"))) +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 30, angle = 90, vjust = 0.5, hjust=0.5), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # title
+  labs(title = expression(paste("Annual avoided deaths in ", selected_year, "\n")))
+ggsave(pl_mort_diffPer_regional_map, file = paste0(figures_path,'tmp_figs/pl2_pl_mort_diffPer_regional_map.pdf'), width = 500, height = 300, units = 'mm')
+
+
+
+
+
+
+## WORLD
+plt_mort_world = ggplot(data = mort %>%
+                          # statistics by region
+                          group_by(fasst_region, year, scenario, pollutant) %>%
+                          summarise(min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+                                    max_value = quantile(value, probs= 0.95, na.rm = TRUE),
+                                    value = median(value)) %>%
+                          ungroup() %>%
+                          # sum all regions
+                          group_by(year, scenario, pollutant) %>%
+                          summarise(min_value = sum(min_value),
+                                    max_value = sum(max_value),
+                                    value = sum(value)) %>%
+                          ungroup() %>% dplyr::distinct(., .keep_all = TRUE) %>%
+                          # compute statistics by scenario_type
+                          mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+                          group_by(year, scenario_type, pollutant) %>%
+                          mutate(min_value = min(min_value),
+                                 max_value = max(max_value),
+                                 median_value = median(value)) %>%
+                          ungroup()) +
+  geom_line(aes(x = year, y = value, group = scenario, color = scenario_type), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = scenario_type), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scenario_type), alpha = 0.15) +  # Shadow
+  facet_wrap(. ~ pollutant, scales = 'free') +
+  scale_color_manual(values = mypal_scen, name = 'Scenario') +
+  scale_fill_manual(values = mypal_scen, name = 'Scenario') +
+  # labs
+  labs(y = 'Premature deaths', x = '', title = 'Annual World premature deaths') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(plt_mort_world, file = paste0(figures_path,"tmp_figs/",'pl2_mort_world.pdf'),
+       width = 1000, height = 1000, units = 'mm')
+
+## REGIONAL
+# (free scales)
+plt_mort_regional = ggplot(data = mort %>%
+                          # statistics by region
+                          group_by(fasst_region, year, scenario, pollutant) %>%
+                          summarise(min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+                                    max_value = quantile(value, probs= 0.95, na.rm = TRUE),
+                                    value = median(value)) %>%
+                          ungroup() %>%
+                          # compute statistics by scenario_type
+                          mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+                          group_by(fasst_region, year, scenario_type, pollutant) %>%
+                          mutate(min_value = min(min_value),
+                                 max_value = max(max_value),
+                                 median_value = median(value)) %>%
+                          ungroup()) +
+  geom_line(aes(x = year, y = value, group = scenario, color = scenario_type), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = scenario_type), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scenario_type), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = mypal_scen, name = 'Scenario') +
+  scale_fill_manual(values = mypal_scen, name = 'Scenario') +
+  # facet
+  facet_wrap(fasst_region ~ pollutant, scales = 'free', ncol = 4) +
+  # labs
+  labs(y = 'Premature deaths', x = '', title = 'Annual Regional premature deaths (free scales)') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(plt_mort_regional, file = paste0(figures_path,"tmp_figs/",'pl2_mort_regional_freeScales.pdf'),
+       width = 1500, height = 4000, units = 'mm', limitsize = FALSE)
 
 #####
 
@@ -1550,15 +1775,420 @@ ggsave(pl_ghg_by_ghg_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ghg_b
 #####
 
 
-################################################################################
-## extra figures
-################################################################################
 
-# ## -- premature mortalities
-# plt_mort = ggplot(data = mort_simpl %>% group_by(year, scenario) %>% summarise('value' = sum(total_mort)) %>% rename_scen()) +
-#   geom_line(aes(x = year, y = value, color = scenario, group = scenario), alpha = 0.5) +
-#   scale_color_manual(values = mypal_scen) +
-#   ggtitle('premature mortalities')
-# plt_mort
-# ggsave(plt_mort, file = paste0(figures_path,"extra_figs//plt_mort.png"), width = 200, height = 150, units = 'mm')
+#### SCENARIO DESIGN SECTION ===================================================
+#### Create dataset ============================================================
+# ==============================================================================
+
+# if dataset does not exist, create it. Load it otherwise
+if (!file.exists(paste0(tmp_output_data_path,'L202.flexitarian_population_all.RData'))) {
+  # combine the data frames into a single dataset
+  file_list <- list.files(tmp_output_data_path, pattern = "^L202.F", full.names = TRUE)
+
+  data_list <- list()
+  for (f in file_list) {
+    data <- get(load(f))
+    data$id <- as.numeric(gsub(".*_(.*)\\.RData$", "\\1", f))
+    data_list[[f]] <- data
+  }
+  all_data <- do.call(rbind, data_list) %>%
+    group_by(year, region) %>%
+    mutate(median_flex = median(flex),
+           min_flex = min(flex),
+           max_flex = max(flex)) %>%
+    ungroup()
+  save(all_data, file = paste0(tmp_output_data_path,'L202.flexitarian_population_all.RData'))
+  scen_design = all_data
+  rm(all_data)
+} else {
+  scen_design = get(load(paste0(tmp_output_data_path,'L202.flexitarian_population_all.RData')))
+}
+
+# load the parameters data
+param = get(load(paste0(tmp_output_data_path,'/L201.Flexitarian_parameters.RData')))
+#####
+
+
+#### Scenarios curves ==========================================================
+# ==============================================================================
+
+#### Fig: reg by color =====================
+# =============================
+# flex percentage
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         mutate(flex_percentage = 100*flex/population) %>%
+         mutate(median_flex_percentage = 100*median_flex/population) %>%
+         mutate(min_flex_percentage = 100*min_flex/population) %>%
+         mutate(max_flex_percentage = 100*max_flex/population)) +
+  geom_line(aes(x = year, y = flex_percentage, group = interaction(id, region), color = region), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex_percentage, color = region), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex_percentage, ymax = max_flex_percentage, fill = region), alpha = 0.15) +  # Shadow
+  geom_text(data = scen_design %>%
+              filter(year >= 2015) %>%
+              mutate(median_flex_percentage = 100*median_flex/population) %>%
+              group_by(region, id) %>%
+              mutate(last_median_flex_percentage = median_flex_percentage[which(year == 2100)]) %>%
+              ungroup() %>%
+              select(year, region, last_median_flex_percentage) %>%
+              distinct(., .keep_all = TRUE),
+            aes(x = 2100, y = last_median_flex_percentage, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 10) +
+  # labs
+  labs(x = ' ', y = 'Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_ci.pdf'), width = 1000, height = 1000, units = 'mm')
+
+# cum flex
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e)) +
+  geom_line(aes(x = year, y = flex, group = interaction(id, region), color = region), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex, color = region), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex, ymax = max_flex, fill = region), alpha = 0.15) +  # Shadow
+  geom_text(data = scen_design %>%
+              filter(year >= 2015) %>%
+              group_by(region, id) %>%
+              mutate(last_median_flex = median_flex[which(year == 2100)]) %>%
+              ungroup() %>%
+              select(year, region, last_median_flex) %>%
+              distinct(., .keep_all = TRUE),
+            aes(x = 2100, y = last_median_flex, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 10) +  # Text
+  # vertical lines
+  geom_vline(xintercept = 2005) +
+  geom_vline(xintercept = 2010) +
+  geom_vline(xintercept = 2015) +
+  geom_vline(xintercept = 2020) +
+  # labs
+  labs(x = '', y = 'Regional nº of flexitarians', title = paste('Cumulative nº of flexitarians')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_ci.pdf'), width = 1000, height = 1000, units = 'mm')
+
+# new flex
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         group_by(region, id) %>%
+         mutate(new_flex = flex - lag(flex)) %>%
+         mutate(min_new_flex = min_flex - lag(min_flex)) %>%
+         mutate(max_new_flex = max_flex - lag(max_flex)) %>%
+         mutate(median_new_flex = median(new_flex))) +
+  geom_line(aes(x = year, y = new_flex, group = interaction(region, id), color = region), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_new_flex, color = region), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_new_flex, ymax = max_new_flex, fill = region), alpha = 0.15) +  # Shadow
+  # vertical lines
+  geom_vline(xintercept = 2005) +
+  geom_vline(xintercept = 2010) +
+  geom_vline(xintercept = 2015) +
+  geom_vline(xintercept = 2020) +
+  # text
+  geom_text(data = scen_design %>%
+              filter(year >= 2015) %>%
+              group_by(region, id) %>%
+              mutate(new_flex = flex - lag(flex)) %>%
+              mutate(mid_new_flex = new_flex[which(year == 2030)]) %>%
+              ungroup() %>% group_by(region) %>%
+              mutate(mid_new_flex = median(mid_new_flex)),
+            aes(x = 2030, y = mid_new_flex, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 10) +
+  # labs
+  labs(x = '', y = 'Regional nº of flexitarians', title = paste('Nº of new flexitarians')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_ci.pdf'), width = 1000, height = 1000, units = 'mm')
+
+#####
+
+
+#### Fig: world fig ========================
+# =============================
+### WORLD
+# flex percentage
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         group_by(year, id) %>%
+         summarise(flex = sum(flex), population = sum(population)) %>%
+         ungroup() %>%
+         group_by(year) %>%
+         mutate(median_flex = median(flex)) %>%
+         mutate(min_flex = min(flex)) %>%
+         mutate(max_flex = max(flex)) %>%
+         ungroup() %>%
+         mutate(flex_percentage = 100*flex/population) %>%
+         mutate(median_flex_percentage = 100*median_flex/population) %>%
+         mutate(min_flex_percentage = 100*min_flex/population) %>%
+         mutate(max_flex_percentage = 100*max_flex/population)) +
+  geom_line(aes(x = year, y = flex_percentage, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex_percentage), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex_percentage, ymax = max_flex_percentage), alpha = 0.15) +  # Shadow
+  # labs
+  labs(x = ' ', y = 'Annual World percentage of flexitarians', title = paste('Cumulative percentage of flexitarians')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_world.pdf'), width = 500, height = 300, units = 'mm')
+
+# cum flex
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         group_by(year, id) %>%
+         summarise(flex = sum(flex), population = sum(population)) %>%
+         ungroup() %>%
+         group_by(year) %>%
+         mutate(median_flex = median(flex)) %>%
+         mutate(min_flex = min(flex)) %>%
+         mutate(max_flex = max(flex)) %>%
+         ungroup()) +
+  geom_line(aes(x = year, y = flex, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex, ymax = max_flex), alpha = 0.15) +  # Shadow
+  # labs
+  labs(x = ' ', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_world.pdf'), width = 500, height = 300, units = 'mm')
+
+# new flex
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         group_by(year, id) %>%
+         summarise(flex = sum(flex), population = sum(population)) %>%
+         ungroup() %>%
+         group_by(year) %>%
+         mutate(median_flex = median(flex)) %>%
+         mutate(min_flex = min(flex)) %>%
+         mutate(max_flex = max(flex)) %>%
+         ungroup() %>%
+         group_by(id) %>%
+         mutate(new_flex = flex - lag(flex)) %>%
+         mutate(min_new_flex = min_flex - lag(min_flex)) %>%
+         mutate(max_new_flex = max_flex - lag(max_flex)) %>%
+         mutate(median_new_flex = median(new_flex))) +
+  geom_line(aes(x = year, y = new_flex, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_new_flex), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_new_flex, ymax = max_new_flex), alpha = 0.15) +  # Shadow
+  # labs
+  labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_world.pdf'), width = 500, height = 300, units = 'mm')
+
+#####
+
+
+#### Fig: regional fig =====================
+# =============================
+### REGIONAL
+# flex percentage (free scales)
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         mutate(flex_percentage = 100*flex/population) %>%
+         mutate(median_flex_percentage = 100*median_flex/population) %>%
+         mutate(min_flex_percentage = 100*min_flex/population) %>%
+         mutate(max_flex_percentage = 100*max_flex/population)) +
+  geom_line(aes(x = year, y = flex_percentage, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex_percentage), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex_percentage, ymax = max_flex_percentage), alpha = 0.15) +  # Shadow
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # labs
+  labs(x = '', y = 'Annual Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians (free scales)')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
+
+# flex percentage (fixed scales)
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         mutate(flex_percentage = 100*flex/population) %>%
+         mutate(median_flex_percentage = 100*median_flex/population) %>%
+         mutate(min_flex_percentage = 100*min_flex/population) %>%
+         mutate(max_flex_percentage = 100*max_flex/population)) +
+  geom_line(aes(x = year, y = flex_percentage, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex_percentage), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex_percentage, ymax = max_flex_percentage), alpha = 0.15) +  # Shadow
+  # facet
+  facet_wrap(. ~ region) +
+  # labs
+  labs(x = '', y = 'Annual Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians (fixed scales)')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
+
+
+
+# cum flex (free scales)
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e)) +
+  geom_line(aes(x = year, y = flex, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex, ymax = max_flex), alpha = 0.15) +  # Shadow
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # labs
+  labs(x = '', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians (free scales)')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
+
+# cum flex (fixed scales)
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e)) +
+  geom_line(aes(x = year, y = flex, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_flex), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_flex, ymax = max_flex), alpha = 0.15) +  # Shadow
+  # facet
+  facet_wrap(. ~ region) +
+  # labs
+  labs(x = '', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians (fixed scales)')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
+
+
+
+# new flex (free scales)
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         group_by(id, region) %>%
+         mutate(new_flex = flex - lag(flex)) %>%
+         mutate(min_new_flex = min_flex - lag(min_flex)) %>%
+         mutate(max_new_flex = max_flex - lag(max_flex)) %>%
+         mutate(median_new_flex = median(new_flex))) +
+  geom_line(aes(x = year, y = new_flex, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_new_flex), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_new_flex, ymax = max_new_flex), alpha = 0.15) +  # Shadow
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # labs
+  labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians (free scales)')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
+
+# new flex (fixed scales)
+ggplot(scen_design %>%
+         filter(year >= year_s, year <= year_e) %>%
+         group_by(id, region) %>%
+         mutate(new_flex = flex - lag(flex)) %>%
+         mutate(min_new_flex = min_flex - lag(min_flex)) %>%
+         mutate(max_new_flex = max_flex - lag(max_flex)) %>%
+         mutate(median_new_flex = median(new_flex))) +
+  geom_line(aes(x = year, y = new_flex, group = id), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_new_flex), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_new_flex, ymax = max_new_flex), alpha = 0.15) +  # Shadow
+  # facet
+  facet_wrap(. ~ region) +
+  # labs
+  labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians (fixed scales')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
+
+#####
 

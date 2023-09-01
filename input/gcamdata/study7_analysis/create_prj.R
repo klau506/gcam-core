@@ -1,61 +1,88 @@
+## script to produce all the outputs (figures and tables) to do a system-wide
+## analysis of the FVV scenarios
+
+#### Libraries =================================================================
+# ==============================================================================
 library(rgcam)
 library(dplyr)
 library(ggplot2)
+library(rfasst)
+#####
 
-basic_path = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata'
-gcam_path <- substr(basic_path, start = 1, stop = regexpr("gcam-core/", basic_path) + 9)
-tmp_output_data_path = paste0(gcam_path, "/input/gcamdata/outputs_binomial/")
-figures_path = paste0(gcam_path, "/input/gcamdata/figures_binomial/")
-folder_analysis_path = paste0(gcam_path, "input/gcamdata/study7_analysis/")
+#### Paths =====================================================================
+# ==============================================================================
+setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata')
+
+gcam_path <<- substr(getwd(), start = 1, stop = regexpr("gcam-core/", getwd()) + 9)
+tmp_output_data_path <<- paste0(gcam_path, "/input/gcamdata/outputs_binomial/")
+figures_path <<- paste0(gcam_path, "/input/gcamdata/figures_binomial/")
+folder_analysis_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/")
+
+arg1 = commandArgs(trailingOnly = TRUE)[1]
+arg2 = commandArgs(trailingOnly = TRUE)[2]
+
+db_path <<- paste0(gcam_path, "output")
+db_name_base <<- 'behaviour_basexdb_v2'
+prj_name <<- paste0('behavioral_change_v2_x5_',arg1,'_',arg2,'.dat')
+query_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
+queries <<- 'queries_beh.xml'
+desired_scen <<- c(paste0("Flex.ds.beh", arg1:arg2))
+
+iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
+id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv")) %>%
+  rename('GCAM_region_id' = 'ï..GCAM_region_ID')
+
 source(paste0(folder_analysis_path,'zzz.R'))
-source(paste0(folder_analysis_path,'fun_cobenefits.R'))
+#####
 
-db_path <- paste0(gcam_path, "output")
-db_name_base = 'behaviour_basexdb'
-prj_name = 'behavioral_change_x5.dat'
-query_path = paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
-queries = 'queries_beh.xml'
-desired_scen = c('Reference', paste0("Flex.ds.beh", 1:25))
+#### SYSTEM-WIDE EFFECTS SECTION ===============================================
+#### Create prj ================================================================
+# ==============================================================================
 
-final_db_year = 2100
+# if prj does not exist, create it. Load it otherwise
+if (!file.exists(prj_name)) {
 
-## select db accordingn to the scenario
-for (sc in desired_scen) {
-  if (sc == 'Reference') {
-    db_name = paste0(db_name_base,'_ref')
-  } else {
-    sc_num <- sub(".*beh(.*)$", "\\1", sc)
+  print('create prj')
+  ## select db according to the scenario
+  for (sc in desired_scen) {
+    print(sc)
 
-    if (sc_num <= 5) {
-      db_name = paste0(db_name_base,'_1_5')
-    } else if (sc_num > 5 & sc_num <= 10) {
-      db_name = paste0(db_name_base,'_6_10')
-    } else if (sc_num > 10 & sc_num <= 15) {
-      db_name = paste0(db_name_base,'_11_15')
-    } else if (sc_num > 15 & sc_num <= 20) {
-      db_name = paste0(db_name_base,'_16_20')
-    } else if (sc_num > 20 & sc_num <= 25) {
-      db_name = paste0(db_name_base,'_21_25')
-    }
+    db_name = find_db_name(sc)
+
+    ## create prj
+    conn <- localDBConn(db_path, db_name)
+    prj <<- addScenario(conn, prj_name, sc,
+                        paste0(query_path, queries),
+                        clobber = FALSE)
+
+    # add 'nonCO2' large query
+    fill_queries(db_path, db_name, prj_name, sc)
+
   }
 
-  ## create prj
-  conn <- localDBConn(db_path, db_name)
-  prj <<- addScenario(conn, prj_name, sc,
-                      paste0(query_path, queries),
-                      clobber = FALSE)
+  saveProject(prj, file = prj_name)
 
-  # add 'nonCO2' large query
-  fill_queries(db_path, db_name, prj_name, sc)
-
+} else {
+  ## load prj
+  print('load prj')
+  prj <<- loadProject(prj_name)
+  listQueries(prj)
+  listScenarios(prj)
 }
 
-saveProject(prj, file = prj_name)
 
+#### Data preprocess ===========================================================
+# ==============================================================================
 
-## add premature mortalities
-mort = add_mort_scen('Reference')
-for (i in unique(desired_scen)[2:length(desired_scen)]) {
-  mort = dplyr::bind_rows(mort,add_mort_scen(i))
-}
-save(mort, file = paste0(tmp_output_data_path,'mort_',prj_name,'.RData'))
+year_s = 2000
+year_e = 2100
+final_db_year <<- 2100
+selected_scen = desired_scen
+
+# # load queries
+# load_queries()
+
+# # compute premature mortalities
+mort = load_premature_mortalities() %>%
+  rename('value' = 'mort',
+         'fasst_region' = 'region')
