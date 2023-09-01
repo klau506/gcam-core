@@ -446,21 +446,21 @@ load_queries = function() {
 
   water_consumption <<- rgcam::getQuery(prj, "water consumption by subsector") %>%
     filter(scenario %in% selected_scen, sector %in% food_sector) %>%
-    group_by(scenario, sector, year) %>%
+    group_by(Units, scenario, sector, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
   water_consumption_world <<- rgcam::getQuery(prj, "water consumption by subsector") %>%
     filter(scenario %in% selected_scen, sector %in% food_sector) %>%
-    group_by(scenario, year) %>%
+    group_by(Units, scenario, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
   water_consumption_regional <<- rgcam::getQuery(prj, "water consumption by subsector") %>%
     filter(scenario %in% selected_scen, sector %in% food_sector) %>%
-    group_by(scenario, year, region) %>%
+    group_by(Units, scenario, year, region) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
@@ -530,4 +530,33 @@ load_queries = function() {
     summarise(value = sum(value, na.rm = T)) %>%
     ungroup()
 
+
+
+  ###### ===== land use ======
+  land_use_regional <<- getQuery(prj,"aggregated land allocation") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(Units, scenario, year, region, LandLeaf) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+  land_use_regional <<- getQuery(prj,"aggregated land allocation") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(Units, scenario, year, region, LandLeaf) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+
+
+
+}
+
+
+
+remove_attributes <- function(x) {
+  for (c in colnames(x)) {
+    attr(x[[c]], "names") <- NULL
+  }
+  return(x)
 }

@@ -24,8 +24,8 @@ queries <<- 'queries_beh.xml'
 desired_scen <<- c('Reference', paste0("Flex.ds.beh", 1:25))
 
 iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
-id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv")) %>%
-  rename('GCAM_region_id' = 'ï..GCAM_region_ID')
+id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
+colnames(id_gcam_regions) = c('GCAM_region_id', 'region')
 
 source(paste0(folder_analysis_path,'zzz.R'))
 #####
@@ -1680,7 +1680,7 @@ ggsave(pl_ag_meet_dairy_prices_regional, file = paste0(figures_path,"tmp_figs/",
 
 #####
 
-#### Fig: CH4 =============================
+#### Fig: CH4 ======================================
 # =============================
 ## -- CH4 emissions
 ### WORLD
@@ -1775,6 +1775,114 @@ ggsave(pl_ghg_by_ghg_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ghg_b
 #####
 
 
+#### Fig: summary fig ==============================
+# =============================
+
+data_summary_water = tidyr::pivot_wider(water_consumption_regional, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = median(value),
+                   min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # add column indicating that's "water"
+  mutate(impact = 'avoided water consumption',
+         year = as.numeric(year))
+
+data_summary_ghg = tidyr::pivot_wider(ghg_regional, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = median(value),
+                   min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # add column indicating that's "ghg"
+  mutate(impact = 'avoided ghg emissions',
+         year = as.numeric(year))
+
+data_summary_mort = mort %>%
+  # merge with GCAM regions
+  left_join(rfasst::fasst_reg %>%
+              dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+            multiple = 'all') %>%
+  right_join(iso_gcam_regions %>%
+               dplyr::mutate(iso = toupper(iso)) %>%
+               dplyr::rename('ISO3' = 'iso'),
+             by = 'ISO3') %>%
+  left_join(id_gcam_regions %>%
+              dplyr::rename('GCAM_region_ID' = 'GCAM_region_id'), by = 'GCAM_region_ID') %>%
+  # keep only meaningful columns
+  select(year, scenario, method, value, pollutant, region) %>% distinct(., .keep_all = TRUE) %>%
+  # reshape dataset
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select('region','year','method','pollutant',matches("_diff$")) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by region and pollutant
+  group_by(region, year, pollutant) %>%
+  summarise(median_value = median(value),
+            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # compute the total deaths by region (pm25 + o3)
+  group_by(region, year) %>%
+  summarise(median_value = sum(median_value),
+            min_value = sum(min_value),
+            max_value = sum(max_value)) %>%
+  ungroup() %>%
+  # add column indicating that's "mort"
+  mutate(impact = 'avoided premautre deaths',
+         Units = 'People',
+         year = as.numeric(year))
+
+data_summary = bind_rows(remove_attributes(data_summary_mort),
+                         remove_attributes(data_summary_ghg),
+                         remove_attributes(data_summary_water))
+
+pl_summary = ggplot(data_summary, aes(x = impact, y = region, fill = median_value)) +
+  geom_tile(width = 1, height = 1) +
+  coord_equal() +
+  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
+                       mid = '#C2DAC1', midpoint = 0,
+                       name = '% difference') +
+  guides(fill = guide_colorbar(title.position = "top")) +
+  scale_y_discrete(position = 'right') +
+  # labs
+  labs(y = '', x = '', title = 'Percentual regional\ndifference of different\nsystem-wide effects') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30, angle = -45, hjust = 0),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40),
+        legend.key.height = unit(3, "cm"),
+        legend.key.width = unit(1.5, "cm"))
+ggsave(pl_summary, file = paste0(figures_path,"tmp_figs/",'pl4_summary.pdf'),
+       width = 300, height = 500, units = 'mm', limitsize = FALSE)
+
+
+#####
+
 
 #### SCENARIO DESIGN SECTION ===================================================
 #### Create dataset ============================================================
@@ -1801,6 +1909,7 @@ if (!file.exists(paste0(tmp_output_data_path,'L202.flexitarian_population_all.RD
   scen_design = all_data
   rm(all_data)
 } else {
+  print('load flex data')
   scen_design = get(load(paste0(tmp_output_data_path,'L202.flexitarian_population_all.RData')))
 }
 
