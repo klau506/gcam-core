@@ -1,0 +1,114 @@
+\documentclass{beamer}
+\usepackage{amsthm,amsmath,amssymb,amsfonts,amscd}
+\usepackage{graphicx}
+\usepackage{enumerate}
+\usepackage[all]{xy}
+\usepackage{booktabs}
+\usepackage{wrapfig}
+\usepackage{float}
+\usepackage[english]{babel}
+\usepackage[scr=boondoxo]{mathalfa}
+\usepackage[justification=centering]{caption}
+\usepackage{mathtools}
+\usepackage{setspace}
+\usepackage{stmaryrd}
+\usepackage{multicol}
+\usepackage{xcolor}
+\usepackage[utf8]{inputenc}
+\usepackage[round]{natbib}  
+
+\usepackage{tikz}
+\usetikzlibrary{decorations.pathreplacing,calligraphy}
+\usetikzlibrary{positioning}
+\usetikzlibrary{shapes}
+\usetikzlibrary{arrows.meta}
+
+\usepackage[final]{pdfpages}
+\usepackage{relsize}
+
+\mode<presentation>
+{
+  \usetheme{Boadilla}  
+  \usecolortheme{beaver}
+  \setbeamercolor{author in head/foot}{fg=white,bg=mygreen}
+  \setbeamercolor{title in head/foot}{fg=mygreen,bg=mygreengray}
+  \setbeamercolor{date in head/foot}{fg=mygreen,bg=white}
+  \setbeamercolor{page number in head/foot}{fg=white,bg=mygreen}
+  
+  \usefonttheme{default}
+  \setbeamercolor{title}{fg=mygreen}
+  \setbeamercolor{frametitle}{fg=mygreen}
+  \setbeamertemplate{navigation symbols}{}
+  \setbeamertemplate{caption}[numbered]
+  \setbeamercolor{section number projected}{bg=mywhite,fg=mygreen}
+  \setbeamercolor{subsection number projected}{bg=mywhite,fg=mygreen}
+  \setbeamertemplate{itemize item}{\color{mygreen}$\star$}
+  \setbeamertemplate{itemize subitem}{\color{mygreen}$\triangleright$}
+  % Customize enumerate items
+  \setbeamertemplate{enumerate items}[default]
+  \setbeamercolor{enumerate item}{fg=mygreen,bg=mygray}
+} 
+
+\definecolor{mygray}{HTML}{7C6C6C}
+\definecolor{mygreen}{HTML}{23be86}
+% \definecolor{myred}{HTML}{D73939}
+\definecolor{mywhite}{HTML}{DDDDDD}
+\definecolor{mygreengray}{HTML}{e1e8e3}
+
+\newcommand{\R}{\ensuremath{\mathbb{R}}}
+\renewcommand{\deg}{$^\circ$}
+
+
+
+%----------------------------------------------------------------------------------------
+%	TITLE PAGE
+%----------------------------------------------------------------------------------------
+
+\title[Study7: FVV dietary shift]{IAM COMPACT Study 7\\[3mm] Dietary shift to lower animal protein consumption}
+
+\author[BC3 - Clàudia Rodés-Bachs]{}
+\date{\today}
+\titlegraphic{\includegraphics[width=3cm]{extraFigs/BC3_logo.png}}
+
+\begin{document}
+
+\begin{frame}
+\titlepage 
+\end{frame}
+
+\begin{frame}
+\frametitle{Outline}
+\tableofcontents 
+\end{frame}
+
+%--------------------------------
+%	PRESENTATION SLIDES
+%--------------------------------
+
+\section{Motivation and the Model}  % motivation and idea + model, DS, figs0 and figs food consuption
+\input{Introduction}
+
+\section{System-wide effects}
+\input{SystemWideEffects}
+
+\section{Future work}
+\begin{frame}{Future work}
+\begin{itemize}
+    \item Study nutritional values
+    \item Create multiple scenarios to see which one has better system-wide effects. Maybe considering different regional levels of FVV?
+    \item Do a similar study for trade (with VWT) and transport. Maybe simplified?
+\end{itemize}
+\end{frame}
+
+% \begin{frame}
+% \centering
+%     Thank you for your attention!!\\
+%     \vspace{1cm}
+%     Questions?\\
+%     \vspace{3cm}
+%     \small\textcolor{blue}{claudia.rodes@bc3research.org}
+% \end{frame}
+
+%------------------------------------------------
+
+\end{document}
