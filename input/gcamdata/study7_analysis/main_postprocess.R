@@ -18,7 +18,7 @@ folder_analysis_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/")
 
 db_path <<- paste0(gcam_path, "output")
 db_name_base <<- 'behaviour_basexdb'
-prj_name <<- 'behavioral_change_x5.dat'
+prj_name <<- 'behavioral_change_v2_x5_ref_1_25.dat'
 query_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
 queries <<- 'queries_beh.xml'
 desired_scen <<- c('Reference', paste0("Flex.ds.beh", 1:25))
@@ -82,20 +82,20 @@ mort = load_premature_mortalities() %>%
   rename('value' = 'mort',
          'fasst_region' = 'region')
 
-# mort_by_poll = mort %>%
-#   mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
-#   group_by(year, fasst_region, scenario_type, pollutant) %>%
-#   summarise(median_value = median(value),
-#          min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-#          max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-#   ungroup()
-#
-# mort_total = mort_by_poll %>%
-#   group_by(year, fasst_region, scenario_type) %>%
-#   summarise(median_value = sum(median_value),
-#          min_value = sum(min_value),
-#          max_value = sum(max_value)) %>%
-#   ungroup()
+mort_by_poll = mort %>%
+  mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+  group_by(year, fasst_region, scenario_type, pollutant) %>%
+  summarise(median_value = median(value),
+         min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+         max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup()
+
+mort_total = mort_by_poll %>%
+  group_by(year, fasst_region, scenario_type) %>%
+  summarise(median_value = sum(median_value),
+         min_value = sum(min_value),
+         max_value = sum(max_value)) %>%
+  ungroup()
 
 #### System-wide effects figures ===============================================
 # ==============================================================================
@@ -880,7 +880,7 @@ pl_ghg_diffAbs_world_bars <- ggplot() +
         title = element_text(size = 40)) +
   # title
   labs(title = paste('Abs diff of world ghg emissions in', selected_year))
-ggsave(pl_ghg_diffAbs_world_bars, file = paste0(figures_path,'tmp_figs/pl2_ghg_diffAbs_bars_world.pdf'), width = 400, height = 150, units = 'mm')
+ggsave(pl_ghg_diffAbs_world_bars, file = paste0(figures_path,'tmp_figs/pl2_ghg_diffAbs_bars_world.pdf'), width = 500, height = 150, units = 'mm')
 
 
 ## -- ghg emission by type (per difference)
@@ -989,7 +989,7 @@ pl_mort_diffAbs_regional_map <- ggplot() +
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
-  labs(title = expression(paste("Annual avoided deaths in ", selected_year, "\n")))
+  labs(title = paste0("Annual avoided deaths in ", selected_year))
 ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,'tmp_figs/pl2_pl_mort_diffAbs_regional_map.pdf'), width = 500, height = 300, units = 'mm')
 
 
@@ -1052,7 +1052,7 @@ pl_mort_diffPer_regional_map <- ggplot() +
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
-  labs(title = expression(paste("Annual avoided deaths in ", selected_year, "\n")))
+  labs(title = paste0("Annual avoided deaths in ", selected_year))
 ggsave(pl_mort_diffPer_regional_map, file = paste0(figures_path,'tmp_figs/pl2_pl_mort_diffPer_regional_map.pdf'), width = 500, height = 300, units = 'mm')
 
 
@@ -1684,7 +1684,7 @@ ggsave(pl_ag_meet_dairy_prices_regional, file = paste0(figures_path,"tmp_figs/",
 # =============================
 ## -- CH4 emissions
 ### WORLD
-pl_ghg_by_ghg_world = ggplot(data = ghg_by_ghg_world %>% filter(group == 'CH4') %>%
+pl_ch4_world = ggplot(data = ghg_by_ghg_world %>% filter(group == 'CH4') %>%
                                          dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
                                          dplyr::group_by(year,scenario_type) %>%
                                          dplyr::mutate(median_value = median(value)) %>%
@@ -1708,12 +1708,12 @@ pl_ghg_by_ghg_world = ggplot(data = ghg_by_ghg_world %>% filter(group == 'CH4') 
         legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_ghg_by_ghg_world, file = paste0(figures_path,"tmp_figs/",'pl3_ghg_by_ghg_world.pdf'),
+ggsave(pl_ch4_world, file = paste0(figures_path,"tmp_figs/",'pl3_ch4_world.pdf'),
        width = 550, height = 500, units = 'mm', limitsize = FALSE)
 
 ### REGIONAL
 ## (free scales)
-pl_ghg_by_ghg_regional = ggplot(data = ghg_by_ghg_regional %>% filter(group == 'CH4') %>%
+pl_ch4_regional = ggplot(data = ghg_by_ghg_regional %>% filter(group == 'CH4') %>%
                                dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
                                dplyr::group_by(region,year,scenario_type) %>%
                                dplyr::mutate(median_value = median(value)) %>%
@@ -1739,11 +1739,11 @@ pl_ghg_by_ghg_regional = ggplot(data = ghg_by_ghg_regional %>% filter(group == '
         legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_ghg_by_ghg_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ghg_by_ghg_regional_freeScales.pdf'),
+ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ch4_regional_freeScales.pdf'),
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
 
 # (fixed scales)
-pl_ghg_by_ghg_regional = ggplot(data = ghg_by_ghg_regional %>% filter(group == 'CH4') %>%
+pl_ch4_regional = ggplot(data = ghg_by_ghg_regional %>% filter(group == 'CH4') %>%
                                   dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
                                   dplyr::group_by(region,year,scenario_type) %>%
                                   dplyr::mutate(median_value = median(value)) %>%
@@ -1769,7 +1769,7 @@ pl_ghg_by_ghg_regional = ggplot(data = ghg_by_ghg_regional %>% filter(group == '
         legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_ghg_by_ghg_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ghg_by_ghg_regional_fixedScales.pdf'),
+ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ch4_regional_fixedScales.pdf'),
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
 
 #####
@@ -1884,6 +1884,142 @@ ggsave(pl_summary, file = paste0(figures_path,"tmp_figs/",'pl4_summary.pdf'),
 #####
 
 
+#### Fig: land use =================================
+# =============================
+### WORLD
+# (abs diff)
+land_use_diffAbs_world = tidyr::pivot_wider(land_use_world, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ . - Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(Units,land_use_type,year) %>%
+  dplyr::summarise(median_value = median(value))
+
+
+pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world) +
+  geom_area(aes(x = year, y = median_value, fill = land_use_type), alpha = 1) +  # Median area
+  geom_hline(aes(yintercept = 0)) +
+  scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                    breaks = land_use_order_palette) +
+  # labs
+  labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Global median land-use abs change between FVV and Reference') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_land_use_diffAbs_world, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffAbs_world.pdf'),
+       width = 550, height = 500, units = 'mm', limitsize = FALSE)
+
+
+# (per diff)
+land_use_diffPer_world = tidyr::pivot_wider(land_use_world, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ (. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(Units,land_use_type,year) %>%
+  dplyr::summarise(median_value = median(value))
+
+
+pl_land_use_diffPer_world = ggplot(data = land_use_diffPer_world) +
+  geom_area(aes(x = year, y = median_value, fill = land_use_type), alpha = 1) +  # Median area
+  geom_hline(aes(yintercept = 0)) +
+  scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                    breaks = land_use_order_palette) +
+  # labs
+  labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Global median land-use % change between FVV and Reference') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_land_use_diffPer_world, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffPer_world.pdf'),
+       width = 550, height = 500, units = 'mm', limitsize = FALSE)
+
+### REGIONAL
+## (free scales)
+land_use_diffAbs_regional = tidyr::pivot_wider(land_use_regional, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ . - Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,land_use_type,year) %>%
+  dplyr::summarise(median_value = median(value))
+
+
+pl_land_use_diffAbs_regional = ggplot(data = land_use_diffAbs_regional) +
+  geom_area(aes(x = year, y = median_value, fill = land_use_type), alpha = 1) +  # Median area
+  geom_hline(aes(yintercept = 0)) +
+  scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                    breaks = land_use_order_palette) +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # labs
+  labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Regional median land-use abs change between FVV and Reference (free scales)') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_land_use_diffAbs_regional, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffAbs_regional_freeScales.pdf'),
+       width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+# (fixed scales)
+pl_land_use_diffAbs_regional = ggplot(data = land_use_diffAbs_regional) +
+  geom_area(aes(x = year, y = median_value, fill = land_use_type), alpha = 1) +  # Median area
+  geom_hline(aes(yintercept = 0)) +
+  scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                    breaks = land_use_order_palette) +
+  # facet
+  facet_wrap(. ~ region) +
+  # labs
+  labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Regional median land-use abs change between FVV and Reference (fixed scales)') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_land_use_diffAbs_regional, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffAbs_regional_fixedScales.pdf'),
+       width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+#####
+
+
 #### SCENARIO DESIGN SECTION ===================================================
 #### Create dataset ============================================================
 # ==============================================================================
@@ -1971,11 +2107,11 @@ ggplot(scen_design %>%
               select(year, region, last_median_flex) %>%
               distinct(., .keep_all = TRUE),
             aes(x = 2100, y = last_median_flex, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 10) +  # Text
-  # vertical lines
-  geom_vline(xintercept = 2005) +
-  geom_vline(xintercept = 2010) +
-  geom_vline(xintercept = 2015) +
-  geom_vline(xintercept = 2020) +
+  # # vertical lines
+  # geom_vline(xintercept = 2005) +
+  # geom_vline(xintercept = 2010) +
+  # geom_vline(xintercept = 2015) +
+  # geom_vline(xintercept = 2020) +
   # labs
   labs(x = '', y = 'Regional nº of flexitarians', title = paste('Cumulative nº of flexitarians')) +
   # theme
@@ -2002,11 +2138,11 @@ ggplot(scen_design %>%
   geom_line(aes(x = year, y = new_flex, group = interaction(region, id), color = region), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_new_flex, color = region), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_new_flex, ymax = max_new_flex, fill = region), alpha = 0.15) +  # Shadow
-  # vertical lines
-  geom_vline(xintercept = 2005) +
-  geom_vline(xintercept = 2010) +
-  geom_vline(xintercept = 2015) +
-  geom_vline(xintercept = 2020) +
+  # # vertical lines
+  # geom_vline(xintercept = 2005) +
+  # geom_vline(xintercept = 2010) +
+  # geom_vline(xintercept = 2015) +
+  # geom_vline(xintercept = 2020) +
   # text
   geom_text(data = scen_design %>%
               filter(year >= 2015) %>%

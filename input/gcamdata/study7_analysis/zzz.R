@@ -17,6 +17,18 @@ c('Behavior change.FoodDemand_Staples',
   'Behavior change.FoodDemand_NonStaples',
   'Reference.FoodDemand_NonStaples')
 
+### land use type palette
+land_use_scenario_palette =
+  c('Cropland' = 'chocolate4',
+    'Pasture' = '#E6AB02',
+    'Forest' = 'darkgreen',
+    'Other land' = '#66A61E')
+land_use_order_palette =
+c('Cropland',
+  'Pasture',
+  'Forest',
+  'Other land')
+
 ### staples vs non-staples & scenario type palette
 beef_dairy_scenario_palette =
   c('Behavior change.Beef' = '#CCCCFF',
@@ -309,6 +321,7 @@ load_premature_mortalities = function() {
     }
     save(mort, file = paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))
   } else {
+    print('load mort')
     load(paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))
   }
 
@@ -533,22 +546,27 @@ load_queries = function() {
 
 
   ###### ===== land use ======
-  land_use_regional <<- getQuery(prj,"aggregated land allocation") %>%
+  land_use_world <<- getQuery(prj,"aggregated land allocation") %>%
     filter(scenario %in% selected_scen) %>%
-    group_by(Units, scenario, year, region, LandLeaf) %>%
+    group_by(Units, scenario, year, landleaf) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
-    filter(year >= year_s, year <= year_e)
+    filter(year >= year_s, year <= year_e) %>%
+    mutate(land_use_type = ifelse(landleaf %in% c("forest (managed)", "forest (unmanaged)"), 'Forest',
+                                  ifelse(landleaf %in% c('crops'), 'Cropland',
+                                         ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
+                                                'Other land'))))
 
   land_use_regional <<- getQuery(prj,"aggregated land allocation") %>%
     filter(scenario %in% selected_scen) %>%
-    group_by(Units, scenario, year, region, LandLeaf) %>%
+    group_by(Units, scenario, year, region, landleaf) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
-    filter(year >= year_s, year <= year_e)
-
-
-
+    filter(year >= year_s, year <= year_e) %>%
+    mutate(land_use_type = ifelse(landleaf %in% c("forest (managed)", "forest (unmanaged)"), 'Forest',
+                                  ifelse(landleaf %in% c('crops'), 'Cropland',
+                                         ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
+                                                'Other land'))))
 
 }
 
