@@ -110,29 +110,29 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
 
     for (i in 1:beh.NUM_RANDOM_TRIALS) {
       print(i)
-      # # Estimate the cumulative flexitarian people over time by country
-      # L202.Flexitarian_population <- L101.Pop_thous_GCAM3_ctry_Y %>%
-      #   rename(population = value) %>%
-      #   mutate(population = round(CONV_THOUS_VALUE * population)) %>%  # units: nº of people
-      #   # read the parameters to define the variability of the behavior change
-      #   left_join_error_no_match(iso_GCAM_regID %>%
-      #                              select(iso, GCAM_region_ID) %>%
-      #                              left_join_error_no_match(GCAM_region_names, by = 'GCAM_region_ID'), by = 'iso') %>%
-      #   group_by(year, region) %>%
-      #   summarise(population = sum(population)) %>% ungroup() %>%
-      #   left_join_error_no_match(L201.flexitarian_parameters %>%
-      #                              select(region, percent.flex.ini, s, paste0("t0_", i), paste0("wf_", i), paste0("k_", i)) %>%
-      #                              rename(t0 = paste0("t0_", i), wf = paste0("wf_", i), k = paste0("k_", i)),
-      #                            by = 'region') %>%
-      #   mutate(flex = round(if_else(year <= max(MODEL_BASE_YEARS), ( percent.flex.ini/100 )*population, 0))) %>%   # flexitarian people
-      #   mutate(max.flex = population[which(year == 2100)] * k/100) %>%  # max nº of people that can become flex
-      #   mutate(prob = 0, x = 0, flex.factor = 0, new.flex = 0, percent.new.flex = 0, percent.flex = 0) %>% # void columns
-      #   flex_model() %>%
-      #   mutate(percent.flex = 100 * flex / population) %>%
-      #   mutate(flex = CONV_VALUE_THOUS * flex) %>%           # units: in thousands
-      #   mutate(population = CONV_VALUE_THOUS * population)   # units: in thousands
+      # Estimate the cumulative flexitarian people over time by country
+      L202.Flexitarian_population <- L101.Pop_thous_GCAM3_ctry_Y %>%
+        rename(population = value) %>%
+        mutate(population = round(CONV_THOUS_VALUE * population)) %>%  # units: nº of people
+        # read the parameters to define the variability of the behavior change
+        left_join_error_no_match(iso_GCAM_regID %>%
+                                   select(iso, GCAM_region_ID) %>%
+                                   left_join_error_no_match(GCAM_region_names, by = 'GCAM_region_ID'), by = 'iso') %>%
+        group_by(year, region) %>%
+        summarise(population = sum(population)) %>% ungroup() %>%
+        left_join_error_no_match(L201.flexitarian_parameters %>%
+                                   select(region, percent.flex.ini, s, paste0("t0_", i), paste0("wf_", i), paste0("k_", i)) %>%
+                                   rename(t0 = paste0("t0_", i), wf = paste0("wf_", i), k = paste0("k_", i)),
+                                 by = 'region') %>%
+        mutate(flex = round(if_else(year <= max(MODEL_BASE_YEARS), ( percent.flex.ini/100 )*population, 0))) %>%   # flexitarian people
+        mutate(max.flex = population[which(year == 2100)] * k/100) %>%  # max nº of people that can become flex
+        mutate(prob = 0, x = 0, flex.factor = 0, new.flex = 0, percent.new.flex = 0, percent.flex = 0) %>% # void columns
+        flex_model() %>%
+        mutate(percent.flex = 100 * flex / population) %>%
+        mutate(flex = CONV_VALUE_THOUS * flex) %>%           # units: in thousands
+        mutate(population = CONV_VALUE_THOUS * population)   # units: in thousands
 
-      L202.Flexitarian_population = get(load(file = paste0('outputs_binomial/L202.Flexitarian_population_',i,'.RData')))
+      # L202.Flexitarian_population = get(load(file = paste0('outputs_binomial/L202.Flexitarian_population_',i,'.RData')))
 
       assign(paste0('L202.Flexitarian_population_',i), L202.Flexitarian_population %>%
                select(region, year, flex, population) %>% tibble::as_tibble() %>%
@@ -144,7 +144,7 @@ module_aglu_L202.flexitarian_population <- function(command, ...) {
                add_precursors("common/iso_GCAM_regID","common/GCAM_region_names",
                               "L201.flexitarian_parameters","L101.Pop_thous_GCAM3_ctry_Y"))
 
-      # save(L202.Flexitarian_population, file = paste0('outputs_binomial/L202.Flexitarian_population_',i,'.RData'))
+      save(L202.Flexitarian_population, file = paste0('outputs_binomial/all_equal_2080_60-80/L202.Flexitarian_population_',i,'.RData'))
 
     }
 
