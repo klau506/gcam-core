@@ -43,10 +43,11 @@ source(paste0(folder_analysis_path,'zzz.R'))
 # ==============================================================================
 
 # if prj does not exist, create it. Load it otherwise
-if (!file.exists(prj_name)) {
+# if (!file.exists(prj_name)) {
 
+prj = rgcam::loadProject(prj_name)
   print('create prj')
-  ## select db according to the scenario
+  # select db according to the scenario
   for (sc in desired_scen) {
     print(sc)
 
@@ -58,34 +59,37 @@ if (!file.exists(prj_name)) {
                         paste0(query_path, queries),
                         clobber = FALSE)
 
-    # add 'nonCO2' large query
-    fill_queries(db_path, db_name, prj_name, sc)
+    # # add 'nonCO2' large query
+    # fill_queries(db_path, db_name, prj_name, sc)
 
   }
 
   saveProject(prj, file = prj_name)
 
-} else {
-  ## load prj
-  print('load prj')
-  prj <<- loadProject(prj_name)
-  listQueries(prj)
-  listScenarios(prj)
-}
+# } else {
+#   ## load prj
+#   print('load prj')
+#   prj <<- loadProject(prj_name)
+#   listQueries(prj)
+#   listScenarios(prj)
+# }
 
 
-#### Data preprocess ===========================================================
-# ==============================================================================
-
-year_s = 2000
-year_e = 2100
-final_db_year <<- 2100
-selected_scen = desired_scen
-
+# #### Data preprocess ===========================================================
+# # ==============================================================================
+#
+# year_s = 2000
+# year_e = 2100
+# final_db_year <<- 2100
+# selected_scen = desired_scen
+#
 # # load queries
 # load_queries()
-
+#
 # # compute premature mortalities
-mort = load_premature_mortalities() %>%
-  rename('value' = 'mort',
-         'fasst_region' = 'region')
+# mort = load_premature_mortalities() %>%
+#   rename('value' = 'mort',
+#          'fasst_region' = 'region')
+#
+# # compute crop_loss due to AP
+# crop_loss = load_crop_loss()

@@ -17,6 +17,18 @@ c('Behavior change.FoodDemand_Staples',
   'Behavior change.FoodDemand_NonStaples',
   'Reference.FoodDemand_NonStaples')
 
+### irr vs rfd & scenario type palette
+irr_rfd_scenario_palette =
+  c('Behavior change.IRR' = '#36e35f',
+    'Behavior change.RFD' = '#4a90ff',
+    'Reference.IRR' = '#017a1e',
+    'Reference.RFD' = '#002787')
+irr_rfd_order_palette =
+c('Behavior change.RFD',
+  'Reference.RFD',
+  'Behavior change.IRR',
+  'Reference.IRR')
+
 ### land use type palette
 land_use_scenario_palette =
   c('Cropland' = 'chocolate4',
@@ -139,6 +151,14 @@ c25 <- c(
   "darkorange4", "brown"
 )
 
+# return vector of colors: color_positive if the position of the value in the values'
+# vector is positive, color_negative otherwise
+color_by_sign = function(values) {
+  color_positive = 6
+  color_negative = 7
+  color_vector <- ifelse(values > 0, color_positive, color_negative)
+  return(color_vector)
+}
 
 
 ### compute pm and o3 premature mortalities
@@ -240,14 +260,14 @@ fill_queries = function(db_path, db_name, prj_name, sc) {
     dt_sec = data_query('nonCO2 emissions by sector (excluding resource production)', db_path, db_name, prj_name, sc)
     prj_tmp <- rgcam::addQueryTable(project = prj_name, qdata = dt_sec,
                                     queryname = 'nonCO2 emissions by sector (excluding resource production)', clobber = FALSE)
-    prj <<- rgcam::mergeProjects(prj_name, list(prj,prj_tmp), clobber = TRUE, saveProj = FALSE)
+    prj <<- rgcam::mergeProjects(prj_name, list(prj,prj_tmp), clobber = FALSE)
 }
 
 
 ### given the scenario name, find the corresponding db
 find_db_name = function(sc) {
   if (sc == 'Reference') {
-    db_name = paste0(db_name_base,'_ref')
+    db_name = 'behaviour_basexdb_ref'
   } else {
     sc_num <- as.numeric(sub(".*beh(.*)$", "\\1", sc))
 
@@ -329,11 +349,80 @@ load_premature_mortalities = function() {
 }
 
 
+## compute crop loss using rfasst
+load_crop_loss = function() {
+  if (!file.exists(paste0(tmp_output_data_path,'crop_loss_',sub("\\.dat$", "", prj_name),'.RData'))) {
+
+    # Relative yield losses (Using AOT40 as O3 exposure indicator)
+    ryl.aot40 = dplyr::bind_rows(m4_get_ryl_aot40(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+      dplyr::mutate('scenario' = desired_scen[1])
+    # Relative yield losses (Using Mi as O3 exposure indicator)
+    ryl.mi = dplyr::bind_rows(m4_get_ryl_mi(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+      dplyr::mutate('scenario' = desired_scen[1])
+    # Production losses (includes losses using both AOT40 and Mi)
+    prod.loss = dplyr::bind_rows(m4_get_prod_loss(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+      dplyr::mutate('scenario' = desired_scen[1])
+    # Revenue losses (includes losses using both AOT40 and Mi)
+    rev.loss = dplyr::bind_rows(m4_get_rev_loss(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+      dplyr::mutate('scenario' = desired_scen[1])
+
+    for (i in unique(desired_scen)[2:length(desired_scen)]) {
+      print(i)
+      ryl.aot40 = rbind(ryl.aot40,
+                        dplyr::bind_rows(m4_get_ryl_aot40(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+                          dplyr::mutate('scenario' = i))
+      print(unique(ryl.aot40$scenario))
+
+      ryl.mi = rbind(ryl.mi,
+                     dplyr::bind_rows(m4_get_ryl_mi(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+                       dplyr::mutate('scenario' = i))
+
+      prod.loss = rbind(prod.loss,
+                        dplyr::bind_rows(m4_get_prod_loss(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+                          dplyr::mutate('scenario' = i))
+
+      rev.loss = rbind(rev.loss,
+                       dplyr::bind_rows(m4_get_rev_loss(db_path=NULL,db_name=NULL,prj_name=prj_name,scen_name=desired_scen[1],final_db_year=final_db_year,saveOutput=F,map=F)) %>%
+                         dplyr::mutate('scenario' = i))
+    }
+    save(ryl.aot40, file = paste0(tmp_output_data_path,'ryl.aot40_',sub("\\.dat$", "", prj_name),'.RData'))
+    save(ryl.mi, file = paste0(tmp_output_data_path,'ryl.mi_',sub("\\.dat$", "", prj_name),'.RData'))
+    save(prod.loss, file = paste0(tmp_output_data_path,'prod.loss_',sub("\\.dat$", "", prj_name),'.RData'))
+    save(rev.loss, file = paste0(tmp_output_data_path,'rev.loss_',sub("\\.dat$", "", prj_name),'.RData'))
+    return(NULL)
+  } else {
+    print('load crop_loss')
+    load(paste0(tmp_output_data_path,'crop_loss_',sub("\\.dat$", "", prj_name),'.RData'))
+    return(crop_loss)
+  }
+}
+
+## process crop_loss subdatasets changing the format of the crop_names column
+process_crop_loss = function(crop_loss) {
+  crop_loss = crop_loss %>%
+    rename('fasst_region' = 'region')
+  if ('pollutant' %in% colnames(crop_loss)) {
+    crop_loss = crop_loss %>%
+      rename('crop_name' = 'pollutant') %>%
+      mutate(crop_name = gsub("^[A-Z]+_(.*)$", "\\1", crop_name),
+             crop_name = tolower(crop_name),
+             crop_name = paste0(toupper(substr(crop_name, 1, 1)), substr(crop_name, 2, nchar(crop_name))))
+  }
+  return(crop_loss)
+}
+
 ## food items
 food_sector = c('Beef','Corn','Dairy','FiberCrop','FodderHerb','Fruits','Legumes',
                 'MiscCrop','NutsSeeds','OilCrop','Pork','Poultry','Rice','RootTuber',
                 'SheepGoat','Soybean','SugarCrop','Vegetables','Wheat','OilPalm',
                 'FodderGrass')
+
+# staple commodities
+staples = c("Corn", "OtherGrain", "Rice", "RootTuber", "Wheat")
+
+# animal commodities
+animal_commodities = c("Beef", "Dairy", "OtherMeat_Fish", "Pork", "Poultry", "SheepGoat")
+
 
 
 ### load all the necessary queries to perform the analysis
@@ -353,6 +442,36 @@ load_queries = function() {
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
+
+  # staple and non-staple calories
+  staples_nonstaples_world <<- getQuery(prj, "food demand") %>%
+    filter(scenario %in% selected_scen) %>%
+    filter(year >= year_s, year <= year_e) %>%
+    mutate(input = gsub("FoodDemand_", "", input)) %>%
+    group_by(scenario, Units, year, input) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    tidyr::pivot_wider(names_from = input, values_from = value) %>%
+    left_join(getQuery(prj, "food demand") %>%
+                filter(scenario %in% selected_scen) %>%
+                filter(year >= year_s, year <= year_e) %>%
+                select(-input) %>%
+                group_by(scenario, Units, year) %>%
+                summarize(Total = sum(value)))
+
+  staples_nonstaples_regional <<- getQuery(prj, "food demand") %>%
+    filter(scenario %in% selected_scen) %>%
+    filter(year >= year_s, year <= year_e) %>%
+    mutate(input = gsub("FoodDemand_", "", input)) %>%
+    tidyr::pivot_wider(names_from = input, values_from = value) %>%
+    left_join(getQuery(prj, "food demand") %>%
+                filter(scenario %in% selected_scen) %>%
+                filter(year >= year_s, year <= year_e) %>%
+                select(-input) %>%
+                group_by(scenario, region, Units, year) %>%
+                summarize(Total = sum(value))) %>%
+    select(-c('gcam-consumer', 'nodeinput'))
+
 
   food_consumption_world <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
     filter(scenario %in% selected_scen) %>%
@@ -442,6 +561,21 @@ load_queries = function() {
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
+  feed_consumption_world <<- rgcam::getQuery(prj, "feed consumption by region") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(scenario, Units, year, input) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+  feed_consumption_regional <<- rgcam::getQuery(prj, "feed consumption by region") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(region, scenario, Units, year, input) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+
   ###### ==== water ====
   water_withdrawals_world <<- rgcam::getQuery(prj, "water withdrawals by region") %>%
     filter(scenario %in% selected_scen) %>%
@@ -485,6 +619,18 @@ load_queries = function() {
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
+  water_irr_rfd_world <<- rgcam::getQuery(prj, "land allocation by crop and water source") %>%
+    filter(!is.na(water)) %>%
+    filter(scenario %in% selected_scen) %>%
+    filter(!crop %in% c('biomassGrass','biomassTree')) %>%
+    filter(year >= year_s, year <= year_e)
+
+  water_irr_rfd_regional <<- rgcam::getQuery(prj, "land allocation by crop and water source") %>%
+    filter(!is.na(water)) %>%
+    filter(scenario %in% selected_scen) %>%
+    filter(!crop %in% c('biomassGrass','biomassTree')) %>%
+    filter(year >= year_s, year <= year_e)
+
 
   ###### ==== emissions ====
   GWP <<- readr::read_csv(paste0(folder_analysis_path,"data/GWP_AR5.csv"))
@@ -506,6 +652,13 @@ load_queries = function() {
 
   nonco2 <<- getQuery(prj,"nonCO2 emissions by region") %>%
     filter(year >= year_s, year <= year_e)
+
+  nonco2_luc <<- getQuery(prj,"nonCO2 emissions by sector (excluding resource production)") %>%
+    filter(year >= year_s, year <= year_e) %>%
+    filter(sector %in% food_sector) %>%
+    filter(ghg %in% c('CH4_AGR','N2O_AGR')) %>%
+    mutate(ghg = ifelse(ghg == 'CH4_AGR','CH4','N2O')) %>%
+    mutate(Units = 'Mt') #Tg is equivalent to Mt
 
 
   ###### ==== GHG emissions ====
@@ -567,6 +720,44 @@ load_queries = function() {
                                   ifelse(landleaf %in% c('crops'), 'Cropland',
                                          ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
                                                 'Other land'))))
+
+  # carbon_stock_world <<- getQuery(prj,"vegetative carbon stock by region") %>%
+  #   filter(scenario %in% selected_scen) %>%
+  #   group_by(Units, scenario, year, landleaf) %>%
+  #   summarise(value = sum(value)) %>%
+  #   ungroup() %>%
+  #   filter(year >= year_s, year <= year_e)
+  #
+  # carbon_stock_regional <<- getQuery(prj,"vegetative carbon stock by region") %>%
+  #   filter(scenario %in% selected_scen) %>%
+  #   group_by(Units, scenario, year, region, landleaf) %>%
+  #   summarise(value = sum(value)) %>%
+  #   ungroup() %>%
+  #   filter(year >= year_s, year <= year_e)
+
+  fertilizer_consumption_world <<- getQuery(prj,"fertilizer consumption by crop type") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(Units, scenario, year, sector) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+  fertilizer_consumption_regional <<- getQuery(prj,"fertilizer consumption by crop type") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(Units, scenario, year, region, sector) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+
+  ###### ===== population ======
+  # population by region
+  pop_all_regions <<- getQuery(prj, "population by region") %>%
+    filter(year >= year_s, year <= year_e) %>%
+    mutate(value = value * 1000) %>% # Convert from thous ppl to total ppl
+    select(-Units) %>%
+    rename(population = value)
+
 
 }
 
