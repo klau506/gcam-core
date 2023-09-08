@@ -3600,7 +3600,7 @@ data_summary_crop_loss = unique(crop_loss$ryl.mi) %>%
   # reshape dataset
   tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
   # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
   # clean the dataset and keep only the "difference" columns
   dplyr::select('unit', 'region','year','crop_name',matches("_diff$")) %>%
   # reshape dataset
