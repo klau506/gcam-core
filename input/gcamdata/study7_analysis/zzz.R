@@ -165,7 +165,7 @@ color_by_sign = function(values) {
 add_mort_scen = function(scen) {
   db_name = find_db_name(scen)
 
-  pm.mort = dplyr::bind_rows(m3_get_mort_pm25(db_path,query_path,db_name,prj_name,scen,queries,final_db_year = final_db_year, saveOutput=F, map=F)) %>%
+  pm.mort = dplyr::bind_rows(m3_get_mort_pm25(prj_name=prj_name,scen_name=scen,final_db_year=final_db_year,saveOutput=F,map=F)) %>%
     dplyr::mutate('scenario' = scen)
   pm.mort = tidyr::pivot_longer(pm.mort, cols = c('BURNETT2014_medium',
                                                   'BURNETT2018WITH_high',
@@ -181,7 +181,7 @@ add_mort_scen = function(scen) {
     dplyr::group_by(region,year,scenario,method) %>%
     dplyr::summarise('mort' = sum(mort_by_disease))
 
-  o3.mort = dplyr::bind_rows(m3_get_mort_o3(db_path,query_path,db_name,prj_name,scen,queries,final_db_year = final_db_year, saveOutput=F, map=F)) %>%
+  o3.mort = dplyr::bind_rows(m3_get_mort_o3(prj_name=prj_name,scen_name=scen,final_db_year=final_db_year,saveOutput=F,map=F)) %>%
     dplyr::mutate('scenario' = scen)
   o3.mort = tidyr::pivot_longer(o3.mort, cols = c('mort_o3_jer_med',
                                                   'mort_o3_jer_low',
@@ -193,10 +193,11 @@ add_mort_scen = function(scen) {
     dplyr::group_by(region,year,scenario,method) %>%
     dplyr::summarise('mort' = sum(mort_by_disease))
 
+
   mort = dplyr::bind_rows(pm.mort %>% dplyr::mutate('pollutant' = 'pm25'),
                           o3.mort %>% dplyr::mutate('pollutant' = 'o3'))
 
-  return(mort)
+  return(o3.mort)
 }
 
 
@@ -287,49 +288,6 @@ find_db_name = function(sc) {
   return(db_name)
 }
 
-## compute premature mortalities difference between Reference and Behavior scenarios
-compute_premature_mortalities_diff = function(mort) {
-
-  mort_simpl = mort %>%
-    filter(scenario %in% desired_scen) %>%
-    filter(year >= year_s, year <= year_e) %>%
-    # compute mean mortality across all imp fun
-    dplyr::group_by(region,year,scenario,pollutant) %>%
-    dplyr::mutate('ci50_mort' = median(as.numeric(mort), na.rm = TRUE)) %>%
-    dplyr::mutate('ci5_mort' = quantile(mort, probs= 0.05, na.rm = TRUE)) %>%
-    dplyr::mutate('ci95_mort' = quantile(mort, probs= 0.95, na.rm = TRUE)) %>%
-    dplyr::ungroup() %>%
-    # add o3 and pm25 mortalities
-    dplyr::group_by(region,year,scenario) %>%
-    dplyr::mutate('annual_regional_mort_ci50' = sum(ci50_mort)) %>%
-    dplyr::mutate('annual_regional_mort_ci5' = sum(ci5_mort)) %>%
-    dplyr::mutate('annual_regional_mort_ci95' = sum(ci95_mort))
-
-  # mortality difference (in %)
-  mort_diff_percentage = tidyr::pivot_wider(mort_simpl, names_from = 'scenario', values_from = 'total_mort') %>%
-
-    # mutate(across(starts_with("col"), ~ ref - ., .names = "diff_{.col}"))
-
-
-    dplyr::mutate('diff_protein' = 100*(Diets_Ref  - Diets_Protein)/Diets_Ref) %>%
-    dplyr::mutate('diff_trade' = 100*(Diets_Ref - Diets_Trade.adj21)/Diets_Ref)
-  mort_diff_percentage = tidyr::pivot_longer(mort_diff_percentage %>% dplyr::select(region,year,diff_protein,diff_trade),
-                                             cols = c('diff_protein','diff_trade')) %>%
-    dplyr::rename('scenario' = 'name') %>%
-    dplyr::mutate('scenario' = ifelse(scenario == 'diff_protein', 'Protein', scenario)) %>%
-    dplyr::mutate('scenario' = ifelse(scenario == 'diff_trade', 'Trade', scenario))
-
-  # mortality difference (in absolute numbers)
-  mort_diff_absNum = tidyr::pivot_wider(mort_simpl, names_from = 'scenario', values_from = 'total_mort') %>%
-    dplyr::mutate('diff_protein' = Diets_Ref  - Diets_Protein) %>%
-    dplyr::mutate('diff_trade' = Diets_Ref - Diets_Trade.adj21)
-  mort_diff_absNum = tidyr::pivot_longer(mort_diff_absNum %>% dplyr::select(region,year,diff_protein,diff_trade),
-                                         cols = c('diff_protein','diff_trade')) %>%
-    dplyr::rename('scenario' = 'name') %>%
-    dplyr::mutate('scenario' = ifelse(scenario == 'diff_protein', 'Protein', scenario)) %>%
-    dplyr::mutate('scenario' = ifelse(scenario == 'diff_trade', 'Trade', scenario))
-
-}
 
 ## compute premature mortalities using rfasst
 load_premature_mortalities = function() {
@@ -339,7 +297,10 @@ load_premature_mortalities = function() {
       print(i)
       mort = dplyr::bind_rows(mort,add_mort_scen(i))
     }
+    # o3.mort = mort
     save(mort, file = paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))
+
+  save(mort, file = paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))
   } else {
     print('load mort')
     load(paste0(tmp_output_data_path,'mort_',sub("\\.dat$", "", prj_name),'.RData'))
@@ -536,15 +497,28 @@ load_queries = function() {
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
-  ag_import_vs_domestic <<- rgcam::getQuery(prj, "ag import vs. domestic supply (Regional Armington competition)") %>%
+  ag_import_vs_domestic_world <<- rgcam::getQuery(prj, "ag import vs. domestic supply (Regional Armington competition)") %>%
     filter(scenario %in% selected_scen) %>%
-    group_by(scenario, sector, subsector, year) %>%
+    group_by(Units, scenario, sector, subsector, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
-    mutate('type' = ifelse(substr(subsector, 1, 8) == "domestic", "domestic",
-                           ifelse(substr(subsector, 1, 8) == "imported", "imported", NA))) %>%
+    mutate(subsector = ifelse(substr(subsector, 1, 8) == "domestic", "domestic",
+                           ifelse(substr(subsector, 1, 8) == "imported", "imported", NA)),
+           sector = sub(".*\\s", "", sector)) %>%
     filter(scenario %in% selected_scen) %>%
-    filter(!is.na(type)) %>%
+    filter(!is.na(subsector)) %>%
+    filter(year >= year_s, year <= year_e)
+
+  ag_import_vs_domestic_regional <<- rgcam::getQuery(prj, "ag import vs. domestic supply (Regional Armington competition)") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(region, Units, scenario, sector, subsector, year) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    mutate(subsector = ifelse(substr(subsector, 1, 8) == "domestic", "domestic",
+                           ifelse(substr(subsector, 1, 8) == "imported", "imported", NA)),
+           sector = sub(".*\\s", "", sector)) %>%
+    filter(scenario %in% selected_scen) %>%
+    filter(!is.na(subsector)) %>%
     filter(year >= year_s, year <= year_e)
 
   ag_meet_dairy_prices_world <<- rgcam::getQuery(prj, "meat and dairy prices") %>%
