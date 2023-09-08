@@ -26,6 +26,15 @@ desired_scen <<- c('Reference', paste0("Flex.ds.beh", 1:25))
 
 # Ancillary functions
 source(paste0(folder_analysis_path,'zzz.R'))
+
+# Basic data
+country_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/country_to_gcam_id.csv"))
+iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
+id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
+colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
+regions_key <- left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
+  select(-1)
+
 #####
 
 #### SYSTEM-WIDE EFFECTS SECTION ===============================================
@@ -152,12 +161,12 @@ plt_food_consumption_world = ggplot(data = pltD_food_consumption %>%
   ggtitle('World food consumption') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_food_consumption_world, file = paste0(figures_path,"tmp_figs/",'pl1_food_consumption_6elem_world.pdf'),
@@ -190,13 +199,13 @@ plt_food_consumption_regional = ggplot(data = pltD_food_consumption %>%
   ggtitle('Regional food consumption (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_food_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl1_food_consumption_6elem_regional_fixedScales.pdf'),
@@ -218,13 +227,13 @@ plt_food_consumption_regional = ggplot(data = pltD_food_consumption %>%
   ggtitle('Regional food consumption (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_food_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl1_food_consumption_6elem_regional_freeScales.pdf'),
@@ -252,12 +261,12 @@ plt_food_consumption_world = ggplot(data = food_consumption_world %>%
   ggtitle('World food consumption') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_food_consumption_world, file = paste0(figures_path,"tmp_figs/",'pl1_food_consumption_allElem_world.pdf'),
@@ -282,13 +291,13 @@ plt_food_consumption_regional = ggplot(data = food_consumption_regional %>%
   ggtitle('Regional food consumption (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_food_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl1_food_consumption_allElem_regional_fixedScales.pdf'),
@@ -311,13 +320,13 @@ plt_food_consumption_regional = ggplot(data = food_consumption_regional %>%
   ggtitle('Regional food consumption (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_food_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl1_food_consumption_allElem_regional_freeScales.pdf'),
@@ -343,13 +352,13 @@ pl_food_demand_staplesVsNonStapes_world = ggplot(data = food_demand_world %>%
   labs(y = 'Pcal', x = '', title = 'Annual World food demand') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -377,13 +386,13 @@ pl_food_demand_staplesVsNonStapes_regional = ggplot(data = food_demand_regional 
   labs(y = 'Pcal', x = '', title = 'Annual Regional food demand (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -411,13 +420,13 @@ pl_food_demand_staplesVsNonStapes_regional = ggplot(data = food_demand_regional 
   labs(y = 'Pcal', x = '', title = 'Annual Regional food demand (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -443,13 +452,13 @@ pl_ag_production_world = ggplot(data = ag_production_world %>%
   labs(y = 'Pcal', x = '', title = 'Annual World ag production') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 4), color = guide_legend(ncol = 4))
@@ -477,13 +486,13 @@ pl_ag_production_regional = ggplot(data = ag_production_regional %>%
   labs(y = 'Pcal', x = '', title = 'Annual Regional ag production (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 4), color = guide_legend(ncol = 4))
@@ -511,13 +520,13 @@ pl_ag_production_regional = ggplot(data = ag_production_regional %>%
   labs(y = 'Pcal', x = '', title = 'Annual Regional ag production (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 4), color = guide_legend(ncol = 4))
@@ -562,7 +571,7 @@ pl_ag_prices_diffAbs_regional <- ggplot(data = ag_prices_diffAbs_regional) +
     strip.background = element_blank(),
     axis.text.x = element_text(size=30),
     axis.text.y = element_text(size=30),
-    legend.text = element_text(size = 30),
+    legend.text = element_text(size = 35),
     legend.title = element_text(size = 40),
     legend.position = 'bottom',
     title = element_text(size = 40)
@@ -605,7 +614,7 @@ pl_ag_prices_diffPer_regional <- ggplot(data = ag_prices_diffPer_regional) +
     strip.background = element_blank(),
     axis.text.x = element_text(size=30),
     axis.text.y = element_text(size=30),
-    legend.text = element_text(size = 30),
+    legend.text = element_text(size = 35),
     legend.title = element_text(size = 40),
     legend.position = 'bottom',
     title = element_text(size = 40)
@@ -634,13 +643,13 @@ pl_food_demand_staplesVsNonStapes_world = ggplot(data = food_demand_prices_world
   labs(y = '2005$/Mcal', x = '', title = 'Annual World food demand prices') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -667,13 +676,13 @@ pl_food_demand_staplesVsNonStapes_regional = ggplot(data = food_demand_prices_re
   labs(y = '2005$/Mcal', x = '', title = 'Annual Regional food demand prices (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -699,13 +708,13 @@ pl_food_demand_staplesVsNonStapes_regional = ggplot(data = food_demand_prices_re
   labs(y = '2005$/Mcal', x = '', title = 'Annual Regional food demand prices (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -739,7 +748,7 @@ pl_ghg_world <- ggplot(data = ghg_world %>%
         strip.background =element_rect(fill="white"),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_ghg_world, file = paste0(figures_path,'tmp_figs/pl2_ghg_world.pdf'), width = 400, height = 300, units = 'mm')
@@ -762,12 +771,7 @@ ghg_diffAbs_regional = tidyr::pivot_wider(ghg_regional, names_from = 'scenario',
   dplyr::mutate('GCAM Region' = region) %>%
   inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
   # merge with world data
-  dplyr::rename('adm0_a3' = 'ISO 3')# %>%
-  # inner_join(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-  #              dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-  #              dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-  #              dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-  #            by = "adm0_a3")
+  dplyr::rename('adm0_a3' = 'ISO 3')
 
 ghg_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
                 dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
@@ -794,12 +798,64 @@ pl_ghg_diffAbs_map <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
   labs(title = paste('Abs GHG avoided emissions in', selected_year))
 ggsave(pl_ghg_diffAbs_map, file = paste0(figures_path,'tmp_figs/pl2_ghg_diffAbs_map.pdf'), width = 500, height = 300, units = 'mm')
+
+
+
+# percentage to add over each region
+per_text = tidyr::pivot_wider(ghg_regional, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  summarise(percentage_text = paste0(as.character(round(-median(value), digits = 1)),'%')) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year) %>%
+  # merge with GCAM regions
+  dplyr::mutate('GCAM Region' = region) %>%
+  inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+  # merge with world data
+  dplyr::rename('adm0_a3' = 'ISO 3')
+
+ghg_diffAbs_regional = merge(ghg_diffAbs_regional,per_text, by = c('region','Units','year','GCAM Region','Country','adm0_a3'))
+
+# plot
+pl_ghg_diffAbs_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = ghg_diffAbs_regional, aes(fill = median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = expression(paste(MtCO[2],' difference'))) +
+  geom_text(data = mort_diffAbs_regional, aes(x = avg_x, y = avg_y, label = percentage_text),
+            size = 5) +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # title
+  labs(title = paste('Abs GHG avoided emissions in', selected_year))
+ggsave(pl_ghg_diffAbs_map, file = paste0(figures_path,'tmp_figs/pl2_ghg_diffAbs_with_text_map.pdf'), width = 500, height = 300, units = 'mm')
+
 
 
 
@@ -813,14 +869,14 @@ ghg_diffPer_regional = tidyr::pivot_wider(ghg_regional, names_from = 'scenario',
   tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
   # compute median
   dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = median(value)) %>%
+  dplyr::summarise(median_value = -median(value)) %>%
   # filter desired year
   dplyr::filter(year == selected_year) %>%
   # merge with GCAM regions
   dplyr::mutate('GCAM Region' = region) %>%
   inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
   # merge with world data
-  dplyr::rename('adm0_a3' = 'ISO 3')# %>%
+  dplyr::rename('adm0_a3' = 'ISO 3')
 
 ghg_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
                                dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
@@ -832,7 +888,7 @@ ghg_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", return
 pl_ghg_diffPer_map <- ggplot() +
   # color map by regions
   geom_sf(data = ghg_diffPer_regional, aes(fill = median_value)) +
-  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste(MtCO[2],' % difference'))) +
   # theme
@@ -847,7 +903,7 @@ pl_ghg_diffPer_map <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
@@ -889,7 +945,7 @@ pl_ghg_diffAbs_world_bars <- ggplot() +
         strip.background =element_rect(fill="transparent"),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -931,7 +987,7 @@ pl_ghg_diffPer_world_bars <- ggplot() +
         strip.background =element_rect(fill="transparent"),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -972,11 +1028,15 @@ mort_diffAbs_regional = tidyr::pivot_wider(mort, names_from = 'scenario', values
   # merge with world data
   dplyr::rename('adm0_a3' = 'ISO3')
 
-
 mort_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
                                 dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
                                 dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                rowwise() %>%
+                                mutate(
+                                  avg_x = (st_bbox(geometry)$xmax + st_bbox(geometry)$xmin) / 2,
+                                  avg_y = (st_bbox(geometry)$ymax + st_bbox(geometry)$ymin) / 2
+                                ),
                               mort_diffAbs_regional, by = 'adm0_a3')
 
 # plot
@@ -1003,7 +1063,68 @@ pl_mort_diffAbs_regional_map <- ggplot() +
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
   labs(title = paste0("Annual avoided deaths in ", selected_year))
-ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,'tmp_figs/pl2_pl_mort_diffAbs_regional_map.pdf'), width = 500, height = 300, units = 'mm')
+ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,'tmp_figs/pl2_mort_diffAbs_regional_map.pdf'), width = 500, height = 300, units = 'mm')
+
+
+
+# percentage to add over each region
+per_text = tidyr::pivot_wider(mort, names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select('fasst_region','year','method','pollutant',matches("_diff$")) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by region and pollutant
+  group_by(year, fasst_region, pollutant) %>%
+  summarise(median_value = median(value),
+            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # compute the total deaths by region (pm25 + o3)
+  group_by(year, fasst_region) %>%
+  summarise(percentage_text = paste0(as.character(round(-sum(median_value), digits = 1)),'%')) %>%
+  ungroup() %>%
+  # filter desired year
+  dplyr::filter(year == selected_year) %>%
+  # merge with GCAM regions
+  left_join(rfasst::fasst_reg %>%
+              dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+            multiple = 'all') %>%
+  # merge with world data
+  dplyr::rename('adm0_a3' = 'ISO3')
+
+
+mort_diffAbs_regional = merge(mort_diffAbs_regional,per_text, by = c('year', 'fasst_region', 'adm0_a3'))
+
+# plot
+pl_mort_diffAbs_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = mort_diffAbs_regional, aes(fill = median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = expression(paste("Avoided deaths (nº)","\n"))) +
+  geom_text(data = mort_diffAbs_regional, aes(x = avg_x, y = avg_y, label = percentage_text),
+            size = 5) +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 30, angle = 90, vjust = 0.5, hjust=0.5), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # title
+  labs(title = paste0("Annual avoided deaths in ", selected_year))
+ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,'tmp_figs/pl2_mort_diffAbs_with_text_regional_map.pdf'), width = 500, height = 300, units = 'mm')
+
 
 
 ## -- map (per difference)
@@ -1022,9 +1143,9 @@ mort_diffPer_regional = tidyr::pivot_wider(mort, names_from = 'scenario', values
   ungroup() %>%
   # compute the total deaths by region (pm25 + o3)
   group_by(year, fasst_region) %>%
-  summarise(median_value = sum(median_value),
-            min_value = sum(min_value),
-            max_value = sum(max_value)) %>%
+  summarise(median_value = -sum(median_value),
+            min_value = -sum(min_value),
+            max_value = -sum(max_value)) %>%
   ungroup() %>%
   # filter desired year
   dplyr::filter(year == selected_year) %>%
@@ -1046,7 +1167,7 @@ mort_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", retur
 pl_mort_diffPer_regional_map <- ggplot() +
   # color map by regions
   geom_sf(data = mort_diffPer_regional, aes(fill = median_value)) +
-  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided deaths (%)","\n"))) +
   # theme
@@ -1066,10 +1187,7 @@ pl_mort_diffPer_regional_map <- ggplot() +
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
   labs(title = paste0("Annual avoided deaths in ", selected_year))
-ggsave(pl_mort_diffPer_regional_map, file = paste0(figures_path,'tmp_figs/pl2_pl_mort_diffPer_regional_map.pdf'), width = 500, height = 300, units = 'mm')
-
-
-
+ggsave(pl_mort_diffPer_regional_map, file = paste0(figures_path,'tmp_figs/pl2_mort_diffPer_regional_map.pdf'), width = 500, height = 300, units = 'mm')
 
 
 
@@ -1104,12 +1222,12 @@ plt_mort_world = ggplot(data = mort %>%
   labs(y = 'Premature deaths', x = '', title = 'Annual World premature deaths') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_mort_world, file = paste0(figures_path,"tmp_figs/",'pl2_mort_world.pdf'),
@@ -1142,12 +1260,12 @@ plt_mort_regional = ggplot(data = mort %>%
   labs(y = 'Premature deaths', x = '', title = 'Annual Regional premature deaths (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_mort_regional, file = paste0(figures_path,"tmp_figs/",'pl2_mort_regional_freeScales.pdf'),
@@ -1184,7 +1302,7 @@ pl_water_consumption_world <- ggplot(data = water_consumption_world %>%
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
         axis.title = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -1221,7 +1339,7 @@ pl_water_consumption_regional <- ggplot(data = water_consumption_regional %>%
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
         axis.title = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -1256,7 +1374,7 @@ pl_water_consumption_regional <- ggplot(data = water_consumption_regional %>%
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
         axis.title = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -1310,7 +1428,7 @@ pl_water_consumption_diffAbs_map <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
@@ -1361,7 +1479,7 @@ pl_water_consumption_diffPer_map <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
@@ -1405,16 +1523,17 @@ pl_water_consumption_diffAbs_regional_sectorial_bars <- ggplot() +
         panel.grid.major.x = element_blank(),
         panel.border = element_blank(),
         plot.background = element_rect(fill = "transparent",
-                                       colour = 'grey',linewidth = 0),
+                                       colour = 'white',linewidth = 0),
         panel.background = element_rect(fill = "transparent"),
-        legend.position = 'bottom', legend.direction = 'horizontal',
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.text = element_text(size = 20, color = 'black'),
         strip.background =element_rect(fill="transparent"),
         axis.text.x = element_text(size=30, angle = 90),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
   # title
   labs(title = paste0('Abs diff of regional sectorial water consumption in ',selected_year))
 ggsave(pl_water_consumption_diffAbs_regional_sectorial_bars, file = paste0(figures_path,'tmp_figs/pl2_water_consumption_diffAbs_regional_sectorial_bars.pdf'),
@@ -1462,7 +1581,7 @@ pl_water_consumption_diffPer_regional_sectorial_bars <- ggplot() +
         strip.background =element_rect(fill="transparent"),
         axis.text.x = element_text(size=30, angle = 90),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -1500,7 +1619,7 @@ pl_water_withdrawals_world <- ggplot(data = water_withdrawals_world %>%
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
         axis.title = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -1537,7 +1656,7 @@ pl_water_withdrawals_regional <- ggplot(data = water_withdrawals_regional %>%
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
         axis.title = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -1572,7 +1691,7 @@ pl_water_withdrawals_regional <- ggplot(data = water_withdrawals_regional %>%
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
         axis.title = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
@@ -1580,12 +1699,6 @@ pl_water_withdrawals_regional <- ggplot(data = water_withdrawals_regional %>%
 ggsave(pl_water_withdrawals_regional + theme(strip.text = element_text(size = 30)), file = paste0(figures_path,'tmp_figs/pl2_water_withdrawals_regional_fixedScales.pdf'),
        width = 800, height = 700, units = 'mm')
 
-#####
-
-#### Fig: virtual water trade ======================
-# =============================
-# source('vwt.R')
-# compute_vwt()
 #####
 
 #### Fig: beef - dairy =============================
@@ -1609,13 +1722,13 @@ pl_ag_meet_dairy_prices_world = ggplot(data = ag_meet_dairy_prices_world %>%
   labs(y = '2005$/Mcal', x = '', title = 'Annual World beef-dairy prices') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'vertical',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'vertical',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -1643,13 +1756,13 @@ pl_ag_meet_dairy_prices_regional = ggplot(data = ag_meet_dairy_prices_regional %
   labs(y = '2005$/Mcal', x = '', title = 'Annual Regional beef-dairy prices (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'vertical',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'vertical',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -1676,13 +1789,13 @@ pl_ag_meet_dairy_prices_regional = ggplot(data = ag_meet_dairy_prices_regional %
   labs(y = '2005$/Mcal', x = '', title = 'Annual Regional beef-dairy prices (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'vertical',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'vertical',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
@@ -1713,13 +1826,13 @@ pl_ch4_world = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
   labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions'))) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_ch4_world, file = paste0(figures_path,"tmp_figs/",'pl2_ch4_world.pdf'),
@@ -1747,13 +1860,13 @@ pl_ch4_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
   labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions (free scales)'))) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl2_ch4_regional_freeScales.pdf'),
@@ -1780,13 +1893,13 @@ pl_ch4_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
   labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions (fixed scales)'))) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl2_ch4_regional_fixedScales.pdf'),
@@ -1816,13 +1929,13 @@ pl_n2o_world = ggplot(data = nonco2_luc %>% filter(ghg == 'N2O') %>%
   labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions'))) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_n2o_world, file = paste0(figures_path,"tmp_figs/",'pl2_n2o_world.pdf'),
@@ -1850,13 +1963,13 @@ pl_n2o_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'N2O') %>%
   labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions (free scales)'))) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_n2o_regional, file = paste0(figures_path,"tmp_figs/",'pl2_n2o_regional_freeScales.pdf'),
@@ -1883,16 +1996,168 @@ pl_n2o_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'N2O') %>%
   labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions (fixed scales)'))) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_n2o_regional, file = paste0(figures_path,"tmp_figs/",'pl2_n2o_regional_fixedScales.pdf'),
+       width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+
+
+# extra checks ===
+n2o_luc_diffAbs_regional_sectorial = nonco2_luc %>% filter(ghg == 'N2O') %>%
+  # compute difference between Reference and runs
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ . - Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(Units,region,year,sector) %>%
+  dplyr::summarise(median_value = median(value)) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year)
+
+
+pl_n2o_regional_sectorial_bars <- ggplot(data = n2o_luc_diffAbs_regional_sectorial) +
+  # barchart
+  geom_bar(aes(x = region, y = median_value, fill = as.factor(sector)),
+           stat = "identity", color = NA, width = 0.5,
+           position = position_stack(reverse = TRUE)) +
+  scale_fill_manual(values = c25, name = '') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = expression(paste("Annual N2O emissions difference (Mt ",N[2],"O)","\n"))) +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_text(size=30, angle = 90),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste0('Abs diff of regional sectorial N2O emissions in ',selected_year))
+ggsave(pl_n2o_regional_sectorial_bars, file = paste0(figures_path,'tmp_figs/pl2_n2o_emissions_diffAbs_regional_sectorial_bars.pdf'),
+       width = 700, height = 500, units = 'mm')
+
+
+#####
+
+#### Fig: LUC CO2 ==================================
+# =============================
+## -- LUC CO2 emissions
+### WORLD
+pl_luc_co2_world = ggplot(data = luc %>%
+                        group_by(Units,scenario,ghg,year) %>%
+                        summarise(value = sum(value)) %>%
+                        ungroup() %>%
+                        dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+                        dplyr::group_by(year,scenario_type) %>%
+                        dplyr::mutate(median_value = median(value)) %>%
+                        dplyr::mutate(min_value = min(value)) %>%
+                        dplyr::mutate(max_value = max(value))) +
+  geom_line(aes(x = year, y = value, group = interaction(scenario_type,scenario), color = interaction(scenario_type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = interaction(scenario_type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type)), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = mypal_scen, name = 'Scenario') +
+  scale_fill_manual(values = mypal_scen, name = 'Scenario') +
+  # labs
+  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions'))) +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_luc_co2_world, file = paste0(figures_path,"tmp_figs/",'pl2_luc_co2_world.pdf'),
+       width = 550, height = 500, units = 'mm', limitsize = FALSE)
+
+### REGIONAL
+## (free scales)
+pl_luc_co2_regional = ggplot(data = luc %>%
+                           group_by(region,Units,scenario,ghg,year) %>%
+                           summarise(value = sum(value)) %>%
+                           ungroup() %>%
+                           dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+                           dplyr::group_by(region,year,scenario_type) %>%
+                           dplyr::mutate(median_value = median(value)) %>%
+                           dplyr::mutate(min_value = min(value)) %>%
+                           dplyr::mutate(max_value = max(value))) +
+  geom_line(aes(x = year, y = value, group = interaction(scenario_type,scenario), color = interaction(scenario_type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = interaction(scenario_type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type)), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = mypal_scen, name = 'Scenario') +
+  scale_fill_manual(values = mypal_scen, name = 'Scenario') +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # labs
+  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions (free scales)'))) +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_luc_co2_regional, file = paste0(figures_path,"tmp_figs/",'pl2_luc_co2_regional_freeScales.pdf'),
+       width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+# (fixed scales)
+pl_luc_co2_regional = ggplot(data = luc %>%
+                           group_by(region,Units,scenario,ghg,year) %>%
+                           summarise(value = sum(value)) %>%
+                           ungroup() %>%
+                           dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+                           dplyr::group_by(region,year,scenario_type) %>%
+                           dplyr::mutate(median_value = median(value)) %>%
+                           dplyr::mutate(min_value = min(value)) %>%
+                           dplyr::mutate(max_value = max(value))) +
+  geom_line(aes(x = year, y = value, group = interaction(scenario_type,scenario), color = interaction(scenario_type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = interaction(scenario_type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type)), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = mypal_scen, name = 'Scenario') +
+  scale_fill_manual(values = mypal_scen, name = 'Scenario') +
+  # facet
+  facet_wrap(. ~ region) +
+  # labs
+  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions (fixed scales)'))) +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_luc_co2_regional, file = paste0(figures_path,"tmp_figs/",'pl2_luc_co2_regional_fixedScales.pdf'),
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
 
 #####
@@ -1922,13 +2187,13 @@ pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world) +
   labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Global median land-use abs change between FVV and Reference') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_land_use_diffAbs_world, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffAbs_world.pdf'),
@@ -1957,13 +2222,13 @@ pl_land_use_diffPer_world = ggplot(data = land_use_diffPer_world) +
   labs(y = expression(paste('Percentual change compared to Reference')), x = '', title = 'Global median land-use % change between FVV and Reference') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_land_use_diffPer_world, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffPer_world.pdf'),
@@ -1994,13 +2259,13 @@ pl_land_use_diffAbs_regional = ggplot(data = land_use_diffAbs_regional) +
   labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Regional median land-use abs change between FVV and Reference (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_land_use_diffAbs_regional, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffAbs_regional_freeScales.pdf'),
@@ -2018,13 +2283,13 @@ pl_land_use_diffAbs_regional = ggplot(data = land_use_diffAbs_regional) +
   labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Regional median land-use abs change between FVV and Reference (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_land_use_diffAbs_regional, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffAbs_regional_fixedScales.pdf'),
@@ -2055,37 +2320,34 @@ pld_cropland_world = tidyr::pivot_wider(land_crop_world,
   dplyr::filter(year == selected_year) %>%
   # prepare dataset for waterfall
   select(x = landleaf, y = median_value) %>%
-  arrange(x) %>%
-  mutate(x = ifelse(x %in% c("ProtectedGrassland","ProtectedUnmanagedForest",
-                             "ProtectedShrubland","ProtectedUnmanagedPasture"),
-                    sub("^(Protected)(.*)$", "\\1 \n \\2", x),
-                    x)) %>%
-  mutate(x = ifelse(x %in% c("Protected \n Grassland","Protected \n UnmanagedForest"), paste(x),
-                    ifelse(x %in% c("Protected \n Shrubland","Protected \n UnmanagedPasture"), paste(x,'\n \n'),
-                           ifelse(x %in% c("Vegetables"), paste(x,'\n'), x))))
+  mutate(x = tolower(x)) %>%
+  data.table::as.data.table()
+pld_cropland_world <- pld_cropland_world[order(pld_cropland_world$x), ]
+pld_cropland_world = pld_cropland_world %>%
+  mutate(cum_sum = cumsum(y),
+         cum_sum = ifelse(abs(y) > 100, cum_sum/2 + (cum_sum-y)/2, cum_sum + abs(y) + 10*nchar(x)))
 
-pl_cropland_world = waterfall(values = pld_cropland_world$y,
-                              labels = pld_cropland_world$x,
-                              rect_text_labels = pld_cropland_world$x,
-                              total_rect_text = 'Total',
-                              calc_total = TRUE,
+pl_cropland_world = waterfall(.data = pld_cropland_world,
+                              rect_text_labels = rep('',length(pld_cropland_world$x)),
+                              calc_total = FALSE,
                               fill_by_sign = FALSE,
                               fill_colours = color_by_sign(pld_cropland_world$y),
-                              total_rect_text_color = 'red',
-                              rect_text_size = 3,
                               put_rect_text_outside_when_value_below = 10) +
+  # text
+  geom_text(data = pld_cropland_world, aes(x = x, y = cum_sum, label = x),
+            angle = 90, color = "black", size = 9) +
   # labs
   labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World cropland abs difference (beh - ref)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 
@@ -2112,37 +2374,34 @@ pld_cropland_world = tidyr::pivot_wider(land_crop_world,
   dplyr::filter(year == selected_year) %>%
   # prepare dataset for waterfall
   select(x = landleaf, y = median_value) %>%
-  arrange(x) %>%
-  mutate(x = ifelse(x %in% c("ProtectedGrassland","ProtectedUnmanagedForest",
-                             "ProtectedShrubland","ProtectedUnmanagedPasture"),
-                    sub("^(Protected)(.*)$", "\\1 \n \\2", x),
-                    x)) %>%
-  mutate(x = ifelse(x %in% c("Protected \n Grassland","Protected \n UnmanagedForest"), paste(x),
-                    ifelse(x %in% c("Protected \n Shrubland","Protected \n UnmanagedPasture"), paste(x,'\n \n'),
-                           ifelse(x %in% c("Vegetables"), paste(x,'\n'), x))))
+  mutate(x = tolower(x)) %>%
+  data.table::as.data.table()
+pld_cropland_world <- pld_cropland_world[order(pld_cropland_world$x), ]
+pld_cropland_world = pld_cropland_world %>%
+  mutate(cum_sum = cumsum(y),
+         cum_sum = ifelse(abs(y) > 10, cum_sum/2 + (cum_sum-y)/2, cum_sum + abs(y) + nchar(x)/2))
 
-pl_cropland_world = waterfall(values = pld_cropland_world$y,
-                              labels = pld_cropland_world$x,
-                              rect_text_labels = pld_cropland_world$x,
-                              total_rect_text = 'Total',
-                              calc_total = TRUE,
+pl_cropland_world = waterfall(pld_cropland_world,
+                              rect_text_labels = rep('',length(pld_cropland_world$x)),
+                              calc_total = FALSE,
                               fill_by_sign = FALSE,
                               fill_colours = color_by_sign(pld_cropland_world$y),
-                              total_rect_text_color = 'red',
-                              rect_text_size = 3,
                               put_rect_text_outside_when_value_below = 10) +
+  # text
+  geom_text(data = pld_cropland_world, aes(x = x, y = cum_sum, label = x),
+            angle = 90, color = "black", size = 9) +
   # labs
   labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World cropland abs difference (beh - ref)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 
@@ -2185,13 +2444,13 @@ pl_forestation_diffAbs_world = ggplot(data = forestation_diffAbs_world) +
   labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'World re-forestation (abs change between FVV and Reference)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_forestation_diffAbs_world, file = paste0(figures_path,"tmp_figs/",'pl2_forestation_diffAbs_world.pdf'),
@@ -2230,13 +2489,13 @@ pl_forestation_diffPer_world = ggplot(data = forestation_diffPer_world) +
   labs(y = expression(paste('Percentual change compared to Reference')), x = '', title = 'World re-forestation (% change between FVV and Reference)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_forestation_diffPer_world, file = paste0(figures_path,"tmp_figs/",'pl2_forestation_diffPer_world.pdf'),
@@ -2277,13 +2536,13 @@ pl_forestation_diffAbs_regional = ggplot(data = forestation_diffAbs_regional) +
   labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Regional re-forestation (abs change between FVV and Reference) (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_forestation_diffAbs_regional, file = paste0(figures_path,"tmp_figs/",'pl2_forestation_diffAbs_regional_freeScales.pdf'),
@@ -2304,13 +2563,13 @@ pl_forestation_diffAbs_regional = ggplot(data = forestation_diffAbs_regional) +
   labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '', title = 'Regional re-forestation (abs change between FVV and Reference) (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_forestation_diffAbs_regional, file = paste0(figures_path,"tmp_figs/",'pl2_forestation_diffAbs_regional_fixedScales.pdf'),
@@ -2369,7 +2628,7 @@ pl_forestation_diffAbs_regional_map <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
@@ -2425,7 +2684,7 @@ pl_forestation_diffPer_regional_map <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
@@ -2455,12 +2714,12 @@ plt_feed_consumption_world = ggplot(data = feed_consumption_world %>%
   ggtitle('World feed consumption') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_feed_consumption_world, file = paste0(figures_path,"tmp_figs/",'pl2_feed_consumption_world.pdf'),
@@ -2484,13 +2743,13 @@ plt_feed_consumption_regional = ggplot(data = feed_consumption_regional %>%
   ggtitle('Regional feed consumption (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_feed_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl2_feed_consumption_regional_fixedScales.pdf'),
@@ -2513,13 +2772,13 @@ plt_feed_consumption_regional = ggplot(data = feed_consumption_regional %>%
   ggtitle('Regional feed consumption (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_feed_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl2_feed_consumption_regional_freeScales.pdf'),
@@ -2547,12 +2806,12 @@ plt_fertilizer_consumption_world = ggplot(data = fertilizer_consumption_world %>
   ggtitle('World fertilizer consumption') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_fertilizer_consumption_world, file = paste0(figures_path,"tmp_figs/",'pl2_fertilizer_consumption_world.pdf'),
@@ -2569,13 +2828,13 @@ plt_fertilizer_consumption_regional =
   ggtitle('Regional fertilizer consumption (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_fertilizer_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl2_fertilizer_consumption_regional_fixedScales.pdf'),
@@ -2598,13 +2857,13 @@ plt_fertilizer_consumption_regional = ggplot(data = fertilizer_consumption_regio
   ggtitle('Regional fertilizer consumption (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_fertilizer_consumption_regional, file = paste0(figures_path,"tmp_figs/",'pl2_fertilizer_consumption_regional_freeScales.pdf'),
@@ -2626,7 +2885,6 @@ plt_fertilizer_consumption_world = ggplot(data = fertilizer_consumption_world %>
   geom_line(aes(x = year, y = value, group = scenario, color = scenario_type), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = scenario_type), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scenario_type), alpha = 0.15) +  # Shadow
-  facet_wrap(. ~ sector, nrow = 1, scales = 'free') +
   scale_color_manual(values = mypal_scen, name = 'Scenario') +
   scale_fill_manual(values = mypal_scen, name = 'Scenario') +
   # labs
@@ -2634,16 +2892,65 @@ plt_fertilizer_consumption_world = ggplot(data = fertilizer_consumption_world %>
   ggtitle('World fertilizer consumption') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_fertilizer_consumption_world, file = paste0(figures_path,"tmp_figs/",'pl2_fertilizer_consumption_trend_world.pdf'),
        width = 1000, height = 300, units = 'mm')
+
+
+
+# extra checks ===
+fertilizer_diffAbs_regional_sectorial = fertilizer_consumption_regional %>%
+  filter(sector %in% food_sector) %>%
+  # compute difference between Reference and runs
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ . - Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(Units,region,year,sector) %>%
+  dplyr::summarise(median_value = median(value)) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year)
+
+
+pl_fertilizer_regional_sectorial_bars <- ggplot(data = fertilizer_diffAbs_regional_sectorial) +
+  # barchart
+  geom_bar(aes(x = region, y = median_value, fill = as.factor(sector)),
+           stat = "identity", color = NA, width = 0.5,
+           position = position_stack(reverse = TRUE)) +
+  scale_fill_manual(values = c25, name = '') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = paste("Annual fertilizer consumption difference (Mt N)","\n")) +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_text(size=30, angle = 90),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste0('Abs diff of regional sectorial N fertilizer consumption in ',selected_year))
+ggsave(pl_fertilizer_regional_sectorial_bars, file = paste0(figures_path,'tmp_figs/pl2_fertilizer_emissions_diffAbs_regional_sectorial_bars.pdf'),
+       width = 700, height = 500, units = 'mm')
 
 #####
 
@@ -2669,13 +2976,13 @@ pl_water_irr_rfd_world = ggplot(data = water_irr_rfd_world %>%
   labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_irr_rfd_world, file = paste0(figures_path,"tmp_figs/",'pl2_water_irr_rfd_world.pdf'),
@@ -2699,13 +3006,13 @@ pl_water_irr_rfd_world = ggplot(data = water_irr_rfd_world %>%
   labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption by crop (free scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_irr_rfd_world, file = paste0(figures_path,"tmp_figs/",'pl2_water_irr_rfd_facetedFreeScales_world.pdf'),
@@ -2729,13 +3036,13 @@ pl_water_irr_rfd_world = ggplot(data = water_irr_rfd_world %>%
   labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption by crop (fixed scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_irr_rfd_world, file = paste0(figures_path,"tmp_figs/",'pl2_water_irr_rfd_facetedFixedScales_world.pdf'),
@@ -2758,7 +3065,9 @@ pld_water_irr_rfd_world = tidyr::pivot_wider(water_irr_rfd_world,
             max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
   ungroup() %>%
   # filter desired year
-  dplyr::filter(year == selected_year)
+  dplyr::filter(year == selected_year) %>%
+  mutate(crop = tolower(crop)) %>%
+  data.table::as.data.table()
 
 
 #irr
@@ -2766,22 +3075,29 @@ dat = pld_water_irr_rfd_world %>%
   filter(water == 'IRR') %>%
   select(x = crop, y = median_value) %>%
   data.table::as.data.table()
+dat <- dat[order(dat$x), ]
+dat = dat %>%
+  mutate(cum_sum = cumsum(y),
+         cum_sum = ifelse(abs(y) > 1, cum_sum/2 + (cum_sum-y)/2, cum_sum + abs(y) + nchar(x)/2))
 
-pl_water_irr_world = waterfall(values = dat$y, labels = dat$x, rect_text_labels = dat$x, total_rect_text = 'Total',
-                               calc_total = TRUE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y),
-                               rect_text_size = 3) +
+
+pl_water_irr_world = waterfall(.data = dat, rect_text_labels = rep('',length(dat$x)), total_rect_text = 'Abs',
+                               calc_total = FALSE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y)) +
+  # text
+  geom_text(data = dat, aes(x = x, y = cum_sum, label = x),
+            angle = 90, color = "black", size = 7) +
   # labs
   labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption by crop (free scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 
@@ -2790,22 +3106,28 @@ dat = pld_water_irr_rfd_world %>%
   filter(water == 'RFD') %>%
   select(x = crop, y = median_value) %>%
   data.table::as.data.table()
+dat <- dat[order(dat$x), ]
+dat = dat %>%
+  mutate(cum_sum = cumsum(y),
+         cum_sum = ifelse(abs(y) > 10, cum_sum/2 + (cum_sum-y)/2, cum_sum + abs(y) + nchar(x)/2))
 
-pl_water_rfd_world = waterfall(values = dat$y, labels = dat$x, rect_text_labels = dat$x, total_rect_text = 'Total',
-                               calc_total = TRUE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y),
-                               rect_text_size = 3) +
+pl_water_rfd_world = waterfall(.data = na.omit(dat), rect_text_labels = rep('',length(dat$x)), total_rect_text = 'Abs',
+                               calc_total = FALSE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y)) +
+  # text
+  geom_text(data = dat, aes(x = x, y = cum_sum, label = x),
+            angle = 90, color = "black", size = 7) +
   # labs
   labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption by crop (free scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_blank(),
         axis.ticks.x = element_blank(),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 
@@ -2845,13 +3167,13 @@ pl_water_irr_rfd_regional = ggplot(data = water_irr_rfd_regional %>%
   labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual Regional IRR and RFD water consumption (free scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_irr_rfd_regional, file = paste0(figures_path,"tmp_figs/",'pl2_water_irr_rfd_regional_freeScales.pdf'),
@@ -2878,13 +3200,13 @@ pl_water_irr_rfd_regional = ggplot(data = water_irr_rfd_regional %>%
   labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual Regional IRR and RFD water consumption (fixed scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_irr_rfd_regional, file = paste0(figures_path,"tmp_figs/",'pl2_water_irr_rfd_regional_fixedScales.pdf'),
@@ -2908,13 +3230,13 @@ pl_water_irr_rfd_regional = ggplot(data = water_irr_rfd_regional %>%
   labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual Regional IRR and RFD water consumption by crop (free scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_irr_rfd_regional, file = paste0(figures_path,"tmp_figs/",'pl2_water_irr_rfd_facetedFreeScales_regional.pdf'),
@@ -2938,13 +3260,13 @@ pl_water_irr_rfd_regional = ggplot(data = water_irr_rfd_regional %>%
   labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual Regional IRR and RFD water consumption by crop (fixed scales)')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_irr_rfd_regional, file = paste0(figures_path,"tmp_figs/",'pl2_water_irr_rfd_facetedFixedScales_regional.pdf'),
@@ -3110,12 +3432,12 @@ plt_crop_loss_world = ggplot(data = crop_loss$ryl.mi %>%
   labs(y = 'Relative crop loss', x = '', title = 'Annual World crop loss') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_crop_loss_world, file = paste0(figures_path,"tmp_figs/",'pl2_crop_loss_world.pdf'),
@@ -3148,12 +3470,12 @@ plt_crop_loss_regional = ggplot(data = crop_loss$ryl.mi %>%
   labs(y = 'Relative crop loss', x = '', title = 'Annual Regional crop loss (free scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_crop_loss_regional, file = paste0(figures_path,"tmp_figs/",'pl2_crop_loss_regional_freeScales.pdf'),
@@ -3185,12 +3507,12 @@ plt_crop_loss_regional = ggplot(data = crop_loss$ryl.mi %>%
   labs(y = 'Relative crop loss', x = '', title = 'Annual Regional crop loss (fixed scales)') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_crop_loss_regional, file = paste0(figures_path,"tmp_figs/",'pl2_crop_loss_regional_fixedScales.pdf'),
@@ -3198,7 +3520,24 @@ ggsave(plt_crop_loss_regional, file = paste0(figures_path,"tmp_figs/",'pl2_crop_
 
 #####
 
-#### Fig: summary fig ==============================
+# #### Fig: trade ===========================
+# # =============================
+# ag_import_vs_domestic
+#
+# pld_ag_import_vs_domestic = tidyr::pivot_wider(ag_import_vs_domestic_regional, names_from = 'scenario', values_from = 'value') %>%
+#   # compute difference between Reference and runs
+#   dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ . - Reference)) %>%
+#   # clean the dataset and keep only the "difference" columns
+#   dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+#   # reshape dataset
+#   tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+#   # compute median
+#   dplyr::group_by(region,Units,sector,subsector,year) %>%
+#   dplyr::summarise(median_value = median(value))
+# #####
+
+
+### Fig: summary fig ==============================
 # =============================
 
 ## SDG 15 ==================
@@ -3297,9 +3636,9 @@ data_summary_fertilizer = tidyr::pivot_wider(fertilizer_consumption_regional %>%
   tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
   # compute median
   dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = median(value),
-                   min_value = min(value),
-                   max_value = max(value)) %>%
+  dplyr::summarise(median_value = -median(value),
+                   min_value = -min(value),
+                   max_value = -max(value)) %>%
   # add column indicating the impact
   mutate(impact = 'avoided fertilizer usage',
          year = as.numeric(year))
@@ -3385,7 +3724,7 @@ data_summary_ch4 = tidyr::pivot_wider(nonco2_luc %>% filter(ghg == 'CH4') %>%
                    max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
   ungroup() %>%
   # add column indicating that's "ghg"
-  mutate(impact = 'avoided  CH4 emissions',
+  mutate(impact = 'avoided CH4 emissions',
          year = as.numeric(year))
 
 
@@ -3409,6 +3748,28 @@ data_summary_n2o = tidyr::pivot_wider(nonco2_luc %>% filter(ghg == 'N2O') %>%
   ungroup() %>%
   # add column indicating that's "ghg"
   mutate(impact = 'avoided N2O emissions',
+         year = as.numeric(year))
+
+# agricultural LUC CO2
+data_summary_luc_co2 = tidyr::pivot_wider(luc %>%
+                                        group_by(Units,scenario,ghg,year,region) %>%
+                                        summarise(value = sum(value)) %>%
+                                        ungroup(),
+                                      names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = -median(value),
+                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # add column indicating that's "ghg"
+  mutate(impact = 'avoided LUC CO2 emissions',
          year = as.numeric(year))
 
 
@@ -3455,28 +3816,31 @@ data_summary = bind_rows(remove_attributes(data_summary_mort),
                          remove_attributes(data_summary_ghg),
                          remove_attributes(data_summary_ch4),
                          remove_attributes(data_summary_n2o),
+                         # remove_attributes(data_summary_luc_co2),
                          remove_attributes(data_summary_irr_water),
                          remove_attributes(data_summary_water),
                          remove_attributes(data_summary_forestation),
-                         remove_attributes(data_summary_cropland),
+                         # remove_attributes(data_summary_cropland),
                          remove_attributes(data_summary_crop_loss),
                          remove_attributes(data_summary_fertilizer)
-                         )
+                         ) %>%
+  filter(year == selected_year)
 data_summary$impact = factor(data_summary$impact,
-                             levels = c('avoided  CH4 emissions',
-                                        'avoided N2O emissions',
-                                        'avoided GHG emissions',
-                                        'avoided irrigated water consumption',
+                             levels = c('avoided crop loss',
+                                        're-forestation',
                                         'avoided water consumption',
-                                        'avoided premautre deaths',
-                                        'avoided crop loss',
-                                        'avoided cropland area',
+                                        'avoided irrigated water consumption',
+                                        'avoided GHG emissions',
+                                        # 'avoided LUC CO2 emissions',
+                                        'avoided CH4 emissions',
+                                        'avoided N2O emissions',
+                                        # 'avoided cropland area',
                                         'avoided fertilizer usage',
-                                        're-forestation'))
+                                        'avoided premautre deaths'))
 data_summary$region = forcats::fct_rev(data_summary$region)
 
 pl_summary = ggplot(data_summary, aes(x = impact, y = region, fill = median_value)) +
-  geom_tile(width = 1.1, height = 1.1) +
+  geom_tile(width = 1, height = 1) +
   coord_equal() +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                        mid = '#f7f7f7', midpoint = 0,
@@ -3493,13 +3857,43 @@ pl_summary = ggplot(data_summary, aes(x = impact, y = region, fill = median_valu
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=20, angle = -45, hjust = 0),
         axis.text.y = element_text(size=20),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40),
         legend.key.height = unit(3, "cm"),
         legend.key.width = unit(1.5, "cm"))
 ggsave(pl_summary, file = paste0(figures_path,"tmp_figs/",'pl4_summary.pdf'),
        width = 300, height = 500, units = 'mm', limitsize = FALSE)
+
+
+data_summary$region = forcats::fct_rev(data_summary$region)
+data_summary$impact = forcats::fct_rev(data_summary$impact)
+
+pl_summary = ggplot(data_summary, aes(x = region, y = impact, fill = median_value)) +
+  geom_tile(width = 1, height = 1) +
+  coord_equal() +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = '% difference') +
+  guides(fill = guide_colorbar(title.position = "top")) +
+  scale_y_discrete(position = 'left') +
+  # labs
+  labs(y = '', x = '', title = 'Percentual regional difference of\ndifferent system-wide impacts') +
+  # theme
+  theme_light() +
+  theme(legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20, angle = -45, hjust = 0),
+        axis.text.y = element_text(size=20),
+        legend.text = element_text(size = 20),
+        legend.title = element_text(size = 30),
+        title = element_text(size = 30),
+        legend.key.height = unit(2, "cm"),
+        legend.key.width = unit(1, "cm"))
+ggsave(pl_summary, file = paste0(figures_path,"tmp_figs/",'pl4_summary_horitzontal.pdf'),
+       width = 500, height = 300, units = 'mm', limitsize = FALSE)
 
 
 #####
@@ -3513,8 +3907,9 @@ ggsave(pl_summary, file = paste0(figures_path,"tmp_figs/",'pl4_summary.pdf'),
 # ==============================================================================
 
 # if dataset does not exist, create it. Load it otherwise
-if (!file.exists(paste0(tmp_output_data_path,'L202.flexitarian_population_2040-2080_60-80.RData'))) {
+if (!file.exists(paste0(tmp_output_data_path,'L202.flexitarian_population_v1_2050.RData'))) {
   # combine the data frames into a single dataset
+  subdirectories <- c('V1_2050')
   subdirectories <- c('all_equal_2040_60-80', 'all_equal_2080_60-80')
   file_list <- list.files(tmp_output_data_path, pattern = "^L202.F", full.names = TRUE,
                           recursive = TRUE, include.dirs = TRUE)
@@ -3537,7 +3932,7 @@ if (!file.exists(paste0(tmp_output_data_path,'L202.flexitarian_population_2040-2
            min_flex = min(flex),
            max_flex = max(flex)) %>%
     ungroup()
-  save(all_data, file = paste0(tmp_output_data_path,'L202.flexitarian_population_2040-2080_60-80.RData'))
+  save(all_data, file = paste0(tmp_output_data_path,'L202.flexitarian_population_v1_2050.RData'))
   scen_design = all_data
   rm(all_data)
 } else {
@@ -3564,6 +3959,7 @@ ggplot(scen_design %>%
          mutate(median_flex_percentage = 100*median_flex/population) %>%
          mutate(min_flex_percentage = 100*min_flex/population) %>%
          mutate(max_flex_percentage = 100*max_flex/population)) +
+  xlim(1993,2120) +
   geom_line(aes(x = year, y = flex_percentage, group = interaction(id, region), color = region), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_flex_percentage, color = region), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_flex_percentage, ymax = max_flex_percentage, fill = region), alpha = 0.15) +  # Shadow
@@ -3575,25 +3971,26 @@ ggplot(scen_design %>%
               ungroup() %>%
               select(year, region, last_median_flex_percentage) %>%
               distinct(., .keep_all = TRUE),
-            aes(x = 2100, y = last_median_flex_percentage, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 10) +
+            aes(x = 2100, y = last_median_flex_percentage, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 15) +
   # labs
-  labs(x = ' ', y = 'Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians')) +
+  labs(x = ' ', y = 'Regional percentage of flexitarians', title = paste('Cumulative percentage of FVV')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'none', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_ci.pdf'), width = 1000, height = 1000, units = 'mm')
+ggsave(file = paste0(figures_path,"tmp_figs/pl0_originals/",'pl0_flex_percentage_ci.pdf'),  width = 900, height = 600, units = 'mm')
 
 # cum flex
 ggplot(scen_design %>%
          filter(year >= year_s, year <= year_e)) +
+  xlim(1993,2120) +
   geom_line(aes(x = year, y = flex, group = interaction(id, region), color = region), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_flex, color = region), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_flex, ymax = max_flex, fill = region), alpha = 0.15) +  # Shadow
@@ -3604,26 +4001,21 @@ ggplot(scen_design %>%
               ungroup() %>%
               select(year, region, last_median_flex) %>%
               distinct(., .keep_all = TRUE),
-            aes(x = 2100, y = last_median_flex, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 10) +  # Text
-  # # vertical lines
-  # geom_vline(xintercept = 2005) +
-  # geom_vline(xintercept = 2010) +
-  # geom_vline(xintercept = 2015) +
-  # geom_vline(xintercept = 2020) +
+            aes(x = 2100, y = last_median_flex, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 15) +  # Text
   # labs
-  labs(x = '', y = 'Regional nº of flexitarians', title = paste('Cumulative nº of flexitarians')) +
+  labs(x = '', y = 'Regional nº of flexitarians', title = paste('Cumulative nº of FVV')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'none', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_ci.pdf'), width = 1000, height = 1000, units = 'mm')
+ggsave(file = paste0(figures_path,"tmp_figs/pl0_originals/",'pl0_flex_number_ci.pdf'), width = 900, height = 600, units = 'mm')
 
 # new flex
 ggplot(scen_design %>%
@@ -3633,14 +4025,10 @@ ggplot(scen_design %>%
          mutate(min_new_flex = min_flex - lag(min_flex)) %>%
          mutate(max_new_flex = max_flex - lag(max_flex)) %>%
          mutate(median_new_flex = median(new_flex))) +
+  xlim(1993,2120) +
   geom_line(aes(x = year, y = new_flex, group = interaction(region, id), color = region), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_new_flex, color = region), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_new_flex, ymax = max_new_flex, fill = region), alpha = 0.15) +  # Shadow
-  # # vertical lines
-  # geom_vline(xintercept = 2005) +
-  # geom_vline(xintercept = 2010) +
-  # geom_vline(xintercept = 2015) +
-  # geom_vline(xintercept = 2020) +
   # text
   geom_text(data = scen_design %>%
               filter(year >= 2015) %>%
@@ -3649,21 +4037,21 @@ ggplot(scen_design %>%
               mutate(mid_new_flex = new_flex[which(year == 2030)]) %>%
               ungroup() %>% group_by(region) %>%
               mutate(mid_new_flex = median(mid_new_flex)),
-            aes(x = 2030, y = mid_new_flex, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 10) +
+            aes(x = 2030, y = mid_new_flex, label = region, color = region), hjust = -0.1, vjust = 0.5, size = 15) +
   # labs
-  labs(x = '', y = 'Regional nº of flexitarians', title = paste('Nº of new flexitarians')) +
+  labs(x = '', y = 'Regional nº of flexitarians', title = paste('Nº of new FVV')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'none', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_ci.pdf'), width = 1000, height = 1000, units = 'mm')
+ggsave(file = paste0(figures_path,"tmp_figs/pl0_originals/",'pl0_flex_new_ci.pdf'),  width = 900, height = 600, units = 'mm')
 
 #####
 
@@ -3693,13 +4081,13 @@ ggplot(scen_design %>%
   labs(x = ' ', y = 'Annual World percentage of flexitarians', title = paste('Cumulative percentage of flexitarians')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_world.pdf'), width = 500, height = 300, units = 'mm')
@@ -3722,13 +4110,13 @@ ggplot(scen_design %>%
   labs(x = ' ', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_world.pdf'), width = 500, height = 300, units = 'mm')
@@ -3761,13 +4149,13 @@ ggplot(scen_design %>%
   labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians')) +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
+        legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_world.pdf'), width = 500, height = 300, units = 'mm')
@@ -3779,7 +4167,7 @@ ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_world.pdf'), width =
 # =============================
 ### REGIONAL
 # flex percentage (free scales)
-ggplot(scen_design %>%
+pl = ggplot(scen_design %>%
          filter(year >= year_s, year <= year_e) %>%
          mutate(flex_percentage = 100*flex/population) %>%
          mutate(median_flex_percentage = 100*median_flex/population) %>%
@@ -3791,22 +4179,24 @@ ggplot(scen_design %>%
   # facet
   facet_wrap(. ~ region, scales = 'free') +
   # labs
-  labs(x = '', y = 'Annual Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians (free scales)')) +
+  labs(x = '', y = 'Annual Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians (free scales)'),
+       color = 'Sensitivity scenario', fill = 'Sensitivity scenario') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
+        legend.text = element_text(size = 50),
+        legend.title = element_text(size = 60),
+        title = element_text(size = 60),
+        legend.key.size = unit(2, "cm"))
+ggsave(pl, file = paste0(figures_path,"tmp_figs/pl0_2040-2080_60-80/",'pl0_flex_percentage_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
 
 # flex percentage (fixed scales)
-ggplot(scen_design %>%
+pl = ggplot(scen_design %>%
          filter(year >= year_s, year <= year_e) %>%
          mutate(flex_percentage = 100*flex/population) %>%
          mutate(median_flex_percentage = 100*median_flex/population) %>%
@@ -3818,24 +4208,26 @@ ggplot(scen_design %>%
   # facet
   facet_wrap(. ~ region) +
   # labs
-  labs(x = '', y = 'Annual Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians (fixed scales)')) +
+  labs(x = '', y = 'Annual Regional percentage of flexitarians', title = paste('Cumulative percentage of flexitarians (fixed scales)'),
+       color = 'Sensitivity scenario', fill = 'Sensitivity scenario') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_percentage_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
+        legend.text = element_text(size = 50),
+        legend.title = element_text(size = 60),
+        title = element_text(size = 60),
+        legend.key.size = unit(2, "cm"))
+ggsave(pl, file = paste0(figures_path,"tmp_figs/pl0_2040-2080_60-80/",'pl0_flex_percentage_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
 
 
 
 # cum flex (free scales)
-ggplot(scen_design %>%
+pl = ggplot(scen_design %>%
          filter(year >= year_s, year <= year_e)) +
   geom_line(aes(x = year, y = flex, group = interaction(id, run), color = run), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_flex, color = run), linewidth = 1, alpha = 1) +  # Median line
@@ -3843,22 +4235,24 @@ ggplot(scen_design %>%
   # facet
   facet_wrap(. ~ region, scales = 'free') +
   # labs
-  labs(x = '', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians (free scales)')) +
+  labs(x = '', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians (free scales)'),
+       color = 'Sensitivity scenario', fill = 'Sensitivity scenario') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
+        legend.text = element_text(size = 50),
+        legend.title = element_text(size = 60),
+        title = element_text(size = 60),
+        legend.key.size = unit(2, "cm"))
+ggsave(pl, file = paste0(figures_path,"tmp_figs/pl0_2040-2080_60-80/",'pl0_flex_number_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
 
 # cum flex (fixed scales)
-ggplot(scen_design %>%
+pl = ggplot(scen_design %>%
          filter(year >= year_s, year <= year_e)) +
   geom_line(aes(x = year, y = flex, group = interaction(id, run), color = run), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_flex, color = run), linewidth = 1, alpha = 1) +  # Median line
@@ -3866,24 +4260,26 @@ ggplot(scen_design %>%
   # facet
   facet_wrap(. ~ region) +
   # labs
-  labs(x = '', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians (fixed scales)')) +
+  labs(x = '', y = 'Annual World nº of flexitarians', title = paste('Cumulative nº of flexitarians (fixed scales)'),
+       color = 'Sensitivity scenario', fill = 'Sensitivity scenario') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_number_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
+        legend.text = element_text(size = 50),
+        legend.title = element_text(size = 60),
+        title = element_text(size = 60),
+        legend.key.size = unit(2, "cm"))
+ggsave(pl, file = paste0(figures_path,"tmp_figs/pl0_2040-2080_60-80/",'pl0_flex_number_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
 
 
 
 # new flex (free scales)
-ggplot(scen_design %>%
+pl = ggplot(scen_design %>%
          filter(year >= year_s, year <= year_e) %>%
          group_by(id, region, run) %>%
          mutate(new_flex = flex - lag(flex)) %>%
@@ -3896,22 +4292,24 @@ ggplot(scen_design %>%
   # facet
   facet_wrap(. ~ region, scales = 'free') +
   # labs
-  labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians (free scales)')) +
+  labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians (free scales)'),
+       color = 'Sensitivity scenario', fill = 'Sensitivity scenario') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
+        legend.text = element_text(size = 50),
+        legend.title = element_text(size = 60),
+        title = element_text(size = 60),
+        legend.key.size = unit(2, "cm"))
+ggsave(pl, file = paste0(figures_path,"tmp_figs/pl0_2040-2080_60-80/",'pl0_flex_new_regional_freeScales.pdf'), width = 1000, height = 1000, units = 'mm')
 
 # new flex (fixed scales)
-ggplot(scen_design %>%
+pl = ggplot(scen_design %>%
          filter(year >= year_s, year <= year_e) %>%
          group_by(id, region, run) %>%
          mutate(new_flex = flex - lag(flex)) %>%
@@ -3924,19 +4322,21 @@ ggplot(scen_design %>%
   # facet
   facet_wrap(. ~ region) +
   # labs
-  labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians (fixed scales')) +
+  labs(x = ' ', y = 'Annual World nº of new flexitarians', title = paste('Nº of new flexitarians (fixed scales'),
+       color = 'Sensitivity scenario', fill = 'Sensitivity scenario') +
   # theme
   theme_light() +
-  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 30),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40))
-ggsave(file = paste0(figures_path,"tmp_figs/",'pl0_flex_new_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
+        legend.text = element_text(size = 50),
+        legend.title = element_text(size = 60),
+        title = element_text(size = 60),
+        legend.key.size = unit(2, "cm"))
+ggsave(pl, file = paste0(figures_path,"tmp_figs/pl0_2040-2080_60-80/",'pl0_flex_new_regional_fixedScales.pdf'), width = 1000, height = 1000, units = 'mm')
 
 #####
 
@@ -4429,7 +4829,7 @@ protein_conv_plot <- conversions %>%
   facet_wrap(~technology, scales = "free") +
   scale_fill_manual(values = c(rep("grey50", 32), "black")) +
   theme_bw() +
-  theme(legend.position = "none") +
+  theme(legend.key.size = unit(2, "cm"), legend.position = "none") +
   geom_hline(data = avg_protein, aes(yintercept = avg_protein, color = "Average regional value")) +
   labs(x = "ID",
        y = "Grams protein per calorie of commodity",
@@ -4444,7 +4844,7 @@ fat_conv_plot <- conversions %>%
   facet_wrap(~technology, scales = "free") +
   scale_fill_manual(values = c(rep("grey50", 32), "black")) +
   theme_bw() +
-  theme(legend.position = "none") +
+  theme(legend.key.size = unit(2, "cm"), legend.position = "none") +
   geom_hline(data = avg_fat, aes(yintercept = avg_fat, color = "Average regional value")) +
   labs(x = "ID",
        y = "Grams fat per calorie of commodity",
@@ -5302,7 +5702,7 @@ protein_conv_plot_new <- ggplot(
   facet_wrap(~technology, scales = "free") +
   scale_fill_manual(values = pals::glasbey()) +
   theme_bw() +
-  theme(legend.position = "none") +
+  theme(legend.key.size = unit(2, "cm"), legend.position = "none") +
   geom_hline(data = avg_protein, aes(yintercept = avg_protein, color = "Average regional value")) +
   labs(x = "ID",
        y = "Grams protein per calorie of commodity",
@@ -5319,7 +5719,7 @@ fat_conv_plot_new <- final_new_conversions %>%
   facet_wrap(~technology, scales = "free") +
   scale_fill_manual(values = pals::glasbey()) +
   theme_bw() +
-  theme(legend.position = "none") +
+  theme(legend.key.size = unit(2, "cm"), legend.position = "none") +
   geom_hline(data = avg_fat, aes(yintercept = avg_fat, color = "Average regional value")) +
   labs(x = "ID",
        y = "Grams fat per calorie of commodity",
@@ -5338,7 +5738,7 @@ kcal_perg_plot <- final_new_conversions %>%
   facet_wrap(~technology, scales = "free") +
   scale_fill_manual(values = pals::glasbey()) +
   theme_bw() +
-  theme(legend.position = "none") +
+  theme(legend.key.size = unit(2, "cm"), legend.position = "none") +
   labs(x = "ID",
        y = "Calories in 100g",
        title = "Regional calories by commodity",
