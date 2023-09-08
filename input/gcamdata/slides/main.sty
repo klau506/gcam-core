@@ -52,9 +52,8 @@
 }
 
 
-
 \definecolor{mygray}{HTML}{7C6C6C}
-\definecolor{mygreen}{HTML}{23be86}
+\definecolor{mygreen}{HTML}{53b679}
 % \definecolor{myred}{HTML}{D73939}
 \definecolor{mywhite}{HTML}{DDDDDD}
 \definecolor{mygreengray}{HTML}{e1e8e3}
@@ -74,14 +73,20 @@
 \date{September 12, 2023}
 \titlegraphic{\includegraphics[width=3cm]{extraFigs/BC3_logo.png}}
 
-\logo{\includegraphics[height=1cm]{extraFigs/BC3_logo.png}}
+% logo
+\newcommand\AtPagemyUpperLeft[1]{\AtPageLowerLeft{%
+\put(\LenToUnit{0.85\paperwidth},\LenToUnit{0.895\paperheight}){#1}}}
+\AddToShipoutPictureFG{
+  \AtPagemyUpperLeft{{\includegraphics[height=1cm,keepaspectratio]{extraFigs/BC3_logo.png}}}
+}
+
 
 \begin{document}
 
 \begin{frame}
 \titlepage 
-\begin{tikzpicture}[remember picture,overlay]
-  \fill[white] ([xshift=6.5cm, yshift=-2.2cm] current page.center) rectangle ++(-2cm,-2cm);
+\begin{tikzpicture}[remember picture, overlay]
+  \fill[white] ([xshift=6.5cm, yshift=5.7cm] current page.center) rectangle ++(-2cm,-2cm);
 \end{tikzpicture}
 \end{frame}
 
@@ -97,21 +102,31 @@
 \section{Motivation and the Model}  % motivation and idea + model, DS, figs0 and figs food consuption
 \input{Introduction}
 
-\section{System-wide effects}
+%------------------------------------------------
+
+\section{System-Wide Effects}
 \input{SystemWideEffects}
 
-\section{Future work and doubts}
-\begin{frame}{Doubts}
+%------------------------------------------------
+
+\section{Future Work and Discussion}
+\begin{frame}
+\begin{center}
+\Huge Future Work and Discussion
+\end{center}
+\end{frame}
+
+\begin{frame}{Discussion}
 \begin{itemize}
-    \item Does it make sense the cropland area dynamic? \vspace{0.5cm}
-    \item Does it make sense nutritionally speaking the FVV diet? (Reducing animal protein and increasing nuts and legumes)
+    \item Does it make sense nutritionally speaking the FVV diet? (Reducing animal protein and increasing nuts and legumes) \vspace{0.5cm}
+    \item Does it make sense the cropland area dynamic?
 \end{itemize}
 \end{frame}
 
 \begin{frame}{Future work}
 \begin{itemize}
     \item Study nutritional values and other system-wide impacts.\vspace{0.5cm}
-    \item Create multiple scenarios to see which one has better system-wide effects. Maybe considering different regional levels of FVV?\vspace{0.5cm}
+    \item Consider additional regional sensitivity and study the derived system-wide effects. \vspace{0.5cm}
     \item Do a similar study for trade (with VWT) and transport. Maybe simplified?
 \end{itemize}
 \end{frame}
@@ -124,6 +139,9 @@
 %     \vspace{3cm}
 %     \small\textcolor{blue}{claudia.rodes@bc3research.org}
 % \end{frame}
+
+% \section{Extra slides}
+\input{Extra_slides}
 
 %------------------------------------------------
 
