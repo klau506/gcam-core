@@ -1,118 +1,171 @@
 \begin{frame}
-\begin{center}
-\Huge Motivation and the Model
-\end{center}
-\end{frame}
-%------------------------------------------------
-
-\begin{frame}
-\frametitle{Motivation}
-Literature has analyzed how a transition to healthy diets can benefit health, biodiversity, land use, and climate (Lancet-EAT)\\
-\vspace{1cm}
-But...
-\begin{itemize}
-    \item it is unclear how this transition will occur
-    \item the system-wide effects that could derive from this transition
-\end{itemize}
-\vspace{1cm}
-We'll study the Flexitarian Vegetarian or Vegan (\textbf{\textcolor{mygreen}{FVV}}) diet.
-\end{frame}
-
-\begin{frame}
-\frametitle{Objective}
-\begin{enumerate}
-    \item Create a model to deal with the uncertainty of the scenario projections \vspace{0.5cm}
-    \item Study the following effects:
-        \begin{itemize}
-            \item GHG emissions
-            \item Water consumption
-            \item Premature deaths
-            \item Land use
-            \item Nutritional values
-        \end{itemize}
-\end{enumerate}
-\end{frame}
-
-\begin{frame}
-\frametitle{The model}
-    Assumptions \vspace{0.5cm}
-    \begin{enumerate}
-        \item Each person decides to become FVV independently but is influenced by 3 factors:
-            \begin{itemize}
-                \item Social pressure
-                \item Percentage of the population following the FVV diet by 2100
-                \item Peak year when the majority of the population will shift
-            \end{itemize} \vspace{0.5cm}
-        \item Once a person decides to follow the FVV diet, will stick to this decision for the rest of the century
-    \end{enumerate}    
-\end{frame}
-
-\begin{frame}
-\frametitle{The model}
-    Binomial distribution with probability $p$ \\\vspace{4.5cm}
-    \begin{tikzpicture}[overlay,remember picture]
-      \node (person) at (5,2.5) {\includegraphics[width=2cm]{extraFigs/person.jpg}};
-      
-      \draw[->, line width = 2pt, mygreen] (person.east) -- ++(2,1) node[above right] {$p$};
-      \draw[->, line width = 4pt, mygray] (person.east) -- ++(2,-1) node[below right] {$1-p$};
-    \end{tikzpicture}
-    Where the probability $p$ is influenced by 
+    \begin{center}
+    \Huge Motivation and the Model
+    \end{center}
+    \end{frame}
+    %------------------------------------------------
+    
+    \begin{frame}
+    \frametitle{Motivation}
+    Literature has analyzed how a transition to healthy diets can benefit health, biodiversity, land use, and climate (Lancet-EAT)\\
+    \vspace{1cm}
+    But...
     \begin{itemize}
-        \item Social pressure
-        \item Percentage of the population following the FVV diet by 2100
-        \item Peak year when the majority of the population will shift
+        \item it is unclear how this transition will occur
+        \item the system-wide effects that could derive from this transition
     \end{itemize}
-    \only<2>{\begin{tikzpicture}[overlay,remember picture]
-        \node[mygreen,circle,draw,thick,minimum size=2.5cm] at (1.25,1.25) (circle) {};
-        \draw[mygreen,thick,->] (circle.east) -- +(4,0.65cm) node[right] {Exogenous};
-    \end{tikzpicture}}
-\end{frame}
-
-\begin{frame}
-\frametitle{Uncertainty considerations}
-    Each factor value is randomly chosen from a Normal Distribution $N(\mu,\sigma)$
+    \vspace{1cm}
+    We'll study the Flexitarian Vegetarian or Vegan (\textbf{\textcolor{mygreen}{FVV}}) diet, ie., a diet encompassed in any of these categories.
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{Objective}
+    \begin{enumerate}
+        \item Create a model to deal with the uncertainty of the scenario projections
+        \item Study the following effects:
+            \begin{itemize}
+                \setbeamercovered{transparent}
+                \item<1,2> \textcolor{mygreen}{SDG 2}: Alimentation
+                \only<2>{
+                    \begin{itemize}
+                        \item Macronutrients consumption
+                    \end{itemize}
+                }
+                \item<1,3> \textcolor{mygreen}{SDG 3}: Health 
+                \only<3>{
+                    \begin{itemize}
+                        \item Premature deaths due to AP
+                    \end{itemize}
+                }
+                \item<1,4> \textcolor{mygreen}{SDG 6}: Water management
+                \only<4>{
+                    \begin{itemize}
+                        \item Water consumption (total)
+                        \item Water consumption by crop and livestock
+                        \item Irrigated and Rainfed water demand
+                    \end{itemize}
+                }
+                \item<1,5> \textcolor{mygreen}{SDG 13}: Emissions
+                \only<5>{
+                    \begin{itemize}
+                        \item GHG emissions
+                        \item CH$_4$ agricultural emissions
+                        \item N$_2$O agricultural emissions
+                    \end{itemize}
+                }
+                \item<1,6> \textcolor{mygreen}{SDG 15}: Land use
+                \only<6>{
+                    \begin{itemize}
+                        \item Area of forest, pasture, cropland, and other land
+                        \item Re-forestation
+                        \item Cropland management (area and fertilizer demand)
+                        \item Crop loss due to AP
+                        \item Carbon stock
+                    \end{itemize}
+                }
+            \end{itemize}
+    \end{enumerate}
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{The model}
+        Assumptions \vspace{0.5cm}
+        \begin{enumerate}
+            \item Each person decides to become FVV independently but is influenced by 3 factors:
+                \begin{itemize}
+                    \item Social pressure weight
+                    \item Percentage of the population following the FVV diet by 2100
+                    \item Peak year when the majority of the population will shift
+                \end{itemize} \vspace{0.5cm}
+            \item Once a person decides to follow the FVV diet, will stick to this decision for the rest of the century
+        \end{enumerate}    
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{The model}
+        Binomial distribution with probability $p$ \\\vspace{4.5cm}
+        \begin{tikzpicture}[overlay,remember picture]
+          \node (person) at (5,2.5) {\includegraphics[width=2cm]{extraFigs/person.jpg}};
+          
+          \draw[->, line width = 2pt, mygreen] (person.east) -- ++(2,1) node[above right] {$p$};
+          \draw[->, line width = 4pt, mygray] (person.east) -- ++(2,-1) node[below right] {$1-p$};
+        \end{tikzpicture}
+        Where the probability $p$ is influenced by 
+        \begin{itemize}
+            \item Social pressure weight
+            \item Percentage of the population following the FVV diet by 2100
+            \item Peak year when the majority of the population will shift
+        \end{itemize}
+        \only<2>{\begin{tikzpicture}[overlay,remember picture]
+            \node[mygreen,circle,draw,thick,minimum size=2.5cm] at (1.25,1.25) (circle) {};
+            \draw[mygreen,thick,->] (circle.east) -- +(4,0.65cm) node[right] {Exogenous};
+        \end{tikzpicture}}
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{Uncertainty considerations}
+        Each factor value is randomly chosen from a Normal Distribution $N(\mu,\sigma)$
+        \begin{figure}
+            \centering
+            \includegraphics[width = 0.6\linewidth]{extraFigs/normal_distribution.png}
+        \end{figure}
+        \only<2>{\begin{tikzpicture}[overlay,remember picture]
+            \node[mygreen,circle,draw,thick,minimum size=1.5cm] at (11.25,6.25) (circle) {};
+        \end{tikzpicture}}
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{Recap}
+    \begin{tikzpicture}
+        % Boxes in the first column
+        \node[draw, rectangle, text width=3cm, minimum height=1.5cm] (box1) {\textcolor{mygreen}{Fix parameters} of social pressure influence};
+        \node[draw, rectangle, text width=3cm, minimum height=1.5cm, below=1cm of box1] (box2) {\textcolor{mygreen}{Fix parameters} of final FVV population \%};
+        \node[draw, rectangle, text width=3cm, minimum height=1.5cm, below=1cm of box2] (box3) {\textcolor{mygreen}{Fix parameters} of peak year when more FVV shifts};
+        % Box 4
+        \node[draw, rectangle, text width=3cm, minimum height=1.5cm, right=1.25cm of box2] (box4) {\textcolor{mygreen}{Compute $p$} annually following the chosen parameters};
+        % Box 5
+        \node[draw, rectangle, text width=2.75cm, minimum height=1.5cm, right=1.25cm of box4] (box5) {\textcolor{mygreen}{Create} the FVV \textcolor{mygreen}{distribution}};
+        % Box 6
+        \node[below right = 1.5cm and -3.75cm of box5] (box6) {and do this regionally};
+        
+        % Brace
+        \draw[decorate, decoration={brace, amplitude=10pt, raise=4pt}] (box1.north east) -- (box3.south east) node[midway, left=14pt] (brace) {};        
+    
+        % Arrows
+        \draw[->, thick] ([xshift=1cm] brace.east) -- (box4.west);
+        \draw[->, thick] (box4.east) -- (box5.west);
+    \end{tikzpicture}
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{Example}
     \begin{figure}
         \centering
-        \includegraphics[width = 0.6\linewidth]{extraFigs/normal_distribution.png}
+        \includegraphics[width = 0.65\linewidth]{figs/pl0_flex_number_ci.pdf}
     \end{figure}
-    \only<2>{\begin{tikzpicture}[overlay,remember picture]
-        \node[mygreen,circle,draw,thick,minimum size=1.5cm] at (11.25,6.25) (circle) {};
-    \end{tikzpicture}}
-\end{frame}
-
-\begin{frame}
-\frametitle{Recap}
-\begin{tikzpicture}
-    % Boxes in the first column
-    \node[draw, rectangle, text width=3cm, minimum height=1.5cm] (box1) {\textcolor{mygreen}{Fix parameters} of social pressure influence};
-    \node[draw, rectangle, text width=3cm, minimum height=1.5cm, below=1cm of box1] (box2) {\textcolor{mygreen}{Fix parameters} of final FVV population \%};
-    \node[draw, rectangle, text width=3cm, minimum height=1.5cm, below=1cm of box2] (box3) {\textcolor{mygreen}{Fix parameters} of peak year when more FVV shifts};
-    % Box 4
-    \node[draw, rectangle, text width=3cm, minimum height=1.5cm, right=1.25cm of box2] (box4) {\textcolor{mygreen}{Compute $p$} annually following the chosen parameters};
-    % Box 5
-    \node[draw, rectangle, text width=2.75cm, minimum height=1.5cm, right=1.25cm of box4] (box5) {\textcolor{mygreen}{Create} the FVV \textcolor{mygreen}{distribution}};
+    \end{frame}
     
-    % Brace
-    \draw[decorate, decoration={brace, amplitude=10pt, raise=4pt}] (box1.north east) -- (box3.south east) node[midway, left=14pt] (brace) {};        
-
-    % Arrows
-    \draw[->, thick] ([xshift=1cm] brace.east) -- (box4.west);
-    \draw[->, thick] (box4.east) -- (box5.west);
-\end{tikzpicture}
-\end{frame}
-
-\begin{frame}
-\frametitle{Example}
-\begin{figure}
-    \centering
-    \includegraphics[width = 0.65\linewidth]{figs/pl0_flex_number_ci.pdf}
-\end{figure}
-\end{frame}
-
-\begin{frame}
-\frametitle{Example}
-\begin{figure}
-    \centering
-    \includegraphics[width = 1\linewidth]{figs/pl1_food_consumption_6elem_world.pdf}
-\end{figure}
-\end{frame}
+    \begin{frame}
+    \frametitle{Example}
+    \begin{figure}
+        \centering
+        \includegraphics[width = 1\linewidth]{figs/pl1_food_consumption_6elem_world.pdf}
+    \end{figure}
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{Example}
+    \begin{figure}
+        \centering
+        \includegraphics[width = 0.665\linewidth]{figs/2040-2080_60-80/pl0_flex_new_regional_freeScales.pdf}
+    \end{figure}
+    \end{frame}
+    
+    \begin{frame}
+    \frametitle{Example}
+    \begin{figure}
+        \centering
+        \includegraphics[width = 0.665\linewidth]{figs/2040-2080_60-80/pl0_flex_percentage_regional_freeScales.pdf}
+    \end{figure}
+    \end{frame}
+    
