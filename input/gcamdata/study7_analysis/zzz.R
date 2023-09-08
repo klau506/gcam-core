@@ -392,7 +392,7 @@ load_crop_loss = function() {
     return(NULL)
   } else {
     print('load crop_loss')
-    load(paste0(tmp_output_data_path,'crop_loss_',sub("\\.dat$", "", prj_name),'.RData'))
+    crop_loss = get(load(paste0(tmp_output_data_path,'crop_loss_',sub("\\.dat$", "", prj_name),'.RData')))
     return(crop_loss)
   }
 }
@@ -623,12 +623,22 @@ load_queries = function() {
     filter(!is.na(water)) %>%
     filter(scenario %in% selected_scen) %>%
     filter(!crop %in% c('biomassGrass','biomassTree')) %>%
+    dplyr::mutate(crop = sub("C4$", "", crop)) %>%
+    dplyr::mutate(crop = sub("Tree$", "", crop)) %>%
+    group_by(Units, scenario, year, water, crop) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
   water_irr_rfd_regional <<- rgcam::getQuery(prj, "land allocation by crop and water source") %>%
     filter(!is.na(water)) %>%
     filter(scenario %in% selected_scen) %>%
     filter(!crop %in% c('biomassGrass','biomassTree')) %>%
+    dplyr::mutate(crop = sub("C4$", "", crop)) %>%
+    dplyr::mutate(crop = sub("Tree$", "", crop)) %>%
+    group_by(region, Units, scenario, year, water, crop) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
 
@@ -720,6 +730,25 @@ load_queries = function() {
                                   ifelse(landleaf %in% c('crops'), 'Cropland',
                                          ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
                                                 'Other land'))))
+
+  land_crop_world <<- getQuery(prj,"land allocation by crop") %>%
+    dplyr::mutate(landleaf = sub("C4$", "", landleaf)) %>%
+    dplyr::mutate(landleaf = sub("Tree$", "", landleaf)) %>%
+    group_by(Units, scenario, year, landleaf) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(scenario %in% selected_scen) %>%
+    filter(year >= year_s, year <= year_e)
+
+  land_crop_regional <<- getQuery(prj,"land allocation by crop") %>%
+    dplyr::mutate(landleaf = sub("C4$", "", landleaf)) %>%
+    dplyr::mutate(landleaf = sub("Tree$", "", landleaf)) %>%
+    group_by(Units, scenario, region, year, landleaf) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(scenario %in% selected_scen) %>%
+    filter(year >= year_s, year <= year_e)
+
 
   # carbon_stock_world <<- getQuery(prj,"vegetative carbon stock by region") %>%
   #   filter(scenario %in% selected_scen) %>%

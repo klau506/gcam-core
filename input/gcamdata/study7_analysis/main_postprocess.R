@@ -97,8 +97,8 @@ mort_total = mort_by_poll %>%
   ungroup()
 
 # compute crop_loss due to AP
-crop_loss = load_crop_loss() %>%
-  lapply(crop_loss, process_crop_loss)
+crop_loss = load_crop_loss()
+crop_loss = lapply(crop_loss, process_crop_loss)
 
 # crop_loss_by_crop_name = crop_loss %>%
 #   mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
@@ -755,7 +755,7 @@ ghg_diffAbs_regional = tidyr::pivot_wider(ghg_regional, names_from = 'scenario',
   tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
   # compute median
   dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = median(value)) %>%
+  dplyr::summarise(median_value = -median(value)) %>%
   # filter desired year
   dplyr::filter(year == selected_year) %>%
   # merge with GCAM regions
@@ -779,8 +779,8 @@ ghg_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", return
 pl_ghg_diffAbs_map <- ggplot() +
   # color map by regions
   geom_sf(data = ghg_diffAbs_regional, aes(fill = median_value)) +
-  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste(MtCO[2],' difference'))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -798,7 +798,7 @@ pl_ghg_diffAbs_map <- ggplot() +
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
-  labs(title = paste('Abs MTCO2 regional GHG avoided emissions in', selected_year))
+  labs(title = paste('Abs GHG avoided emissions in', selected_year))
 ggsave(pl_ghg_diffAbs_map, file = paste0(figures_path,'tmp_figs/pl2_ghg_diffAbs_map.pdf'), width = 500, height = 300, units = 'mm')
 
 
@@ -833,7 +833,7 @@ pl_ghg_diffPer_map <- ggplot() +
   # color map by regions
   geom_sf(data = ghg_diffPer_regional, aes(fill = median_value)) +
   scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste(MtCO[2],' % difference'))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -893,8 +893,8 @@ pl_ghg_diffAbs_world_bars <- ggplot() +
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   # title
-  labs(title = paste('Abs diff of world ghg emissions in', selected_year))
-ggsave(pl_ghg_diffAbs_world_bars, file = paste0(figures_path,'tmp_figs/pl2_ghg_diffAbs_bars_world.pdf'), width = 500, height = 150, units = 'mm')
+  labs(title = paste('Abs diff of world\nghg emissions in', selected_year))
+ggsave(pl_ghg_diffAbs_world_bars, file = paste0(figures_path,'tmp_figs/pl2_ghg_diffAbs_bars_world.pdf'), width = 300, height = 300, units = 'mm')
 
 
 ## -- ghg emission by type (per difference)
@@ -959,9 +959,9 @@ mort_diffAbs_regional = tidyr::pivot_wider(mort, names_from = 'scenario', values
   ungroup() %>%
   # compute the total deaths by region (pm25 + o3)
   group_by(year, fasst_region) %>%
-  summarise(median_value = sum(median_value),
-            min_value = sum(min_value),
-            max_value = sum(max_value)) %>%
+  summarise(median_value = -sum(median_value),
+            min_value = -sum(min_value),
+            max_value = -sum(max_value)) %>%
   ungroup() %>%
   # filter desired year
   dplyr::filter(year == selected_year) %>%
@@ -983,8 +983,8 @@ mort_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", retur
 pl_mort_diffAbs_regional_map <- ggplot() +
   # color map by regions
   geom_sf(data = mort_diffAbs_regional, aes(fill = median_value)) +
-  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided deaths (nº)","\n"))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -1047,7 +1047,7 @@ pl_mort_diffPer_regional_map <- ggplot() +
   # color map by regions
   geom_sf(data = mort_diffPer_regional, aes(fill = median_value)) +
   scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided deaths (%)","\n"))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -1157,7 +1157,6 @@ ggsave(plt_mort_regional, file = paste0(figures_path,"tmp_figs/",'pl2_mort_regio
 
 #### Fig: water consumption and withdrawals ========
 # =============================
-## == C: start water
 # water consumption
 ### WORLD
 ## -- world water consumption
@@ -1297,7 +1296,7 @@ pl_water_consumption_diffAbs_map <- ggplot() +
   # color map by regions
   geom_sf(data = water_consumption_diffAbs_regional, aes(fill = median_value)) +
   scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Annual Water flows difference (billion ",m^3,")","\n"))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -1348,7 +1347,7 @@ pl_water_consumption_diffPer_map <- ggplot() +
   # color map by regions
   geom_sf(data = water_consumption_diffPer_regional, aes(fill = median_value)) +
   scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Annual Water flows % difference","\n"))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -1406,7 +1405,7 @@ pl_water_consumption_diffAbs_regional_sectorial_bars <- ggplot() +
         panel.grid.major.x = element_blank(),
         panel.border = element_blank(),
         plot.background = element_rect(fill = "transparent",
-                                       colour = 'grey',linewidth = 2),
+                                       colour = 'grey',linewidth = 0),
         panel.background = element_rect(fill = "transparent"),
         legend.position = 'bottom', legend.direction = 'horizontal',
         strip.text = element_text(size = 20, color = 'black'),
@@ -1711,7 +1710,7 @@ pl_ch4_world = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
   scale_color_manual(values = mypal_scen, name = 'Scenario') +
   scale_fill_manual(values = mypal_scen, name = 'Scenario') +
   # labs
-  labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions prices'))) +
+  labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions'))) +
   # theme
   theme_light() +
   theme(legend.position = 'bottom', legend.direction = 'horizontal',
@@ -1723,7 +1722,7 @@ pl_ch4_world = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
         legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_ch4_world, file = paste0(figures_path,"tmp_figs/",'pl3_ch4_world.pdf'),
+ggsave(pl_ch4_world, file = paste0(figures_path,"tmp_figs/",'pl2_ch4_world.pdf'),
        width = 550, height = 500, units = 'mm', limitsize = FALSE)
 
 ### REGIONAL
@@ -1745,7 +1744,7 @@ pl_ch4_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
   # facet
   facet_wrap(. ~ region, scales = 'free') +
   # labs
-  labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions prices (free scales)'))) +
+  labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions (free scales)'))) +
   # theme
   theme_light() +
   theme(legend.position = 'bottom', legend.direction = 'horizontal',
@@ -1757,7 +1756,7 @@ pl_ch4_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
         legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ch4_regional_freeScales.pdf'),
+ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl2_ch4_regional_freeScales.pdf'),
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
 
 # (fixed scales)
@@ -1778,7 +1777,7 @@ pl_ch4_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
   # facet
   facet_wrap(. ~ region) +
   # labs
-  labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions prices (fixed scales)'))) +
+  labs(y = expression(MtCH[4]), x = '', title = expression(paste('Annual World ',CH[4],' emissions (fixed scales)'))) +
   # theme
   theme_light() +
   theme(legend.position = 'bottom', legend.direction = 'horizontal',
@@ -1790,7 +1789,7 @@ pl_ch4_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'CH4') %>%
         legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl3_ch4_regional_fixedScales.pdf'),
+ggsave(pl_ch4_regional, file = paste0(figures_path,"tmp_figs/",'pl2_ch4_regional_fixedScales.pdf'),
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
 
 #####
@@ -1814,7 +1813,7 @@ pl_n2o_world = ggplot(data = nonco2_luc %>% filter(ghg == 'N2O') %>%
   scale_color_manual(values = mypal_scen, name = 'Scenario') +
   scale_fill_manual(values = mypal_scen, name = 'Scenario') +
   # labs
-  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions prices'))) +
+  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions'))) +
   # theme
   theme_light() +
   theme(legend.position = 'bottom', legend.direction = 'horizontal',
@@ -1848,7 +1847,7 @@ pl_n2o_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'N2O') %>%
   # facet
   facet_wrap(. ~ region, scales = 'free') +
   # labs
-  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions prices (free scales)'))) +
+  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions (free scales)'))) +
   # theme
   theme_light() +
   theme(legend.position = 'bottom', legend.direction = 'horizontal',
@@ -1881,7 +1880,7 @@ pl_n2o_regional = ggplot(data = nonco2_luc %>% filter(ghg == 'N2O') %>%
   # facet
   facet_wrap(. ~ region) +
   # labs
-  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions prices (fixed scales)'))) +
+  labs(y = expression(paste(MtN[2],'O')), x = '', title = expression(paste('Annual World ',N[2],'O emissions (fixed scales)'))) +
   # theme
   theme_light() +
   theme(legend.position = 'bottom', legend.direction = 'horizontal',
@@ -2030,6 +2029,125 @@ pl_land_use_diffAbs_regional = ggplot(data = land_use_diffAbs_regional) +
         title = element_text(size = 40))
 ggsave(pl_land_use_diffAbs_regional, file = paste0(figures_path,"tmp_figs/",'pl2_land_use_diffAbs_regional_fixedScales.pdf'),
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+#####
+
+#### Fig: cropland =================================
+# =============================
+### WORLD
+
+# waterfall (abs)
+pld_cropland_world = tidyr::pivot_wider(land_crop_world,
+                                             names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ (. - Reference))) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select('year','landleaf',matches("_diff$")) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by region and crop_name
+  group_by(year, landleaf) %>%
+  summarise(median_value = median(value),
+            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # filter desired year
+  dplyr::filter(year == selected_year) %>%
+  # prepare dataset for waterfall
+  select(x = landleaf, y = median_value) %>%
+  arrange(x) %>%
+  mutate(x = ifelse(x %in% c("ProtectedGrassland","ProtectedUnmanagedForest",
+                             "ProtectedShrubland","ProtectedUnmanagedPasture"),
+                    sub("^(Protected)(.*)$", "\\1 \n \\2", x),
+                    x)) %>%
+  mutate(x = ifelse(x %in% c("Protected \n Grassland","Protected \n UnmanagedForest"), paste(x),
+                    ifelse(x %in% c("Protected \n Shrubland","Protected \n UnmanagedPasture"), paste(x,'\n \n'),
+                           ifelse(x %in% c("Vegetables"), paste(x,'\n'), x))))
+
+pl_cropland_world = waterfall(values = pld_cropland_world$y,
+                              labels = pld_cropland_world$x,
+                              rect_text_labels = pld_cropland_world$x,
+                              total_rect_text = 'Total',
+                              calc_total = TRUE,
+                              fill_by_sign = FALSE,
+                              fill_colours = color_by_sign(pld_cropland_world$y),
+                              total_rect_text_color = 'red',
+                              rect_text_size = 3,
+                              put_rect_text_outside_when_value_below = 10) +
+  # labs
+  labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World cropland abs difference (beh - ref)')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+
+ggsave(pl_cropland_world, file = paste0(figures_path,"tmp_figs/",'pl2_cropland_diffAbs_world.pdf'),
+       width = 550, height = 500, units = 'mm', limitsize = FALSE)
+
+
+# waterfall (per)
+pld_cropland_world = tidyr::pivot_wider(land_crop_world,
+                                             names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select('year','landleaf',matches("_diff$")) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by region and crop_name
+  group_by(year, landleaf) %>%
+  summarise(median_value = median(value),
+            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # filter desired year
+  dplyr::filter(year == selected_year) %>%
+  # prepare dataset for waterfall
+  select(x = landleaf, y = median_value) %>%
+  arrange(x) %>%
+  mutate(x = ifelse(x %in% c("ProtectedGrassland","ProtectedUnmanagedForest",
+                             "ProtectedShrubland","ProtectedUnmanagedPasture"),
+                    sub("^(Protected)(.*)$", "\\1 \n \\2", x),
+                    x)) %>%
+  mutate(x = ifelse(x %in% c("Protected \n Grassland","Protected \n UnmanagedForest"), paste(x),
+                    ifelse(x %in% c("Protected \n Shrubland","Protected \n UnmanagedPasture"), paste(x,'\n \n'),
+                           ifelse(x %in% c("Vegetables"), paste(x,'\n'), x))))
+
+pl_cropland_world = waterfall(values = pld_cropland_world$y,
+                              labels = pld_cropland_world$x,
+                              rect_text_labels = pld_cropland_world$x,
+                              total_rect_text = 'Total',
+                              calc_total = TRUE,
+                              fill_by_sign = FALSE,
+                              fill_colours = color_by_sign(pld_cropland_world$y),
+                              total_rect_text_color = 'red',
+                              rect_text_size = 3,
+                              put_rect_text_outside_when_value_below = 10) +
+  # labs
+  labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World cropland abs difference (beh - ref)')) +
+  # theme
+  theme_light() +
+  theme(legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+
+ggsave(pl_cropland_world, file = paste0(figures_path,"tmp_figs/",'pl2_cropland_diffPer_world.pdf'),
+       width = 550, height = 500, units = 'mm', limitsize = FALSE)
 
 #####
 
@@ -2237,7 +2355,7 @@ pl_forestation_diffAbs_regional_map <- ggplot() +
   # color map by regions
   geom_sf(data = forestation_diffAbs_regional, aes(fill = median_value)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
-                       mid = '#C2DAC1', midpoint = 0,
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste('thous. ',km^2,' difference'))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -2293,7 +2411,7 @@ pl_forestation_diffPer_regional_map <- ggplot() +
   # color map by regions
   geom_sf(data = forestation_diffPer_regional, aes(fill = median_value)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
-                       mid = '#C2DAC1', midpoint = 0,
+                       mid = '#f7f7f7', midpoint = 0,
                        name = '% difference') +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -2421,7 +2539,7 @@ plt_fertilizer_consumption_world = ggplot(data = fertilizer_consumption_world %>
   geom_line(aes(x = year, y = value, group = scenario, color = scenario_type), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = scenario_type), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scenario_type), alpha = 0.15) +  # Shadow
-  facet_wrap(. ~ sector, nrow = 1, scales = 'free') +
+  facet_wrap(. ~ sector, nrow = 4, scales = 'free') +
   scale_color_manual(values = mypal_scen, name = 'Scenario') +
   scale_fill_manual(values = mypal_scen, name = 'Scenario') +
   # labs
@@ -2438,18 +2556,11 @@ plt_fertilizer_consumption_world = ggplot(data = fertilizer_consumption_world %>
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(plt_fertilizer_consumption_world, file = paste0(figures_path,"tmp_figs/",'pl2_fertilizer_consumption_world.pdf'),
-       width = 1000, height = 300, units = 'mm')
+       width = 1000, height = 700, units = 'mm')
 
 ## REGIONAL
-plt_fertilizer_consumption_regional = ggplot(data = fertilizer_consumption_regional %>%
-                                         mutate('scenario_type' = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
-                                         group_by(region,sector,year,scenario_type) %>%
-                                         dplyr::mutate(median_value = median(value)) %>%
-                                         dplyr::mutate(min_value = min(value)) %>%
-                                         dplyr::mutate(max_value = max(value))) +
-  geom_line(aes(x = year, y = value, group = scenario, color = scenario_type), alpha = 0.3) +  # All runs lines
-  geom_line(aes(x = year, y = median_value, color = scenario_type), linewidth = 1, alpha = 1) +  # Median line
-  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scenario_type), alpha = 0.15) +  # Shadow
+plt_fertilizer_consumption_regional =
+  +  # Shadow
   facet_grid(region ~ sector) +
   scale_color_manual(values = mypal_scen, name = 'Scenario') +
   scale_fill_manual(values = mypal_scen, name = 'Scenario') +
@@ -2572,11 +2683,6 @@ ggsave(pl_water_irr_rfd_world, file = paste0(figures_path,"tmp_figs/",'pl2_water
 
 # faceted (free scales)
 pl_water_irr_rfd_world = ggplot(data = water_irr_rfd_world %>%
-                                  dplyr::mutate(crop = sub("C4$", "", crop)) %>%
-                                  dplyr::mutate(crop = sub("Tree$", "", crop)) %>%
-                                  group_by(Units, scenario, year, water, crop) %>%
-                                  summarise(value = sum(value)) %>%
-                                  ungroup() %>%
                                   dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
                                   dplyr::group_by(year,scenario_type,water,crop) %>%
                                   dplyr::mutate(median_value = median(value)) %>%
@@ -2607,11 +2713,6 @@ ggsave(pl_water_irr_rfd_world, file = paste0(figures_path,"tmp_figs/",'pl2_water
 
 # faceted (fixed scales)
 pl_water_irr_rfd_world = ggplot(data = water_irr_rfd_world %>%
-                                  dplyr::mutate(crop = sub("C4$", "", crop)) %>%
-                                  dplyr::mutate(crop = sub("Tree$", "", crop)) %>%
-                                  group_by(Units, scenario, year, water, crop) %>%
-                                  summarise(value = sum(value)) %>%
-                                  ungroup() %>%
                                   dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
                                   dplyr::group_by(year,scenario_type,water,crop) %>%
                                   dplyr::mutate(median_value = median(value)) %>%
@@ -2642,12 +2743,7 @@ ggsave(pl_water_irr_rfd_world, file = paste0(figures_path,"tmp_figs/",'pl2_water
 
 
 # waterfall
-pld_water_irr_rfd_world = tidyr::pivot_wider(water_irr_rfd_world %>%
-                                               dplyr::mutate(crop = sub("C4$", "", crop)) %>%
-                                               dplyr::mutate(crop = sub("Tree$", "", crop)) %>%
-                                               group_by(Units, scenario, year, water, crop) %>%
-                                               summarise(value = sum(value)) %>%
-                                               ungroup(),
+pld_water_irr_rfd_world = tidyr::pivot_wider(water_irr_rfd_world,
                                              names_from = 'scenario', values_from = 'value') %>%
   # compute difference between Reference and runs
   dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ (. - Reference))) %>%
@@ -2669,10 +2765,11 @@ pld_water_irr_rfd_world = tidyr::pivot_wider(water_irr_rfd_world %>%
 dat = pld_water_irr_rfd_world %>%
   filter(water == 'IRR') %>%
   select(x = crop, y = median_value) %>%
-  as.data.table()
+  data.table::as.data.table()
 
 pl_water_irr_world = waterfall(values = dat$y, labels = dat$x, rect_text_labels = dat$x, total_rect_text = 'Total',
-                               calc_total = TRUE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y)) +
+                               calc_total = TRUE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y),
+                               rect_text_size = 3) +
   # labs
   labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption by crop (free scales)')) +
   # theme
@@ -2692,10 +2789,11 @@ pl_water_irr_world = waterfall(values = dat$y, labels = dat$x, rect_text_labels 
 dat = pld_water_irr_rfd_world %>%
   filter(water == 'RFD') %>%
   select(x = crop, y = median_value) %>%
-  as.data.table()
+  data.table::as.data.table()
 
 pl_water_rfd_world = waterfall(values = dat$y, labels = dat$x, rect_text_labels = dat$x, total_rect_text = 'Total',
-                               calc_total = TRUE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y)) +
+                               calc_total = TRUE, fill_by_sign = FALSE, fill_colours = color_by_sign(dat$y),
+                               rect_text_size = 3) +
   # labs
   labs(x = '', y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption by crop (free scales)')) +
   # theme
@@ -2794,15 +2892,11 @@ ggsave(pl_water_irr_rfd_regional, file = paste0(figures_path,"tmp_figs/",'pl2_wa
 
 # faceted (free scales)
 pl_water_irr_rfd_regional = ggplot(data = water_irr_rfd_regional %>%
-                                  dplyr::mutate(crop = sub("C4$", "", crop)) %>%
-                                  group_by(region, Units, scenario, year, water, crop) %>%
-                                  summarise(value = sum(value)) %>%
-                                  ungroup() %>%
-                                  dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
-                                  dplyr::group_by(region,year,scenario_type,water,crop) %>%
-                                  dplyr::mutate(median_value = median(value)) %>%
-                                  dplyr::mutate(min_value = min(value)) %>%
-                                  dplyr::mutate(max_value = max(value))) +
+                                     dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+                                     dplyr::group_by(region,year,scenario_type,water,crop) %>%
+                                     dplyr::mutate(median_value = median(value)) %>%
+                                     dplyr::mutate(min_value = min(value)) %>%
+                                     dplyr::mutate(max_value = max(value))) +
   geom_line(aes(x = year, y = value, group = interaction(scenario_type,scenario,water), color = interaction(scenario_type, water)), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = interaction(scenario_type,water)), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type, water)), alpha = 0.15) +  # Shadow
@@ -2828,15 +2922,11 @@ ggsave(pl_water_irr_rfd_regional, file = paste0(figures_path,"tmp_figs/",'pl2_wa
 
 # faceted (fixed scales)
 pl_water_irr_rfd_regional = ggplot(data = water_irr_rfd_regional %>%
-                                  dplyr::mutate(crop = sub("C4$", "", crop)) %>%
-                                  group_by(region, Units, scenario, year, water, crop) %>%
-                                  summarise(value = sum(value)) %>%
-                                  ungroup() %>%
-                                  dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
-                                  dplyr::group_by(region,year,scenario_type,water,crop) %>%
-                                  dplyr::mutate(median_value = median(value)) %>%
-                                  dplyr::mutate(min_value = min(value)) %>%
-                                  dplyr::mutate(max_value = max(value))) +
+                                     dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+                                     dplyr::group_by(region,year,scenario_type,water,crop) %>%
+                                     dplyr::mutate(median_value = median(value)) %>%
+                                     dplyr::mutate(min_value = min(value)) %>%
+                                     dplyr::mutate(max_value = max(value))) +
   geom_line(aes(x = year, y = value, group = interaction(scenario_type,scenario,water), color = interaction(scenario_type, water)), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = interaction(scenario_type,water)), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type, water)), alpha = 0.15) +  # Shadow
@@ -2906,7 +2996,7 @@ pl_crop_loss_ryl_mi_diffAbs_map <- ggplot() +
   # color map by regions
   geom_sf(data = crop_loss_ryl_mi_diffAbs_map, aes(fill = median_value)) +
   scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+                       mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Crop losses %","\n"))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
@@ -2938,9 +3028,9 @@ crop_loss_ryl_mi_diffAbs_faceted_map = tidyr::pivot_wider(crop_loss$ryl.mi, name
   tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
   # compute median by region and crop_name
   group_by(year, fasst_region, crop_name) %>%
-  summarise(median_value = median(value),
-            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  summarise(median_value = -median(value),
+            min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
   ungroup() %>%
   # filter desired year
   dplyr::filter(year == selected_year) %>%
@@ -2962,9 +3052,9 @@ crop_loss_ryl_mi_diffAbs_faceted_map = merge(rnaturalearth::ne_countries(scale =
 pl_crop_loss_ryl_mi_diffAbs_faceted_map <- ggplot() +
   # color map by regions
   geom_sf(data = crop_loss_ryl_mi_diffAbs_faceted_map, aes(fill = median_value)) +
-  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
-                       name = expression(paste("Crop losses %","\n"))) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = expression(paste("Avoided crop losses %","\n"))) +
   # facet
   facet_wrap(. ~ crop_name) +
   # theme
@@ -2983,7 +3073,7 @@ pl_crop_loss_ryl_mi_diffAbs_faceted_map <- ggplot() +
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
-  labs(title = paste0("Relative yield losses (beh - ref) in ", selected_year))
+  labs(title = paste0("Avoided relative yield losses in ", selected_year))
 ggsave(pl_crop_loss_ryl_mi_diffAbs_faceted_map, file = paste0(figures_path,'tmp_figs/pl2_crop_loss_ryl_mi_diffAbs_faceted_map.pdf'), width = 500, height = 300, units = 'mm')
 
 
@@ -3108,11 +3198,115 @@ ggsave(plt_crop_loss_regional, file = paste0(figures_path,"tmp_figs/",'pl2_crop_
 
 #####
 
-
-# TODO: add the new impacts
 #### Fig: summary fig ==============================
 # =============================
 
+## SDG 15 ==================
+# forestation
+data_summary_forestation = tidyr::pivot_wider(land_use_regional %>%
+                                                filter(land_use_type == 'Forest'),
+                                              names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # sum all forest types
+  dplyr::group_by(region,Units,land_use_type,year,scenario) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = median(value),
+                min_value = min(value),
+                max_value = max(value)) %>%
+  # add column indicating the impact
+  mutate(impact = 're-forestation',
+         year = as.numeric(year))
+
+data_summary_cropland = tidyr::pivot_wider(land_use_regional %>%
+                                             filter(land_use_type == 'Cropland'),
+                                           names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = -median(value),
+                min_value = -min(value),
+                max_value = -max(value)) %>%
+  # add column indicating the impact
+  mutate(impact = 'avoided cropland area',
+         year = as.numeric(year))
+
+data_summary_crop_loss = unique(crop_loss$ryl.mi) %>%
+  # merge with GCAM regions
+  left_join(rfasst::fasst_reg %>%
+              dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+            multiple = 'all') %>%
+  right_join(iso_gcam_regions %>%
+               dplyr::mutate(iso = toupper(iso)) %>%
+               dplyr::rename('ISO3' = 'iso'),
+             by = 'ISO3') %>%
+  left_join(id_gcam_regions, by = 'GCAM_region_ID') %>%
+  # median by GCAM region
+  group_by(region, scenario, unit, crop_name, year) %>%
+  summarise(value = median(value)) %>%
+  ungroup() %>%
+  # keep only meaningful columns
+  select(unit, year, scenario, value, crop_name, region) %>% distinct(., .keep_all = TRUE) %>%
+  # reshape dataset
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select('unit', 'region','year','crop_name',matches("_diff$")) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by region and pollutant
+  group_by(unit, region, year, crop_name) %>%
+  summarise(median_value = median(value),
+            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
+            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # compute the total deaths by region (pm25 + o3)
+  group_by(unit, region, year) %>%
+  summarise(median_value = -sum(median_value),
+            min_value = -sum(min_value),
+            max_value = -sum(max_value)) %>%
+  ungroup() %>%
+  # add column indicating that's "mort"
+  mutate(impact = 'avoided crop loss',
+         Units = 'People',
+         year = as.numeric(as.character(year)))
+
+
+data_summary_fertilizer = tidyr::pivot_wider(fertilizer_consumption_regional %>%
+                                               group_by(Units, scenario, year, region) %>%
+                                               summarise(value = sum(value)) %>%
+                                               ungroup(),
+                                              names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = median(value),
+                   min_value = min(value),
+                   max_value = max(value)) %>%
+  # add column indicating the impact
+  mutate(impact = 'avoided fertilizer usage',
+         year = as.numeric(year))
+
+
+## SDG 6 ==================
+# total water consumption
 data_summary_water = tidyr::pivot_wider(water_consumption_regional, names_from = 'scenario', values_from = 'value') %>%
   # compute difference between Reference and runs
   dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
@@ -3122,14 +3316,39 @@ data_summary_water = tidyr::pivot_wider(water_consumption_regional, names_from =
   tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
   # compute median
   dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = median(value),
-                   min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  dplyr::summarise(median_value = -median(value),
+                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
   ungroup() %>%
-  # add column indicating that's "water"
+  # add column indicating the impact
   mutate(impact = 'avoided water consumption',
          year = as.numeric(year))
 
+# irr water consumption
+data_summary_irr_water = tidyr::pivot_wider(water_irr_rfd_regional %>%
+                                          filter(water == 'IRR') %>%
+                                          group_by(Units,scenario,region,water,year) %>%
+                                          summarise(value = sum(value)) %>%
+                                          ungroup(),
+                                        names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = -median(value),
+                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # add column indicating the impact
+  mutate(impact = 'avoided irrigated water consumption',
+         year = as.numeric(year))
+
+## SDG 13 ==================
+# total GHG
 data_summary_ghg = tidyr::pivot_wider(ghg_regional, names_from = 'scenario', values_from = 'value') %>%
   # compute difference between Reference and runs
   dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
@@ -3139,14 +3358,61 @@ data_summary_ghg = tidyr::pivot_wider(ghg_regional, names_from = 'scenario', val
   tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
   # compute median
   dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = median(value),
-                   min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  dplyr::summarise(median_value = -median(value),
+                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
   ungroup() %>%
   # add column indicating that's "ghg"
-  mutate(impact = 'avoided ghg emissions',
+  mutate(impact = 'avoided GHG emissions',
          year = as.numeric(year))
 
+# agricultural CH4
+data_summary_ch4 = tidyr::pivot_wider(nonco2_luc %>% filter(ghg == 'CH4') %>%
+                                        group_by(Units,scenario,ghg,year,region) %>%
+                                        summarise(value = sum(value)) %>%
+                                        ungroup(),
+                                      names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = -median(value),
+                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # add column indicating that's "ghg"
+  mutate(impact = 'avoided  CH4 emissions',
+         year = as.numeric(year))
+
+
+# agricultural N2O
+data_summary_n2o = tidyr::pivot_wider(nonco2_luc %>% filter(ghg == 'N2O') %>%
+                                        group_by(Units,scenario,ghg,year,region) %>%
+                                        summarise(value = sum(value)) %>%
+                                        ungroup(),
+                                      names_from = 'scenario', values_from = 'value') %>%
+  # compute difference between Reference and runs
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median
+  dplyr::group_by(region,Units,year) %>%
+  dplyr::summarise(median_value = -median(value),
+                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
+                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
+  ungroup() %>%
+  # add column indicating that's "ghg"
+  mutate(impact = 'avoided N2O emissions',
+         year = as.numeric(year))
+
+
+## SDG 3 ==================
 data_summary_mort = mort %>%
   # merge with GCAM regions
   left_join(rfasst::fasst_reg %>%
@@ -3175,24 +3441,45 @@ data_summary_mort = mort %>%
   ungroup() %>%
   # compute the total deaths by region (pm25 + o3)
   group_by(region, year) %>%
-  summarise(median_value = sum(median_value),
-            min_value = sum(min_value),
-            max_value = sum(max_value)) %>%
+  summarise(median_value = -sum(median_value),
+            min_value = -sum(min_value),
+            max_value = -sum(max_value)) %>%
   ungroup() %>%
   # add column indicating that's "mort"
   mutate(impact = 'avoided premautre deaths',
          Units = 'People',
          year = as.numeric(year))
 
+## plot ===================
 data_summary = bind_rows(remove_attributes(data_summary_mort),
                          remove_attributes(data_summary_ghg),
-                         remove_attributes(data_summary_water))
+                         remove_attributes(data_summary_ch4),
+                         remove_attributes(data_summary_n2o),
+                         remove_attributes(data_summary_irr_water),
+                         remove_attributes(data_summary_water),
+                         remove_attributes(data_summary_forestation),
+                         remove_attributes(data_summary_cropland),
+                         remove_attributes(data_summary_crop_loss),
+                         remove_attributes(data_summary_fertilizer)
+                         )
+data_summary$impact = factor(data_summary$impact,
+                             levels = c('avoided  CH4 emissions',
+                                        'avoided N2O emissions',
+                                        'avoided GHG emissions',
+                                        'avoided irrigated water consumption',
+                                        'avoided water consumption',
+                                        'avoided premautre deaths',
+                                        'avoided crop loss',
+                                        'avoided cropland area',
+                                        'avoided fertilizer usage',
+                                        're-forestation'))
+data_summary$region = forcats::fct_rev(data_summary$region)
 
 pl_summary = ggplot(data_summary, aes(x = impact, y = region, fill = median_value)) +
-  geom_tile(width = 1, height = 1) +
+  geom_tile(width = 1.1, height = 1.1) +
   coord_equal() +
-  scale_fill_gradient2(low = "#0DA800", high = "#C60000",
-                       mid = '#C2DAC1', midpoint = 0,
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
                        name = '% difference') +
   guides(fill = guide_colorbar(title.position = "top")) +
   scale_y_discrete(position = 'right') +
@@ -3204,8 +3491,8 @@ pl_summary = ggplot(data_summary, aes(x = impact, y = region, fill = median_valu
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=30, angle = -45, hjust = 0),
-        axis.text.y = element_text(size=30),
+        axis.text.x = element_text(size=20, angle = -45, hjust = 0),
+        axis.text.y = element_text(size=20),
         legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40),
