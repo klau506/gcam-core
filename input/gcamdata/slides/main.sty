@@ -41,13 +41,17 @@
   \setbeamertemplate{navigation symbols}{}
   \setbeamertemplate{caption}[numbered]
   \setbeamercolor{section number projected}{bg=mywhite,fg=mygreen}
-  \setbeamercolor{subsection number projected}{bg=mywhite,fg=mygreen}
+  \setbeamercolor{subsection number projected}{bg=mygreen,fg=mygreen}
+  \setbeamercolor{subsubsection number projected}{bg=mywhite,fg=mygreen}
   \setbeamertemplate{itemize item}{\color{mygreen}$\star$}
   \setbeamertemplate{itemize subitem}{\color{mygreen}$\triangleright$}
+  \setbeamertemplate{itemize subsubitem}{\color{mygreen}$\triangleright$}
   % Customize enumerate items
   \setbeamertemplate{enumerate items}[default]
   \setbeamercolor{enumerate item}{fg=mygreen,bg=mygray}
-} 
+}
+
+
 
 \definecolor{mygray}{HTML}{7C6C6C}
 \definecolor{mygreen}{HTML}{23be86}
@@ -66,14 +70,19 @@
 
 \title[Study7: FVV dietary shift]{IAM COMPACT Study 7\\[3mm] Dietary shift to lower animal protein consumption}
 
-\author[BC3 - Clàudia Rodés-Bachs]{}
-\date{\today}
+\author[BC3 - IAM COMPACT]{}
+\date{September 12, 2023}
 \titlegraphic{\includegraphics[width=3cm]{extraFigs/BC3_logo.png}}
+
+\logo{\includegraphics[height=1cm]{extraFigs/BC3_logo.png}}
 
 \begin{document}
 
 \begin{frame}
 \titlepage 
+\begin{tikzpicture}[remember picture,overlay]
+  \fill[white] ([xshift=6.5cm, yshift=-2.2cm] current page.center) rectangle ++(-2cm,-2cm);
+\end{tikzpicture}
 \end{frame}
 
 \begin{frame}
@@ -91,11 +100,18 @@
 \section{System-wide effects}
 \input{SystemWideEffects}
 
-\section{Future work}
+\section{Future work and doubts}
+\begin{frame}{Doubts}
+\begin{itemize}
+    \item Does it make sense the cropland area dynamic? \vspace{0.5cm}
+    \item Does it make sense nutritionally speaking the FVV diet? (Reducing animal protein and increasing nuts and legumes)
+\end{itemize}
+\end{frame}
+
 \begin{frame}{Future work}
 \begin{itemize}
-    \item Study nutritional values
-    \item Create multiple scenarios to see which one has better system-wide effects. Maybe considering different regional levels of FVV?
+    \item Study nutritional values and other system-wide impacts.\vspace{0.5cm}
+    \item Create multiple scenarios to see which one has better system-wide effects. Maybe considering different regional levels of FVV?\vspace{0.5cm}
     \item Do a similar study for trade (with VWT) and transport. Maybe simplified?
 \end{itemize}
 \end{frame}
