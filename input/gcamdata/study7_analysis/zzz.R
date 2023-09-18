@@ -5,6 +5,19 @@ protein_scenario_palette = c('plant protein.Reference' = '#00771E',
                              'animal protein.Reference' = '#8A0000',
                              'animal protein.Behavior change' = '#DB0000')
 
+### macronutrients & scenario type palette
+macronutrients_scenario_palette =
+  c('Behavior change.gFatPerCapita' = '#de99d5',
+    'Behavior change.gProteinPerCapita' = '#6cc2f0',
+    'Reference.gFatPerCapita' = '#871c79',
+    'Reference.gProteinPerCapita' = '#236e96')
+macronutrients_order_palette =
+  c('Behavior change.gFatPerCapita',
+    'Reference.gFatPerCapita',
+    'Behavior change.gProteinPerCapita',
+    'Reference.gProteinPerCapita')
+
+
 ### staples vs non-staples & scenario type palette
 staples_vs_nonstaples_scenario_palette =
   c('Behavior change.FoodDemand_NonStaples' = '#0085A5',
@@ -34,12 +47,14 @@ land_use_scenario_palette =
   c('Cropland' = 'chocolate4',
     'Pasture' = '#E6AB02',
     'Forest' = 'darkgreen',
-    'Other land' = '#66A61E')
+    'Shrubs & Grass' = '#66A61E',
+    'Other Natural' = '#b1e378')
 land_use_order_palette =
 c('Cropland',
   'Pasture',
   'Forest',
-  'Other land')
+  'Shrubs & Grass',
+  'Other Natural')
 
 ### staples vs non-staples & scenario type palette
 beef_dairy_scenario_palette =
@@ -64,6 +79,26 @@ c('Behavior change.Beef',
   'Reference.Poultry',
   'Reference.SheepGoat',
   'Reference.Dairy')
+
+### beef mixed vs pastoral & scenario type palette
+beef_type_scenario_palette =
+  c('Behavior change.Mixed' = '#d3d62d',
+    'Behavior change.Pastoral' = '#2dd64f',
+    'Reference.Mixed' = '#888a1e',
+    'Reference.Pastoral' = '#1e8a3b')
+beef_type_order_palette =
+c('Behavior change.Mixed',
+  'Behavior change.Pastoral',
+  'Reference.Mixed',
+  'Reference.Pastoral')
+
+### beef mixed vs pastoral & scenario type palette DIFF
+beef_type_diff_scenario_palette =
+  c('Mixed' = '#d3d62d',
+    'Pastoral' = '#2dd64f')
+beef_type_diff_order_palette =
+c('Mixed',
+  'Pastoral')
 
 ### food items & scenario type palette
 food_items_scenario_palette =
@@ -436,14 +471,14 @@ load_queries = function() {
 
   food_consumption_world <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
     filter(scenario %in% selected_scen) %>%
-    group_by(scenario, technology, year) %>%
+    group_by(Units, scenario, technology, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
 
   food_consumption_regional <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
     filter(scenario %in% selected_scen) %>%
-    group_by(region, scenario, technology, year) %>%
+    group_by(Units, region, scenario, technology, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
@@ -531,6 +566,20 @@ load_queries = function() {
   ag_meet_dairy_prices_regional <<- rgcam::getQuery(prj, "meat and dairy prices") %>%
     filter(scenario %in% selected_scen) %>%
     group_by(scenario, region, sector, year) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+  ag_meet_dairy_production_world <<- rgcam::getQuery(prj, "meat and dairy production by tech") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(Units, scenario, sector, subsector, year) %>%
+    summarise(value = sum(value)) %>%
+    ungroup() %>%
+    filter(year >= year_s, year <= year_e)
+
+  ag_meet_dairy_production_regional <<- rgcam::getQuery(prj, "meat and dairy production by tech") %>%
+    filter(scenario %in% selected_scen) %>%
+    group_by(Units, scenario, sector, subsector, year, region) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
     filter(year >= year_s, year <= year_e)
@@ -690,9 +739,10 @@ load_queries = function() {
     ungroup() %>%
     filter(year >= year_s, year <= year_e) %>%
     mutate(land_use_type = ifelse(landleaf %in% c("forest (managed)", "forest (unmanaged)"), 'Forest',
-                                  ifelse(landleaf %in% c('crops'), 'Cropland',
+                                  ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
                                          ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
-                                                'Other land'))))
+                                                ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
+                                                       'Other Natural')))))
 
   land_use_regional <<- getQuery(prj,"aggregated land allocation") %>%
     filter(scenario %in% selected_scen) %>%
@@ -701,9 +751,10 @@ load_queries = function() {
     ungroup() %>%
     filter(year >= year_s, year <= year_e) %>%
     mutate(land_use_type = ifelse(landleaf %in% c("forest (managed)", "forest (unmanaged)"), 'Forest',
-                                  ifelse(landleaf %in% c('crops'), 'Cropland',
+                                  ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
                                          ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
-                                                'Other land'))))
+                                                ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
+                                                       'Other Natural')))))
 
   land_crop_world <<- getQuery(prj,"land allocation by crop") %>%
     dplyr::mutate(landleaf = sub("C4$", "", landleaf)) %>%

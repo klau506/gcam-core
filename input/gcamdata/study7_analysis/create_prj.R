@@ -44,7 +44,7 @@ source(paste0(folder_analysis_path,'zzz.R'))
 #### Create prj ================================================================
 # ==============================================================================
 
-if prj does not exist, create it. Load it otherwise
+# if prj does not exist, create it. Load it otherwise
 if (!file.exists(prj_name)) {
 
   # prj = rgcam::loadProject(prj_name)
