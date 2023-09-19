@@ -412,7 +412,7 @@ pl_micronutrients_diffPer_regional <- ggplot() +
         plot.background = element_rect(fill = "transparent",
                                        colour = 'white',linewidth = 0),
         panel.background = element_rect(fill = "transparent"),
-        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        legend.key.size = unit(1,'cm'), legend.position = c(0.5,0.05), legend.direction = 'horizontal',
         strip.text = element_text(size = 20, color = 'black'),
         strip.background =element_rect(fill="transparent"),
         axis.text.x = element_blank(),
@@ -424,7 +424,7 @@ pl_micronutrients_diffPer_regional <- ggplot() +
   # title
   labs(title = paste('Percentual difference between intake in BC and Ref in', selected_year))
 ggsave(pl_micronutrients_diffPer_regional, file = paste0(figures_path,'tmp_figs/pl4_micronutrients_diffPer_betweenScen_regional_bars.pdf'),
-       width = 1000, height = 1000, units = 'mm')
+       width = 800, height = 550, units = 'mm')
 
 
 ## total diff world
