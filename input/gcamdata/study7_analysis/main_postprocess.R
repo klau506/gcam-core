@@ -729,9 +729,87 @@ ggsave(pl_food_demand_staplesVsNonStapes_regional, file = paste0(figures_path,"t
 
 
 
-## TODO
 #### econ. basket bill ---
 ### WORLD
+
+# check food consumption
+ggplot(data = food_consumption_regional %>%
+         left_join(food_subsector %>%
+                     rename('technology' = 'subsector')) %>%
+         # Pcal to kcal/capita/day
+         left_join(pop_all_regions, by = c("year", "scenario", "region")) %>%
+         # convert from Pcal to kcal/day
+         mutate(value = (value * 1e12) / (population * 365),
+                Units = "kcal/capita/day") %>%
+         # median by scenario_type
+         dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+         group_by(region,scenario_type,technology,year) %>%
+         summarise(value = median(value)) %>%
+         # diff by scenario_type
+         pivot_wider(names_from = scenario_type, values_from = value) %>%
+         mutate(diff = 100*(`Behavior change` - Reference)/Reference)) +
+  geom_bar(aes(x = year, y = diff, fill = technology), position = 'stack', stat = 'identity') +
+  geom_hline(yintercept = 0) +
+  scale_fill_manual(values = c25, name = 'Food items') +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # labs
+  labs(y = 'kcal/capita/day', x = '', title = 'Annual regional median food consumption (free scales)') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(1, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 2), color = guide_legend(nrow = 2))
+ggsave(last_plot(), file = paste0(figures_path,"tmp_figs/",'pl5_food_consumption_by_tech_freeScales.pdf'),
+       width = 1000, height = 750, units = 'mm', limitsize = FALSE)
+
+ggplot(data = food_consumption_regional %>%
+         left_join(food_subsector %>%
+                     rename('technology' = 'subsector')) %>%
+         # Pcal to kcal/capita/day
+         left_join(pop_all_regions, by = c("year", "scenario", "region")) %>%
+         # convert from Pcal to kcal/day
+         mutate(value = (value * 1e12) / (population * 365),
+                Units = "kcal/capita/day") %>%
+         # median by scenario_type
+         dplyr::mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+         group_by(region,scenario_type,technology,year) %>%
+         summarise(value = median(value)) %>%
+         # diff by scenario_type
+         pivot_wider(names_from = scenario_type, values_from = value) %>%
+         mutate(diff = 100*(`Behavior change` - Reference)/Reference)) +
+  geom_bar(aes(x = year, y = diff, fill = technology), position = 'stack', stat = 'identity') +
+  geom_hline(yintercept = 0) +
+  scale_fill_manual(values = c25, name = 'Food items') +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # labs
+  labs(y = 'kcal/capita/day', x = '', title = 'Annual regional median food consumption (fixed scales)') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(1, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 2), color = guide_legend(nrow = 2))
+ggsave(last_plot(), file = paste0(figures_path,"tmp_figs/",'pl5_food_consumption_by_tech_fixedScales.pdf'),
+       width = 1000, height = 750, units = 'mm', limitsize = FALSE)
+
+
+
+
 food_econ_basket_bill_regional = food_consumption_regional %>%
   left_join(food_subsector %>%
               rename('technology' = 'subsector')) %>%
@@ -850,7 +928,7 @@ pl_food_econ_basket_bill_diffPer_regional = ggplot(data = pld_food_econ_basket_b
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=30, angle = 90, hjust = 1, vjust = 0.25),``
+        axis.text.x = element_text(size=30, angle = 90, hjust = 1, vjust = 0.25),
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
