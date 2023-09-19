@@ -587,45 +587,129 @@ Population|Male|Aged85-89,sodium,mg/day,2,,,WHO
 Population|Male|Aged90-94,sodium,mg/day,2,,,WHO
 Population|Male|Aged95-99,sodium,mg/day,2,,,WHO
 Population|Male|Aged100+,sodium,mg/day,2,,,WHO
-Population|Female|Aged0-4,calorie,cal/day,1500,,,IMDR
-Population|Female|Aged5-9,calorie,cal/day,1500,,,IMDR
-Population|Female|Aged10-14,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged15-19,calorie,cal/day,2000,,,IMDR
-Population|Female|Aged20-24,calorie,cal/day,2100,,,IMDR
-Population|Female|Aged25-29,calorie,cal/day,2100,,,IMDR
-Population|Female|Aged30-65,calorie,cal/day,2000,,,IMDR
-Population|Female|Aged35-39,calorie,cal/day,2000,,,IMDR
-Population|Female|Aged40-44,calorie,cal/day,2000,,,IMDR
-Population|Female|Aged45-49,calorie,cal/day,2000,,,IMDR
-Population|Female|Aged50-54,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged55-59,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged60-64,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged65-69,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged70-74,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged75-79,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged80-84,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged85-89,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged90-94,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged95-99,calorie,cal/day,1800,,,IMDR
-Population|Female|Aged100+,calorie,cal/day,1800,,,IMDR
-Population|Male|Aged0-4,calorie,cal/day,1500,,,IMDR
-Population|Male|Aged5-9,calorie,cal/day,1500,,,IMDR
-Population|Male|Aged10-14,calorie,cal/day,2000,,,IMDR
-Population|Male|Aged15-19,calorie,cal/day,2600,,,IMDR
-Population|Male|Aged20-24,calorie,cal/day,2700,,,IMDR
-Population|Male|Aged25-29,calorie,cal/day,2700,,,IMDR
-Population|Male|Aged30-65,calorie,cal/day,2500,,,IMDR
-Population|Male|Aged35-39,calorie,cal/day,2500,,,IMDR
-Population|Male|Aged40-44,calorie,cal/day,2500,,,IMDR
-Population|Male|Aged45-49,calorie,cal/day,2500,,,IMDR
-Population|Male|Aged50-54,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged55-59,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged60-64,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged65-69,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged70-74,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged75-79,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged80-84,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged85-89,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged90-94,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged95-99,calorie,cal/day,2300,,,IMDR
-Population|Male|Aged100+,calorie,cal/day,2300,,,IMDR
+Population|Female|Aged0-4,riboflavin,mg/day,0.5,,,WHO
+Population|Female|Aged5-9,riboflavin,mg/day,0.75,,,WHO
+Population|Female|Aged10-14,riboflavin,mg/day,1,,,WHO
+Population|Female|Aged15-19,riboflavin,mg/day,1,,,WHO
+Population|Female|Aged20-24,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged25-29,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged30-65,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged35-39,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged40-44,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged45-49,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged50-54,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged55-59,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged60-64,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged65-69,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged70-74,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged75-79,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged80-84,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged85-89,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged90-94,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged95-99,riboflavin,mg/day,1.1,,,WHO
+Population|Female|Aged100+,riboflavin,mg/day,1.1,,,WHO
+Population|Male|Aged0-4,riboflavin,mg/day,0.5,,,WHO
+Population|Male|Aged5-9,riboflavin,mg/day,0.75,,,WHO
+Population|Male|Aged10-14,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged15-19,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged20-24,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged25-29,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged30-65,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged35-39,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged40-44,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged45-49,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged50-54,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged55-59,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged60-64,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged65-69,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged70-74,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged75-79,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged80-84,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged85-89,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged90-94,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged95-99,riboflavin,mg/day,1.3,,,WHO
+Population|Male|Aged100+,riboflavin,mg/day,1.3,,,WHO
+Population|Female|Aged0-4,niacin,mg/day,6,,,WHO
+Population|Female|Aged5-9,niacin,mg/day,10,,,WHO
+Population|Female|Aged10-14,niacin,mg/day,16,,,WHO
+Population|Female|Aged15-19,niacin,mg/day,16,,,WHO
+Population|Female|Aged20-24,niacin,mg/day,14,,,WHO
+Population|Female|Aged25-29,niacin,mg/day,14,,,WHO
+Population|Female|Aged30-65,niacin,mg/day,14,,,WHO
+Population|Female|Aged35-39,niacin,mg/day,14,,,WHO
+Population|Female|Aged40-44,niacin,mg/day,14,,,WHO
+Population|Female|Aged45-49,niacin,mg/day,14,,,WHO
+Population|Female|Aged50-54,niacin,mg/day,14,,,WHO
+Population|Female|Aged55-59,niacin,mg/day,14,,,WHO
+Population|Female|Aged60-64,niacin,mg/day,14,,,WHO
+Population|Female|Aged65-69,niacin,mg/day,14,,,WHO
+Population|Female|Aged70-74,niacin,mg/day,14,,,WHO
+Population|Female|Aged75-79,niacin,mg/day,14,,,WHO
+Population|Female|Aged80-84,niacin,mg/day,14,,,WHO
+Population|Female|Aged85-89,niacin,mg/day,14,,,WHO
+Population|Female|Aged90-94,niacin,mg/day,14,,,WHO
+Population|Female|Aged95-99,niacin,mg/day,14,,,WHO
+Population|Female|Aged100+,niacin,mg/day,14,,,WHO
+Population|Male|Aged0-4,niacin,mg/day,6,,,WHO
+Population|Male|Aged5-9,niacin,mg/day,10,,,WHO
+Population|Male|Aged10-14,niacin,mg/day,16,,,WHO
+Population|Male|Aged15-19,niacin,mg/day,16,,,WHO
+Population|Male|Aged20-24,niacin,mg/day,16,,,WHO
+Population|Male|Aged25-29,niacin,mg/day,16,,,WHO
+Population|Male|Aged30-65,niacin,mg/day,16,,,WHO
+Population|Male|Aged35-39,niacin,mg/day,16,,,WHO
+Population|Male|Aged40-44,niacin,mg/day,16,,,WHO
+Population|Male|Aged45-49,niacin,mg/day,16,,,WHO
+Population|Male|Aged50-54,niacin,mg/day,16,,,WHO
+Population|Male|Aged55-59,niacin,mg/day,16,,,WHO
+Population|Male|Aged60-64,niacin,mg/day,16,,,WHO
+Population|Male|Aged65-69,niacin,mg/day,16,,,WHO
+Population|Male|Aged70-74,niacin,mg/day,16,,,WHO
+Population|Male|Aged75-79,niacin,mg/day,16,,,WHO
+Population|Male|Aged80-84,niacin,mg/day,16,,,WHO
+Population|Male|Aged85-89,niacin,mg/day,16,,,WHO
+Population|Male|Aged90-94,niacin,mg/day,16,,,WHO
+Population|Male|Aged95-99,niacin,mg/day,16,,,WHO
+Population|Male|Aged100+,niacin,mg/day,16,,,WHO
+Population|Female|Aged0-4,vitamin b6,mg/day,0.5,,,WHO
+Population|Female|Aged5-9,vitamin b6,mg/day,0.8,,,WHO
+Population|Female|Aged10-14,vitamin b6,mg/day,1.2,,,WHO
+Population|Female|Aged15-19,vitamin b6,mg/day,1.2,,,WHO
+Population|Female|Aged20-24,vitamin b6,mg/day,1.3,,,WHO
+Population|Female|Aged25-29,vitamin b6,mg/day,1.3,,,WHO
+Population|Female|Aged30-65,vitamin b6,mg/day,1.3,,,WHO
+Population|Female|Aged35-39,vitamin b6,mg/day,1.3,,,WHO
+Population|Female|Aged40-44,vitamin b6,mg/day,1.3,,,WHO
+Population|Female|Aged45-49,vitamin b6,mg/day,1.3,,,WHO
+Population|Female|Aged50-54,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged55-59,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged60-64,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged65-69,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged70-74,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged75-79,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged80-84,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged85-89,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged90-94,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged95-99,vitamin b6,mg/day,1.5,,,WHO
+Population|Female|Aged100+,vitamin b6,mg/day,1.5,,,WHO
+Population|Male|Aged0-4,vitamin b6,mg/day,0.5,,,WHO
+Population|Male|Aged5-9,vitamin b6,mg/day,0.8,,,WHO
+Population|Male|Aged10-14,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged15-19,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged20-24,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged25-29,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged30-65,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged35-39,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged40-44,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged45-49,vitamin b6,mg/day,1.3,,,WHO
+Population|Male|Aged50-54,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged55-59,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged60-64,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged65-69,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged70-74,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged75-79,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged80-84,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged85-89,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged90-94,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged95-99,vitamin b6,mg/day,1.7,,,WHO
+Population|Male|Aged100+,vitamin b6,mg/day,1.7,,,WHO

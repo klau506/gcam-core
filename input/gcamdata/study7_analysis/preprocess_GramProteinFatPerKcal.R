@@ -476,10 +476,6 @@ ggsave(pl_micronutrients_diffPer_world, file = paste0(figures_path,'tmp_figs/pl4
        width = 550, height = 500, units = 'mm')
 
 
-### TODO: check which elements are + or - for the human health and consider the difference in the right direction
-
-
-
 ## =========== Average dietary energy supply adequacy (ADESA) =================
 
 total_regional_calories <- food_consumption_regional %>%
@@ -488,8 +484,10 @@ total_regional_calories <- food_consumption_regional %>%
   summarize(value = sum(value)) %>%
   left_join(pop_all_regions, by = c("year", "scenario", "region")) %>%
   # convert from Pcal to kcal/day
-  mutate(value = (value * 1e12) / (365),
-         units = "kcal/day")
+  mutate(value = (value * 1e12) / (population * 365),
+         Units = "kcal/capita/day") %>%
+  group_by(Units,region,scenario,year,population) %>%
+  summarise(value = sum(value))
 
 # Get population by sex and age
 # Population weighting
@@ -533,13 +531,13 @@ weighted_pop_sex_age <- weighted_pop %>%
 adesa_denominator <- weighted_pop_sex_age %>%
   left_join(mder, by = "variable") %>%
   select(-std) %>%
-  group_by(variable, year, region) %>%
+  group_by(variable, year, region, mder_units) %>%
   # compute a range because of differing physical activity levels
   summarize(cal_req_x_pop = mder * pop_sex_age,
             min_cal_req_x_pop = min * pop_sex_age,
             max_cal_req_x_pop = max * pop_sex_age) %>%
   # aggregate caloric requirements to get total regional values
-  group_by(region, year) %>%
+  group_by(region, year, mder_units) %>%
   summarize(denominator_sum = sum(cal_req_x_pop),
             min_denominator_sum = sum(min_cal_req_x_pop),
             max_denominator_sum = sum(max_cal_req_x_pop)) %>%
@@ -549,6 +547,6 @@ adesa_denominator <- weighted_pop_sex_age %>%
 adesa <- left_join(adesa_denominator, total_regional_calories) %>%
   # select(-population) %>%
   group_by(year, region, scenario) %>%
-  reframe(adesa = (value / denominator_sum) * 100, # convert to unitless and percentage
-          min_adesa = (value / min_denominator_sum) * 100,
-          max_adesa = (value / max_denominator_sum) * 100)
+  reframe(adesa = (value / denominator_sum) * population * 100, # convert to unitless and percentage
+          min_adesa = (value / min_denominator_sum) * population * 100,
+          max_adesa = (value / max_denominator_sum) * population * 100)

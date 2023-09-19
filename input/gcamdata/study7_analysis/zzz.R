@@ -17,6 +17,20 @@ macronutrients_order_palette =
     'Behavior change.gProteinPerCapita',
     'Reference.gProteinPerCapita')
 
+### kcal intake vs mder & scenario type palette
+kcal_mder_scenario_palette =
+  c('Behavior change.consumption' = '#de99d5',
+    'Behavior change.mder' = '#6cc2f0',
+    'Reference.consumption' = '#871c79')
+kcal_mder_order_palette =
+  c('Behavior change.consumption',
+    'Reference.consumption',
+    'Behavior change.mder')
+kcal_mder_labels_palette =
+  c('Behavior change.DES',
+    'Reference.DES',
+    'DER')
+
 
 ### staples vs non-staples & scenario type palette
 staples_vs_nonstaples_scenario_palette =

@@ -37,6 +37,7 @@ colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
 regions_key <- left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
   select(-1)
 
+
 #####
 
 #### SYSTEM-WIDE EFFECTS SECTION ===============================================
@@ -114,6 +115,77 @@ crop_loss = lapply(crop_loss, process_crop_loss)
 # clean memory
 rm(prj)
 gc()
+
+# compute socioeconomic data
+# Socio-econ data
+ssp_data <- read.csv(paste0(folder_analysis_path,"data/SSP2 population by demographic.csv"), skip = 1)
+ssp_data_clean <- iso_gcam_regions %>%
+  select(-region_GCAM3, -GCAM_region_ID) %>%
+  left_join(ssp_data, by = "iso", multiple = 'all') %>%
+  select(-MODEL, -REGION) %>%
+  rename(scenario = SCENARIO,
+         variable = VARIABLE,
+         unit = UNIT)
+# Remove X from year columns
+colnames(ssp_data_clean) <- gsub("X", "", colnames(ssp_data_clean))
+# Pivot longer
+ssp_data_long <- ssp_data_clean %>%
+  pivot_longer(cols = 6:24, names_to = "year", values_to = "value") %>%
+  mutate(value = value * 1e6,
+         unit = "total population")
+# Isolate reference (total) population
+reference_pop <- ssp_data_long %>%
+  filter(variable == "Population") %>%
+  rename(total_pop = value) %>%
+  select(iso, year, total_pop)
+# Join and calculate demographic shares of population
+ssp_data_final <- ssp_data_long %>%
+  filter(variable != "Population") %>%
+  left_join(reference_pop, by = c("iso", "year")) %>%
+  mutate(demo_share = value / total_pop) %>%
+  rename(sub_pop = value)  %>%
+  # Remove total male and total female pop, we want by age/sex
+  filter(!(variable %in% c("Population|Male", "Population|Female"))) %>%
+  rename(pop_units = unit)
+# Get population by sex and age
+# Population weighting
+total_regional_pop <- ssp_data_final %>%
+  filter(year >= year_s, year <= year_e) %>%
+  select(-scenario, -iso) %>%
+  # get GCAM regions instead of country names
+  left_join(regions_key, by = "country_name") %>%
+  # get total regional population
+  group_by(year, GCAM_region_ID, country_name, region) %>%
+  # isolate total population by country
+  distinct(total_pop) %>%
+  group_by(year, GCAM_region_ID, region) %>%
+  # sum for total regional population
+  mutate(total_regional_pop = sum(total_pop)) %>%
+  ungroup()
+
+weighted_pop <- ssp_data_final %>%
+  filter(year >= year_s, year <= year_e) %>%
+  select(-scenario, -iso) %>%
+  # get GCAM regions instead of country names
+  left_join(regions_key, by = "country_name") %>%
+  # get total regional population
+  left_join(total_regional_pop) %>%
+  # weight each country by its population over total regional pop
+  group_by(country_name, year) %>%
+  mutate(weight = total_pop / total_regional_pop) %>%
+  # get GCAM population
+  left_join(mutate(pop_all_regions, year = as.character(year)), by = c("region", "year"),
+            multiple = "all") %>%
+  # compute GCAM population by sex and age for each country
+  mutate(weighted_demographics = demo_share * weight * population)
+
+weighted_pop_sex_age <- weighted_pop %>%
+  select(-pop_units, -sub_pop, -total_pop, -demo_share, -weight) %>%
+  group_by(variable, year, region) %>%
+  # sum the weighted averages for each country into GCAM regions
+  summarize(pop_sex_age = sum(weighted_demographics))
+
+
 
 # crop_loss_by_crop_name = crop_loss %>%
 #   mutate(scenario_type = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
@@ -754,7 +826,7 @@ ggplot(data = food_consumption_regional %>%
   # facet
   facet_wrap(. ~ region, scales = 'free') +
   # labs
-  labs(y = 'kcal/capita/day', x = '', title = 'Annual regional median food consumption (free scales)') +
+  labs(y = '% (kcal/capita/day)', x = '', title = 'Annual regional median food consumption (free scales)') +
   # theme
   theme_light() +
   theme(legend.key.size = unit(1, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
@@ -791,7 +863,7 @@ ggplot(data = food_consumption_regional %>%
   # facet
   facet_wrap(. ~ region, scales = 'fixed') +
   # labs
-  labs(y = 'kcal/capita/day', x = '', title = 'Annual regional median food consumption (fixed scales)') +
+  labs(y = '% (kcal/capita/day)', x = '', title = 'Annual regional median food consumption (fixed scales)') +
   # theme
   theme_light() +
   theme(legend.key.size = unit(1, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
@@ -806,7 +878,6 @@ ggplot(data = food_consumption_regional %>%
   guides(fill = guide_legend(nrow = 2), color = guide_legend(nrow = 2))
 ggsave(last_plot(), file = paste0(figures_path,"tmp_figs/",'pl5_food_consumption_by_tech_fixedScales.pdf'),
        width = 1000, height = 750, units = 'mm', limitsize = FALSE)
-
 
 
 
@@ -4702,29 +4773,22 @@ ggsave(pl, file = paste0(figures_path,"tmp_figs/pl0_2040-2080_60-80/",'pl0_flex_
 #### NUTRITIONAL VALUES ========================================================
 #### Basic data ================================================================
 # ==============================================================================
-# GCAM regions and iso codes
-country_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/country_to_gcam_id.csv"))
-iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
-id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
-colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
-regions_key <- left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
+# nutrients (obtained through preprocess_nutrients_data.R)
+macronutrients_data = readr::read_csv(paste0(folder_analysis_path,"data/macronutrients_data.csv"))
+micronutrients_data = readr::read_csv(paste0(folder_analysis_path,"data/micronutrients_data.csv")) %>%
   select(-1)
 
-
-# SSP population
-ssp_data <- read.csv(paste0(folder_analysis_path,"data/SSP2 population by demographic.csv"), skip = 1)
-
-# Read in MDER (calculated exogenously, FAO data)
+# read in MDER (calculated exogenously, FAO data)
 mder <- read.csv(paste0(folder_analysis_path,"data/MDER.csv")) %>%
   rename(variable = ï..variable,
-         mder_units = unit)
-# Macronutrients (obtained through preprocess_GramProteinFatPerKcal.R)
-GramProteinFatPerKcal = readr::read_csv(paste0(folder_analysis_path,"data/GramProteinFatPerKcal.csv"))
+         mder_units = unit) %>%
+  mutate(mder_units = 'kcal/capita/day')
+
 
 
 ## =========== Macronutrients (Protein and Fat) =================
 
-## Macronutrient by Kcal of food consumption
+## macronutrient by kcal of food consumption
 macronutrients_basic = food_consumption_regional %>%
   # rename columns
   rename('GCAM_commodity' = 'technology') %>%
@@ -4735,10 +4799,11 @@ macronutrients_basic = food_consumption_regional %>%
   # convert from Pcal to kcal/capita/day
   mutate(consumptionPerCapita = (consumption * 1e12) / (population * 365),
          Units = "kcal/capita/day") %>%
-  left_join(GramProteinFatPerKcal %>%
+  left_join(macronutrients_data %>%
               select(-year) %>%
               # match regions' id with regions' name
-              left_join_keep_first_only(regions_key %>% select(-1), by = 'GCAM_region_ID'),
+              left_join(regions_key %>% select(-1), by = 'GCAM_region_ID') %>%
+              distinct(.),
             by = c('region','GCAM_commodity'), multiple = "all") %>%
   # compute total Protein and Fat [g/capita/day]
   mutate(gProteinPerCapita = consumptionPerCapita * gProteinPerKcal,
@@ -4756,8 +4821,7 @@ pl_macronutrients_world = ggplot(data = macronutrients_basic %>%
                                    group_by(scenario_type, year, macronutrient) %>%
                                    mutate(min_value = min(value),
                                           max_value = max(value),
-                                          median_value = median(value))
-) +
+                                          median_value = median(value))) +
   geom_line(aes(x = year, y = value, group = interaction(scenario_type,macronutrient,scenario), color = interaction(scenario_type,macronutrient)), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = interaction(scenario_type,macronutrient)), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type,macronutrient)), alpha = 0.15) +  # Shadow
@@ -4789,8 +4853,7 @@ pl_macronutrients_regional = ggplot(data = macronutrients_basic %>%
                                       group_by(region, scenario_type, year, macronutrient) %>%
                                       mutate(min_value = min(value),
                                              max_value = max(value),
-                                             median_value = median(value))
-) +
+                                             median_value = median(value))) +
   geom_line(aes(x = year, y = value, group = interaction(scenario_type,macronutrient,scenario), color = interaction(scenario_type,macronutrient)), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = interaction(scenario_type,macronutrient)), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type,macronutrient)), alpha = 0.15) +  # Shadow
@@ -4824,8 +4887,7 @@ pl_macronutrients_regional = ggplot(data = macronutrients_basic %>%
                                       group_by(region, scenario_type, year, macronutrient) %>%
                                       mutate(min_value = min(value),
                                              max_value = max(value),
-                                             median_value = median(value))
-) +
+                                             median_value = median(value))) +
   geom_line(aes(x = year, y = value, group = interaction(scenario_type,macronutrient,scenario), color = interaction(scenario_type,macronutrient)), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = interaction(scenario_type,macronutrient)), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type,macronutrient)), alpha = 0.15) +  # Shadow
@@ -4848,3 +4910,292 @@ pl_macronutrients_regional = ggplot(data = macronutrients_basic %>%
   guides(fill = guide_legend(nrow = 2), color = guide_legend(nrow = 2))
 ggsave(pl_macronutrients_regional, file = paste0(figures_path,"tmp_figs/",'pl4_macronutrients_regional_freeScale.pdf'),
        width = 1000, height = 1000, units = 'mm')
+
+
+
+## =========== Micronutrients (Minerals & Vitamins) =================
+
+###### plot
+## -- bars (per difference)
+micronutrients_diffPer_regional = micronutrients_data %>%
+  # compute diff between intake and RNI
+  mutate(diff = 100*(total_micronutrient_intake - byRegC_rni)/byRegC_rni) %>%
+  # compute median by scenario type
+  mutate(scenario_type = ifelse(scenario == 'Reference','Reference','Behavior change')) %>%
+  dplyr::group_by(scenario_type,region,year,nutrient_name,nutrient_units) %>%
+  dplyr::summarise(median_value = median(diff),
+                   min_value = min(diff),
+                   max_value = max(diff)) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year)
+
+
+pl_micronutrients_diffPer_regional_bars <- ggplot() +
+  # barchart
+  geom_bar(data = micronutrients_diffPer_regional |> filter(scenario_type == 'Behavior change'),
+           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  scale_fill_manual(values = c25, name = '') +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = 'Percentual difference between intake and RNI') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Behavior change scen'))
+ggsave(pl_micronutrients_diffPer_regional_bars, file = paste0(figures_path,'tmp_figs/pl4_micronutrients_diffPer_BC_regional_bars.pdf'),
+       width = 1000, height = 1000, units = 'mm')
+
+pl_micronutrients_diffPer_regional_bars <- ggplot() +
+  # barchart
+  geom_bar(data = micronutrients_diffPer_regional |> filter(scenario_type == 'Reference'),
+           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  scale_fill_manual(values = c25, name = '') +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = 'Percentual difference between intake and RNI') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Reference scen'))
+ggsave(pl_micronutrients_diffPer_regional_bars, file = paste0(figures_path,'tmp_figs/pl4_micronutrients_diffPer_Ref_regional_bars.pdf'),
+       width = 1000, height = 1000, units = 'mm')
+
+
+
+## total diff regional
+micronutrients_diffPer_regional = micronutrients_data %>%
+  # compute difference between Reference and runs
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'total_micronutrient_intake') %>%
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by scenario type
+  dplyr::group_by(region,year,nutrient_name,nutrient_units) %>%
+  dplyr::summarise(median_value = median(value),
+                   min_value = min(value),
+                   max_value = max(value)) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year)
+
+
+pl_micronutrients_diffPer_regional <- ggplot() +
+  # barchart
+  geom_bar(data = micronutrients_diffPer_regional,
+           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  scale_fill_manual(values = c25, name = '') +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = 'Percentual difference between intake and RNI') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(1,'cm'), legend.position = c(0.5,0.05), legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste('Percentual difference between intake in BC and Ref in', selected_year))
+ggsave(pl_micronutrients_diffPer_regional, file = paste0(figures_path,'tmp_figs/pl4_micronutrients_diffPer_betweenScen_regional_bars.pdf'),
+       width = 800, height = 550, units = 'mm')
+
+
+## total diff world
+micronutrients_diffPer_world = micronutrients_data %>%
+  # compute difference between Reference and runs
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'total_micronutrient_intake') %>%
+  dplyr::mutate_at(vars(starts_with("Flex.ds.beh")), list(diff = ~ 100*(. - Reference)/Reference)) %>%
+  # clean the dataset and keep only the "difference" columns
+  dplyr::select(-c(matches("[0-9]$"),'Reference')) %>%
+  # reshape dataset
+  tidyr::pivot_longer(cols = starts_with("Flex.ds.beh"), names_to = 'scenario') %>%
+  # compute median by scenario type
+  dplyr::group_by(year,nutrient_name,nutrient_units) %>%
+  dplyr::summarise(median_value = median(value),
+                   min_value = min(value),
+                   max_value = max(value)) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year)
+
+
+pl_micronutrients_diffPer_world <- ggplot() +
+  # barchart
+  geom_bar(data = micronutrients_diffPer_world,
+           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  scale_fill_manual(values = c25, name = '') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = 'Percentual difference between intake and RNI') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste('Percentual difference between intake in BC and Ref in', selected_year))
+ggsave(pl_micronutrients_diffPer_world, file = paste0(figures_path,'tmp_figs/pl4_micronutrients_diffPer_betweenScen_world_bars.pdf'),
+       width = 550, height = 500, units = 'mm')
+
+
+
+
+
+## ======================= Food security metrics =============================
+
+kcal_intake = food_consumption_regional %>%
+  # TODO: find data of nutritional values of FiberCrop (introduce it in the average_data)
+  filter(technology != 'FiberCrop') %>%
+  left_join(pop_all_regions, by = c("year", "scenario", "region")) %>%
+  # convert from Pcal to kcal/day
+  mutate(value = (value * 1e12) / (population * 365),
+         Units = "kcal/capita/day") %>%
+  # rename columns
+  rename('GCAM_commodity' = 'technology',
+         'consumption' = 'value') %>%
+  # total kcal intake
+  group_by(Units,region,scenario,year,population) %>%
+  summarise(consumption = sum(consumption))
+
+kcal_mder = left_join(mder, weighted_pop_sex_age) %>%
+  mutate(mder = mder * pop_sex_age) %>%
+  group_by(mder_units,year,region) %>%
+  summarise(mder = sum(mder),
+            population = sum(pop_sex_age)) %>%
+  mutate(mder = mder / population)
+
+
+# comparison between DER and DES
+des_der = merge(kcal_intake %>%
+                  select(-population),
+                kcal_mder %>%
+                  select(-c(population, mder_units))) %>%
+  mutate(diff = consumption - mder) %>%
+  mutate('scenario_type' = ifelse(scenario == 'Reference', 'Reference', 'Behavior change')) %>%
+  pivot_longer(cols = c(consumption, mder), names_to = 'type') %>%
+  filter(!(type == "mder")) # TODO: consider DER and compute some food security indicator
+
+
+plt_kcal_intake = ggplot(des_der %>%
+                                   group_by(year, region, scenario_type, type) %>%
+                                   mutate(median_value = median(value),
+                                          min_value = min(value),
+                                          max_value = max(value))) +
+  geom_line(aes(x = year, y = value, group = interaction(scenario,type), color = interaction(scenario_type,type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, group = interaction(scenario,type), color = interaction(scenario_type,type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type,type)), alpha = 0.15) +  # Shadow
+  facet_wrap(. ~ region, scales = 'free') +
+  scale_color_manual(values = kcal_mder_scenario_palette,
+                     breaks = kcal_mder_order_palette,
+                     labels = kcal_mder_labels_palette,
+                     name = 'Variable') +
+  scale_fill_manual(values = kcal_mder_scenario_palette,
+                    breaks = kcal_mder_order_palette,
+                    labels = kcal_mder_labels_palette,
+                    name = 'Variable') +
+  # labs
+  labs(y = 'kcal/capita/day', x = '', labs = 'Regional daily per capita kcal consumption (free scales)') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(plt_kcal_intake, file = paste0(figures_path,"tmp_figs/",'pl4_kcal_intake_regional_freeScales.pdf'),
+       width = 1000, height = 1000, units = 'mm')
+
+plt_kcal_intake = ggplot(des_der %>%
+                                   group_by(year, region, scenario_type, type) %>%
+                                   mutate(median_value = median(value),
+                                          min_value = min(value),
+                                          max_value = max(value))) +
+  geom_line(aes(x = year, y = value, group = interaction(scenario,type), color = interaction(scenario_type,type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, group = interaction(scenario,type), color = interaction(scenario_type,type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(scenario_type,type)), alpha = 0.15) +  # Shadow
+  facet_wrap(. ~ region, scales = 'fixed') +
+  scale_color_manual(values = kcal_mder_scenario_palette,
+                     breaks = kcal_mder_order_palette,
+                     labels = kcal_mder_labels_palette,
+                     name = 'Variable') +
+  scale_fill_manual(values = kcal_mder_scenario_palette,
+                    breaks = kcal_mder_order_palette,
+                    labels = kcal_mder_labels_palette,
+                    name = 'Variable') +
+  # labs
+  labs(y = 'kcal/capita/day', x = '', labs = 'Regional daily per capita kcal consumption (fixed scales)') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(plt_kcal_intake, file = paste0(figures_path,"tmp_figs/",'pl4_kcal_intake_regional_fixedScales.pdf'),
+       width = 1000, height = 1000, units = 'mm')
+
+
