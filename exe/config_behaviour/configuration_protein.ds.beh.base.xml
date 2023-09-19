@@ -108,6 +108,9 @@
 		<Value name = "new_ref">../input/policy/diets/nonstaple_incelas_0.4.xml</Value>	
         <Value name = "beh_scen">../input/gcamdata/xml/food_flexitarian_XXX.xml</Value>
 
+		<!-- Fix South America Northern -->
+        <Value name = "gdp_southAmN">../input/policy/diets/gdp_fix_SouthAmericaNorthern.xml</Value>
+
 		<!-- Solver -->
 		<Value name = "solver">../input/solution/cal_broyden_config.xml</Value>
 		
