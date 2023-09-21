@@ -160,14 +160,19 @@ module_aglu_L202.an_input <- function(command, ...) {
         filter(year %in% MODEL_BASE_YEARS)
     }
 
-    L202.an_Prod_Mt_R_C_Sys_Fd_Y.mlt <- get_join_filter("L107.an_Prod_Mt_R_C_Sys_Fd_Y")
-    L202.an_Feed_Mt_R_C_Sys_Fd_Y.mlt <- get_join_filter("L108.an_Feed_Mt_R_C_Sys_Fd_Y_adj")
+    L202.an_Prod_Mt_R_C_Sys_Fd_Y.mlt <- left_join_keep_first_only(get_join_filter("L107.an_Prod_Mt_R_C_Sys_Fd_Y"),
+                                                                  A_an_subsector %>% select(GCAM_commodity = supplysector, subsector0),
+                                                                  by = 'GCAM_commodity')
+    L202.an_Feed_Mt_R_C_Sys_Fd_Y.mlt <- left_join_keep_first_only(get_join_filter("L108.an_Feed_Mt_R_C_Sys_Fd_Y_adj"),
+                                                                  A_an_subsector %>% select(GCAM_commodity = supplysector, subsector0),
+                                                                  by = 'GCAM_commodity')
     L202.ag_Feed_Mt_R_C_Y.mlt <- get_join_filter("L108.ag_Feed_Mt_R_C_Y")
 
     L202.an_FeedIO_R_C_Sys_Fd_Y.mlt <- L107.an_FeedIO_R_C_Sys_Fd_Y %>%
       left_join_error_no_match(GCAM_region_names, by = "GCAM_region_ID") %>%
-      filter(year %in% MODEL_BASE_YEARS)
-
+      filter(year %in% MODEL_BASE_YEARS) %>%
+      left_join_keep_first_only(A_an_subsector %>% select(GCAM_commodity = supplysector, subsector0),
+                                by = 'GCAM_commodity')
 
 
     # L202.RenewRsrc: generic resource attributes
@@ -306,7 +311,7 @@ module_aglu_L202.an_input <- function(command, ...) {
 
     # L202.SubsectorAll_an: generic animal production subsector info (164-167)
     A_an_subsector %>%
-      write_to_all_regions(c(LEVEL2_DATA_NAMES[["SubsectorAll"]], LOGIT_TYPE_COLNAME), GCAM_region_names) ->
+      write_to_all_regions(c(LEVEL2_DATA_NAMES[["SubsectorAll"]], 'subsector0', LOGIT_TYPE_COLNAME), GCAM_region_names) ->
       L202.SubsectorAll_an
 
     # L202.GlobalTechShrwt_an: global technology default share-weights
@@ -315,18 +320,18 @@ module_aglu_L202.an_input <- function(command, ...) {
       mutate(sector.name = supplysector,
              subsector.name = subsector,
              share.weight = 1) %>%
-      write_to_all_regions(LEVEL2_DATA_NAMES[["GlobalTechShrwt"]], GCAM_region_names) ->
+      write_to_all_regions(c(LEVEL2_DATA_NAMES[["GlobalTechShrwt"]], 'subsector0'), GCAM_region_names) ->
       L202.GlobalTechShrwt_an
 
     # L202.StubTechInterp_an: shareweight interpolation for animal production technologies (173-175)
     A_an_technology %>%
-      write_to_all_regions(LEVEL2_DATA_NAMES[["TechInterp"]], GCAM_region_names) %>%
+      write_to_all_regions(c(LEVEL2_DATA_NAMES[["TechInterp"]], 'subsector0'), GCAM_region_names) %>%
       rename(stub.technology = technology) ->
       L202.StubTechInterp_an
 
     # L202.StubTechProd_an: animal production by technology and region (177-199)
     A_an_technology %>%
-      write_to_all_regions(LEVEL2_DATA_NAMES[["Tech"]], GCAM_region_names) %>%
+      write_to_all_regions(c(LEVEL2_DATA_NAMES[["Tech"]], 'subsector0'), GCAM_region_names) %>%
       rename(stub.technology = technology) %>%
       repeat_add_columns(tibble(year = MODEL_BASE_YEARS)) %>%
       left_join(L202.an_Prod_Mt_R_C_Sys_Fd_Y.mlt %>%
@@ -339,14 +344,14 @@ module_aglu_L202.an_input <- function(command, ...) {
              share.weight.year = year,
              subs.share.weight = if_else(calOutputValue > 0, 1, 0),
              tech.share.weight = if_else(calOutputValue > 0, 1, 0)) %>%
-      select(LEVEL2_DATA_NAMES[["StubTechProd"]]) ->
+      select(c(LEVEL2_DATA_NAMES[["StubTechProd"]], 'subsector0')) ->
       L202.StubTechProd_an
 
     # In general, technologies need to be aggregated to compute subsector share-weights. If any technology
     # within a subsector has a value > 0, then the subsector share-weight should be 1.
     # Some subsectors have multiple technologies, so shareweights should be derived from aggregation
     L202.StubTechProd_an %>%
-      group_by(region, supplysector, subsector, year) %>%
+      group_by(region, supplysector, subsector, subsector0, year) %>%
       summarise(subs.share.weight = sum(calOutputValue)) %>%
       ungroup %>%
       mutate(subs.share.weight = if_else(subs.share.weight > 0, 1, 0)) ->
@@ -355,17 +360,17 @@ module_aglu_L202.an_input <- function(command, ...) {
     # Override the share weights in the production table
     L202.StubTechProd_an %>%
       select(-subs.share.weight) %>%
-      left_join_error_no_match(L202.an_subs_sw, by = c("region", "supplysector", "subsector", "year")) ->
+      left_join_error_no_match(L202.an_subs_sw, by = c("region", "supplysector", "subsector0", "subsector", "year")) ->
       L202.StubTechProd_an
 
     # L202.StubTechCoef_an: animal production input-output coefficients by technology and region (201-214)
     A_an_technology %>%
-      write_to_all_regions(c(LEVEL2_DATA_NAMES[["Tech"]], "minicam.energy.input", "market.name"), GCAM_region_names) %>%
+      write_to_all_regions(c(LEVEL2_DATA_NAMES[["Tech"]], "subsector0", "minicam.energy.input", "market.name"), GCAM_region_names) %>%
       rename(stub.technology = technology) %>%
       repeat_add_columns(tibble(year = c(MODEL_BASE_YEARS, MODEL_FUTURE_YEARS))) %>%
       # not everything has a match so need to use left_join
       left_join(L202.an_FeedIO_R_C_Sys_Fd_Y.mlt,
-                by = c("region", "supplysector" = "GCAM_commodity",
+                by = c("region", "supplysector" = "GCAM_commodity", "subsector0",
                        "subsector" = "system", "minicam.energy.input" = "feed",
                        "year")) %>%
       mutate(coefficient = round(value, aglu.DIGITS_CALOUTPUT)) %>%
@@ -378,9 +383,9 @@ module_aglu_L202.an_input <- function(command, ...) {
     L202.StubTechCoef_an %>%
       filter(year > final_coef_year) %>%
       select(-coefficient) %>%
-      left_join(final_coef_year_data, by = c("region", "supplysector", "subsector", "stub.technology", "minicam.energy.input", "market.name")) %>%
+      left_join(final_coef_year_data, by = c("region", "supplysector", "subsector0", "subsector", "stub.technology", "minicam.energy.input", "market.name")) %>%
       bind_rows(filter(L202.StubTechCoef_an, ! year > final_coef_year)) %>%
-      select(LEVEL2_DATA_NAMES[["StubTechCoef"]]) ->
+      select(c(LEVEL2_DATA_NAMES[["StubTechCoef"]], "subsector0")) ->
       L202.StubTechCoef_an
 
     # Supplemental calculation of non-input cost of animal production (216-261)
@@ -474,7 +479,7 @@ module_aglu_L202.an_input <- function(command, ...) {
       filter(minicam.energy.input == "water_td_an_W") %>%
       mutate(watercost_an = water.DEFAULT_BASEYEAR_WATER_PRICE * coefficient) %>%
       filter(year == max(MODEL_BASE_YEARS)) %>%
-      select(region, GCAM_commodity = supplysector, system = subsector, feed = technology, watercost_an)->
+      select(region, GCAM_commodity = supplysector, subsector0, system = subsector, feed = technology, watercost_an)->
       L202.an_WaterCost
 
     # Calculate the total cost of all inputs, for each animal commodity, first matching in the feed quantity and the price
@@ -482,15 +487,15 @@ module_aglu_L202.an_input <- function(command, ...) {
       filter(year == max(MODEL_BASE_YEARS),
              !region %in% aglu.NO_AGLU_REGIONS) %>%
       rename(Prod_Mt = value) %>%
-      left_join_error_no_match(select(L202.an_Feed_Mt_R_C_Sys_Fd_Y.mlt, GCAM_region_ID, GCAM_commodity, system, feed, year, Feed_Mt = value),
-                               by = c("GCAM_region_ID", "GCAM_commodity", "system", "feed", "year")) %>%
+      left_join_error_no_match(select(L202.an_Feed_Mt_R_C_Sys_Fd_Y.mlt, GCAM_region_ID, GCAM_commodity, system, subsector0, feed, year, Feed_Mt = value),
+                               by = c("GCAM_region_ID", "GCAM_commodity", "system", "subsector0", "feed", "year")) %>%
       left_join_error_no_match(L202.ag_FeedCost_USDkg_R_F, by = c("region", "feed" = "supplysector")) %>%
       rename(FeedPrice_USDkg = price) %>%
       left_join(L1321.an_prP_R_C_75USDkg, by = c("GCAM_region_ID", "GCAM_commodity", "region")) %>%
       # gpk 2020-08-05 for any regions that may have missing data, use the median values computed above as defaults
       left_join_error_no_match(L202.DefaultAnPrices, by = "GCAM_commodity") %>%
       mutate(CommodityPrice_USDkg = if_else(is.na(value), DefaultCommodityPrice_USDkg, value)) %>%
-      left_join(L202.an_WaterCost, by = c("GCAM_commodity", "system", "feed", "region")) %>%
+      left_join(L202.an_WaterCost, by = c("GCAM_commodity", "system", "subsector0", "feed", "region")) %>%
       replace_na(list(watercost_an = 0)) %>%
       # adjust prices using water cost first
       mutate(CommodityPrice_USDkg = CommodityPrice_USDkg - watercost_an) %>%
@@ -577,11 +582,11 @@ module_aglu_L202.an_input <- function(command, ...) {
       mutate(stub.technology = technology,
              minicam.non.energy.input = "non-feed") %>%
       left_join_error_no_match(L202.an_nonFeedCost_R_C_3 %>%
-                  select(region, supplysector = GCAM_commodity, subsector = system,
+                  select(region, supplysector = GCAM_commodity, subsector = system, subsector0,
                          stub.technology = feed, nonFeedCost),
-                  by = c("supplysector", "subsector", "region", "stub.technology")) %>%
+                  by = c("supplysector", "subsector0", "subsector", "region", "stub.technology")) %>%
       mutate(input.cost = round(nonFeedCost, aglu.DIGITS_CALPRICE)) %>%
-      select(LEVEL2_DATA_NAMES[["StubTechCost"]]) ->
+      select(c(LEVEL2_DATA_NAMES[["StubTechCost"]], "subsector0")) ->
       L202.StubTechCost_an
 
 
