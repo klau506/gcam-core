@@ -1,0 +1,2017 @@
+"","GCAM_region_ID","Indicator.Name","region","year","value"
+"1",1,"Population, female","USA","1960",92335336
+"2",2,"Population, female","Africa_Eastern","1960",32071728
+"3",3,"Population, female","Africa_Northern","1960",27719299
+"4",4,"Population, female","Africa_Southern","1960",17780564
+"5",5,"Population, female","Africa_Western","1960",56808208
+"6",6,"Population, female","Australia_NZ","1960",6264752
+"7",7,"Population, female","Brazil","1960",36434422
+"8",8,"Population, female","Canada","1960",8850971
+"9",9,"Population, female","Central America and Caribbean","1960",15626444
+"10",10,"Population, female","Central Asia","1960",17611001
+"11",11,"Population, female","China","1960",327529144
+"12",12,"Population, female","EU-12","1960",45577729
+"13",13,"Population, female","EU-15","1960",164576923
+"14",14,"Population, female","Europe_Eastern","1960",29381973
+"15",15,"Population, female","Europe_Non_EU","1960",22571537
+"16",16,"Population, female","European Free Trade Association","1960",4639135
+"17",17,"Population, female","India","1960",215819000
+"18",18,"Population, female","Indonesia","1960",44298836
+"19",19,"Population, female","Japan","1960",47434416
+"20",20,"Population, female","Mexico","1960",18028913
+"21",21,"Population, female","Middle East","1960",23956610
+"22",22,"Population, female","Pakistan","1960",21159049
+"23",23,"Population, female","Russia","1960",66181851
+"24",24,"Population, female","South Africa","1960",8017980
+"25",25,"Population, female","South America_Northern","1960",4459256
+"26",26,"Population, female","South America_Southern","1960",15516826
+"27",27,"Population, female","South Asia","1960",38225789
+"28",28,"Population, female","South Korea","1960",12489338
+"29",29,"Population, female","Southeast Asia","1960",71521456
+"30",30,"Population, total","Taiwan","1960",0
+"31",31,"Population, female","Argentina","1960",10158262
+"32",32,"Population, female","Colombia","1960",7875810
+"33",1,"Population, female","USA","1961",93977837
+"34",2,"Population, female","Africa_Eastern","1961",32956286
+"35",3,"Population, female","Africa_Northern","1961",28368324
+"36",4,"Population, female","Africa_Southern","1961",18209058
+"37",5,"Population, female","Africa_Western","1961",58050778
+"38",6,"Population, female","Australia_NZ","1961",6391986
+"39",7,"Population, female","Brazil","1961",37566819
+"40",8,"Population, female","Canada","1961",9040809
+"41",9,"Population, female","Central America and Caribbean","1961",16024499
+"42",10,"Population, female","Central Asia","1961",18196512
+"43",11,"Population, female","China","1961",324505645
+"44",12,"Population, female","EU-12","1961",45961836
+"45",13,"Population, female","EU-15","1961",165813367
+"46",14,"Population, female","Europe_Eastern","1961",29726592
+"47",15,"Population, female","Europe_Non_EU","1961",23042629
+"48",16,"Population, female","European Free Trade Association","1961",4708069
+"49",17,"Population, female","India","1961",220791299
+"50",18,"Population, female","Indonesia","1961",45505228
+"51",19,"Population, female","Japan","1961",47855063
+"52",20,"Population, female","Mexico","1961",18616799
+"53",21,"Population, female","Middle East","1961",24631593
+"54",22,"Population, female","Pakistan","1961",21697194
+"55",23,"Population, female","Russia","1961",66771372
+"56",24,"Population, female","South Africa","1961",8263745
+"57",25,"Population, female","South America_Northern","1961",4621066
+"58",26,"Population, female","South America_Southern","1961",15901154
+"59",27,"Population, female","South Asia","1961",39264385
+"60",28,"Population, female","South Korea","1961",12855534
+"61",29,"Population, female","Southeast Asia","1961",73457644
+"62",30,"Population, total","Taiwan","1961",0
+"63",31,"Population, female","Argentina","1961",10335069
+"64",32,"Population, female","Colombia","1961",8121112
+"65",1,"Population, female","USA","1962",95551259
+"66",2,"Population, female","Africa_Eastern","1962",33887057
+"67",3,"Population, female","Africa_Northern","1962",29016116
+"68",4,"Population, female","Africa_Southern","1962",18657614
+"69",5,"Population, female","Africa_Western","1962",59333929
+"70",6,"Population, female","Australia_NZ","1962",6556931
+"71",7,"Population, female","Brazil","1962",38718365
+"72",8,"Population, female","Canada","1962",9223459
+"73",9,"Population, female","Central America and Caribbean","1962",16428612
+"74",10,"Population, female","Central Asia","1962",18778308
+"75",11,"Population, female","China","1962",327440891
+"76",12,"Population, female","EU-12","1962",46316995
+"77",13,"Population, female","EU-15","1962",167137198
+"78",14,"Population, female","Europe_Eastern","1962",30052828
+"79",15,"Population, female","Europe_Non_EU","1962",23528668
+"80",16,"Population, female","European Free Trade Association","1962",4792645
+"81",17,"Population, female","India","1962",225898332
+"82",18,"Population, female","Indonesia","1962",46755916
+"83",19,"Population, female","Japan","1962",48294311
+"84",20,"Population, female","Mexico","1962",19240634
+"85",21,"Population, female","Middle East","1962",25372329
+"86",22,"Population, female","Pakistan","1962",22231652
+"87",23,"Population, female","Russia","1962",67377496
+"88",24,"Population, female","South Africa","1962",8532023
+"89",25,"Population, female","South America_Northern","1962",4785440
+"90",26,"Population, female","South America_Southern","1962",16294471
+"91",27,"Population, female","South Asia","1962",40358795
+"92",28,"Population, female","South Korea","1962",13210403
+"93",29,"Population, female","Southeast Asia","1962",75426243
+"94",30,"Population, total","Taiwan","1962",0
+"95",31,"Population, female","Argentina","1962",10513699
+"96",32,"Population, female","Colombia","1962",8373228
+"97",1,"Population, female","USA","1963",97053367
+"98",2,"Population, female","Africa_Eastern","1963",34848821
+"99",3,"Population, female","Africa_Northern","1963",29682150
+"100",4,"Population, female","Africa_Southern","1963",19120193
+"101",5,"Population, female","Africa_Western","1963",60664322
+"102",6,"Population, female","Australia_NZ","1963",6690807
+"103",7,"Population, female","Brazil","1963",39893199
+"104",8,"Population, female","Canada","1963",9409673
+"105",9,"Population, female","Central America and Caribbean","1963",16838008
+"106",10,"Population, female","Central Asia","1963",19367470
+"107",11,"Population, female","China","1963",335768846
+"108",12,"Population, female","EU-12","1963",46702696
+"109",13,"Population, female","EU-15","1963",168452591
+"110",14,"Population, female","Europe_Eastern","1963",30357480
+"111",15,"Population, female","Europe_Non_EU","1963",24018307
+"112",16,"Population, female","European Free Trade Association","1963",4866632
+"113",17,"Population, female","India","1963",231120329
+"114",18,"Population, female","Indonesia","1963",48049423
+"115",19,"Population, female","Japan","1963",48778588
+"116",20,"Population, female","Mexico","1963",19891387
+"117",21,"Population, female","Middle East","1963",26147126
+"118",22,"Population, female","Pakistan","1963",22798530
+"119",23,"Population, female","Russia","1963",67994913
+"120",24,"Population, female","South Africa","1963",8813888
+"121",25,"Population, female","South America_Northern","1963",4952344
+"122",26,"Population, female","South America_Southern","1963",16694385
+"123",27,"Population, female","South Asia","1963",41486001
+"124",28,"Population, female","South Korea","1963",13563924
+"125",29,"Population, female","Southeast Asia","1963",77483009
+"126",30,"Population, total","Taiwan","1963",0
+"127",31,"Population, female","Argentina","1963",10694826
+"128",32,"Population, female","Colombia","1963",8630444
+"129",1,"Population, female","USA","1964",98522326
+"130",2,"Population, female","Africa_Eastern","1964",35869877
+"131",3,"Population, female","Africa_Northern","1964",30361371
+"132",4,"Population, female","Africa_Southern","1964",19595254
+"133",5,"Population, female","Africa_Western","1964",62039551
+"134",6,"Population, female","Australia_NZ","1964",6828724
+"135",7,"Population, female","Brazil","1964",41083812
+"136",8,"Population, female","Canada","1964",9600426
+"137",9,"Population, female","Central America and Caribbean","1964",17256914
+"138",10,"Population, female","Central Asia","1964",19968112
+"139",11,"Population, female","China","1964",343801169
+"140",12,"Population, female","EU-12","1964",47114830
+"141",13,"Population, female","EU-15","1964",169760790
+"142",14,"Population, female","Europe_Eastern","1964",30650497
+"143",15,"Population, female","Europe_Non_EU","1964",24500377
+"144",16,"Population, female","European Free Trade Association","1964",4928302
+"145",17,"Population, female","India","1964",236446379
+"146",18,"Population, female","Indonesia","1964",49393533
+"147",19,"Population, female","Japan","1964",49279989
+"148",20,"Population, female","Mexico","1964",20568063
+"149",21,"Population, female","Middle East","1964",26964248
+"150",22,"Population, female","Pakistan","1964",23398883
+"151",23,"Population, female","Russia","1964",68632629
+"152",24,"Population, female","South Africa","1964",9107018
+"153",25,"Population, female","South America_Northern","1964",5121654
+"154",26,"Population, female","South America_Southern","1964",17102090
+"155",27,"Population, female","South Asia","1964",42646107
+"156",28,"Population, female","South Korea","1964",13904602
+"157",29,"Population, female","Southeast Asia","1964",79577572
+"158",30,"Population, total","Taiwan","1964",0
+"159",31,"Population, female","Argentina","1964",10876693
+"160",32,"Population, female","Colombia","1964",8891960
+"161",1,"Population, female","USA","1965",99920040
+"162",2,"Population, female","Africa_Eastern","1965",36938663
+"163",3,"Population, female","Africa_Northern","1965",31050000
+"164",4,"Population, female","Africa_Southern","1965",20079191
+"165",5,"Population, female","Africa_Western","1965",63468775
+"166",6,"Population, female","Australia_NZ","1965",6962198
+"167",7,"Population, female","Brazil","1965",42281945
+"168",8,"Population, female","Canada","1965",9786254
+"169",9,"Population, female","Central America and Caribbean","1965",17684608
+"170",10,"Population, female","Central Asia","1965",20561704
+"171",11,"Population, female","China","1965",352238255
+"172",12,"Population, female","EU-12","1965",47449964
+"173",13,"Population, female","EU-15","1965",171103534
+"174",14,"Population, female","Europe_Eastern","1965",30917885
+"175",15,"Population, female","Europe_Non_EU","1965",24967257
+"176",16,"Population, female","European Free Trade Association","1965",4976929
+"177",17,"Population, female","India","1965",241740859
+"178",18,"Population, female","Indonesia","1965",50670788
+"179",19,"Population, female","Japan","1965",49804697
+"180",20,"Population, female","Mexico","1965",21270482
+"181",21,"Population, female","Middle East","1965",27815931
+"182",22,"Population, female","Pakistan","1965",24030852
+"183",23,"Population, female","Russia","1965",69293561
+"184",24,"Population, female","South Africa","1965",9412255
+"185",25,"Population, female","South America_Northern","1965",5293312
+"186",26,"Population, female","South America_Southern","1965",17517681
+"187",27,"Population, female","South Asia","1965",43840464
+"188",28,"Population, female","South Korea","1965",14247148
+"189",29,"Population, female","Southeast Asia","1965",81698295
+"190",30,"Population, total","Taiwan","1965",0
+"191",31,"Population, female","Argentina","1965",11058981
+"192",32,"Population, female","Colombia","1965",9156915
+"193",1,"Population, female","USA","1966",101314527
+"194",2,"Population, female","Africa_Eastern","1966",38018019
+"195",3,"Population, female","Africa_Northern","1966",31786965
+"196",4,"Population, female","Africa_Southern","1966",20569365
+"197",5,"Population, female","Africa_Western","1966",64951301
+"198",6,"Population, female","Australia_NZ","1966",7119151
+"199",7,"Population, female","Brazil","1966",43477993
+"200",8,"Population, female","Canada","1966",9978791
+"201",9,"Population, female","Central America and Caribbean","1966",18116725
+"202",10,"Population, female","Central Asia","1966",21158111
+"203",11,"Population, female","China","1966",362293152
+"204",12,"Population, female","EU-12","1966",47778309
+"205",13,"Population, female","EU-15","1966",172376698
+"206",14,"Population, female","Europe_Eastern","1966",31173931
+"207",15,"Population, female","Europe_Non_EU","1966",25465866
+"208",16,"Population, female","European Free Trade Association","1966",5023784
+"209",17,"Population, female","India","1966",246951009
+"210",18,"Population, female","Indonesia","1966",51914171
+"211",19,"Population, female","Japan","1966",50254891
+"212",20,"Population, female","Mexico","1966",21991752
+"213",21,"Population, female","Middle East","1966",28693485
+"214",22,"Population, female","Pakistan","1966",24698014
+"215",23,"Population, female","Russia","1966",69592893
+"216",24,"Population, female","South Africa","1966",9726980
+"217",25,"Population, female","South America_Northern","1966",5467607
+"218",26,"Population, female","South America_Southern","1966",17937925
+"219",27,"Population, female","South Asia","1966",45062778
+"220",28,"Population, female","South Korea","1966",14605847
+"221",29,"Population, female","Southeast Asia","1966",83835750
+"222",30,"Population, total","Taiwan","1966",0
+"223",31,"Population, female","Argentina","1966",11243003
+"224",32,"Population, female","Colombia","1966",9421433
+"225",1,"Population, female","USA","1967",102673908
+"226",2,"Population, female","Africa_Eastern","1967",39135959
+"227",3,"Population, female","Africa_Northern","1967",32582613
+"228",4,"Population, female","Africa_Southern","1967",21068894
+"229",5,"Population, female","Africa_Western","1967",66481386
+"230",6,"Population, female","Australia_NZ","1967",7220586
+"231",7,"Population, female","Brazil","1967",44668772
+"232",8,"Population, female","Canada","1967",10166027
+"233",9,"Population, female","Central America and Caribbean","1967",18552635
+"234",10,"Population, female","Central Asia","1967",21750813
+"235",11,"Population, female","China","1967",371838087
+"236",12,"Population, female","EU-12","1967",48212363
+"237",13,"Population, female","EU-15","1967",173510854
+"238",14,"Population, female","Europe_Eastern","1967",31434979
+"239",15,"Population, female","Europe_Non_EU","1967",25987741
+"240",16,"Population, female","European Free Trade Association","1967",5077524
+"241",17,"Population, female","India","1967",252216091
+"242",18,"Population, female","Indonesia","1967",53261620
+"243",19,"Population, female","Japan","1967",50768868
+"244",20,"Population, female","Mexico","1967",22729882
+"245",21,"Population, female","Middle East","1967",29628987
+"246",22,"Population, female","Pakistan","1967",25401143
+"247",23,"Population, female","Russia","1967",69906130
+"248",24,"Population, female","South Africa","1967",10051232
+"249",25,"Population, female","South America_Northern","1967",5644269
+"250",26,"Population, female","South America_Southern","1967",18363393
+"251",27,"Population, female","South Asia","1967",46334740
+"252",28,"Population, female","South Korea","1967",14956378
+"253",29,"Population, female","Southeast Asia","1967",85995456
+"254",30,"Population, total","Taiwan","1967",0
+"255",31,"Population, female","Argentina","1967",11429390
+"256",32,"Population, female","Colombia","1967",9684298
+"257",1,"Population, female","USA","1968",103884406
+"258",2,"Population, female","Africa_Eastern","1968",40309638
+"259",3,"Population, female","Africa_Northern","1968",33394559
+"260",4,"Population, female","Africa_Southern","1968",21592111
+"261",5,"Population, female","Africa_Western","1968",68067580
+"262",6,"Population, female","Australia_NZ","1968",7341083
+"263",7,"Population, female","Brazil","1968",45856024
+"264",8,"Population, female","Canada","1968",10337254
+"265",9,"Population, female","Central America and Caribbean","1968",18991683
+"266",10,"Population, female","Central Asia","1968",22337966
+"267",11,"Population, female","China","1968",381749341
+"268",12,"Population, female","EU-12","1968",48621051
+"269",13,"Population, female","EU-15","1968",174575285
+"270",14,"Population, female","Europe_Eastern","1968",31680781
+"271",15,"Population, female","Europe_Non_EU","1968",26520198
+"272",16,"Population, female","European Free Trade Association","1968",5132167
+"273",17,"Population, female","India","1968",257695427
+"274",18,"Population, female","Indonesia","1968",54693876
+"275",19,"Population, female","Japan","1968",51330606
+"276",20,"Population, female","Mexico","1968",23486454
+"277",21,"Population, female","Middle East","1968",30571381
+"278",22,"Population, female","Pakistan","1968",26136537
+"279",23,"Population, female","Russia","1968",70223577
+"280",24,"Population, female","South Africa","1968",10385268
+"281",25,"Population, female","South America_Northern","1968",5823358
+"282",26,"Population, female","South America_Southern","1968",18795503
+"283",27,"Population, female","South Asia","1968",47644405
+"284",28,"Population, female","South Korea","1968",15313681
+"285",29,"Population, female","Southeast Asia","1968",88176247
+"286",30,"Population, total","Taiwan","1968",0
+"287",31,"Population, female","Argentina","1968",11617792
+"288",32,"Population, female","Colombia","1968",9945164
+"289",1,"Population, female","USA","1969",104981775
+"290",2,"Population, female","Africa_Eastern","1969",41516035
+"291",3,"Population, female","Africa_Northern","1969",34215923
+"292",4,"Population, female","Africa_Southern","1969",22153941
+"293",5,"Population, female","Africa_Western","1969",69700684
+"294",6,"Population, female","Australia_NZ","1969",7482567
+"295",7,"Population, female","Brazil","1969",47045815
+"296",8,"Population, female","Canada","1969",10486530
+"297",9,"Population, female","Central America and Caribbean","1969",19433757
+"298",10,"Population, female","Central Asia","1969",22911657
+"299",11,"Population, female","China","1969",392388364
+"300",12,"Population, female","EU-12","1969",48972274
+"301",13,"Population, female","EU-15","1969",175649857
+"302",14,"Population, female","Europe_Eastern","1969",31905019
+"303",15,"Population, female","Europe_Non_EU","1969",27039229
+"304",16,"Population, female","European Free Trade Association","1969",5183004
+"305",17,"Population, female","India","1969",263380464
+"306",18,"Population, female","Indonesia","1969",56192696
+"307",19,"Population, female","Japan","1969",51928754
+"308",20,"Population, female","Mexico","1969",24258520
+"309",21,"Population, female","Middle East","1969",31565094
+"310",22,"Population, female","Pakistan","1969",26900599
+"311",23,"Population, female","Russia","1969",70547384
+"312",24,"Population, female","South Africa","1969",10725797
+"313",25,"Population, female","South America_Northern","1969",6004584
+"314",26,"Population, female","South America_Southern","1969",19233944
+"315",27,"Population, female","South Asia","1969",48948972
+"316",28,"Population, female","South Korea","1969",15670972
+"317",29,"Population, female","Southeast Asia","1969",90379816
+"318",30,"Population, total","Taiwan","1969",0
+"319",31,"Population, female","Argentina","1969",11808657
+"320",32,"Population, female","Colombia","1969",10201733
+"321",1,"Population, female","USA","1970",106201265
+"322",2,"Population, female","Africa_Eastern","1970",42754875
+"323",3,"Population, female","Africa_Northern","1970",35047148
+"324",4,"Population, female","Africa_Southern","1970",22768014
+"325",5,"Population, female","Africa_Western","1970",71385068
+"326",6,"Population, female","Australia_NZ","1970",7625310
+"327",7,"Population, female","Brazil","1970",48249510
+"328",8,"Population, female","Canada","1970",10633366
+"329",9,"Population, female","Central America and Caribbean","1970",19881157
+"330",10,"Population, female","Central Asia","1970",23445379
+"331",11,"Population, female","China","1970",403407829
+"332",12,"Population, female","EU-12","1970",49231882
+"333",13,"Population, female","EU-15","1970",176550558
+"334",14,"Population, female","Europe_Eastern","1970",32118611
+"335",15,"Population, female","Europe_Non_EU","1970",27522979
+"336",16,"Population, female","European Free Trade Association","1970",5220918
+"337",17,"Population, female","India","1970",269208897
+"338",18,"Population, female","Indonesia","1970",57726007
+"339",19,"Population, female","Japan","1970",52513428
+"340",20,"Population, female","Mexico","1970",25046519
+"341",21,"Population, female","Middle East","1970",32609224
+"342",22,"Population, female","Pakistan","1970",27696448
+"343",23,"Population, female","Russia","1970",70983282
+"344",24,"Population, female","South Africa","1970",11070685
+"345",25,"Population, female","South America_Northern","1970",6188171
+"346",26,"Population, female","South America_Southern","1970",19661551
+"347",27,"Population, female","South Asia","1970",50151836
+"348",28,"Population, female","South Korea","1970",16023621
+"349",29,"Population, female","Southeast Asia","1970",92577523
+"350",30,"Population, total","Taiwan","1970",0
+"351",31,"Population, female","Argentina","1970",12005045
+"352",32,"Population, female","Colombia","1970",10455025
+"353",1,"Population, female","USA","1971",107512732
+"354",2,"Population, female","Africa_Eastern","1971",44021649
+"355",3,"Population, female","Africa_Northern","1971",35885885
+"356",4,"Population, female","Africa_Southern","1971",23442914
+"357",5,"Population, female","Africa_Western","1971",73103475
+"358",6,"Population, female","Australia_NZ","1971",7863829
+"359",7,"Population, female","Brazil","1971",49466950
+"360",8,"Population, female","Canada","1971",10944078
+"361",9,"Population, female","Central America and Caribbean","1971",20331866
+"362",10,"Population, female","Central Asia","1971",23950551
+"363",11,"Population, female","China","1971",414644117
+"364",12,"Population, female","EU-12","1971",49480632
+"365",13,"Population, female","EU-15","1971",177435212
+"366",14,"Population, female","Europe_Eastern","1971",32337659
+"367",15,"Population, female","Europe_Non_EU","1971",27977867
+"368",16,"Population, female","European Free Trade Association","1971",5252951
+"369",17,"Population, female","India","1971",275180236
+"370",18,"Population, female","Indonesia","1971",59280005
+"371",19,"Population, female","Japan","1971",53660202
+"372",20,"Population, female","Mexico","1971",25870987
+"373",21,"Population, female","Middle East","1971",33681163
+"374",22,"Population, female","Pakistan","1971",28496527
+"375",23,"Population, female","Russia","1971",71428810
+"376",24,"Population, female","South Africa","1971",11392269
+"377",25,"Population, female","South America_Northern","1971",6374251
+"378",26,"Population, female","South America_Southern","1971",20092891
+"379",27,"Population, female","South Asia","1971",51090378
+"380",28,"Population, female","South Korea","1971",16345322
+"381",29,"Population, female","Southeast Asia","1971",94787446
+"382",30,"Population, total","Taiwan","1971",0
+"383",31,"Population, female","Argentina","1971",12208669
+"384",32,"Population, female","Colombia","1971",10701994
+"385",1,"Population, female","USA","1972",108662820
+"386",2,"Population, female","Africa_Eastern","1972",45257976
+"387",3,"Population, female","Africa_Northern","1972",36744057
+"388",4,"Population, female","Africa_Southern","1972",24183678
+"389",5,"Population, female","Africa_Western","1972",74875981
+"390",6,"Population, female","Australia_NZ","1972",8011913
+"391",7,"Population, female","Brazil","1972",50700362
+"392",8,"Population, female","Canada","1972",11074818
+"393",9,"Population, female","Central America and Caribbean","1972",20778161
+"394",10,"Population, female","Central Asia","1972",24456368
+"395",11,"Population, female","China","1972",424948169
+"396",12,"Population, female","EU-12","1972",49839291
+"397",13,"Population, female","EU-15","1972",178457264
+"398",14,"Population, female","Europe_Eastern","1972",32554048
+"399",15,"Population, female","Europe_Non_EU","1972",28412805
+"400",16,"Population, female","European Free Trade Association","1972",5294830
+"401",17,"Population, female","India","1972",281308597
+"402",18,"Population, female","Indonesia","1972",60852641
+"403",19,"Population, female","Japan","1972",54398884
+"404",20,"Population, female","Mexico","1972",26731631
+"405",21,"Population, female","Middle East","1972",34777866
+"406",22,"Population, female","Pakistan","1972",29317529
+"407",23,"Population, female","Russia","1972",71772657
+"408",24,"Population, female","South Africa","1972",11690167
+"409",25,"Population, female","South America_Northern","1972",6559893
+"410",26,"Population, female","South America_Southern","1972",20546084
+"411",27,"Population, female","South Asia","1972",52107907
+"412",28,"Population, female","South Korea","1972",16652912
+"413",29,"Population, female","Southeast Asia","1972",97043851
+"414",30,"Population, total","Taiwan","1972",0
+"415",31,"Population, female","Argentina","1972",12419477
+"416",32,"Population, female","Colombia","1972",10945364
+"417",1,"Population, female","USA","1973",109744262
+"418",2,"Population, female","Africa_Eastern","1973",46521688
+"419",3,"Population, female","Africa_Northern","1973",37638752
+"420",4,"Population, female","Africa_Southern","1973",24980595
+"421",5,"Population, female","Africa_Western","1973",76744745
+"422",6,"Population, female","Australia_NZ","1973",8144318
+"423",7,"Population, female","Brazil","1973",51955901
+"424",8,"Population, female","Canada","1973",11220294
+"425",9,"Population, female","Central America and Caribbean","1973",21221712
+"426",10,"Population, female","Central Asia","1973",24969332
+"427",11,"Population, female","China","1973",434778466
+"428",12,"Population, female","EU-12","1973",50213886
+"429",13,"Population, female","EU-15","1973",179378610
+"430",14,"Population, female","Europe_Eastern","1973",32743623
+"431",15,"Population, female","Europe_Non_EU","1973",28857748
+"432",16,"Population, female","European Free Trade Association","1973",5336720
+"433",17,"Population, female","India","1973",287642024
+"434",18,"Population, female","Indonesia","1973",62447954
+"435",19,"Population, female","Japan","1973",55150574
+"436",20,"Population, female","Mexico","1973",27609964
+"437",21,"Population, female","Middle East","1973",35945439
+"438",22,"Population, female","Pakistan","1973",30194373
+"439",23,"Population, female","Russia","1973",72109234
+"440",24,"Population, female","South Africa","1973",11991274
+"441",25,"Population, female","South America_Northern","1973",6746067
+"442",26,"Population, female","South America_Southern","1973",21008325
+"443",27,"Population, female","South Asia","1973",53391809
+"444",28,"Population, female","South Korea","1973",16947289
+"445",29,"Population, female","Southeast Asia","1973",99297660
+"446",30,"Population, total","Taiwan","1973",0
+"447",31,"Population, female","Argentina","1973",12639130
+"448",32,"Population, female","Colombia","1973",11191768
+"449",1,"Population, female","USA","1974",110814491
+"450",2,"Population, female","Africa_Eastern","1974",47875248
+"451",3,"Population, female","Africa_Northern","1974",38568627
+"452",4,"Population, female","Africa_Southern","1974",25817470
+"453",5,"Population, female","Africa_Western","1974",78716711
+"454",6,"Population, female","Australia_NZ","1974",8350064
+"455",7,"Population, female","Brazil","1974",53224988
+"456",8,"Population, female","Canada","1974",11386049
+"457",9,"Population, female","Central America and Caribbean","1974",21665822
+"458",10,"Population, female","Central Asia","1974",25495140
+"459",11,"Population, female","China","1974",443900395
+"460",12,"Population, female","EU-12","1974",50621553
+"461",13,"Population, female","EU-15","1974",180157213
+"462",14,"Population, female","Europe_Eastern","1974",32920362
+"463",15,"Population, female","Europe_Non_EU","1974",29298822
+"464",16,"Population, female","European Free Trade Association","1974",5370950
+"465",17,"Population, female","India","1974",294137889
+"466",18,"Population, female","Indonesia","1974",64057961
+"467",19,"Population, female","Japan","1974",55868603
+"468",20,"Population, female","Mexico","1974",28506368
+"469",21,"Population, female","Middle East","1974",37148894
+"470",22,"Population, female","Pakistan","1974",31115326
+"471",23,"Population, female","Russia","1974",72446480
+"472",24,"Population, female","South Africa","1974",12297952
+"473",25,"Population, female","South America_Northern","1974",6935988
+"474",26,"Population, female","South America_Southern","1974",21478731
+"475",27,"Population, female","South Asia","1974",54680248
+"476",28,"Population, female","South Korea","1974",17235516
+"477",29,"Population, female","Southeast Asia","1974",101502918
+"478",30,"Population, total","Taiwan","1974",0
+"479",31,"Population, female","Argentina","1974",12869638
+"480",32,"Population, female","Colombia","1974",11439917
+"481",1,"Population, female","USA","1975",111978549
+"482",2,"Population, female","Africa_Eastern","1975",49257364
+"483",3,"Population, female","Africa_Northern","1975",39628665
+"484",4,"Population, female","Africa_Southern","1975",26693504
+"485",5,"Population, female","Africa_Western","1975",80797909
+"486",6,"Population, female","Australia_NZ","1975",8470289
+"487",7,"Population, female","Brazil","1975",54509482
+"488",8,"Population, female","Canada","1975",11562890
+"489",9,"Population, female","Central America and Caribbean","1975",22109412
+"490",10,"Population, female","Central Asia","1975",26026621
+"491",11,"Population, female","China","1975",451860101
+"492",12,"Population, female","EU-12","1975",51076578
+"493",13,"Population, female","EU-15","1975",180837545
+"494",14,"Population, female","Europe_Eastern","1975",33090093
+"495",15,"Population, female","Europe_Non_EU","1975",29734448
+"496",16,"Population, female","European Free Trade Association","1975",5385179
+"497",17,"Population, female","India","1975",300723268
+"498",18,"Population, female","Indonesia","1975",65683015
+"499",19,"Population, female","Japan","1975",56567115
+"500",20,"Population, female","Mexico","1975",29419648
+"501",21,"Population, female","Middle East","1975",38371277
+"502",22,"Population, female","Pakistan","1975",32093585
+"503",23,"Population, female","Russia","1975",72786254
+"504",24,"Population, female","South Africa","1975",12610329
+"505",25,"Population, female","South America_Northern","1975",7129945
+"506",26,"Population, female","South America_Southern","1975",21956280
+"507",27,"Population, female","South Asia","1975",55967447
+"508",28,"Population, female","South Korea","1975",17526507
+"509",29,"Population, female","Southeast Asia","1975",103668765
+"510",30,"Population, total","Taiwan","1975",0
+"511",31,"Population, female","Argentina","1975",13096382
+"512",32,"Population, female","Colombia","1975",11690305
+"513",1,"Population, female","USA","1976",113112124
+"514",2,"Population, female","Africa_Eastern","1976",50686977
+"515",3,"Population, female","Africa_Northern","1976",40813974
+"516",4,"Population, female","Africa_Southern","1976",27604250
+"517",5,"Population, female","Africa_Western","1976",82938533
+"518",6,"Population, female","Australia_NZ","1976",8561083
+"519",7,"Population, female","Brazil","1976",55819649
+"520",8,"Population, female","Canada","1976",11727923
+"521",9,"Population, female","Central America and Caribbean","1976",22553521
+"522",10,"Population, female","Central Asia","1976",26567472
+"523",11,"Population, female","China","1976",458952975
+"524",12,"Population, female","EU-12","1976",51533918
+"525",13,"Population, female","EU-15","1976",181423220
+"526",14,"Population, female","Europe_Eastern","1976",33238181
+"527",15,"Population, female","Europe_Non_EU","1976",30249566
+"528",16,"Population, female","European Free Trade Association","1976",5380644
+"529",17,"Population, female","India","1976",307373867
+"530",18,"Population, female","Indonesia","1976",67328209
+"531",19,"Population, female","Japan","1976",57165192
+"532",20,"Population, female","Mexico","1976",30346083
+"533",21,"Population, female","Middle East","1976",39779140
+"534",22,"Population, female","Pakistan","1976",33135180
+"535",23,"Population, female","Russia","1976",73214184
+"536",24,"Population, female","South Africa","1976",12931705
+"537",25,"Population, female","South America_Northern","1976",7328257
+"538",26,"Population, female","South America_Southern","1976",22438264
+"539",27,"Population, female","South Asia","1976",57242585
+"540",28,"Population, female","South Korea","1976",17817685
+"541",29,"Population, female","Southeast Asia","1976",105828946
+"542",30,"Population, total","Taiwan","1976",0
+"543",31,"Population, female","Argentina","1976",13315154
+"544",32,"Population, female","Colombia","1976",11942621
+"545",1,"Population, female","USA","1977",114317584
+"546",2,"Population, female","Africa_Eastern","1977",52081398
+"547",3,"Population, female","Africa_Northern","1977",41960693
+"548",4,"Population, female","Africa_Southern","1977",28559009
+"549",5,"Population, female","Africa_Western","1977",85166833
+"550",6,"Population, female","Australia_NZ","1977",8653215
+"551",7,"Population, female","Brazil","1977",57163358
+"552",8,"Population, female","Canada","1977",11879181
+"553",9,"Population, female","Central America and Caribbean","1977",22998371
+"554",10,"Population, female","Central Asia","1977",27125853
+"555",11,"Population, female","China","1977",465308537
+"556",12,"Population, female","EU-12","1977",51952397
+"557",13,"Population, female","EU-15","1977",181965984
+"558",14,"Population, female","Europe_Eastern","1977",33369814
+"559",15,"Population, female","Europe_Non_EU","1977",30832481
+"560",16,"Population, female","European Free Trade Association","1977",5382121
+"561",17,"Population, female","India","1977",314189303
+"562",18,"Population, female","Indonesia","1977",68989822
+"563",19,"Population, female","Japan","1977",57714402
+"564",20,"Population, female","Mexico","1977",31291999
+"565",21,"Population, female","Middle East","1977",41254275
+"566",22,"Population, female","Pakistan","1977",34234632
+"567",23,"Population, female","Russia","1977",73628754
+"568",24,"Population, female","South Africa","1977",13245666
+"569",25,"Population, female","South America_Northern","1977",7531014
+"570",26,"Population, female","South America_Southern","1977",22928872
+"571",27,"Population, female","South Asia","1977",58557805
+"572",28,"Population, female","South Korea","1977",18112175
+"573",29,"Population, female","Southeast Asia","1977",108111397
+"574",30,"Population, total","Taiwan","1977",0
+"575",31,"Population, female","Argentina","1977",13538001
+"576",32,"Population, female","Colombia","1977",12206091
+"577",1,"Population, female","USA","1978",115602450
+"578",2,"Population, female","Africa_Eastern","1978",53601529
+"579",3,"Population, female","Africa_Northern","1978",43082645
+"580",4,"Population, female","Africa_Southern","1978",29550742
+"581",5,"Population, female","Africa_Western","1978",87595122
+"582",6,"Population, female","Australia_NZ","1978",8744669
+"583",7,"Population, female","Brazil","1978",58542728
+"584",8,"Population, female","Canada","1978",12011533
+"585",9,"Population, female","Central America and Caribbean","1978",23446019
+"586",10,"Population, female","Central Asia","1978",27690710
+"587",11,"Population, female","China","1978",471649064
+"588",12,"Population, female","EU-12","1978",52305141
+"589",13,"Population, female","EU-15","1978",182553912
+"590",14,"Population, female","Europe_Eastern","1978",33492505
+"591",15,"Population, female","Europe_Non_EU","1978",31412050
+"592",16,"Population, female","European Free Trade Association","1978",5393805
+"593",17,"Population, female","India","1978",321198151
+"594",18,"Population, female","Indonesia","1978",70673511
+"595",19,"Population, female","Japan","1978",58239277
+"596",20,"Population, female","Mexico","1978",32255984
+"597",21,"Population, female","Middle East","1978",42469607
+"598",22,"Population, female","Pakistan","1978",35393003
+"599",23,"Population, female","Russia","1978",74040649
+"600",24,"Population, female","South Africa","1978",13549026
+"601",25,"Population, female","South America_Northern","1978",7737729
+"602",26,"Population, female","South America_Southern","1978",23431419
+"603",27,"Population, female","South Asia","1978",59930122
+"604",28,"Population, female","South Korea","1978",18404430
+"605",29,"Population, female","Southeast Asia","1978",110542957
+"606",30,"Population, total","Taiwan","1978",0
+"607",31,"Population, female","Argentina","1978",13764006
+"608",32,"Population, female","Colombia","1978",12484354
+"609",1,"Population, female","USA","1979",116934223
+"610",2,"Population, female","Africa_Eastern","1979",55259731
+"611",3,"Population, female","Africa_Northern","1979",44258626
+"612",4,"Population, female","Africa_Southern","1979",30569515
+"613",5,"Population, female","Africa_Western","1979",90173921
+"614",6,"Population, female","Australia_NZ","1979",8823993
+"615",7,"Population, female","Brazil","1979",59950908
+"616",8,"Population, female","Canada","1979",12142187
+"617",9,"Population, female","Central America and Caribbean","1979",23897395
+"618",10,"Population, female","Central Asia","1979",28236909
+"619",11,"Population, female","China","1979",478134045
+"620",12,"Population, female","EU-12","1979",52615885
+"621",13,"Population, female","EU-15","1979",183187905
+"622",14,"Population, female","Europe_Eastern","1979",33619008
+"623",15,"Population, female","Europe_Non_EU","1979",31981670
+"624",16,"Population, female","European Free Trade Association","1979",5410173
+"625",17,"Population, female","India","1979",328422054
+"626",18,"Population, female","Indonesia","1979",72379110
+"627",19,"Population, female","Japan","1979",58735700
+"628",20,"Population, female","Mexico","1979",33217040
+"629",21,"Population, female","Middle East","1979",43767129
+"630",22,"Population, female","Pakistan","1979",36695434
+"631",23,"Population, female","Russia","1979",74479027
+"632",24,"Population, female","South Africa","1979",13862168
+"633",25,"Population, female","South America_Northern","1979",7947300
+"634",26,"Population, female","South America_Southern","1979",23940405
+"635",27,"Population, female","South Asia","1979",61230551
+"636",28,"Population, female","South Korea","1979",18701467
+"637",29,"Population, female","Southeast Asia","1979",113045049
+"638",30,"Population, total","Taiwan","1979",0
+"639",31,"Population, female","Argentina","1979",13991784
+"640",32,"Population, female","Colombia","1979",12771020
+"641",1,"Population, female","USA","1980",118091979
+"642",2,"Population, female","Africa_Eastern","1980",56750955
+"643",3,"Population, female","Africa_Northern","1980",45492358
+"644",4,"Population, female","Africa_Southern","1980",31592602
+"645",5,"Population, female","Africa_Western","1980",92766708
+"646",6,"Population, female","Australia_NZ","1980",8921121
+"647",7,"Population, female","Brazil","1980",61387462
+"648",8,"Population, female","Canada","1980",12308181
+"649",9,"Population, female","Central America and Caribbean","1980",24352774
+"650",10,"Population, female","Central Asia","1980",28763397
+"651",11,"Population, female","China","1980",484249137
+"652",12,"Population, female","EU-12","1980",52918747
+"653",13,"Population, female","EU-15","1980",183836511
+"654",14,"Population, female","Europe_Eastern","1980",33755485
+"655",15,"Population, female","Europe_Non_EU","1980",32535194
+"656",16,"Population, female","European Free Trade Association","1980",5431896
+"657",17,"Population, female","India","1980",335953058
+"658",18,"Population, female","Indonesia","1980",74102204
+"659",19,"Population, female","Japan","1980",59206049
+"660",20,"Population, female","Mexico","1980",34120789
+"661",21,"Population, female","Middle East","1980",45329041
+"662",22,"Population, female","Pakistan","1980",38300711
+"663",23,"Population, female","Russia","1980",74935230
+"664",24,"Population, female","South Africa","1980",14186385
+"665",25,"Population, female","South America_Northern","1980",8159959
+"666",26,"Population, female","South America_Southern","1980",24457393
+"667",27,"Population, female","South Asia","1980",62322492
+"668",28,"Population, female","South Korea","1980",19011317
+"669",29,"Population, female","Southeast Asia","1980",115598447
+"670",30,"Population, total","Taiwan","1980",0
+"671",31,"Population, female","Argentina","1980",14220750
+"672",32,"Population, female","Colombia","1980",13068691
+"673",1,"Population, female","USA","1981",119261161
+"674",2,"Population, female","Africa_Eastern","1981",58417105
+"675",3,"Population, female","Africa_Northern","1981",46772464
+"676",4,"Population, female","Africa_Southern","1981",32615812
+"677",5,"Population, female","Africa_Western","1981",95391552
+"678",6,"Population, female","Australia_NZ","1981",9046290
+"679",7,"Population, female","Brazil","1981",62842666
+"680",8,"Population, female","Canada","1981",12468647
+"681",9,"Population, female","Central America and Caribbean","1981",24810019
+"682",10,"Population, female","Central Asia","1981",29300019
+"683",11,"Population, female","China","1981",490564960
+"684",12,"Population, female","EU-12","1981",53219018
+"685",13,"Population, female","EU-15","1981",184380711
+"686",14,"Population, female","Europe_Eastern","1981",33905876
+"687",15,"Population, female","Europe_Non_EU","1981",33081103
+"688",16,"Population, female","European Free Trade Association","1981",5458513
+"689",17,"Population, female","India","1981",343719452
+"690",18,"Population, female","Indonesia","1981",75833339
+"691",19,"Population, female","Japan","1981",59648209
+"692",20,"Population, female","Mexico","1981",34922848
+"693",21,"Population, female","Middle East","1981",47162413
+"694",22,"Population, female","Pakistan","1981",40120973
+"695",23,"Population, female","Russia","1981",75351364
+"696",24,"Population, female","South Africa","1981",14600980
+"697",25,"Population, female","South America_Northern","1981",8375918
+"698",26,"Population, female","South America_Southern","1981",24982159
+"699",27,"Population, female","South Asia","1981",63093188
+"700",28,"Population, female","South Korea","1981",19322543
+"701",29,"Population, female","Southeast Asia","1981",118251429
+"702",30,"Population, total","Taiwan","1981",0
+"703",31,"Population, female","Argentina","1981",14453114
+"704",32,"Population, female","Colombia","1981",13373253
+"705",1,"Population, female","USA","1982",120388819
+"706",2,"Population, female","Africa_Eastern","1982",60344924
+"707",3,"Population, female","Africa_Northern","1982",48098199
+"708",4,"Population, female","Africa_Southern","1982",33673979
+"709",5,"Population, female","Africa_Western","1982",98122132
+"710",6,"Population, female","Australia_NZ","1982",9193113
+"711",7,"Population, female","Brazil","1982",64306211
+"712",8,"Population, female","Canada","1982",12625723
+"713",9,"Population, female","Central America and Caribbean","1982",25299987
+"714",10,"Population, female","Central Asia","1982",29856728
+"715",11,"Population, female","China","1982",497886010
+"716",12,"Population, female","EU-12","1982",53524294
+"717",13,"Population, female","EU-15","1982",184750423
+"718",14,"Population, female","Europe_Eastern","1982",34011553
+"719",15,"Population, female","Europe_Non_EU","1982",33666200
+"720",16,"Population, female","European Free Trade Association","1982",5486548
+"721",17,"Population, female","India","1982",351626946
+"722",18,"Population, female","Indonesia","1982",77575448
+"723",19,"Population, female","Japan","1982",60074308
+"724",20,"Population, female","Mexico","1982",35672570
+"725",21,"Population, female","Middle East","1982",49060876
+"726",22,"Population, female","Pakistan","1982",41898068
+"727",23,"Population, female","Russia","1982",75736169
+"728",24,"Population, female","South Africa","1982",15130329
+"729",25,"Population, female","South America_Northern","1982",8593980
+"730",26,"Population, female","South America_Southern","1982",25514913
+"731",27,"Population, female","South Asia","1982",64065743
+"732",28,"Population, female","South Korea","1982",19631317
+"733",29,"Population, female","Southeast Asia","1982",120958509
+"734",30,"Population, total","Taiwan","1982",0
+"735",31,"Population, female","Argentina","1982",14688513
+"736",32,"Population, female","Colombia","1982",13682869
+"737",1,"Population, female","USA","1983",121463955
+"738",2,"Population, female","Africa_Eastern","1983",62171433
+"739",3,"Population, female","Africa_Northern","1983",49479161
+"740",4,"Population, female","Africa_Southern","1983",34780323
+"741",5,"Population, female","Africa_Western","1983",100791774
+"742",6,"Population, female","Australia_NZ","1983",9319508
+"743",7,"Population, female","Brazil","1983",65777066
+"744",8,"Population, female","Canada","1983",12759260
+"745",9,"Population, female","Central America and Caribbean","1983",25824066
+"746",10,"Population, female","Central Asia","1983",30438927
+"747",11,"Population, female","China","1983",505174165
+"748",12,"Population, female","EU-12","1983",53811885
+"749",13,"Population, female","EU-15","1983",184999373
+"750",14,"Population, female","Europe_Eastern","1983",34127634
+"751",15,"Population, female","Europe_Non_EU","1983",34299902
+"752",16,"Population, female","European Free Trade Association","1983",5509200
+"753",17,"Population, female","India","1983",359724278
+"754",18,"Population, female","Indonesia","1983",79326498
+"755",19,"Population, female","Japan","1983",60505995
+"756",20,"Population, female","Mexico","1983",36422094
+"757",21,"Population, female","Middle East","1983",50856663
+"758",22,"Population, female","Pakistan","1983",43522925
+"759",23,"Population, female","Russia","1983",76096529
+"760",24,"Population, female","South Africa","1983",15739461
+"761",25,"Population, female","South America_Northern","1983",8814069
+"762",26,"Population, female","South America_Southern","1983",26059065
+"763",27,"Population, female","South Asia","1983",65532210
+"764",28,"Population, female","South Korea","1983",19929832
+"765",29,"Population, female","Southeast Asia","1983",123691974
+"766",30,"Population, total","Taiwan","1983",0
+"767",31,"Population, female","Argentina","1983",14924486
+"768",32,"Population, female","Colombia","1983",14001947
+"769",1,"Population, female","USA","1984",122478201
+"770",2,"Population, female","Africa_Eastern","1984",63932071
+"771",3,"Population, female","Africa_Northern","1984",50895931
+"772",4,"Population, female","Africa_Southern","1984",35914173
+"773",5,"Population, female","Africa_Western","1984",103465391
+"774",6,"Population, female","Australia_NZ","1984",9427691
+"775",7,"Population, female","Brazil","1984",67247792
+"776",8,"Population, female","Canada","1984",12887917
+"777",9,"Population, female","Central America and Caribbean","1984",26353133
+"778",10,"Population, female","Central Asia","1984",31046661
+"779",11,"Population, female","China","1984",511870703
+"780",12,"Population, female","EU-12","1984",54087459
+"781",13,"Population, female","EU-15","1984",185223384
+"782",14,"Population, female","Europe_Eastern","1984",34252105
+"783",15,"Population, female","Europe_Non_EU","1984",34929862
+"784",16,"Population, female","European Free Trade Association","1984",5528586
+"785",17,"Population, female","India","1984",368029660
+"786",18,"Population, female","Indonesia","1984",81064901
+"787",19,"Population, female","Japan","1984",60913170
+"788",20,"Population, female","Mexico","1984",37164338
+"789",21,"Population, female","Middle East","1984",52730791
+"790",22,"Population, female","Pakistan","1984",44983988
+"791",23,"Population, female","Russia","1984",76576316
+"792",24,"Population, female","South Africa","1984",16431317
+"793",25,"Population, female","South America_Northern","1984",9036673
+"794",26,"Population, female","South America_Southern","1984",26613914
+"795",27,"Population, female","South Asia","1984",67218691
+"796",28,"Population, female","South Korea","1984",20182770
+"797",29,"Population, female","Southeast Asia","1984",126485400
+"798",30,"Population, total","Taiwan","1984",0
+"799",31,"Population, female","Argentina","1984",15159735
+"800",32,"Population, female","Colombia","1984",14326594
+"801",1,"Population, female","USA","1985",123519960
+"802",2,"Population, female","Africa_Eastern","1985",65741566
+"803",3,"Population, female","Africa_Northern","1985",52338408
+"804",4,"Population, female","Africa_Southern","1985",37065675
+"805",5,"Population, female","Africa_Western","1985",106287928
+"806",6,"Population, female","Australia_NZ","1985",9542691
+"807",7,"Population, female","Brazil","1985",68711168
+"808",8,"Population, female","Canada","1985",13012495
+"809",9,"Population, female","Central America and Caribbean","1985",26887826
+"810",10,"Population, female","Central Asia","1985",31676674
+"811",11,"Population, female","China","1985",518885179
+"812",12,"Population, female","EU-12","1985",54347444
+"813",13,"Population, female","EU-15","1985",185502557
+"814",14,"Population, female","Europe_Eastern","1985",34362705
+"815",15,"Population, female","Europe_Non_EU","1985",35547545
+"816",16,"Population, female","European Free Trade Association","1985",5550228
+"817",17,"Population, female","India","1985",376475662
+"818",18,"Population, female","Indonesia","1985",82758996
+"819",19,"Population, female","Japan","1985",61309541
+"820",20,"Population, female","Mexico","1985",37893236
+"821",21,"Population, female","Middle East","1985",54605916
+"822",22,"Population, female","Pakistan","1985",46536484
+"823",23,"Population, female","Russia","1985",77067918
+"824",24,"Population, female","South Africa","1985",17243333
+"825",25,"Population, female","South America_Northern","1985",9261870
+"826",26,"Population, female","South America_Southern","1985",27178508
+"827",27,"Population, female","South Asia","1985",68879677
+"828",28,"Population, female","South Korea","1985",20385468
+"829",29,"Population, female","Southeast Asia","1985",129266293
+"830",30,"Population, total","Taiwan","1985",0
+"831",31,"Population, female","Argentina","1985",15392805
+"832",32,"Population, female","Colombia","1985",14646986
+"833",1,"Population, female","USA","1986",124612223
+"834",2,"Population, female","Africa_Eastern","1986",67637112
+"835",3,"Population, female","Africa_Northern","1986",53788442
+"836",4,"Population, female","Africa_Southern","1986",38227598
+"837",5,"Population, female","Africa_Western","1986",109186825
+"838",6,"Population, female","Australia_NZ","1986",9658298
+"839",7,"Population, female","Brazil","1986",70158889
+"840",8,"Population, female","Canada","1986",13145756
+"841",9,"Population, female","Central America and Caribbean","1986",27428193
+"842",10,"Population, female","Central Asia","1986",32365148
+"843",11,"Population, female","China","1986",526623155
+"844",12,"Population, female","EU-12","1986",54601755
+"845",13,"Population, female","EU-15","1986",185859234
+"846",14,"Population, female","Europe_Eastern","1986",34480390
+"847",15,"Population, female","Europe_Non_EU","1986",36158430
+"848",16,"Population, female","European Free Trade Association","1986",5575709
+"849",17,"Population, female","India","1986",385067312
+"850",18,"Population, female","Indonesia","1986",84396961
+"851",19,"Population, female","Japan","1986",61650870
+"852",20,"Population, female","Mexico","1986",38607741
+"853",21,"Population, female","Middle East","1986",56534348
+"854",22,"Population, female","Pakistan","1986",48269312
+"855",23,"Population, female","Russia","1986",77497245
+"856",24,"Population, female","South Africa","1986",17993069
+"857",25,"Population, female","South America_Northern","1986",9491518
+"858",26,"Population, female","South America_Southern","1986",27752367
+"859",27,"Population, female","South Asia","1986",70323136
+"860",28,"Population, female","South Korea","1986",20582576
+"861",29,"Population, female","Southeast Asia","1986",132069378
+"862",30,"Population, total","Taiwan","1986",0
+"863",31,"Population, female","Argentina","1986",15626548
+"864",32,"Population, female","Colombia","1986",14966988
+"865",1,"Population, female","USA","1987",125682339
+"866",2,"Population, female","Africa_Eastern","1987",69652928
+"867",3,"Population, female","Africa_Northern","1987",55211234
+"868",4,"Population, female","Africa_Southern","1987",39375659
+"869",5,"Population, female","Africa_Western","1987",112183732
+"870",6,"Population, female","Australia_NZ","1987",9799698
+"871",7,"Population, female","Brazil","1987",71589812
+"872",8,"Population, female","Canada","1987",13321982
+"873",9,"Population, female","Central America and Caribbean","1987",27975905
+"874",10,"Population, female","Central Asia","1987",33108131
+"875",11,"Population, female","China","1987",535049971
+"876",12,"Population, female","EU-12","1987",54849483
+"877",13,"Population, female","EU-15","1987",186249557
+"878",14,"Population, female","Europe_Eastern","1987",34605305
+"879",15,"Population, female","Europe_Non_EU","1987",36750723
+"880",16,"Population, female","European Free Trade Association","1987",5607128
+"881",17,"Population, female","India","1987",393755601
+"882",18,"Population, female","Indonesia","1987",86004739
+"883",19,"Population, female","Japan","1987",61963243
+"884",20,"Population, female","Mexico","1987",39311370
+"885",21,"Population, female","Middle East","1987",58518261
+"886",22,"Population, female","Pakistan","1987",50064842
+"887",23,"Population, female","Russia","1987",77892375
+"888",24,"Population, female","South Africa","1987",18604223
+"889",25,"Population, female","South America_Northern","1987",9724960
+"890",26,"Population, female","South America_Southern","1987",28335828
+"891",27,"Population, female","South Asia","1987",71686319
+"892",28,"Population, female","South Korea","1987",20772477
+"893",29,"Population, female","Southeast Asia","1987",134908146
+"894",30,"Population, total","Taiwan","1987",0
+"895",31,"Population, female","Argentina","1987",15862727
+"896",32,"Population, female","Colombia","1987",15293772
+"897",1,"Population, female","USA","1988",126778469
+"898",2,"Population, female","Africa_Eastern","1988",71581705
+"899",3,"Population, female","Africa_Northern","1988",56615949
+"900",4,"Population, female","Africa_Southern","1988",40541543
+"901",5,"Population, female","Africa_Western","1988",115281367
+"902",6,"Population, female","Australia_NZ","1988",9944729
+"903",7,"Population, female","Brazil","1988",73004388
+"904",8,"Population, female","Canada","1988",13500396
+"905",9,"Population, female","Central America and Caribbean","1988",28535584
+"906",10,"Population, female","Central Asia","1988",33858910
+"907",11,"Population, female","China","1988",543616701
+"908",12,"Population, female","EU-12","1988",55063262
+"909",13,"Population, female","EU-15","1988",186745972
+"910",14,"Population, female","Europe_Eastern","1988",34722782
+"911",15,"Population, female","Europe_Non_EU","1988",37333566
+"912",16,"Population, female","European Free Trade Association","1988",5643497
+"913",17,"Population, female","India","1988",402535292
+"914",18,"Population, female","Indonesia","1988",87604902
+"915",19,"Population, female","Japan","1988",62236126
+"916",20,"Population, female","Mexico","1988",40019226
+"917",21,"Population, female","Middle East","1988",60457950
+"918",22,"Population, female","Pakistan","1988",51899712
+"919",23,"Population, female","Russia","1988",78250507
+"920",24,"Population, female","South Africa","1988",19231343
+"921",25,"Population, female","South America_Northern","1988",9960787
+"922",26,"Population, female","South America_Southern","1988",28931473
+"923",27,"Population, female","South Asia","1988",73134054
+"924",28,"Population, female","South Korea","1988",20962445
+"925",29,"Population, female","Southeast Asia","1988",137764758
+"926",30,"Population, total","Taiwan","1988",0
+"927",31,"Population, female","Argentina","1988",16100939
+"928",32,"Population, female","Colombia","1988",15627949
+"929",1,"Population, female","USA","1989",127916009
+"930",2,"Population, female","Africa_Eastern","1989",73471356
+"931",3,"Population, female","Africa_Northern","1989",58006471
+"932",4,"Population, female","Africa_Southern","1989",41742762
+"933",5,"Population, female","Africa_Western","1989",118501631
+"934",6,"Population, female","Australia_NZ","1989",10099342
+"935",7,"Population, female","Brazil","1989",74400370
+"936",8,"Population, female","Canada","1989",13751532
+"937",9,"Population, female","Central America and Caribbean","1989",29105540
+"938",10,"Population, female","Central Asia","1989",34323063
+"939",11,"Population, female","China","1989",551869836
+"940",12,"Population, female","EU-12","1989",55142087
+"941",13,"Population, female","EU-15","1989",187422033
+"942",14,"Population, female","Europe_Eastern","1989",34848112
+"943",15,"Population, female","Europe_Non_EU","1989",37924727
+"944",16,"Population, female","European Free Trade Association","1989",5679795
+"945",17,"Population, female","India","1989",411461378
+"946",18,"Population, female","Indonesia","1989",89198541
+"947",19,"Population, female","Japan","1989",62501517
+"948",20,"Population, female","Mexico","1989",40728948
+"949",21,"Population, female","Middle East","1989",62422705
+"950",22,"Population, female","Pakistan","1989",53724935
+"951",23,"Population, female","Russia","1989",78585136
+"952",24,"Population, female","South Africa","1989",19858547
+"953",25,"Population, female","South America_Northern","1989",10198318
+"954",26,"Population, female","South America_Southern","1989",29536803
+"955",27,"Population, female","South Asia","1989",74698390
+"956",28,"Population, female","South Korea","1989",21154831
+"957",29,"Population, female","Southeast Asia","1989",140646202
+"958",30,"Population, total","Taiwan","1989",0
+"959",31,"Population, female","Argentina","1989",16338719
+"960",32,"Population, female","Colombia","1989",15970252
+"961",1,"Population, female","USA","1990",129295455
+"962",2,"Population, female","Africa_Eastern","1990",75549247
+"963",3,"Population, female","Africa_Northern","1990",59372965
+"964",4,"Population, female","Africa_Southern","1990",42937342
+"965",5,"Population, female","Africa_Western","1990",121734995
+"966",6,"Population, female","Australia_NZ","1990",10245262
+"967",7,"Population, female","Brazil","1990",75779994
+"968",8,"Population, female","Canada","1990",13963399
+"969",9,"Population, female","Central America and Caribbean","1990",29681742
+"970",10,"Population, female","Central Asia","1990",34850980
+"971",11,"Population, female","China","1990",559802777
+"972",12,"Population, female","EU-12","1990",55133507
+"973",13,"Population, female","EU-15","1990",188182603
+"974",14,"Population, female","Europe_Eastern","1990",34898947
+"975",15,"Population, female","Europe_Non_EU","1990",38492334
+"976",16,"Population, female","European Free Trade Association","1990",5721447
+"977",17,"Population, female","India","1990",420468106
+"978",18,"Population, female","Indonesia","1990",90771091
+"979",19,"Population, female","Japan","1990",62728216
+"980",20,"Population, female","Mexico","1990",41509560
+"981",21,"Population, female","Middle East","1990",65322768
+"982",22,"Population, female","Pakistan","1990",55569854
+"983",23,"Population, female","Russia","1990",78635282
+"984",24,"Population, female","South Africa","1990",20454959
+"985",25,"Population, female","South America_Northern","1990",10434632
+"986",26,"Population, female","South America_Southern","1990",30147271
+"987",27,"Population, female","South Asia","1990",76159264
+"988",28,"Population, female","South Korea","1990",21346470
+"989",29,"Population, female","Southeast Asia","1990",143616806
+"990",30,"Population, total","Taiwan","1990",0
+"991",31,"Population, female","Argentina","1990",16574141
+"992",32,"Population, female","Colombia","1990",16319819
+"993",1,"Population, female","USA","1991",130946888
+"994",2,"Population, female","Africa_Eastern","1991",77645199
+"995",3,"Population, female","Africa_Northern","1991",60708881
+"996",4,"Population, female","Africa_Southern","1991",44103048
+"997",5,"Population, female","Africa_Western","1991",125043446
+"998",6,"Population, female","Australia_NZ","1991",10444273
+"999",7,"Population, female","Brazil","1991",77129183
+"1000",8,"Population, female","Canada","1991",14138442
+"1001",9,"Population, female","Central America and Caribbean","1991",30256907
+"1002",10,"Population, female","Central Asia","1991",35378056
+"1003",11,"Population, female","China","1991",567247672
+"1004",12,"Population, female","EU-12","1991",55071279
+"1005",13,"Population, female","EU-15","1991",189073435
+"1006",14,"Population, female","Europe_Eastern","1991",34938703
+"1007",15,"Population, female","Europe_Non_EU","1991",38957346
+"1008",16,"Population, female","European Free Trade Association","1991",5775645
+"1009",17,"Population, female","India","1991",429478264
+"1010",18,"Population, female","Indonesia","1991",92335803
+"1011",19,"Population, female","Japan","1991",62995976
+"1012",20,"Population, female","Mexico","1991",42363669
+"1013",21,"Population, female","Middle East","1991",67463394
+"1014",22,"Population, female","Pakistan","1991",57435675
+"1015",23,"Population, female","Russia","1991",78819676
+"1016",24,"Population, female","South Africa","1991",20972094
+"1017",25,"Population, female","South America_Northern","1991",10671092
+"1018",26,"Population, female","South America_Southern","1991",30753581
+"1019",27,"Population, female","South Asia","1991",77574191
+"1020",28,"Population, female","South Korea","1991",21548966
+"1021",29,"Population, female","Southeast Asia","1991",146598274
+"1022",30,"Population, total","Taiwan","1991",0
+"1023",31,"Population, female","Argentina","1991",16807594
+"1024",32,"Population, female","Colombia","1991",16666875
+"1025",1,"Population, female","USA","1992",132681562
+"1026",2,"Population, female","Africa_Eastern","1992",79710542
+"1027",3,"Population, female","Africa_Northern","1992",62033052
+"1028",4,"Population, female","Africa_Southern","1992",45278314
+"1029",5,"Population, female","Africa_Western","1992",128499229
+"1030",6,"Population, female","Australia_NZ","1992",10564745
+"1031",7,"Population, female","Brazil","1992",78445848
+"1032",8,"Population, female","Canada","1992",14312897
+"1033",9,"Population, female","Central America and Caribbean","1992",30828248
+"1034",10,"Population, female","Central Asia","1992",35811232
+"1035",11,"Population, female","China","1992",574008375
+"1036",12,"Population, female","EU-12","1992",54979427
+"1037",13,"Population, female","EU-15","1992",189890512
+"1038",14,"Population, female","Europe_Eastern","1992",35003807
+"1039",15,"Population, female","Europe_Non_EU","1992",39309173
+"1040",16,"Population, female","European Free Trade Association","1992",5828475
+"1041",17,"Population, female","India","1992",438527953
+"1042",18,"Population, female","Indonesia","1992",93896001
+"1043",19,"Population, female","Japan","1992",63252136
+"1044",20,"Population, female","Mexico","1992",43224989
+"1045",21,"Population, female","Middle East","1992",69593937
+"1046",22,"Population, female","Pakistan","1992",58986038
+"1047",23,"Population, female","Russia","1992",78879774
+"1048",24,"Population, female","South Africa","1992",21471959
+"1049",25,"Population, female","South America_Northern","1992",10908576
+"1050",26,"Population, female","South America_Southern","1992",31351516
+"1051",27,"Population, female","South Asia","1992",79616675
+"1052",28,"Population, female","South Korea","1992",21773212
+"1053",29,"Population, female","Southeast Asia","1992",149613396
+"1054",30,"Population, total","Taiwan","1992",0
+"1055",31,"Population, female","Argentina","1992",17039077
+"1056",32,"Population, female","Colombia","1992",17012155
+"1057",1,"Population, female","USA","1993",134368686
+"1058",2,"Population, female","Africa_Eastern","1993",81898486
+"1059",3,"Population, female","Africa_Northern","1993",63350723
+"1060",4,"Population, female","Africa_Southern","1993",46481653
+"1061",5,"Population, female","Africa_Western","1993",132022475
+"1062",6,"Population, female","Australia_NZ","1993",10666896
+"1063",7,"Population, female","Brazil","1993",79750902
+"1064",8,"Population, female","Canada","1993",14478794
+"1065",9,"Population, female","Central America and Caribbean","1993",31391657
+"1066",10,"Population, female","Central Asia","1993",36151606
+"1067",11,"Population, female","China","1993",580463040
+"1068",12,"Population, female","EU-12","1993",54968672
+"1069",13,"Population, female","EU-15","1993",190626654
+"1070",14,"Population, female","Europe_Eastern","1993",35011841
+"1071",15,"Population, female","Europe_Non_EU","1993",39690639
+"1072",16,"Population, female","European Free Trade Association","1993",5874730
+"1073",17,"Population, female","India","1993",447615320
+"1074",18,"Population, female","Indonesia","1993",95452746
+"1075",19,"Population, female","Japan","1993",63480813
+"1076",20,"Population, female","Mexico","1993",44092387
+"1077",21,"Population, female","Middle East","1993",71265503
+"1078",22,"Population, female","Pakistan","1993",60526987
+"1079",23,"Population, female","Russia","1993",78843028
+"1080",24,"Population, female","South Africa","1993",22006067
+"1081",25,"Population, female","South America_Northern","1993",11145186
+"1082",26,"Population, female","South America_Southern","1993",31941242
+"1083",27,"Population, female","South Asia","1993",82035725
+"1084",28,"Population, female","South Korea","1993",21992707
+"1085",29,"Population, female","Southeast Asia","1993",152668012
+"1086",30,"Population, total","Taiwan","1993",0
+"1087",31,"Population, female","Argentina","1993",17269492
+"1088",32,"Population, female","Colombia","1993",17362186
+"1089",1,"Population, female","USA","1994",135964042
+"1090",2,"Population, female","Africa_Eastern","1994",83743626
+"1091",3,"Population, female","Africa_Northern","1994",64645512
+"1092",4,"Population, female","Africa_Southern","1994",47751068
+"1093",5,"Population, female","Africa_Western","1994",135918966
+"1094",6,"Population, female","Australia_NZ","1994",10779551
+"1095",7,"Population, female","Brazil","1994",81055777
+"1096",8,"Population, female","Canada","1994",14643061
+"1097",9,"Population, female","Central America and Caribbean","1994",31938982
+"1098",10,"Population, female","Central Asia","1994",36340472
+"1099",11,"Population, female","China","1994",586890129
+"1100",12,"Population, female","EU-12","1994",54971606
+"1101",13,"Population, female","EU-15","1994",191186332
+"1102",14,"Population, female","Europe_Eastern","1994",34856256
+"1103",15,"Population, female","Europe_Non_EU","1994",40159457
+"1104",16,"Population, female","European Free Trade Association","1994",5917099
+"1105",17,"Population, female","India","1994",456726553
+"1106",18,"Population, female","Indonesia","1994",97016958
+"1107",19,"Population, female","Japan","1994",63683139
+"1108",20,"Population, female","Mexico","1994",44964382
+"1109",21,"Population, female","Middle East","1994",72838734
+"1110",22,"Population, female","Pakistan","1994",62325262
+"1111",23,"Population, female","Russia","1994",78853448
+"1112",24,"Population, female","South Africa","1994",22522796
+"1113",25,"Population, female","South America_Northern","1994",11382035
+"1114",26,"Population, female","South America_Southern","1994",32524835
+"1115",27,"Population, female","South Asia","1994",84218702
+"1116",28,"Population, female","South Korea","1994",22210858
+"1117",29,"Population, female","Southeast Asia","1994",155681316
+"1118",30,"Population, total","Taiwan","1994",0
+"1119",31,"Population, female","Argentina","1994",17499129
+"1120",32,"Population, female","Colombia","1994",17714470
+"1121",1,"Population, female","USA","1995",137526519
+"1122",2,"Population, female","Africa_Eastern","1995",85793154
+"1123",3,"Population, female","Africa_Northern","1995",65912276
+"1124",4,"Population, female","Africa_Southern","1995",49033864
+"1125",5,"Population, female","Africa_Western","1995",139892867
+"1126",6,"Population, female","Australia_NZ","1995",10909214
+"1127",7,"Population, female","Brazil","1995",82360145
+"1128",8,"Population, female","Canada","1995",14799796
+"1129",9,"Population, female","Central America and Caribbean","1995",32476841
+"1130",10,"Population, female","Central Asia","1995",36456018
+"1131",11,"Population, female","China","1995",593116254
+"1132",12,"Population, female","EU-12","1995",54948909
+"1133",13,"Population, female","EU-15","1995",191702792
+"1134",14,"Population, female","Europe_Eastern","1995",34612226
+"1135",15,"Population, female","Europe_Non_EU","1995",40584820
+"1136",16,"Population, female","European Free Trade Association","1995",5954034
+"1137",17,"Population, female","India","1995",465846665
+"1138",18,"Population, female","Indonesia","1995",98589133
+"1139",19,"Population, female","Japan","1995",63859897
+"1140",20,"Population, female","Mexico","1995",45831232
+"1141",21,"Population, female","Middle East","1995",74586874
+"1142",22,"Population, female","Pakistan","1995",64211200
+"1143",23,"Population, female","Russia","1995",78902653
+"1144",24,"Population, female","South Africa","1995",23025116
+"1145",25,"Population, female","South America_Northern","1995",11619646
+"1146",26,"Population, female","South America_Southern","1995",33102026
+"1147",27,"Population, female","South Asia","1995",86147010
+"1148",28,"Population, female","South Korea","1995",22432247
+"1149",29,"Population, female","Southeast Asia","1995",158596353
+"1150",30,"Population, total","Taiwan","1995",0
+"1151",31,"Population, female","Argentina","1995",17725502
+"1152",32,"Population, female","Colombia","1995",18063500
+"1153",1,"Population, female","USA","1996",139073983
+"1154",2,"Population, female","Africa_Eastern","1996",88697343
+"1155",3,"Population, female","Africa_Northern","1996",67135406
+"1156",4,"Population, female","Africa_Southern","1996",50210940
+"1157",5,"Population, female","Africa_Western","1996",143482140
+"1158",6,"Population, female","Australia_NZ","1996",11053795
+"1159",7,"Population, female","Brazil","1996",83659561
+"1160",8,"Population, female","Canada","1996",14956383
+"1161",9,"Population, female","Central America and Caribbean","1996",33009129
+"1162",10,"Population, female","Central Asia","1996",36657386
+"1163",11,"Population, female","China","1996",599266103
+"1164",12,"Population, female","EU-12","1996",54898727
+"1165",13,"Population, female","EU-15","1996",192209976
+"1166",14,"Population, female","Europe_Eastern","1996",34354770
+"1167",15,"Population, female","Europe_Non_EU","1996",41128697
+"1168",16,"Population, female","European Free Trade Association","1996",5982832
+"1169",17,"Population, female","India","1996",474932057
+"1170",18,"Population, female","Indonesia","1996",100173076
+"1171",19,"Population, female","Japan","1996",64033555
+"1172",20,"Population, female","Mexico","1996",46680349
+"1173",21,"Population, female","Middle East","1996",76340768
+"1174",22,"Population, female","Pakistan","1996",66221856
+"1175",23,"Population, female","Russia","1996",78851889
+"1176",24,"Population, female","South Africa","1996",23507455
+"1177",25,"Population, female","South America_Northern","1996",11856455
+"1178",26,"Population, female","South America_Southern","1996",33672157
+"1179",27,"Population, female","South Asia","1996",87873804
+"1180",28,"Population, female","South Korea","1996",22645433
+"1181",29,"Population, female","Southeast Asia","1996",161494263
+"1182",30,"Population, total","Taiwan","1996",0
+"1183",31,"Population, female","Argentina","1996",17946204
+"1184",32,"Population, female","Colombia","1996",18406405
+"1185",1,"Population, female","USA","1997",140690589
+"1186",2,"Population, female","Africa_Eastern","1997",91588682
+"1187",3,"Population, female","Africa_Northern","1997",68333174
+"1188",4,"Population, female","Africa_Southern","1997",51408169
+"1189",5,"Population, female","Africa_Western","1997",147100479
+"1190",6,"Population, female","Australia_NZ","1997",11185581
+"1191",7,"Population, female","Brazil","1997",84953439
+"1192",8,"Population, female","Canada","1997",15103624
+"1193",9,"Population, female","Central America and Caribbean","1997",33536126
+"1194",10,"Population, female","Central Asia","1997",36848420
+"1195",11,"Population, female","China","1997",605219912
+"1196",12,"Population, female","EU-12","1997",54842750
+"1197",13,"Population, female","EU-15","1997",192678727
+"1198",14,"Population, female","Europe_Eastern","1997",34086045
+"1199",15,"Population, female","Europe_Non_EU","1997",41671276
+"1200",16,"Population, female","European Free Trade Association","1997",6004777
+"1201",17,"Population, female","India","1997",484031612
+"1202",18,"Population, female","Indonesia","1997",101769000
+"1203",19,"Population, female","Japan","1997",64215271
+"1204",20,"Population, female","Mexico","1997",47517728
+"1205",21,"Population, female","Middle East","1997",78137192
+"1206",22,"Population, female","Pakistan","1997",68225605
+"1207",23,"Population, female","Russia","1997",78760731
+"1208",24,"Population, female","South Africa","1997",23879335
+"1209",25,"Population, female","South America_Northern","1997",12093336
+"1210",26,"Population, female","South America_Southern","1997",34239784
+"1211",27,"Population, female","South Asia","1997",89627539
+"1212",28,"Population, female","South Korea","1997",22859276
+"1213",29,"Population, female","Southeast Asia","1997",164377824
+"1214",30,"Population, total","Taiwan","1997",0
+"1215",31,"Population, female","Argentina","1997",18160104
+"1216",32,"Population, female","Colombia","1997",18747884
+"1217",1,"Population, female","USA","1998",142251905
+"1218",2,"Population, female","Africa_Eastern","1998",94233774
+"1219",3,"Population, female","Africa_Northern","1998",69534822
+"1220",4,"Population, female","Africa_Southern","1998",52682503
+"1221",5,"Population, female","Africa_Western","1998",151029732
+"1222",6,"Population, female","Australia_NZ","1998",11303222
+"1223",7,"Population, female","Brazil","1998",86240036
+"1224",8,"Population, female","Canada","1998",15229531
+"1225",9,"Population, female","Central America and Caribbean","1998",34056207
+"1226",10,"Population, female","Central Asia","1998",37006691
+"1227",11,"Population, female","China","1998",610879846
+"1228",12,"Population, female","EU-12","1998",54788274
+"1229",13,"Population, female","EU-15","1998",193117417
+"1230",14,"Population, female","Europe_Eastern","1998",33825850
+"1231",15,"Population, female","Europe_Non_EU","1998",42176522
+"1232",16,"Population, female","European Free Trade Association","1998",6029749
+"1233",17,"Population, female","India","1998",493147162
+"1234",18,"Population, female","Indonesia","1998",103351567
+"1235",19,"Population, female","Japan","1998",64422022
+"1236",20,"Population, female","Mexico","1998",48346692
+"1237",21,"Population, female","Middle East","1998",79970469
+"1238",22,"Population, female","Pakistan","1998",70258836
+"1239",23,"Population, female","Russia","1998",78646825
+"1240",24,"Population, female","South Africa","1998",24148681
+"1241",25,"Population, female","South America_Northern","1998",12331157
+"1242",26,"Population, female","South America_Southern","1998",34800946
+"1243",27,"Population, female","South Asia","1998",91466345
+"1244",28,"Population, female","South Korea","1998",23026003
+"1245",29,"Population, female","Southeast Asia","1998",167216419
+"1246",30,"Population, total","Taiwan","1998",0
+"1247",31,"Population, female","Argentina","1998",18370060
+"1248",32,"Population, female","Colombia","1998",19086068
+"1249",1,"Population, female","USA","1999",143783983
+"1250",2,"Population, female","Africa_Eastern","1999",96952773
+"1251",3,"Population, female","Africa_Northern","1999",70739696
+"1252",4,"Population, female","Africa_Southern","1999",53996926
+"1253",5,"Population, female","Africa_Western","1999",155155440
+"1254",6,"Population, female","Australia_NZ","1999",11423291
+"1255",7,"Population, female","Brazil","1999",87504861
+"1256",8,"Population, female","Canada","1999",15353410
+"1257",9,"Population, female","Central America and Caribbean","1999",34576009
+"1258",10,"Population, female","Central Asia","1999",37162253
+"1259",11,"Population, female","China","1999",616015218
+"1260",12,"Population, female","EU-12","1999",54746661
+"1261",13,"Population, female","EU-15","1999",193637068
+"1262",14,"Population, female","Europe_Eastern","1999",33554852
+"1263",15,"Population, female","Europe_Non_EU","1999",42647827
+"1264",16,"Population, female","European Free Trade Association","1999",6062475
+"1265",17,"Population, female","India","1999",502255693
+"1266",18,"Population, female","Indonesia","1999",104895341
+"1267",19,"Population, female","Japan","1999",64573919
+"1268",20,"Population, female","Mexico","1999",49166531
+"1269",21,"Population, female","Middle East","1999",81860821
+"1270",22,"Population, female","Pakistan","1999",72328261
+"1271",23,"Population, female","Russia","1999",78420370
+"1272",24,"Population, female","South Africa","1999",24387653
+"1273",25,"Population, female","South America_Northern","1999",12567905
+"1274",26,"Population, female","South America_Southern","1999",35348658
+"1275",27,"Population, female","South Asia","1999",93374788
+"1276",28,"Population, female","South Korea","1999",23190296
+"1277",29,"Population, female","Southeast Asia","1999",169912863
+"1278",30,"Population, total","Taiwan","1999",0
+"1279",31,"Population, female","Argentina","1999",18580528
+"1280",32,"Population, female","Colombia","1999",19418369
+"1281",1,"Population, female","USA","2000",145284419
+"1282",2,"Population, female","Africa_Eastern","2000",99771564
+"1283",3,"Population, female","Africa_Northern","2000",71960530
+"1284",4,"Population, female","Africa_Southern","2000",55363600
+"1285",5,"Population, female","Africa_Western","2000",159449821
+"1286",6,"Population, female","Australia_NZ","2000",11549658
+"1287",7,"Population, female","Brazil","2000",88749390
+"1288",8,"Population, female","Canada","2000",15492171
+"1289",9,"Population, female","Central America and Caribbean","2000",35104556
+"1290",10,"Population, female","Central Asia","2000",37410132
+"1291",11,"Population, female","China","2000",620686620
+"1292",12,"Population, female","EU-12","2000",54467143
+"1293",13,"Population, female","EU-15","2000",194287638
+"1294",14,"Population, female","Europe_Eastern","2000",33273452
+"1295",15,"Population, female","Europe_Non_EU","2000",43094876
+"1296",16,"Population, female","European Free Trade Association","2000",6097503
+"1297",17,"Population, female","India","2000",511410095
+"1298",18,"Population, female","Indonesia","2000",106407480
+"1299",19,"Population, female","Japan","2000",64716290
+"1300",20,"Population, female","Mexico","2000",49973382
+"1301",21,"Population, female","Middle East","2000",83813578
+"1302",22,"Population, female","Pakistan","2000",74623871
+"1303",23,"Population, female","Russia","2000",78132050
+"1304",24,"Population, female","South Africa","2000",24591889
+"1305",25,"Population, female","South America_Northern","2000",12804488
+"1306",26,"Population, female","South America_Southern","2000",35876244
+"1307",27,"Population, female","South Asia","2000",95047362
+"1308",28,"Population, female","South Korea","2000",23385302
+"1309",29,"Population, female","Southeast Asia","2000",172445782
+"1310",30,"Population, total","Taiwan","2000",0
+"1311",31,"Population, female","Argentina","2000",18790028
+"1312",32,"Population, female","Colombia","2000",19745251
+"1313",1,"Population, female","USA","2001",146663452
+"1314",2,"Population, female","Africa_Eastern","2001",102672109
+"1315",3,"Population, female","Africa_Northern","2001",73209015
+"1316",4,"Population, female","Africa_Southern","2001",56741171
+"1317",5,"Population, female","Africa_Western","2001",163953805
+"1318",6,"Population, female","Australia_NZ","2001",11688042
+"1319",7,"Population, female","Brazil","2001",89978663
+"1320",8,"Population, female","Canada","2001",15654835
+"1321",9,"Population, female","Central America and Caribbean","2001",35627634
+"1322",10,"Population, female","Central Asia","2001",37674130
+"1323",11,"Population, female","China","2001",625084404
+"1324",12,"Population, female","EU-12","2001",54154910
+"1325",13,"Population, female","EU-15","2001",195065207
+"1326",14,"Population, female","Europe_Eastern","2001",32985336
+"1327",15,"Population, female","Europe_Non_EU","2001",43487019
+"1328",16,"Population, female","European Free Trade Association","2001",6133246
+"1329",17,"Population, female","India","2001",520679574
+"1330",18,"Population, female","Indonesia","2001",107901551
+"1331",19,"Population, female","Japan","2001",64907199
+"1332",20,"Population, female","Mexico","2001",50758748
+"1333",21,"Population, female","Middle East","2001",85791208
+"1334",22,"Population, female","Pakistan","2001",77005059
+"1335",23,"Population, female","Russia","2001",77868557
+"1336",24,"Population, female","South Africa","2001",24781908
+"1337",25,"Population, female","South America_Northern","2001",13038952
+"1338",26,"Population, female","South America_Southern","2001",36377666
+"1339",27,"Population, female","South Asia","2001",96706460
+"1340",28,"Population, female","South Korea","2001",23577705
+"1341",29,"Population, female","Southeast Asia","2001",174869119
+"1342",30,"Population, total","Taiwan","2001",0
+"1343",31,"Population, female","Argentina","2001",18996369
+"1344",32,"Population, female","Colombia","2001",20068231
+"1345",1,"Population, female","USA","2002",148013679
+"1346",2,"Population, female","Africa_Eastern","2002",105670054
+"1347",3,"Population, female","Africa_Northern","2002",74482056
+"1348",4,"Population, female","Africa_Southern","2002",58148061
+"1349",5,"Population, female","Africa_Western","2002",168600952
+"1350",6,"Population, female","Australia_NZ","2002",11833157
+"1351",7,"Population, female","Brazil","2002",91173105
+"1352",8,"Population, female","Canada","2002",15821972
+"1353",9,"Population, female","Central America and Caribbean","2002",36146110
+"1354",10,"Population, female","Central Asia","2002",37959353
+"1355",11,"Population, female","China","2002",629219469
+"1356",12,"Population, female","EU-12","2002",53813983
+"1357",13,"Population, female","EU-15","2002",196003938
+"1358",14,"Population, female","Europe_Eastern","2002",32719055
+"1359",15,"Population, female","Europe_Non_EU","2002",43938617
+"1360",16,"Population, female","European Free Trade Association","2002",6173527
+"1361",17,"Population, female","India","2002",529978166
+"1362",18,"Population, female","Indonesia","2002",109376745
+"1363",19,"Population, female","Japan","2002",65093948
+"1364",20,"Population, female","Mexico","2002",51530724
+"1365",21,"Population, female","Middle East","2002",87543365
+"1366",22,"Population, female","Pakistan","2002",78984415
+"1367",23,"Population, female","Russia","2002",77591468
+"1368",24,"Population, female","South Africa","2002",24979734
+"1369",25,"Population, female","South America_Northern","2002",13272478
+"1370",26,"Population, female","South America_Southern","2002",36854196
+"1371",27,"Population, female","South Asia","2002",98989570
+"1372",28,"Population, female","South Korea","2002",23737995
+"1373",29,"Population, female","Southeast Asia","2002",177236245
+"1374",30,"Population, total","Taiwan","2002",0
+"1375",31,"Population, female","Argentina","2002",19201347
+"1376",32,"Population, female","Colombia","2002",20387506
+"1377",1,"Population, female","USA","2003",149285085
+"1378",2,"Population, female","Africa_Eastern","2003",108759344
+"1379",3,"Population, female","Africa_Northern","2003",75771788
+"1380",4,"Population, female","Africa_Southern","2003",59621531
+"1381",5,"Population, female","Africa_Western","2003",173343033
+"1382",6,"Population, female","Australia_NZ","2003",11985644
+"1383",7,"Population, female","Brazil","2003",92310671
+"1384",8,"Population, female","Canada","2003",15963984
+"1385",9,"Population, female","Central America and Caribbean","2003",36658491
+"1386",10,"Population, female","Central Asia","2003",38271453
+"1387",11,"Population, female","China","2003",633070294
+"1388",12,"Population, female","EU-12","2003",53653899
+"1389",13,"Population, female","EU-15","2003",197024803
+"1390",14,"Population, female","Europe_Eastern","2003",32481886
+"1391",15,"Population, female","Europe_Non_EU","2003",44364012
+"1392",16,"Population, female","European Free Trade Association","2003",6213399
+"1393",17,"Population, female","India","2003",539178882
+"1394",18,"Population, female","Indonesia","2003",110834579
+"1395",19,"Population, female","Japan","2003",65270637
+"1396",20,"Population, female","Mexico","2003",52296746
+"1397",21,"Population, female","Middle East","2003",89261903
+"1398",22,"Population, female","Pakistan","2003",80749416
+"1399",23,"Population, female","Russia","2003",77339545
+"1400",24,"Population, female","South Africa","2003",25178665
+"1401",25,"Population, female","South America_Northern","2003",13506082
+"1402",26,"Population, female","South America_Southern","2003",37311268
+"1403",27,"Population, female","South Asia","2003",101404697
+"1404",28,"Population, female","South Korea","2003",23885395
+"1405",29,"Population, female","Southeast Asia","2003",179548449
+"1406",30,"Population, total","Taiwan","2003",0
+"1407",31,"Population, female","Argentina","2003",19398462
+"1408",32,"Population, female","Colombia","2003",20699708
+"1409",1,"Population, female","USA","2004",150638766
+"1410",2,"Population, female","Africa_Eastern","2004",111944395
+"1411",3,"Population, female","Africa_Northern","2004",77086565
+"1412",4,"Population, female","Africa_Southern","2004",61162054
+"1413",5,"Population, female","Africa_Western","2004",178246153
+"1414",6,"Population, female","Australia_NZ","2004",12122211
+"1415",7,"Population, female","Brazil","2004",93418462
+"1416",8,"Population, female","Canada","2004",16112389
+"1417",9,"Population, female","Central America and Caribbean","2004",37162154
+"1418",10,"Population, female","Central Asia","2004",38619100
+"1419",11,"Population, female","China","2004",636798042
+"1420",12,"Population, female","EU-12","2004",53512448
+"1421",13,"Population, female","EU-15","2004",198089254
+"1422",14,"Population, female","Europe_Eastern","2004",32263069
+"1423",15,"Population, female","Europe_Non_EU","2004",44792310
+"1424",16,"Population, female","European Free Trade Association","2004",6251481
+"1425",17,"Population, female","India","2004",548274218
+"1426",18,"Population, female","Indonesia","2004",112236510
+"1427",19,"Population, female","Japan","2004",65330634
+"1428",20,"Population, female","Mexico","2004",53064573
+"1429",21,"Population, female","Middle East","2004",91232086
+"1430",22,"Population, female","Pakistan","2004",82599094
+"1431",23,"Population, female","Russia","2004",77146216
+"1432",24,"Population, female","South Africa","2004",25379489
+"1433",25,"Population, female","South America_Northern","2004",13736906
+"1434",26,"Population, female","South America_Southern","2004",37755800
+"1435",27,"Population, female","South Asia","2004",103413090
+"1436",28,"Population, female","South Korea","2004",24005609
+"1437",29,"Population, female","Southeast Asia","2004",181910362
+"1438",30,"Population, total","Taiwan","2004",0
+"1439",31,"Population, female","Argentina","2004",19591796
+"1440",32,"Population, female","Colombia","2004",21004780
+"1441",1,"Population, female","USA","2005",151988351
+"1442",2,"Population, female","Africa_Eastern","2005",115204880
+"1443",3,"Population, female","Africa_Northern","2005",78413659
+"1444",4,"Population, female","Africa_Southern","2005",62763811
+"1445",5,"Population, female","Africa_Western","2005",183350771
+"1446",6,"Population, female","Australia_NZ","2005",12267714
+"1447",7,"Population, female","Brazil","2005",94515633
+"1448",8,"Population, female","Canada","2005",16263117
+"1449",9,"Population, female","Central America and Caribbean","2005",37662894
+"1450",10,"Population, female","Central Asia","2005",38988045
+"1451",11,"Population, female","China","2005",640501608
+"1452",12,"Population, female","EU-12","2005",53367596
+"1453",13,"Population, female","EU-15","2005",199139930
+"1454",14,"Population, female","Europe_Eastern","2005",32056920
+"1455",15,"Population, female","Europe_Non_EU","2005",45215308
+"1456",16,"Population, female","European Free Trade Association","2005",6290241
+"1457",17,"Population, female","India","2005",557161047
+"1458",18,"Population, female","Indonesia","2005",113637675
+"1459",19,"Population, female","Japan","2005",65374871
+"1460",20,"Population, female","Mexico","2005",53823103
+"1461",21,"Population, female","Middle East","2005",93406775
+"1462",22,"Population, female","Pakistan","2005",84430090
+"1463",23,"Population, female","Russia","2005",76976788
+"1464",24,"Population, female","South Africa","2005",25583854
+"1465",25,"Population, female","South America_Northern","2005",13965716
+"1466",26,"Population, female","South America_Southern","2005",38190549
+"1467",27,"Population, female","South Asia","2005",105314138
+"1468",28,"Population, female","South Korea","2005",24081655
+"1469",29,"Population, female","Southeast Asia","2005",184250864
+"1470",30,"Population, total","Taiwan","2005",0
+"1471",31,"Population, female","Argentina","2005",19791355
+"1472",32,"Population, female","Colombia","2005",21300552
+"1473",1,"Population, female","USA","2006",153418207
+"1474",2,"Population, female","Africa_Eastern","2006",118561014
+"1475",3,"Population, female","Africa_Northern","2006",79740868
+"1476",4,"Population, female","Africa_Southern","2006",64451101
+"1477",5,"Population, female","Africa_Western","2006",188609150
+"1478",6,"Population, female","Australia_NZ","2006",12428994
+"1479",7,"Population, female","Brazil","2006",95583318
+"1480",8,"Population, female","Canada","2006",16427039
+"1481",9,"Population, female","Central America and Caribbean","2006",38161406
+"1482",10,"Population, female","Central Asia","2006",39382100
+"1483",11,"Population, female","China","2006",644038682
+"1484",12,"Population, female","EU-12","2006",53236252
+"1485",13,"Population, female","EU-15","2006",200141755
+"1486",14,"Population, female","Europe_Eastern","2006",31866300
+"1487",15,"Population, female","Europe_Non_EU","2006",45625343
+"1488",16,"Population, female","European Free Trade Association","2006",6330640
+"1489",17,"Population, female","India","2006",565762395
+"1490",18,"Population, female","Indonesia","2006",115112096
+"1491",19,"Population, female","Japan","2006",65451729
+"1492",20,"Population, female","Mexico","2006",54557092
+"1493",21,"Population, female","Middle East","2006",95774827
+"1494",22,"Population, female","Pakistan","2006",86259841
+"1495",23,"Population, female","Russia","2006",76829928
+"1496",24,"Population, female","South Africa","2006",25795511
+"1497",25,"Population, female","South America_Northern","2006",14191156
+"1498",26,"Population, female","South America_Southern","2006",38617664
+"1499",27,"Population, female","South Asia","2006",107138756
+"1500",28,"Population, female","South Korea","2006",24228799
+"1501",29,"Population, female","Southeast Asia","2006",186558888
+"1502",30,"Population, total","Taiwan","2006",0
+"1503",31,"Population, female","Argentina","2006",19992747
+"1504",32,"Population, female","Colombia","2006",21586300
+"1505",1,"Population, female","USA","2007",154853062
+"1506",2,"Population, female","Africa_Eastern","2007",122062823
+"1507",3,"Population, female","Africa_Northern","2007",81105335
+"1508",4,"Population, female","Africa_Southern","2007",66209691
+"1509",5,"Population, female","Africa_Western","2007",194012807
+"1510",6,"Population, female","Australia_NZ","2007",12632610
+"1511",7,"Population, female","Brazil","2007",96616434
+"1512",8,"Population, female","Canada","2007",16588348
+"1513",9,"Population, female","Central America and Caribbean","2007",38661214
+"1514",10,"Population, female","Central Asia","2007",39812284
+"1515",11,"Population, female","China","2007",647373803
+"1516",12,"Population, female","EU-12","2007",53044436
+"1517",13,"Population, female","EU-15","2007",201250865
+"1518",14,"Population, female","Europe_Eastern","2007",31700991
+"1519",15,"Population, female","Europe_Non_EU","2007",46010005
+"1520",16,"Population, female","European Free Trade Association","2007",6383076
+"1521",17,"Population, female","India","2007",574185530
+"1522",18,"Population, female","Indonesia","2007",116621886
+"1523",19,"Population, female","Japan","2007",65557955
+"1524",20,"Population, female","Mexico","2007",55278659
+"1525",21,"Population, female","Middle East","2007",98244462
+"1526",22,"Population, female","Pakistan","2007",88180519
+"1527",23,"Population, female","Russia","2007",76754261
+"1528",24,"Population, female","South Africa","2007",26023987
+"1529",25,"Population, female","South America_Northern","2007",14412536
+"1530",26,"Population, female","South America_Southern","2007",39041105
+"1531",27,"Population, female","South Asia","2007",108583195
+"1532",28,"Population, female","South Korea","2007",24368149
+"1533",29,"Population, female","Southeast Asia","2007",188902261
+"1534",30,"Population, total","Taiwan","2007",0
+"1535",31,"Population, female","Argentina","2007",20190731
+"1536",32,"Population, female","Colombia","2007",21863668
+"1537",1,"Population, female","USA","2008",156303340
+"1538",2,"Population, female","Africa_Eastern","2008",125691748
+"1539",3,"Population, female","Africa_Northern","2008",82512825
+"1540",4,"Population, female","Africa_Southern","2008",68011733
+"1541",5,"Population, female","Africa_Western","2008",199574286
+"1542",6,"Population, female","Australia_NZ","2008",12854385
+"1543",7,"Population, female","Brazil","2008",97612571
+"1544",8,"Population, female","Canada","2008",16769997
+"1545",9,"Population, female","Central America and Caribbean","2008",39166079
+"1546",10,"Population, female","Central Asia","2008",40382594
+"1547",11,"Population, female","China","2008",650659190
+"1548",12,"Population, female","EU-12","2008",52858580
+"1549",13,"Population, female","EU-15","2008",202325348
+"1550",14,"Population, female","Europe_Eastern","2008",31554392
+"1551",15,"Population, female","Europe_Non_EU","2008",46378642
+"1552",16,"Population, female","European Free Trade Association","2008",6453538
+"1553",17,"Population, female","India","2008",582492785
+"1554",18,"Population, female","Indonesia","2008",118134983
+"1555",19,"Population, female","Japan","2008",65618491
+"1556",20,"Population, female","Mexico","2008",55985191
+"1557",21,"Population, female","Middle East","2008",100784032
+"1558",22,"Population, female","Pakistan","2008",90186327
+"1559",23,"Population, female","Russia","2008",76745227
+"1560",24,"Population, female","South Africa","2008",26287724
+"1561",25,"Population, female","South America_Northern","2008",14628142
+"1562",26,"Population, female","South America_Southern","2008",39480376
+"1563",27,"Population, female","South Asia","2008",109960341
+"1564",28,"Population, female","South Korea","2008",24570971
+"1565",29,"Population, female","Southeast Asia","2008",191267083
+"1566",30,"Population, total","Taiwan","2008",0
+"1567",31,"Population, female","Argentina","2008",20387718
+"1568",32,"Population, female","Colombia","2008",22128690
+"1569",1,"Population, female","USA","2009",157664158
+"1570",2,"Population, female","Africa_Eastern","2009",129409472
+"1571",3,"Population, female","Africa_Northern","2009",83961395
+"1572",4,"Population, female","Africa_Southern","2009",69855409
+"1573",5,"Population, female","Africa_Western","2009",205313572
+"1574",6,"Population, female","Australia_NZ","2009",13092177
+"1575",7,"Population, female","Brazil","2009",98581682
+"1576",8,"Population, female","Canada","2009",16962677
+"1577",9,"Population, female","Central America and Caribbean","2009",39673482
+"1578",10,"Population, female","Central Asia","2009",40985998
+"1579",11,"Population, female","China","2009",653850095
+"1580",12,"Population, female","EU-12","2009",52759377
+"1581",13,"Population, female","EU-15","2009",203138987
+"1582",14,"Population, female","Europe_Eastern","2009",31430701
+"1583",15,"Population, female","Europe_Non_EU","2009",46774043
+"1584",16,"Population, female","European Free Trade Association","2009",6526682
+"1585",17,"Population, female","India","2009",590747758
+"1586",18,"Population, female","Indonesia","2009",119636496
+"1587",19,"Population, female","Japan","2009",65637199
+"1588",20,"Population, female","Mexico","2009",56685733
+"1589",21,"Population, female","Middle East","2009",103372572
+"1590",22,"Population, female","Pakistan","2009",92290019
+"1591",23,"Population, female","Russia","2009",76775747
+"1592",24,"Population, female","South Africa","2009",26570865
+"1593",25,"Population, female","South America_Northern","2009",14836863
+"1594",26,"Population, female","South America_Southern","2009",39941168
+"1595",27,"Population, female","South Asia","2009",111526055
+"1596",28,"Population, female","South Korea","2009",24715248
+"1597",29,"Population, female","Southeast Asia","2009",193608387
+"1598",30,"Population, total","Taiwan","2009",0
+"1599",31,"Population, female","Argentina","2009",20588982
+"1600",32,"Population, female","Colombia","2009",22387951
+"1601",1,"Population, female","USA","2010",158963630
+"1602",2,"Population, female","Africa_Eastern","2010",133166600
+"1603",3,"Population, female","Africa_Northern","2010",85482441
+"1604",4,"Population, female","Africa_Southern","2010",71797801
+"1605",5,"Population, female","Africa_Western","2010",211242576
+"1606",6,"Population, female","Australia_NZ","2010",13287126
+"1607",7,"Population, female","Brazil","2010",99546667
+"1608",8,"Population, female","Canada","2010",17152260
+"1609",9,"Population, female","Central America and Caribbean","2010",40157218
+"1610",10,"Population, female","Central Asia","2010",41683399
+"1611",11,"Population, female","China","2010",657000361
+"1612",12,"Population, female","EU-12","2010",52567504
+"1613",13,"Population, female","EU-15","2010",203853506
+"1614",14,"Population, female","Europe_Eastern","2010",31312988
+"1615",15,"Population, female","Europe_Non_EU","2010",47201231
+"1616",16,"Population, female","European Free Trade Association","2010",6593078
+"1617",17,"Population, female","India","2010",599047591
+"1618",18,"Population, female","Indonesia","2010",121133510
+"1619",19,"Population, female","Japan","2010",65672237
+"1620",20,"Population, female","Mexico","2010",57445993
+"1621",21,"Population, female","Middle East","2010",105870558
+"1622",22,"Population, female","Pakistan","2010",94467014
+"1623",23,"Population, female","Russia","2010",76796366
+"1624",24,"Population, female","South Africa","2010",26857414
+"1625",25,"Population, female","South America_Northern","2010",15040870
+"1626",26,"Population, female","South America_Southern","2010",40412720
+"1627",27,"Population, female","South Asia","2010",113129482
+"1628",28,"Population, female","South Korea","2010",24852253
+"1629",29,"Population, female","Southeast Asia","2010",195965431
+"1630",30,"Population, total","Taiwan","2010",0
+"1631",31,"Population, female","Argentina","2010",20633966
+"1632",32,"Population, female","Colombia","2010",22648175
+"1633",1,"Population, female","USA","2011",160018314
+"1634",2,"Population, female","Africa_Eastern","2011",136838943
+"1635",3,"Population, female","Africa_Northern","2011",86904051
+"1636",4,"Population, female","Africa_Southern","2011",73865284
+"1637",5,"Population, female","Africa_Western","2011",217392411
+"1638",6,"Population, female","Australia_NZ","2011",13461346
+"1639",7,"Population, female","Brazil","2011",100509285
+"1640",8,"Population, female","Canada","2011",17318413
+"1641",9,"Population, female","Central America and Caribbean","2011",40642349
+"1642",10,"Population, female","Central Asia","2011",42391305
+"1643",11,"Population, female","China","2011",660604086
+"1644",12,"Population, female","EU-12","2011",52443167
+"1645",13,"Population, female","EU-15","2011",203785569
+"1646",14,"Population, female","Europe_Eastern","2011",31203209
+"1647",15,"Population, female","Europe_Non_EU","2011",47618314
+"1648",16,"Population, female","European Free Trade Association","2011",6662688
+"1649",17,"Population, female","India","2011",607376801
+"1650",18,"Population, female","Indonesia","2011",122648363
+"1651",19,"Population, female","Japan","2011",65569426
+"1652",20,"Population, female","Mexico","2011",58268408
+"1653",21,"Population, female","Middle East","2011",108262151
+"1654",22,"Population, female","Pakistan","2011",96555715
+"1655",23,"Population, female","Russia","2011",76823612
+"1656",24,"Population, female","South Africa","2011",27164417
+"1657",25,"Population, female","South America_Northern","2011",15240928
+"1658",26,"Population, female","South America_Southern","2011",40899194
+"1659",27,"Population, female","South Asia","2011",114888467
+"1660",28,"Population, female","South Korea","2011",25034107
+"1661",29,"Population, female","Southeast Asia","2011",198326507
+"1662",30,"Population, total","Taiwan","2011",0
+"1663",31,"Population, female","Argentina","2011",20865767
+"1664",32,"Population, female","Colombia","2011",22903701
+"1665",1,"Population, female","USA","2012",161017044
+"1666",2,"Population, female","Africa_Eastern","2012",140548514
+"1667",3,"Population, female","Africa_Northern","2012",88388716
+"1668",4,"Population, female","Africa_Southern","2012",76029889
+"1669",5,"Population, female","Africa_Western","2012",223666783
+"1670",6,"Population, female","Australia_NZ","2012",13673344
+"1671",7,"Population, female","Brazil","2012",101450818
+"1672",8,"Population, female","Canada","2012",17500980
+"1673",9,"Population, female","Central America and Caribbean","2012",41152106
+"1674",10,"Population, female","Central Asia","2012",42957187
+"1675",11,"Population, female","China","2012",665126364
+"1676",12,"Population, female","EU-12","2012",52322599
+"1677",13,"Population, female","EU-15","2012",204407235
+"1678",14,"Population, female","Europe_Eastern","2012",31119114
+"1679",15,"Population, female","Europe_Non_EU","2012",48111519
+"1680",16,"Population, female","European Free Trade Association","2012",6730718
+"1681",17,"Population, female","India","2012",615647779
+"1682",18,"Population, female","Indonesia","2012",124183204
+"1683",19,"Population, female","Japan","2012",65480007
+"1684",20,"Population, female","Mexico","2012",59081795
+"1685",21,"Population, female","Middle East","2012",110606575
+"1686",22,"Population, female","Pakistan","2012",98373877
+"1687",23,"Population, female","Russia","2012",76909131
+"1688",24,"Population, female","South Africa","2012",27493643
+"1689",25,"Population, female","South America_Northern","2012",15439664
+"1690",26,"Population, female","South America_Southern","2012",41394440
+"1691",27,"Population, female","South Asia","2012",116709140
+"1692",28,"Population, female","South Korea","2012",25137200
+"1693",29,"Population, female","Southeast Asia","2012",200714562
+"1694",30,"Population, total","Taiwan","2012",0
+"1695",31,"Population, female","Argentina","2012",21099001
+"1696",32,"Population, female","Colombia","2012",23149997
+"1697",1,"Population, female","USA","2013",161966595
+"1698",2,"Population, female","Africa_Eastern","2013",144380986
+"1699",3,"Population, female","Africa_Northern","2013",90158885
+"1700",4,"Population, female","Africa_Southern","2013",78303324
+"1701",5,"Population, female","Africa_Western","2013",230048323
+"1702",6,"Population, female","Australia_NZ","2013",13892545
+"1703",7,"Population, female","Brazil","2013",102366379
+"1704",8,"Population, female","Canada","2013",17680037
+"1705",9,"Population, female","Central America and Caribbean","2013",41661095
+"1706",10,"Population, female","Central Asia","2013",43571532
+"1707",11,"Population, female","China","2013",669591439
+"1708",12,"Population, female","EU-12","2013",52213810
+"1709",13,"Population, female","EU-15","2013",205226673
+"1710",14,"Population, female","Europe_Eastern","2013",31042650
+"1711",15,"Population, female","Europe_Non_EU","2013",48707303
+"1712",16,"Population, female","European Free Trade Association","2013",6802054
+"1713",17,"Population, female","India","2013",623809180
+"1714",18,"Population, female","Indonesia","2013",125693504
+"1715",19,"Population, female","Japan","2013",65398896
+"1716",20,"Population, female","Mexico","2013",59862821
+"1717",21,"Population, female","Middle East","2013",112973817
+"1718",22,"Population, female","Pakistan","2013",99958919
+"1719",23,"Population, female","Russia","2013",77025825
+"1720",24,"Population, female","South Africa","2013",27837495
+"1721",25,"Population, female","South America_Northern","2013",15637326
+"1722",26,"Population, female","South America_Southern","2013",41893753
+"1723",27,"Population, female","South Asia","2013",118461671
+"1724",28,"Population, female","South Korea","2013",25224087
+"1725",29,"Population, female","Southeast Asia","2013",203071133
+"1726",30,"Population, total","Taiwan","2013",0
+"1727",31,"Population, female","Argentina","2013",21332490
+"1728",32,"Population, female","Colombia","2013",23387544
+"1729",1,"Population, female","USA","2014",162988348
+"1730",2,"Population, female","Africa_Eastern","2014",148208770
+"1731",3,"Population, female","Africa_Northern","2014",91975658
+"1732",4,"Population, female","Africa_Southern","2014",80662213
+"1733",5,"Population, female","Africa_Western","2014",236606165
+"1734",6,"Population, female","Australia_NZ","2014",14111341
+"1735",7,"Population, female","Brazil","2014",103274465
+"1736",8,"Population, female","Canada","2014",17855282
+"1737",9,"Population, female","Central America and Caribbean","2014",42166609
+"1738",10,"Population, female","Central Asia","2014",44231546
+"1739",11,"Population, female","China","2014",673888536
+"1740",12,"Population, female","EU-12","2014",52109157
+"1741",13,"Population, female","EU-15","2014",206081457
+"1742",14,"Population, female","Europe_Eastern","2014",30910299
+"1743",15,"Population, female","Europe_Non_EU","2014",49422553
+"1744",16,"Population, female","European Free Trade Association","2014",6876561
+"1745",17,"Population, female","India","2014",631697152
+"1746",18,"Population, female","Indonesia","2014",127158711
+"1747",19,"Population, female","Japan","2014",65324683
+"1748",20,"Population, female","Mexico","2014",60610526
+"1749",21,"Population, female","Middle East","2014",115389779
+"1750",22,"Population, female","Pakistan","2014",101436628
+"1751",23,"Population, female","Russia","2014",77153880
+"1752",24,"Population, female","South Africa","2014",28228865
+"1753",25,"Population, female","South America_Northern","2014",15829092
+"1754",26,"Population, female","South America_Southern","2014",42405447
+"1755",27,"Population, female","South Asia","2014",120264549
+"1756",28,"Population, female","South Korea","2014",25356139
+"1757",29,"Population, female","Southeast Asia","2014",205380064
+"1758",30,"Population, total","Taiwan","2014",0
+"1759",31,"Population, female","Argentina","2014",21562981
+"1760",32,"Population, female","Colombia","2014",23617367
+"1761",1,"Population, female","USA","2015",164031621
+"1762",2,"Population, female","Africa_Eastern","2015",152058538
+"1763",3,"Population, female","Africa_Northern","2015",93746393
+"1764",4,"Population, female","Africa_Southern","2015",83117155
+"1765",5,"Population, female","Africa_Western","2015",243274192
+"1766",6,"Population, female","Australia_NZ","2015",14336996
+"1767",7,"Population, female","Brazil","2015",104179515
+"1768",8,"Population, female","Canada","2015",17988513
+"1769",9,"Population, female","Central America and Caribbean","2015",42667724
+"1770",10,"Population, female","Central Asia","2015",44916914
+"1771",11,"Population, female","China","2015",677929478
+"1772",12,"Population, female","EU-12","2015",51997972
+"1773",13,"Population, female","EU-15","2015",206871151
+"1774",14,"Population, female","Europe_Eastern","2015",30827227
+"1775",15,"Population, female","Europe_Non_EU","2015",50125538
+"1776",16,"Population, female","European Free Trade Association","2015",6945301
+"1777",17,"Population, female","India","2015",639323292
+"1778",18,"Population, female","Indonesia","2015",128574643
+"1779",19,"Population, female","Japan","2015",65267090
+"1780",20,"Population, female","Mexico","2015",61325120
+"1781",21,"Population, female","Middle East","2015",117718802
+"1782",22,"Population, female","Pakistan","2015",102985590
+"1783",23,"Population, female","Russia","2015",77273424
+"1784",24,"Population, female","South Africa","2015",28721087
+"1785",25,"Population, female","South America_Northern","2015",16012022
+"1786",26,"Population, female","South America_Southern","2015",42937964
+"1787",27,"Population, female","South Asia","2015",121974692
+"1788",28,"Population, female","South Korea","2015",25466609
+"1789",29,"Population, female","Southeast Asia","2015",207685998
+"1790",30,"Population, total","Taiwan","2015",0
+"1791",31,"Population, female","Argentina","2015",21791541
+"1792",32,"Population, female","Colombia","2015",23847355
+"1793",1,"Population, female","USA","2016",165064523
+"1794",2,"Population, female","Africa_Eastern","2016",156027773
+"1795",3,"Population, female","Africa_Northern","2016",95484116
+"1796",4,"Population, female","Africa_Southern","2016",85669833
+"1797",5,"Population, female","Africa_Western","2016",250135450
+"1798",6,"Population, female","Australia_NZ","2016",14584712
+"1799",7,"Population, female","Brazil","2016",105065188
+"1800",8,"Population, female","Canada","2016",18192222
+"1801",9,"Population, female","Central America and Caribbean","2016",43162322
+"1802",10,"Population, female","Central Asia","2016",45601997
+"1803",11,"Population, female","China","2016",681965380
+"1804",12,"Population, female","EU-12","2016",51869070
+"1805",13,"Population, female","EU-15","2016",207644669
+"1806",14,"Population, female","Europe_Eastern","2016",30725476
+"1807",15,"Population, female","Europe_Non_EU","2016",50755940
+"1808",16,"Population, female","European Free Trade Association","2016",7009219
+"1809",17,"Population, female","India","2016",647012921
+"1810",18,"Population, female","Indonesia","2016",129940374
+"1811",19,"Population, female","Japan","2016",65245704
+"1812",20,"Population, female","Mexico","2016",62029592
+"1813",21,"Population, female","Middle East","2016",119838998
+"1814",22,"Population, female","Pakistan","2016",104630327
+"1815",23,"Population, female","Russia","2016",77378095
+"1816",24,"Population, female","South Africa","2016",29004108
+"1817",25,"Population, female","South America_Northern","2016",16134850
+"1818",26,"Population, female","South America_Southern","2016",43513553
+"1819",27,"Population, female","South Asia","2016",123657712
+"1820",28,"Population, female","South Korea","2016",25566204
+"1821",29,"Population, female","Southeast Asia","2016",210043283
+"1822",30,"Population, total","Taiwan","2016",0
+"1823",31,"Population, female","Argentina","2016",22019065
+"1824",32,"Population, female","Colombia","2016",24107989
+"1825",1,"Population, female","USA","2017",165951971
+"1826",2,"Population, female","Africa_Eastern","2017",160081986
+"1827",3,"Population, female","Africa_Northern","2017",97197138
+"1828",4,"Population, female","Africa_Southern","2017",88269042
+"1829",5,"Population, female","Africa_Western","2017",257166906
+"1830",6,"Population, female","Australia_NZ","2017",14840473
+"1831",7,"Population, female","Brazil","2017",105937948
+"1832",8,"Population, female","Canada","2017",18406915
+"1833",9,"Population, female","Central America and Caribbean","2017",43648868
+"1834",10,"Population, female","Central Asia","2017",46270673
+"1835",11,"Population, female","China","2017",686320199
+"1836",12,"Population, female","EU-12","2017",51757199
+"1837",13,"Population, female","EU-15","2017",208275731
+"1838",14,"Population, female","Europe_Eastern","2017",30594948
+"1839",15,"Population, female","Europe_Non_EU","2017",51227382
+"1840",16,"Population, female","European Free Trade Association","2017",7068185
+"1841",17,"Population, female","India","2017",654607791
+"1842",18,"Population, female","Indonesia","2017",131253454
+"1843",19,"Population, female","Japan","2017",65206949
+"1844",20,"Population, female","Mexico","2017",62712641
+"1845",21,"Population, female","Middle East","2017",121910992
+"1846",22,"Population, female","Pakistan","2017",106376569
+"1847",23,"Population, female","Russia","2017",77431943
+"1848",24,"Population, female","South Africa","2017",29175940
+"1849",25,"Population, female","South America_Northern","2017",16063658
+"1850",26,"Population, female","South America_Southern","2017",44155486
+"1851",27,"Population, female","South Asia","2017",125439589
+"1852",28,"Population, female","South Korea","2017",25654936
+"1853",29,"Population, female","Southeast Asia","2017",212346577
+"1854",30,"Population, total","Taiwan","2017",0
+"1855",31,"Population, female","Argentina","2017",22244116
+"1856",32,"Population, female","Colombia","2017",24477100
+"1857",1,"Population, female","USA","2018",166659845
+"1858",2,"Population, female","Africa_Eastern","2018",164255926
+"1859",3,"Population, female","Africa_Northern","2018",98871408
+"1860",4,"Population, female","Africa_Southern","2018",90875593
+"1861",5,"Population, female","Africa_Western","2018",264249986
+"1862",6,"Population, female","Australia_NZ","2018",15069180
+"1863",7,"Population, female","Brazil","2018",106812144
+"1864",8,"Population, female","Canada","2018",18659541
+"1865",9,"Population, female","Central America and Caribbean","2018",44131378
+"1866",10,"Population, female","Central Asia","2018",46948720
+"1867",11,"Population, female","China","2018",689822559
+"1868",12,"Population, female","EU-12","2018",51665200
+"1869",13,"Population, female","EU-15","2018",208907918
+"1870",14,"Population, female","Europe_Eastern","2018",30442848
+"1871",15,"Population, female","Europe_Non_EU","2018",51528061
+"1872",16,"Population, female","European Free Trade Association","2018",7119379
+"1873",17,"Population, female","India","2018",661854076
+"1874",18,"Population, female","Indonesia","2018",132530163
+"1875",19,"Population, female","Japan","2018",65140618
+"1876",20,"Population, female","Mexico","2018",63328698
+"1877",21,"Population, female","Middle East","2018",124213256
+"1878",22,"Population, female","Pakistan","2018",108293156
+"1879",23,"Population, female","Russia","2018",77393346
+"1880",24,"Population, female","South Africa","2018",29517286
+"1881",25,"Population, female","South America_Northern","2018",15718365
+"1882",26,"Population, female","South America_Southern","2018",44917184
+"1883",27,"Population, female","South Asia","2018",127236091
+"1884",28,"Population, female","South Korea","2018",25783018
+"1885",29,"Population, female","Southeast Asia","2018",214574147
+"1886",30,"Population, total","Taiwan","2018",0
+"1887",31,"Population, female","Argentina","2018",22467488
+"1888",32,"Population, female","Colombia","2018",24945907
+"1889",1,"Population, female","USA","2019",167336231
+"1890",2,"Population, female","Africa_Eastern","2019",168633503
+"1891",3,"Population, female","Africa_Northern","2019",100487020
+"1892",4,"Population, female","Africa_Southern","2019",93498517
+"1893",5,"Population, female","Africa_Western","2019",271418811
+"1894",6,"Population, female","Australia_NZ","2019",15287207
+"1895",7,"Population, female","Brazil","2019",107663080
+"1896",8,"Population, female","Canada","2019",18921018
+"1897",9,"Population, female","Central America and Caribbean","2019",44599526
+"1898",10,"Population, female","Central Asia","2019",47658546
+"1899",11,"Population, female","China","2019",692571871
+"1900",12,"Population, female","EU-12","2019",51599812
+"1901",13,"Population, female","EU-15","2019",209298258
+"1902",14,"Population, female","Europe_Eastern","2019",30291704
+"1903",15,"Population, female","Europe_Non_EU","2019",51811738
+"1904",16,"Population, female","European Free Trade Association","2019",7169336
+"1905",17,"Population, female","India","2019",668786993
+"1906",18,"Population, female","Indonesia","2019",133784436
+"1907",19,"Population, female","Japan","2019",65065286
+"1908",20,"Population, female","Mexico","2019",63898082
+"1909",21,"Population, female","Middle East","2019",126621885
+"1910",22,"Population, female","Pakistan","2019",110278237
+"1911",23,"Population, female","Russia","2019",77329730
+"1912",24,"Population, female","South Africa","2019",29879107
+"1913",25,"Population, female","South America_Northern","2019",15312607
+"1914",26,"Population, female","South America_Southern","2019",45696508
+"1915",27,"Population, female","South Asia","2019",129020853
+"1916",28,"Population, female","South Korea","2019",25889856
+"1917",29,"Population, female","Southeast Asia","2019",216761763
+"1918",30,"Population, total","Taiwan","2019",0
+"1919",31,"Population, female","Argentina","2019",22689693
+"1920",32,"Population, female","Colombia","2019",25408106
+"1921",1,"Population, female","USA","2020",168988423
+"1922",2,"Population, female","Africa_Eastern","2020",173103467
+"1923",3,"Population, female","Africa_Northern","2020",102073193
+"1924",4,"Population, female","Africa_Southern","2020",96170631
+"1925",5,"Population, female","Africa_Western","2020",278774305
+"1926",6,"Population, female","Australia_NZ","2020",15492347
+"1927",7,"Population, female","Brazil","2020",108417015
+"1928",8,"Population, female","Canada","2020",19121762
+"1929",9,"Population, female","Central America and Caribbean","2020",45061924
+"1930",10,"Population, female","Central Asia","2020",48375436
+"1931",11,"Population, female","China","2020",694558501
+"1932",12,"Population, female","EU-12","2020",51499693
+"1933",13,"Population, female","EU-15","2020",209662668
+"1934",14,"Population, female","Europe_Eastern","2020",30132286
+"1935",15,"Population, female","Europe_Non_EU","2020",52083691
+"1936",16,"Population, female","European Free Trade Association","2020",7216940
+"1937",17,"Population, female","India","2020",675389679
+"1938",18,"Population, female","Indonesia","2020",134930389
+"1939",19,"Population, female","Japan","2020",64885399
+"1940",20,"Population, female","Mexico","2020",64410851
+"1941",21,"Population, female","Middle East","2020",128592714
+"1942",22,"Population, female","Pakistan","2020",112381099
+"1943",23,"Population, female","Russia","2020",77147284
+"1944",24,"Population, female","South Africa","2020",30221143
+"1945",25,"Population, female","South America_Northern","2020",15088406
+"1946",26,"Population, female","South America_Southern","2020",46331647
+"1947",27,"Population, female","South Asia","2020",130940292
+"1948",28,"Population, female","South Korea","2020",25938911
+"1949",29,"Population, female","Southeast Asia","2020",218910111
+"1950",30,"Population, total","Taiwan","2020",0
+"1951",31,"Population, female","Argentina","2020",22911069
+"1952",32,"Population, female","Colombia","2020",25791075
+"1953",1,"Population, female","USA","2021",169327921
+"1954",2,"Population, female","Africa_Eastern","2021",177564634
+"1955",3,"Population, female","Africa_Northern","2021",103625208
+"1956",4,"Population, female","Africa_Southern","2021",98871580
+"1957",5,"Population, female","Africa_Western","2021",286244650
+"1958",6,"Population, female","Australia_NZ","2021",15514125
+"1959",7,"Population, female","Brazil","2021",109034931
+"1960",8,"Population, female","Canada","2021",19230969
+"1961",9,"Population, female","Central America and Caribbean","2021",45509000
+"1962",10,"Population, female","Central Asia","2021",49081249
+"1963",11,"Population, female","China","2021",695578026
+"1964",12,"Population, female","EU-12","2021",51203096
+"1965",13,"Population, female","EU-15","2021",209741486
+"1966",14,"Population, female","Europe_Eastern","2021",29912951
+"1967",15,"Population, female","Europe_Non_EU","2021",52255753
+"1968",16,"Population, female","European Free Trade Association","2021",7264810
+"1969",17,"Population, female","India","2021",681060412
+"1970",18,"Population, female","Indonesia","2021",135900714
+"1971",19,"Population, female","Japan","2021",64594414
+"1972",20,"Population, female","Mexico","2021",64849001
+"1973",21,"Population, female","Middle East","2021",130344376
+"1974",22,"Population, female","Pakistan","2021",114586264
+"1975",23,"Population, female","Russia","2021",76824577
+"1976",24,"Population, female","South Africa","2021",30497646
+"1977",25,"Population, female","South America_Northern","2021",14961586
+"1978",26,"Population, female","South America_Southern","2021",46875654
+"1979",27,"Population, female","South Asia","2021",132934906
+"1980",28,"Population, female","South Korea","2021",25902500
+"1981",29,"Population, female","Southeast Asia","2021",220841542
+"1982",30,"Population, total","Taiwan","2021",0
+"1983",31,"Population, female","Argentina","2021",23130548
+"1984",32,"Population, female","Colombia","2021",26101321
+"1985",1,"Population, female","USA","2022",170024585
+"1986",2,"Population, female","Africa_Eastern","2022",182022780
+"1987",3,"Population, female","Africa_Northern","2022",105135126
+"1988",4,"Population, female","Africa_Southern","2022",101587534
+"1989",5,"Population, female","Africa_Western","2022",293827923
+"1990",6,"Population, female","Australia_NZ","2022",15663253
+"1991",7,"Population, female","Brazil","2022",109580471
+"1992",8,"Population, female","Canada","2022",19583244
+"1993",9,"Population, female","Central America and Caribbean","2022",45941461
+"1994",10,"Population, female","Central Asia","2022",50005964
+"1995",11,"Population, female","China","2022",695858997
+"1996",12,"Population, female","EU-12","2022",50789565
+"1997",13,"Population, female","EU-15","2022",210466586
+"1998",14,"Population, female","Europe_Eastern","2022",26877590
+"1999",15,"Population, female","Europe_Non_EU","2022",52456570
+"2000",16,"Population, female","European Free Trade Association","2022",7324271
+"2001",17,"Population, female","India","2022",685992675
+"2002",18,"Population, female","Indonesia","2022",136798063
+"2003",19,"Population, female","Japan","2022",64314912
+"2004",20,"Population, female","Mexico","2022",65309171
+"2005",21,"Population, female","Middle East","2022",132429874
+"2006",22,"Population, female","Pakistan","2022",116863982
+"2007",23,"Population, female","Russia","2022",76884903
+"2008",24,"Population, female","South Africa","2022",30725879
+"2009",25,"Population, female","South America_Northern","2022",15028063
+"2010",26,"Population, female","South America_Southern","2022",47323883
+"2011",27,"Population, female","South Asia","2022",134680052
+"2012",28,"Population, female","South Korea","2022",25854364
+"2013",29,"Population, female","Southeast Asia","2022",222887191
+"2014",30,"Population, total","Taiwan","2022",0
+"2015",31,"Population, female","Argentina","2022",23345532
+"2016",32,"Population, female","Colombia","2022",26298417

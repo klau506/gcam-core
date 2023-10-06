@@ -1,0 +1,2017 @@
+"","GCAM_region_ID","Indicator.Name","region","year","value"
+"1",1,"Population, male","USA","1960",90726164
+"2",2,"Population, male","Africa_Eastern","1960",31879252
+"3",3,"Population, male","Africa_Northern","1960",28101733
+"4",4,"Population, male","Africa_Southern","1960",17140233
+"5",5,"Population, male","Africa_Western","1960",55792674
+"6",6,"Population, male","Australia_NZ","1960",6383524
+"7",7,"Population, male","Brazil","1960",36658093
+"8",8,"Population, male","Canada","1960",9058385
+"9",9,"Population, male","Central America and Caribbean","1960",15690973
+"10",10,"Population, male","Central Asia","1960",16409087
+"11",11,"Population, male","China","1960",342832540
+"12",12,"Population, male","EU-12","1960",42596127
+"13",13,"Population, male","EU-15","1960",152762876
+"14",14,"Population, male","Europe_Eastern","1960",23657294
+"15",15,"Population, male","Europe_Non_EU","1960",22501908
+"16",16,"Population, male","European Free Trade Association","1960",4461979
+"17",17,"Population, male","India","1960",230135579
+"18",18,"Population, male","Indonesia","1960",44084045
+"19",19,"Population, male","Japan","1960",45781584
+"20",20,"Population, male","Mexico","1960",18239142
+"21",21,"Population, male","Middle East","1960",24768127
+"22",22,"Population, male","Pakistan","1960",24795178
+"23",23,"Population, male","Russia","1960",53715149
+"24",24,"Population, male","South Africa","1960",8502461
+"25",25,"Population, male","South America_Northern","1960",4538067
+"26",26,"Population, male","South America_Southern","1960",15546726
+"27",27,"Population, male","South Asia","1960",41057833
+"28",28,"Population, male","South Korea","1960",12523036
+"29",29,"Population, male","Southeast Asia","1960",70553051
+"30",30,"Population, total","Taiwan","1960",0
+"31",31,"Population, male","Argentina","1960",10191482
+"32",32,"Population, male","Colombia","1960",7811878
+"33",1,"Population, male","USA","1961",92147184
+"34",2,"Population, male","Africa_Eastern","1961",32737850
+"35",3,"Population, male","Africa_Northern","1961",28775009
+"36",4,"Population, male","Africa_Southern","1961",17580978
+"37",5,"Population, male","Africa_Western","1961",57005244
+"38",6,"Population, male","Australia_NZ","1961",6510713
+"39",7,"Population, male","Brazil","1961",37763189
+"40",8,"Population, male","Canada","1961",9230191
+"41",9,"Population, male","Central America and Caribbean","1961",16088627
+"42",10,"Population, male","Central Asia","1961",16989714
+"43",11,"Population, male","China","1961",339171127
+"44",12,"Population, male","EU-12","1961",43023630
+"45",13,"Population, male","EU-15","1961",154082120
+"46",14,"Population, male","Europe_Eastern","1961",24037696
+"47",15,"Population, male","Europe_Non_EU","1961",22992048
+"48",16,"Population, male","European Free Trade Association","1961",4531888
+"49",17,"Population, male","India","1961",235560577
+"50",18,"Population, male","Indonesia","1961",45311709
+"51",19,"Population, male","Japan","1961",46199936
+"52",20,"Population, male","Mexico","1961",18822518
+"53",21,"Population, male","Middle East","1961",25481339
+"54",22,"Population, male","Pakistan","1961",25363721
+"55",23,"Population, male","Russia","1961",54464628
+"56",24,"Population, male","South Africa","1961",8725719
+"57",25,"Population, male","South America_Northern","1961",4698606
+"58",26,"Population, male","South America_Southern","1961",15929090
+"59",27,"Population, male","South Asia","1961",42117578
+"60",28,"Population, male","South Korea","1961",12910139
+"61",29,"Population, male","Southeast Asia","1961",72487363
+"62",30,"Population, total","Taiwan","1961",0
+"63",31,"Population, male","Argentina","1961",10345584
+"64",32,"Population, male","Colombia","1961",8061302
+"65",1,"Population, male","USA","1962",93472062
+"66",2,"Population, male","Africa_Eastern","1962",33644131
+"67",3,"Population, male","Africa_Northern","1962",29468826
+"68",4,"Population, male","Africa_Southern","1962",18037130
+"69",5,"Population, male","Africa_Western","1962",58266704
+"70",6,"Population, male","Australia_NZ","1962",6667068
+"71",7,"Population, male","Brazil","1962",38880853
+"72",8,"Population, male","Canada","1962",9390542
+"73",9,"Population, male","Central America and Caribbean","1962",16494168
+"74",10,"Population, male","Central Asia","1962",17569891
+"75",11,"Population, male","China","1962",341820347
+"76",12,"Population, male","EU-12","1962",43420789
+"77",13,"Population, male","EU-15","1962",155492162
+"78",14,"Population, male","Europe_Eastern","1962",24401533
+"79",15,"Population, male","Europe_Non_EU","1962",23496419
+"80",16,"Population, male","European Free Trade Association","1962",4619687
+"81",17,"Population, male","India","1962",241125862
+"82",18,"Population, male","Indonesia","1962",46589573
+"83",19,"Population, male","Japan","1962",46638689
+"84",20,"Population, male","Mexico","1962",19442648
+"85",21,"Population, male","Middle East","1962",26263716
+"86",22,"Population, male","Pakistan","1962",25930189
+"87",23,"Population, male","Russia","1962",55213503
+"88",24,"Population, male","South Africa","1962",8971110
+"89",25,"Population, male","South America_Northern","1962",4861767
+"90",26,"Population, male","South America_Southern","1962",16320125
+"91",27,"Population, male","South Asia","1962",43239445
+"92",28,"Population, male","South Korea","1962",13302628
+"93",29,"Population, male","Southeast Asia","1962",74443461
+"94",30,"Population, total","Taiwan","1962",0
+"95",31,"Population, male","Argentina","1962",10506660
+"96",32,"Population, male","Colombia","1962",8318055
+"97",1,"Population, male","USA","1963",94732963
+"98",2,"Population, male","Africa_Eastern","1963",34575937
+"99",3,"Population, male","Africa_Northern","1963",30187606
+"100",4,"Population, male","Africa_Southern","1963",18507607
+"101",5,"Population, male","Africa_Western","1963",59591461
+"102",6,"Population, male","Australia_NZ","1963",6790993
+"103",7,"Population, male","Brazil","1963",40022356
+"104",8,"Population, male","Canada","1963",9554327
+"105",9,"Population, male","Central America and Caribbean","1963",16908039
+"106",10,"Population, male","Central Asia","1963",18155541
+"107",11,"Population, male","China","1963",350180671
+"108",12,"Population, male","EU-12","1963",43841267
+"109",13,"Population, male","EU-15","1963",156901285
+"110",14,"Population, male","Europe_Eastern","1963",24748329
+"111",15,"Population, male","Europe_Non_EU","1963",24003663
+"112",16,"Population, male","European Free Trade Association","1963",4697430
+"113",17,"Population, male","India","1963",246813291
+"114",18,"Population, male","Indonesia","1963",47913104
+"115",19,"Population, male","Japan","1963",47121412
+"116",20,"Population, male","Mexico","1963",20090731
+"117",21,"Population, male","Middle East","1963",27080952
+"118",22,"Population, male","Pakistan","1963",26526519
+"119",23,"Population, male","Russia","1963",55965087
+"120",24,"Population, male","South Africa","1963",9228327
+"121",25,"Population, male","South America_Northern","1963",5027644
+"122",26,"Population, male","South America_Southern","1963",16716676
+"123",27,"Population, male","South Asia","1963",44404869
+"124",28,"Population, male","South Korea","1963",13697823
+"125",29,"Population, male","Southeast Asia","1963",76487453
+"126",30,"Population, total","Taiwan","1963",0
+"127",31,"Population, male","Argentina","1963",10669192
+"128",32,"Population, male","Colombia","1963",8580512
+"129",1,"Population, male","USA","1964",95961542
+"130",2,"Population, male","Africa_Eastern","1964",35565868
+"131",3,"Population, male","Africa_Northern","1964",30930151
+"132",4,"Population, male","Africa_Southern","1964",18991670
+"133",5,"Population, male","Africa_Western","1964",60957275
+"134",6,"Population, male","Australia_NZ","1964",6923676
+"135",7,"Population, male","Brazil","1964",41178982
+"136",8,"Population, male","Canada","1964",9724573
+"137",9,"Population, male","Central America and Caribbean","1964",17331300
+"138",10,"Population, male","Central Asia","1964",18750158
+"139",11,"Population, male","China","1964",358259811
+"140",12,"Population, male","EU-12","1964",44281676
+"141",13,"Population, male","EU-15","1964",158303140
+"142",14,"Population, male","Europe_Eastern","1964",25079595
+"143",15,"Population, male","Europe_Non_EU","1964",24503673
+"144",16,"Population, male","European Free Trade Association","1964",4762307
+"145",17,"Population, male","India","1964",252612930
+"146",18,"Population, male","Indonesia","1964",49281528
+"147",19,"Population, male","Japan","1964",47623010
+"148",20,"Population, male","Mexico","1964",20765815
+"149",21,"Population, male","Middle East","1964",27944696
+"150",22,"Population, male","Pakistan","1964",27153709
+"151",23,"Population, male","Russia","1964",56712371
+"152",24,"Population, male","South Africa","1964",9496079
+"153",25,"Population, male","South America_Northern","1964",5195924
+"154",26,"Population, male","South America_Southern","1964",17121227
+"155",27,"Population, male","South Asia","1964",45609461
+"156",28,"Population, male","South Korea","1964",14079553
+"157",29,"Population, male","Southeast Asia","1964",78566873
+"158",30,"Population, total","Taiwan","1964",0
+"159",31,"Population, male","Argentina","1964",10831793
+"160",32,"Population, male","Colombia","1964",8847794
+"161",1,"Population, male","USA","1965",97020460
+"162",2,"Population, male","Africa_Eastern","1965",36604772
+"163",3,"Population, male","Africa_Northern","1965",31688959
+"164",4,"Population, male","Africa_Southern","1965",19483816
+"165",5,"Population, male","Africa_Western","1965",62377412
+"166",6,"Population, male","Australia_NZ","1965",7054202
+"167",7,"Population, male","Brazil","1965",42341802
+"168",8,"Population, male","Canada","1965",9891746
+"169",9,"Population, male","Central America and Caribbean","1965",17759932
+"170",10,"Population, male","Central Asia","1965",19339097
+"171",11,"Population, male","China","1965",366753923
+"172",12,"Population, male","EU-12","1965",44646246
+"173",13,"Population, male","EU-15","1965",159733093
+"174",14,"Population, male","Europe_Eastern","1965",25380630
+"175",15,"Population, male","Europe_Non_EU","1965",24986819
+"176",16,"Population, male","European Free Trade Association","1965",4813497
+"177",17,"Population, male","India","1965",258373487
+"178",18,"Population, male","Indonesia","1965",50487080
+"179",19,"Population, male","Japan","1965",48147303
+"180",20,"Population, male","Mexico","1965",21467510
+"181",21,"Population, male","Middle East","1965",28849527
+"182",22,"Population, male","Pakistan","1965",27810773
+"183",23,"Population, male","Russia","1965",57451440
+"184",24,"Population, male","South Africa","1965",9774939
+"185",25,"Population, male","South America_Northern","1965",5366104
+"186",26,"Population, male","South America_Southern","1965",17535276
+"187",27,"Population, male","South Asia","1965",46852593
+"188",28,"Population, male","South Korea","1965",14457525
+"189",29,"Population, male","Southeast Asia","1965",80669335
+"190",30,"Population, total","Taiwan","1965",0
+"191",31,"Population, male","Argentina","1965",10994680
+"192",32,"Population, male","Colombia","1965",9118899
+"193",1,"Population, male","USA","1966",97916670
+"194",2,"Population, male","Africa_Eastern","1966",37647629
+"195",3,"Population, male","Africa_Northern","1966",32466860
+"196",4,"Population, male","Africa_Southern","1966",19982603
+"197",5,"Population, male","Africa_Western","1966",63861497
+"198",6,"Population, male","Australia_NZ","1966",7207750
+"199",7,"Population, male","Brazil","1966",43501291
+"200",8,"Population, male","Canada","1966",10069210
+"201",9,"Population, male","Central America and Caribbean","1966",18192216
+"202",10,"Population, male","Central Asia","1966",19919030
+"203",11,"Population, male","China","1966",376953980
+"204",12,"Population, male","EU-12","1966",44995093
+"205",13,"Population, male","EU-15","1966",161088622
+"206",14,"Population, male","Europe_Eastern","1966",25668467
+"207",15,"Population, male","Europe_Non_EU","1966",25488164
+"208",16,"Population, male","European Free Trade Association","1966",4861758
+"209",17,"Population, male","India","1966",264041608
+"210",18,"Population, male","Indonesia","1966",51646935
+"211",19,"Population, male","Japan","1966",48596109
+"212",20,"Population, male","Mexico","1966",22188685
+"213",21,"Population, male","Middle East","1966",29777812
+"214",22,"Population, male","Pakistan","1966",28501400
+"215",23,"Population, male","Russia","1966",57875108
+"216",24,"Population, male","South Africa","1966",10062791
+"217",25,"Population, male","South America_Northern","1966",5538461
+"218",26,"Population, male","South America_Southern","1966",17954526
+"219",27,"Population, male","South Asia","1966",48127238
+"220",28,"Population, male","South Korea","1966",14829724
+"221",29,"Population, male","Southeast Asia","1966",82785365
+"222",30,"Population, total","Taiwan","1966",0
+"223",31,"Population, male","Argentina","1966",11160113
+"224",32,"Population, male","Colombia","1966",9389974
+"225",1,"Population, male","USA","1967",98732866
+"226",2,"Population, male","Africa_Eastern","1967",38726839
+"227",3,"Population, male","Africa_Northern","1967",33272520
+"228",4,"Population, male","Africa_Southern","1967",20496459
+"229",5,"Population, male","Africa_Western","1967",65384237
+"230",6,"Population, male","Australia_NZ","1967",7302514
+"231",7,"Population, male","Brazil","1967",44654516
+"232",8,"Population, male","Canada","1967",10245973
+"233",9,"Population, male","Central America and Caribbean","1967",18629436
+"234",10,"Population, male","Central Asia","1967",20483425
+"235",11,"Population, male","China","1967",386659865
+"236",12,"Population, male","EU-12","1967",45431470
+"237",13,"Population, male","EU-15","1967",162307089
+"238",14,"Population, male","Europe_Eastern","1967",25955767
+"239",15,"Population, male","Europe_Non_EU","1967",26007843
+"240",16,"Population, male","European Free Trade Association","1967",4917018
+"241",17,"Population, male","India","1967",269770979
+"242",18,"Population, male","Indonesia","1967",52999128
+"243",19,"Population, male","Japan","1967",49110132
+"244",20,"Population, male","Mexico","1967",22927082
+"245",21,"Population, male","Middle East","1967",30761204
+"246",22,"Population, male","Pakistan","1967",29228649
+"247",23,"Population, male","Russia","1967",58289869
+"248",24,"Population, male","South Africa","1967",10359445
+"249",25,"Population, male","South America_Northern","1967",5713265
+"250",26,"Population, male","South America_Southern","1967",18378944
+"251",27,"Population, male","South Asia","1967",49450251
+"252",28,"Population, male","South Korea","1967",15174605
+"253",29,"Population, male","Southeast Asia","1967",84922252
+"254",30,"Population, total","Taiwan","1967",0
+"255",31,"Population, male","Argentina","1967",11327623
+"256",32,"Population, male","Colombia","1967",9659663
+"257",1,"Population, male","USA","1968",99539360
+"258",2,"Population, male","Africa_Eastern","1968",39862894
+"259",3,"Population, male","Africa_Northern","1968",34095517
+"260",4,"Population, male","Africa_Southern","1968",21038983
+"261",5,"Population, male","Africa_Western","1968",66951682
+"262",6,"Population, male","Australia_NZ","1968",7416018
+"263",7,"Population, male","Brazil","1968",45803221
+"264",8,"Population, male","Canada","1968",10406746
+"265",9,"Population, male","Central America and Caribbean","1968",19069053
+"266",10,"Population, male","Central Asia","1968",21042598
+"267",11,"Population, male","China","1968",396796288
+"268",12,"Population, male","EU-12","1968",45837691
+"269",13,"Population, male","EU-15","1968",163444381
+"270",14,"Population, male","Europe_Eastern","1968",26229232
+"271",15,"Population, male","Europe_Non_EU","1968",26517866
+"272",16,"Population, male","European Free Trade Association","1968",4973533
+"273",17,"Population, male","India","1968",275736482
+"274",18,"Population, male","Indonesia","1968",54444848
+"275",19,"Population, male","Japan","1968",49680393
+"276",20,"Population, male","Mexico","1968",23683883
+"277",21,"Population, male","Middle East","1968",31761088
+"278",22,"Population, male","Pakistan","1968",29988206
+"279",23,"Population, male","Russia","1968",58704423
+"280",24,"Population, male","South Africa","1968",10665272
+"281",25,"Population, male","South America_Northern","1968",5890652
+"282",26,"Population, male","South America_Southern","1968",18810461
+"283",27,"Population, male","South Asia","1968",50812404
+"284",28,"Population, male","South Korea","1968",15524621
+"285",29,"Population, male","Southeast Asia","1968",87062080
+"286",30,"Population, total","Taiwan","1968",0
+"287",31,"Population, male","Argentina","1968",11495179
+"288",32,"Population, male","Colombia","1968",9927339
+"289",1,"Population, male","USA","1969",100439676
+"290",2,"Population, male","Africa_Eastern","1969",41030732
+"291",3,"Population, male","Africa_Northern","1969",34926014
+"292",4,"Population, male","Africa_Southern","1969",21615082
+"293",5,"Population, male","Africa_Western","1969",68574233
+"294",6,"Population, male","Australia_NZ","1969",7553233
+"295",7,"Population, male","Brazil","1969",46954565
+"296",8,"Population, male","Canada","1969",10541470
+"297",9,"Population, male","Central America and Caribbean","1969",19510919
+"298",10,"Population, male","Central Asia","1969",21588518
+"299",11,"Population, male","China","1969",407740952
+"300",12,"Population, male","EU-12","1969",46183987
+"301",13,"Population, male","EU-15","1969",164561230
+"302",14,"Population, male","Europe_Eastern","1969",26475367
+"303",15,"Population, male","Europe_Non_EU","1969",27018166
+"304",16,"Population, male","European Free Trade Association","1969",5025017
+"305",17,"Population, male","India","1969",281934206
+"306",18,"Population, male","Indonesia","1969",55956550
+"307",19,"Population, male","Japan","1969",50290247
+"308",20,"Population, male","Mexico","1969",24455874
+"309",21,"Population, male","Middle East","1969",32823879
+"310",22,"Population, male","Pakistan","1969",30776207
+"311",23,"Population, male","Russia","1969",59116615
+"312",24,"Population, male","South Africa","1969",10978417
+"313",25,"Population, male","South America_Northern","1969",6070288
+"314",26,"Population, male","South America_Southern","1969",19248309
+"315",27,"Population, male","South Asia","1969",52172372
+"316",28,"Population, male","South Korea","1969",15873294
+"317",29,"Population, male","Southeast Asia","1969",89212775
+"318",30,"Population, total","Taiwan","1969",0
+"319",31,"Population, male","Argentina","1969",11663371
+"320",32,"Population, male","Colombia","1969",10190531
+"321",1,"Population, male","USA","1970",101632210
+"322",2,"Population, male","Africa_Eastern","1970",42231692
+"323",3,"Population, male","Africa_Northern","1970",35761683
+"324",4,"Population, male","Africa_Southern","1970",22214341
+"325",5,"Population, male","Africa_Western","1970",70269047
+"326",6,"Population, male","Australia_NZ","1970",7692390
+"327",7,"Population, male","Brazil","1970",48120365
+"328",8,"Population, male","Canada","1970",10690634
+"329",9,"Population, male","Central America and Caribbean","1970",19956365
+"330",10,"Population, male","Central Asia","1970",22105844
+"331",11,"Population, male","China","1970",419113454
+"332",12,"Population, male","EU-12","1970",46433868
+"333",13,"Population, male","EU-15","1970",165516511
+"334",14,"Population, male","Europe_Eastern","1970",26656988
+"335",15,"Population, male","Europe_Non_EU","1970",27522492
+"336",16,"Population, male","European Free Trade Association","1970",5061248
+"337",17,"Population, male","India","1970",288292405
+"338",18,"Population, male","Indonesia","1970",57502387
+"339",19,"Population, male","Japan","1970",50889572
+"340",20,"Population, male","Mexico","1970",25242786
+"341",21,"Population, male","Middle East","1970",33946118
+"342",22,"Population, male","Pakistan","1970",31594424
+"343",23,"Population, male","Russia","1970",59420718
+"344",24,"Population, male","South Africa","1970",11297621
+"345",25,"Population, male","South America_Northern","1970",6252484
+"346",26,"Population, male","South America_Southern","1970",19678260
+"347",27,"Population, male","South Asia","1970",53455188
+"348",28,"Population, male","South Korea","1970",16217206
+"349",29,"Population, male","Southeast Asia","1970",91390861
+"350",30,"Population, total","Taiwan","1970",0
+"351",31,"Population, male","Argentina","1970",11837757
+"352",32,"Population, male","Colombia","1970",10450228
+"353",1,"Population, male","USA","1971",102981395
+"354",2,"Population, male","Africa_Eastern","1971",43463544
+"355",3,"Population, male","Africa_Northern","1971",36598014
+"356",4,"Population, male","Africa_Southern","1971",22850988
+"357",5,"Population, male","Africa_Western","1971",72024744
+"358",6,"Population, male","Australia_NZ","1971",7926170
+"359",7,"Population, male","Brazil","1971",49299338
+"360",8,"Population, male","Canada","1971",11017954
+"361",9,"Population, male","Central America and Caribbean","1971",20405090
+"362",10,"Population, male","Central Asia","1971",22601254
+"363",11,"Population, male","China","1971",430756014
+"364",12,"Population, male","EU-12","1971",46670464
+"365",13,"Population, male","EU-15","1971",166479465
+"366",14,"Population, male","Europe_Eastern","1971",26858705
+"367",15,"Population, male","Europe_Non_EU","1971",28067921
+"368",16,"Population, male","European Free Trade Association","1971",5091102
+"369",17,"Population, male","India","1971",294818942
+"370",18,"Population, male","Indonesia","1971",59067130
+"371",19,"Population, male","Japan","1971",52036797
+"372",20,"Population, male","Mexico","1971",26026688
+"373",21,"Population, male","Middle East","1971",35110419
+"374",22,"Population, male","Pakistan","1971",32382253
+"375",23,"Population, male","Russia","1971",59726190
+"376",24,"Population, male","South Africa","1971",11639172
+"377",25,"Population, male","South America_Northern","1971",6437353
+"378",26,"Population, male","South America_Southern","1971",20111934
+"379",27,"Population, male","South Asia","1971",54167106
+"380",28,"Population, male","South Korea","1971",16537381
+"381",29,"Population, male","Southeast Asia","1971",93642419
+"382",30,"Population, total","Taiwan","1971",0
+"383",31,"Population, male","Argentina","1971",12014710
+"384",32,"Population, male","Colombia","1971",10703420
+"385",1,"Population, male","USA","1972",104126756
+"386",2,"Population, male","Africa_Eastern","1972",44662187
+"387",3,"Population, male","Africa_Northern","1972",37440841
+"388",4,"Population, male","Africa_Southern","1972",23551700
+"389",5,"Population, male","Africa_Western","1972",73842308
+"390",6,"Population, male","Australia_NZ","1972",8068989
+"391",7,"Population, male","Brazil","1972",50494031
+"392",8,"Population, male","Canada","1972",11143645
+"393",9,"Population, male","Central America and Caribbean","1972",20851378
+"394",10,"Population, male","Central Asia","1972",23094540
+"395",11,"Population, male","China","1972",441454101
+"396",12,"Population, male","EU-12","1972",47017377
+"397",13,"Population, male","EU-15","1972",167558715
+"398",14,"Population, male","Europe_Eastern","1972",27118657
+"399",15,"Population, male","Europe_Non_EU","1972",28647101
+"400",16,"Population, male","European Free Trade Association","1972",5130141
+"401",17,"Population, male","India","1972",301529376
+"402",18,"Population, male","Indonesia","1972",60651504
+"403",19,"Population, male","Japan","1972",52789115
+"404",20,"Population, male","Mexico","1972",26811805
+"405",21,"Population, male","Middle East","1972",36314091
+"406",22,"Population, male","Pakistan","1972",33192037
+"407",23,"Population, male","Russia","1972",60136343
+"408",24,"Population, male","South Africa","1972",12008340
+"409",25,"Population, male","South America_Northern","1972",6621251
+"410",26,"Population, male","South America_Southern","1972",20562145
+"411",27,"Population, male","South Asia","1972",54942348
+"412",28,"Population, male","South Korea","1972",16852495
+"413",29,"Population, male","Southeast Asia","1972",95959126
+"414",30,"Population, total","Taiwan","1972",0
+"415",31,"Population, male","Argentina","1972",12193317
+"416",32,"Population, male","Colombia","1972",10952691
+"417",1,"Population, male","USA","1973",105127647
+"418",2,"Population, male","Africa_Eastern","1973",45895411
+"419",3,"Population, male","Africa_Northern","1973",38305851
+"420",4,"Population, male","Africa_Southern","1973",24305510
+"421",5,"Population, male","Africa_Western","1973",75754739
+"422",6,"Population, male","Australia_NZ","1973",8196983
+"423",7,"Population, male","Brazil","1973",51711003
+"424",8,"Population, male","Canada","1973",11271483
+"425",9,"Population, male","Central America and Caribbean","1973",21295947
+"426",10,"Population, male","Central Asia","1973",23598751
+"427",11,"Population, male","China","1973",451650972
+"428",12,"Population, male","EU-12","1973",47381537
+"429",13,"Population, male","EU-15","1973",168520275
+"430",14,"Population, male","Europe_Eastern","1973",27351265
+"431",15,"Population, male","Europe_Non_EU","1973",29227003
+"432",16,"Population, male","European Free Trade Association","1973",5165807
+"433",17,"Population, male","India","1973",308465459
+"434",18,"Population, male","Indonesia","1973",62261105
+"435",19,"Population, male","Japan","1973",53556426
+"436",20,"Population, male","Mexico","1973",27618239
+"437",21,"Population, male","Middle East","1973",37594497
+"438",22,"Population, male","Pakistan","1973",34091252
+"439",23,"Population, male","Russia","1973",60559766
+"440",24,"Population, male","South Africa","1973",12391239
+"441",25,"Population, male","South America_Northern","1973",6804934
+"442",26,"Population, male","South America_Southern","1973",21016978
+"443",27,"Population, male","South Asia","1973",56298756
+"444",28,"Population, male","South Korea","1973",17155860
+"445",29,"Population, male","Southeast Asia","1973",98266644
+"446",30,"Population, total","Taiwan","1973",0
+"447",31,"Population, male","Argentina","1973",12381457
+"448",32,"Population, male","Colombia","1973",11204549
+"449",1,"Population, male","USA","1974",106068748
+"450",2,"Population, male","Africa_Eastern","1974",47245091
+"451",3,"Population, male","Africa_Northern","1974",39210294
+"452",4,"Population, male","Africa_Southern","1974",25098981
+"453",5,"Population, male","Africa_Western","1974",77769785
+"454",6,"Population, male","Australia_NZ","1974",8396636
+"455",7,"Population, male","Brazil","1974",52942384
+"456",8,"Population, male","Canada","1974",11421920
+"457",9,"Population, male","Central America and Caribbean","1974",21741148
+"458",10,"Population, male","Central Asia","1974",24117425
+"459",11,"Population, male","China","1974",461074683
+"460",12,"Population, male","EU-12","1974",47778282
+"461",13,"Population, male","EU-15","1974",169350148
+"462",14,"Population, male","Europe_Eastern","1974",27563305
+"463",15,"Population, male","Europe_Non_EU","1974",29804675
+"464",16,"Population, male","European Free Trade Association","1974",5193560
+"465",17,"Population, male","India","1974",315584063
+"466",18,"Population, male","Indonesia","1974",63887234
+"467",19,"Population, male","Japan","1974",54293397
+"468",20,"Population, male","Mexico","1974",28439513
+"469",21,"Population, male","Middle East","1974",38912829
+"470",22,"Population, male","Pakistan","1974",35033843
+"471",23,"Population, male","Russia","1974",60985519
+"472",24,"Population, male","South Africa","1974",12779064
+"473",25,"Population, male","South America_Northern","1974",6992452
+"474",26,"Population, male","South America_Southern","1974",21477747
+"475",27,"Population, male","South Asia","1974",57661799
+"476",28,"Population, male","South Korea","1974",17456750
+"477",29,"Population, male","Southeast Asia","1974",100524748
+"478",30,"Population, total","Taiwan","1974",0
+"479",31,"Population, male","Argentina","1974",12580117
+"480",32,"Population, male","Colombia","1974",11457953
+"481",1,"Population, male","USA","1975",107082935
+"482",2,"Population, male","Africa_Eastern","1975",48639730
+"483",3,"Population, male","Africa_Northern","1975",40257851
+"484",4,"Population, male","Africa_Southern","1975",25926279
+"485",5,"Population, male","Africa_Western","1975",79889456
+"486",6,"Population, male","Australia_NZ","1975",8505811
+"487",7,"Population, male","Brazil","1975",54191033
+"488",8,"Population, male","Canada","1975",11580385
+"489",9,"Population, male","Central America and Caribbean","1975",22184908
+"490",10,"Population, male","Central Asia","1975",24643696
+"491",11,"Population, male","China","1975",469243417
+"492",12,"Population, male","EU-12","1975",48221118
+"493",13,"Population, male","EU-15","1975",170068874
+"494",14,"Population, male","Europe_Eastern","1975",27759804
+"495",15,"Population, male","Europe_Non_EU","1975",30361644
+"496",16,"Population, male","European Free Trade Association","1975",5201776
+"497",17,"Population, male","India","1975",322800952
+"498",18,"Population, male","Indonesia","1975",65530199
+"499",19,"Population, male","Japan","1975",55005885
+"500",20,"Population, male","Mexico","1975",29272233
+"501",21,"Population, male","Middle East","1975",40293617
+"502",22,"Population, male","Pakistan","1975",36033414
+"503",23,"Population, male","Russia","1975",61413746
+"504",24,"Population, male","South Africa","1975",13167635
+"505",25,"Population, male","South America_Northern","1975",7184167
+"506",26,"Population, male","South America_Southern","1975",21944920
+"507",27,"Population, male","South Asia","1975",58974094
+"508",28,"Population, male","South Korea","1975",17754217
+"509",29,"Population, male","Southeast Asia","1975",102628093
+"510",30,"Population, total","Taiwan","1975",0
+"511",31,"Population, male","Argentina","1975",12779176
+"512",32,"Population, male","Colombia","1975",11713426
+"513",1,"Population, male","USA","1976",108062896
+"514",2,"Population, male","Africa_Eastern","1976",50079704
+"515",3,"Population, male","Africa_Northern","1976",41435865
+"516",4,"Population, male","Africa_Southern","1976",26777144
+"517",5,"Population, male","Africa_Western","1976",82062962
+"518",6,"Population, male","Australia_NZ","1976",8582418
+"519",7,"Population, male","Brazil","1976",55466856
+"520",8,"Population, male","Canada","1976",11721886
+"521",9,"Population, male","Central America and Caribbean","1976",22628468
+"522",10,"Population, male","Central Asia","1976",25176479
+"523",11,"Population, male","China","1976",476496685
+"524",12,"Population, male","EU-12","1976",48660859
+"525",13,"Population, male","EU-15","1976",170668523
+"526",14,"Population, male","Europe_Eastern","1976",27935386
+"527",15,"Population, male","Europe_Non_EU","1976",30871827
+"528",16,"Population, male","European Free Trade Association","1976",5191583
+"529",17,"Population, male","India","1976",330077580
+"530",18,"Population, male","Indonesia","1976",67192815
+"531",19,"Population, male","Japan","1976",55609808
+"532",20,"Population, male","Mexico","1976",30106460
+"533",21,"Population, male","Middle East","1976",41901120
+"534",22,"Population, male","Pakistan","1976",37095743
+"535",23,"Population, male","Russia","1976",61932817
+"536",24,"Population, male","South Africa","1976",13548594
+"537",25,"Population, male","South America_Northern","1976",7380637
+"538",26,"Population, male","South America_Southern","1976",22415839
+"539",27,"Population, male","South Asia","1976",60215255
+"540",28,"Population, male","South Korea","1976",18030838
+"541",29,"Population, male","Southeast Asia","1976",104651471
+"542",30,"Population, total","Taiwan","1976",0
+"543",31,"Population, male","Argentina","1976",12975103
+"544",32,"Population, male","Colombia","1976",11970381
+"545",1,"Population, male","USA","1977",109103310
+"546",2,"Population, male","Africa_Eastern","1977",51486224
+"547",3,"Population, male","Africa_Northern","1977",42591902
+"548",4,"Population, male","Africa_Southern","1977",27638975
+"549",5,"Population, male","Africa_Western","1977",84302781
+"550",6,"Population, male","Australia_NZ","1977",8658984
+"551",7,"Population, male","Brazil","1977",56776528
+"552",8,"Population, male","Canada","1977",11846663
+"553",9,"Population, male","Central America and Caribbean","1977",23070533
+"554",10,"Population, male","Central Asia","1977",25721596
+"555",11,"Population, male","China","1977",482976567
+"556",12,"Population, male","EU-12","1977",49068301
+"557",13,"Population, male","EU-15","1977",171221189
+"558",14,"Population, male","Europe_Eastern","1977",28094362
+"559",15,"Population, male","Europe_Non_EU","1977",31363681
+"560",16,"Population, male","European Free Trade Association","1977",5187858
+"561",17,"Population, male","India","1977",337496325
+"562",18,"Population, male","Indonesia","1977",68871718
+"563",19,"Population, male","Japan","1977",56157599
+"564",20,"Population, male","Mexico","1977",30970506
+"565",21,"Population, male","Middle East","1977",43593884
+"566",22,"Population, male","Pakistan","1977",38216474
+"567",23,"Population, male","Russia","1977",62471246
+"568",24,"Population, male","South Africa","1977",13954172
+"569",25,"Population, male","South America_Northern","1977",7581426
+"570",26,"Population, male","South America_Southern","1977",22897942
+"571",27,"Population, male","South Asia","1977",61504945
+"572",28,"Population, male","South Korea","1977",18299620
+"573",29,"Population, male","Southeast Asia","1977",106858880
+"574",30,"Population, total","Taiwan","1977",0
+"575",31,"Population, male","Argentina","1977",13175780
+"576",32,"Population, male","Colombia","1977",12237835
+"577",1,"Population, male","USA","1978",110207898
+"578",2,"Population, male","Africa_Eastern","1978",53019715
+"579",3,"Population, male","Africa_Northern","1978",43737488
+"580",4,"Population, male","Africa_Southern","1978",28474360
+"581",5,"Population, male","Africa_Western","1978",86719446
+"582",6,"Population, male","Australia_NZ","1978",8734529
+"583",7,"Population, male","Brazil","1978",58121654
+"584",8,"Population, male","Canada","1978",11951670
+"585",9,"Population, male","Central America and Caribbean","1978",23510105
+"586",10,"Population, male","Central Asia","1978",26273379
+"587",11,"Population, male","China","1978",489429484
+"588",12,"Population, male","EU-12","1978",49417327
+"589",13,"Population, male","EU-15","1978",171803288
+"590",14,"Population, male","Europe_Eastern","1978",28237768
+"591",15,"Population, male","Europe_Non_EU","1978",31870070
+"592",16,"Population, male","European Free Trade Association","1978",5194346
+"593",17,"Population, male","India","1978",345069608
+"594",18,"Population, male","Indonesia","1978",70577452
+"595",19,"Population, male","Japan","1978",56673723
+"596",20,"Population, male","Mexico","1978",31868013
+"597",21,"Population, male","Middle East","1978",45043943
+"598",22,"Population, male","Pakistan","1978",39396326
+"599",23,"Population, male","Russia","1978",63019351
+"600",24,"Population, male","South Africa","1978",14394419
+"601",25,"Population, male","South America_Northern","1978",7785722
+"602",26,"Population, male","South America_Southern","1978",23393871
+"603",27,"Population, male","South Asia","1978",62864971
+"604",28,"Population, male","South Korea","1978",18564755
+"605",29,"Population, male","Southeast Asia","1978",109231229
+"606",30,"Population, total","Taiwan","1978",0
+"607",31,"Population, male","Argentina","1978",13382114
+"608",32,"Population, male","Colombia","1978",12519254
+"609",1,"Population, male","USA","1979",111385046
+"610",2,"Population, male","Africa_Eastern","1979",54694650
+"611",3,"Population, male","Africa_Northern","1979",44941583
+"612",4,"Population, male","Africa_Southern","1979",29337458
+"613",5,"Population, male","Africa_Western","1979",89283526
+"614",6,"Population, male","Australia_NZ","1979",8799007
+"615",7,"Population, male","Brazil","1979",59496395
+"616",8,"Population, male","Canada","1979",12059357
+"617",9,"Population, male","Central America and Caribbean","1979",23946444
+"618",10,"Population, male","Central Asia","1979",26814874
+"619",11,"Population, male","China","1979",496046261
+"620",12,"Population, male","EU-12","1979",49722905
+"621",13,"Population, male","EU-15","1979",172417440
+"622",14,"Population, male","Europe_Eastern","1979",28397490
+"623",15,"Population, male","Europe_Non_EU","1979",32362170
+"624",16,"Population, male","European Free Trade Association","1979",5207060
+"625",17,"Population, male","India","1979",352826329
+"626",18,"Population, male","Indonesia","1979",72313976
+"627",19,"Population, male","Japan","1979",57154300
+"628",20,"Population, male","Mexico","1979",32755872
+"629",21,"Population, male","Middle East","1979",46571761
+"630",22,"Population, male","Pakistan","1979",40711907
+"631",23,"Population, male","Russia","1979",63547973
+"632",24,"Population, male","South Africa","1979",14834845
+"633",25,"Population, male","South America_Northern","1979",7993067
+"634",26,"Population, male","South America_Southern","1979",23896126
+"635",27,"Population, male","South Asia","1979",64145309
+"636",28,"Population, male","South Korea","1979",18832769
+"637",29,"Population, male","Southeast Asia","1979",111582321
+"638",30,"Population, total","Taiwan","1979",0
+"639",31,"Population, male","Argentina","1979",13592350
+"640",32,"Population, male","Colombia","1979",12808303
+"641",1,"Population, male","USA","1980",112438657
+"642",2,"Population, male","Africa_Eastern","1980",56208485
+"643",3,"Population, male","Africa_Northern","1980",46214895
+"644",4,"Population, male","Africa_Southern","1980",30407232
+"645",5,"Population, male","Africa_Western","1980",91864794
+"646",6,"Population, male","Australia_NZ","1980",8883777
+"647",7,"Population, male","Brazil","1980",60900921
+"648",8,"Population, male","Canada","1980",12207486
+"649",9,"Population, male","Central America and Caribbean","1980",24383590
+"650",10,"Population, male","Central Asia","1980",27343819
+"651",11,"Population, male","China","1980",502294296
+"652",12,"Population, male","EU-12","1980",50018760
+"653",13,"Population, male","EU-15","1980",173117984
+"654",14,"Population, male","Europe_Eastern","1980",28577503
+"655",15,"Population, male","Europe_Non_EU","1980",32867104
+"656",16,"Population, male","European Free Trade Association","1980",5226274
+"657",17,"Population, male","India","1980",360875327
+"658",18,"Population, male","Indonesia","1980",74074893
+"659",19,"Population, male","Japan","1980",57600950
+"660",20,"Population, male","Mexico","1980",33584396
+"661",21,"Population, male","Middle East","1980",48344627
+"662",22,"Population, male","Pakistan","1980",42323346
+"663",23,"Population, male","Russia","1980",64074770
+"664",24,"Population, male","South Africa","1980",15277164
+"665",25,"Population, male","South America_Northern","1980",8203773
+"666",26,"Population, male","South America_Southern","1980",24409435
+"667",27,"Population, male","South Asia","1980",65218135
+"668",28,"Population, male","South Korea","1980",19112458
+"669",29,"Population, male","Southeast Asia","1980",114010040
+"670",30,"Population, total","Taiwan","1980",0
+"671",31,"Population, male","Argentina","1980",13804052
+"672",32,"Population, male","Colombia","1980",13107504
+"673",1,"Population, male","USA","1981",113547245
+"674",2,"Population, male","Africa_Eastern","1981",57887971
+"675",3,"Population, male","Africa_Northern","1981",47542791
+"676",4,"Population, male","Africa_Southern","1981",31504339
+"677",5,"Population, male","Africa_Western","1981",94488714
+"678",6,"Population, male","Australia_NZ","1981",9001871
+"679",7,"Population, male","Brazil","1981",62325393
+"680",8,"Population, male","Canada","1981",12351269
+"681",9,"Population, male","Central America and Caribbean","1981",24815401
+"682",10,"Population, male","Central Asia","1981",27881842
+"683",11,"Population, male","China","1981",508752134
+"684",12,"Population, male","EU-12","1981",50305017
+"685",13,"Population, male","EU-15","1981",173730049
+"686",14,"Population, male","Europe_Eastern","1981",28765299
+"687",15,"Population, male","Europe_Non_EU","1981",33393954
+"688",16,"Population, male","European Free Trade Association","1981",5251363
+"689",17,"Population, male","India","1981",369149846
+"690",18,"Population, male","Indonesia","1981",75852998
+"691",19,"Population, male","Japan","1981",58012790
+"692",20,"Population, male","Mexico","1981",34310921
+"693",21,"Population, male","Middle East","1981",50503074
+"694",22,"Population, male","Pakistan","1981",44149230
+"695",23,"Population, male","Russia","1981",64589635
+"696",24,"Population, male","South Africa","1981",15631582
+"697",25,"Population, male","South America_Northern","1981",8418053
+"698",26,"Population, male","South America_Southern","1981",24932767
+"699",27,"Population, male","South Asia","1981",65983857
+"700",28,"Population, male","South Korea","1981",19400705
+"701",29,"Population, male","Southeast Asia","1981",116656919
+"702",30,"Population, total","Taiwan","1981",0
+"703",31,"Population, male","Argentina","1981",14018171
+"704",32,"Population, male","Colombia","1981",13412729
+"705",1,"Population, male","USA","1982",114652704
+"706",2,"Population, male","Africa_Eastern","1982",59810639
+"707",3,"Population, male","Africa_Northern","1982",48917731
+"708",4,"Population, male","Africa_Southern","1982",32505311
+"709",5,"Population, male","Africa_Western","1982",97221406
+"710",6,"Population, male","Australia_NZ","1982",9147233
+"711",7,"Population, male","Brazil","1982",63758884
+"712",8,"Population, male","Canada","1982",12491219
+"713",9,"Population, male","Central America and Caribbean","1982",25269411
+"714",10,"Population, male","Central Asia","1982",28441431
+"715",11,"Population, male","China","1982",516265180
+"716",12,"Population, male","EU-12","1982",50593978
+"717",13,"Population, male","EU-15","1982",174113011
+"718",14,"Population, male","Europe_Eastern","1982",28914336
+"719",15,"Population, male","Europe_Non_EU","1982",33961591
+"720",16,"Population, male","European Free Trade Association","1982",5279097
+"721",17,"Population, male","India","1982",377542519
+"722",18,"Population, male","Indonesia","1982",77653209
+"723",19,"Population, male","Japan","1982",58405692
+"724",20,"Population, male","Mexico","1982",34984213
+"725",21,"Population, male","Middle East","1982",52661216
+"726",22,"Population, male","Pakistan","1982",45930130
+"727",23,"Population, male","Russia","1982",65086831
+"728",24,"Population, male","South Africa","1982",15892088
+"729",25,"Population, male","South America_Northern","1982",8634601
+"730",26,"Population, male","South America_Southern","1982",25461454
+"731",27,"Population, male","South Asia","1982",66980481
+"732",28,"Population, male","South Korea","1982",19695035
+"733",29,"Population, male","Southeast Asia","1982",119369205
+"734",30,"Population, total","Taiwan","1982",0
+"735",31,"Population, male","Argentina","1982",14234248
+"736",32,"Population, male","Colombia","1982",13722325
+"737",1,"Population, male","USA","1983",115739531
+"738",2,"Population, male","Africa_Eastern","1983",61592554
+"739",3,"Population, male","Africa_Northern","1983",50358860
+"740",4,"Population, male","Africa_Southern","1983",33565809
+"741",5,"Population, male","Africa_Western","1983",99882692
+"742",6,"Population, male","Australia_NZ","1983",9273264
+"743",7,"Population, male","Brazil","1983",65200304
+"744",8,"Population, male","Canada","1983",12607190
+"745",9,"Population, male","Central America and Caribbean","1983",25761283
+"746",10,"Population, male","Central Asia","1983",29028663
+"747",11,"Population, male","China","1983",523747187
+"748",12,"Population, male","EU-12","1983",50865699
+"749",13,"Population, male","EU-15","1983",174386911
+"750",14,"Population, male","Europe_Eastern","1983",29071772
+"751",15,"Population, male","Europe_Non_EU","1983",34578205
+"752",16,"Population, male","European Free Trade Association","1983",5301037
+"753",17,"Population, male","India","1983",386102269
+"754",18,"Population, male","Indonesia","1983",79464113
+"755",19,"Population, male","Japan","1983",58801004
+"756",20,"Population, male","Mexico","1983",35658215
+"757",21,"Population, male","Middle East","1983",54534155
+"758",22,"Population, male","Pakistan","1983",47557446
+"759",23,"Population, male","Russia","1983",65571471
+"760",24,"Population, male","South Africa","1983",16125715
+"761",25,"Population, male","South America_Northern","1983",8853308
+"762",26,"Population, male","South America_Southern","1983",25997409
+"763",27,"Population, male","South Asia","1983",68499197
+"764",28,"Population, male","South Korea","1983",19980571
+"765",29,"Population, male","Southeast Asia","1983",122107530
+"766",30,"Population, total","Taiwan","1983",0
+"767",31,"Population, male","Argentina","1983",14452651
+"768",32,"Population, male","Colombia","1983",14040382
+"769",1,"Population, male","USA","1984",116791588
+"770",2,"Population, male","Africa_Eastern","1984",63303488
+"771",3,"Population, male","Africa_Northern","1984",51835018
+"772",4,"Population, male","Africa_Southern","1984",34624303
+"773",5,"Population, male","Africa_Western","1984",102573452
+"774",6,"Population, male","Australia_NZ","1984",9378800
+"775",7,"Population, male","Brazil","1984",66640984
+"776",8,"Population, male","Canada","1984",12719137
+"777",9,"Population, male","Central America and Caribbean","1984",26266949
+"778",10,"Population, male","Central Asia","1984",29637160
+"779",11,"Population, male","China","1984",530628787
+"780",12,"Population, male","EU-12","1984",51120598
+"781",13,"Population, male","EU-15","1984",174639533
+"782",14,"Population, male","Europe_Eastern","1984",29231621
+"783",15,"Population, male","Europe_Non_EU","1984",35189779
+"784",16,"Population, male","European Free Trade Association","1984",5319310
+"785",17,"Population, male","India","1984",394865497
+"786",18,"Population, male","Indonesia","1984",81267061
+"787",19,"Population, male","Japan","1984",59169830
+"788",20,"Population, male","Mexico","1984",36325315
+"789",21,"Population, male","Middle East","1984",56509406
+"790",22,"Population, male","Pakistan","1984",49019878
+"791",23,"Population, male","Russia","1984",66168683
+"792",24,"Population, male","South Africa","1984",16336890
+"793",25,"Population, male","South America_Northern","1984",9075185
+"794",26,"Population, male","South America_Southern","1984",26540545
+"795",27,"Population, male","South Asia","1984",70227974
+"796",28,"Population, male","South Korea","1984",20223186
+"797",29,"Population, male","Southeast Asia","1984",124909573
+"798",30,"Population, total","Taiwan","1984",0
+"799",31,"Population, male","Argentina","1984",14672462
+"800",32,"Population, male","Colombia","1984",14362438
+"801",1,"Population, male","USA","1985",117881801
+"802",2,"Population, male","Africa_Eastern","1985",65098935
+"803",3,"Population, male","Africa_Northern","1985",53325822
+"804",4,"Population, male","Africa_Southern","1985",35707791
+"805",5,"Population, male","Africa_Western","1985",105436040
+"806",6,"Population, male","Australia_NZ","1985",9492720
+"807",7,"Population, male","Brazil","1985",68072012
+"808",8,"Population, male","Canada","1985",12829620
+"809",9,"Population, male","Central America and Caribbean","1985",26782117
+"810",10,"Population, male","Central Asia","1985",30251315
+"811",11,"Population, male","China","1985",537898722
+"812",12,"Population, male","EU-12","1985",51357539
+"813",13,"Population, male","EU-15","1985",174951185
+"814",14,"Population, male","Europe_Eastern","1985",29376346
+"815",15,"Population, male","Europe_Non_EU","1985",35788515
+"816",16,"Population, male","European Free Trade Association","1985",5340843
+"817",17,"Population, male","India","1985",403766421
+"818",18,"Population, male","Indonesia","1985",83032697
+"819",19,"Population, male","Japan","1985",59527459
+"820",20,"Population, male","Mexico","1985",36978770
+"821",21,"Population, male","Middle East","1985",58515476
+"822",22,"Population, male","Pakistan","1985",50585068
+"823",23,"Population, male","Russia","1985",66790082
+"824",24,"Population, male","South Africa","1985",16509631
+"825",25,"Population, male","South America_Northern","1985",9300276
+"826",26,"Population, male","South America_Southern","1985",27094156
+"827",27,"Population, male","South Asia","1985",71899464
+"828",28,"Population, male","South Korea","1985",20420276
+"829",29,"Population, male","Southeast Asia","1985",127701605
+"830",30,"Population, total","Taiwan","1985",0
+"831",31,"Population, male","Argentina","1985",14894307
+"832",32,"Population, male","Colombia","1985",14679273
+"833",1,"Population, male","USA","1986",119031172
+"834",2,"Population, male","Africa_Eastern","1986",66997841
+"835",3,"Population, male","Africa_Northern","1986",54818476
+"836",4,"Population, male","Africa_Southern","1986",36820069
+"837",5,"Population, male","Africa_Western","1986",108367517
+"838",6,"Population, male","Australia_NZ","1986",9606352
+"839",7,"Population, male","Brazil","1986",69484466
+"840",8,"Population, male","Canada","1986",12954522
+"841",9,"Population, male","Central America and Caribbean","1986",27305118
+"842",10,"Population, male","Central Asia","1986",30889595
+"843",11,"Population, male","China","1986",545990936
+"844",12,"Population, male","EU-12","1986",51586531
+"845",13,"Population, male","EU-15","1986",175357268
+"846",14,"Population, male","Europe_Eastern","1986",29534784
+"847",15,"Population, male","Europe_Non_EU","1986",36379548
+"848",16,"Population, male","European Free Trade Association","1986",5366110
+"849",17,"Population, male","India","1986",412811682
+"850",18,"Population, male","Indonesia","1986",84738312
+"851",19,"Population, male","Japan","1986",59831130
+"852",20,"Population, male","Mexico","1986",37616624
+"853",21,"Population, male","Middle East","1986",60583096
+"854",22,"Population, male","Pakistan","1986",52349211
+"855",23,"Population, male","Russia","1986",67396755
+"856",24,"Population, male","South Africa","1986",16884765
+"857",25,"Population, male","South America_Northern","1986",9530233
+"858",26,"Population, male","South America_Southern","1986",27659885
+"859",27,"Population, male","South Asia","1986",73348346
+"860",28,"Population, male","South Korea","1986",20631098
+"861",29,"Population, male","Southeast Asia","1986",130516496
+"862",30,"Population, total","Taiwan","1986",0
+"863",31,"Population, male","Argentina","1986",15121779
+"864",32,"Population, male","Colombia","1986",14993112
+"865",1,"Population, male","USA","1987",120149412
+"866",2,"Population, male","Africa_Eastern","1987",69007392
+"867",3,"Population, male","Africa_Northern","1987",56282361
+"868",4,"Population, male","Africa_Southern","1987",37894674
+"869",5,"Population, male","Africa_Western","1987",111400404
+"870",6,"Population, male","Australia_NZ","1987",9738575
+"871",7,"Population, male","Brazil","1987",70876452
+"872",8,"Population, male","Canada","1987",13124619
+"873",9,"Population, male","Central America and Caribbean","1987",27836436
+"874",10,"Population, male","Central Asia","1987",31554626
+"875",11,"Population, male","China","1987",554877335
+"876",12,"Population, male","EU-12","1987",51806705
+"877",13,"Population, male","EU-15","1987",175810567
+"878",14,"Population, male","Europe_Eastern","1987",29703601
+"879",15,"Population, male","Europe_Non_EU","1987",36952321
+"880",16,"Population, male","European Free Trade Association","1987",5398285
+"881",17,"Population, male","India","1987",421960524
+"882",18,"Population, male","Indonesia","1987",86416651
+"883",19,"Population, male","Japan","1987",60105757
+"884",20,"Population, male","Mexico","1987",38242134
+"885",21,"Population, male","Middle East","1987",62703972
+"886",22,"Population, male","Pakistan","1987",54186251
+"887",23,"Population, male","Russia","1987",68015625
+"888",24,"Population, male","South Africa","1987",17515110
+"889",25,"Population, male","South America_Northern","1987",9764266
+"890",26,"Population, male","South America_Southern","1987",28236964
+"891",27,"Population, male","South Asia","1987",74718320
+"892",28,"Population, male","South Korea","1987",20849213
+"893",29,"Population, male","Southeast Asia","1987",133372328
+"894",30,"Population, total","Taiwan","1987",0
+"895",31,"Population, male","Argentina","1987",15353727
+"896",32,"Population, male","Colombia","1987",15309275
+"897",1,"Population, male","USA","1988",121295381
+"898",2,"Population, male","Africa_Eastern","1988",70892228
+"899",3,"Population, male","Africa_Northern","1988",57736459
+"900",4,"Population, male","Africa_Southern","1988",38934872
+"901",5,"Population, male","Africa_Western","1988",114552914
+"902",6,"Population, male","Australia_NZ","1988",9870835
+"903",7,"Population, male","Brazil","1988",72249586
+"904",8,"Population, male","Canada","1988",13291351
+"905",9,"Population, male","Central America and Caribbean","1988",28382144
+"906",10,"Population, male","Central Asia","1988",32221144
+"907",11,"Population, male","China","1988",563965379
+"908",12,"Population, male","EU-12","1988",51982010
+"909",13,"Population, male","EU-15","1988",176371976
+"910",14,"Population, male","Europe_Eastern","1988",29869641
+"911",15,"Population, male","Europe_Non_EU","1988",37514534
+"912",16,"Population, male","European Free Trade Association","1988",5437058
+"913",17,"Population, male","India","1988",431194389
+"914",18,"Population, male","Indonesia","1988",88089745
+"915",19,"Population, male","Japan","1988",60341874
+"916",20,"Population, male","Mexico","1988",38872789
+"917",21,"Population, male","Middle East","1988",64788061
+"918",22,"Population, male","Pakistan","1988",56068126
+"919",23,"Population, male","Russia","1988",68606492
+"920",24,"Population, male","South Africa","1988",18162510
+"921",25,"Population, male","South America_Northern","1988",10000572
+"922",26,"Population, male","South America_Southern","1988",28826771
+"923",27,"Population, male","South Asia","1988",76172929
+"924",28,"Population, male","South Korea","1988",21068803
+"925",29,"Population, male","Southeast Asia","1988",136244317
+"926",30,"Population, total","Taiwan","1988",0
+"927",31,"Population, male","Argentina","1988",15589854
+"928",32,"Population, male","Colombia","1988",15628778
+"929",1,"Population, male","USA","1989",122509682
+"930",2,"Population, male","Africa_Eastern","1989",72748140
+"931",3,"Population, male","Africa_Northern","1989",59183422
+"932",4,"Population, male","Africa_Southern","1989",40002540
+"933",5,"Population, male","Africa_Western","1989",117833904
+"934",6,"Population, male","Australia_NZ","1989",10014273
+"935",7,"Population, male","Brazil","1989",73603042
+"936",8,"Population, male","Canada","1989",13525249
+"937",9,"Population, male","Central America and Caribbean","1989",28937702
+"938",10,"Population, male","Central Asia","1989",32671333
+"939",11,"Population, male","China","1989",572803700
+"940",12,"Population, male","EU-12","1989",52020608
+"941",13,"Population, male","EU-15","1989",177118778
+"942",14,"Population, male","Europe_Eastern","1989",30047206
+"943",15,"Population, male","Europe_Non_EU","1989",38083938
+"944",16,"Population, male","European Free Trade Association","1989",5475227
+"945",17,"Population, male","India","1989",440551295
+"946",18,"Population, male","Indonesia","1989",89750633
+"947",19,"Population, male","Japan","1989",60567483
+"948",20,"Population, male","Mexico","1989",39504800
+"949",21,"Population, male","Middle East","1989",66921700
+"950",22,"Population, male","Pakistan","1989",57945452
+"951",23,"Population, male","Russia","1989",69135864
+"952",24,"Population, male","South Africa","1989",18810138
+"953",25,"Population, male","South America_Northern","1989",10238230
+"954",26,"Population, male","South America_Southern","1989",29424628
+"955",27,"Population, male","South Asia","1989",77766251
+"956",28,"Population, male","South Korea","1989",21294208
+"957",29,"Population, male","Southeast Asia","1989",139148811
+"958",30,"Population, total","Taiwan","1989",0
+"959",31,"Population, male","Argentina","1989",15827047
+"960",32,"Population, male","Colombia","1989",15952865
+"961",1,"Population, male","USA","1990",123968508
+"962",2,"Population, male","Africa_Eastern","1990",74822072
+"963",3,"Population, male","Africa_Northern","1990",60607558
+"964",4,"Population, male","Africa_Southern","1990",41104216
+"965",5,"Population, male","Africa_Western","1990",121111907
+"966",6,"Population, male","Australia_NZ","1990",10149667
+"967",7,"Population, male","Brazil","1990",74926452
+"968",8,"Population, male","Canada","1990",13727739
+"969",9,"Population, male","Central America and Caribbean","1990",29500272
+"970",10,"Population, male","Central Asia","1990",33231529
+"971",11,"Population, male","China","1990",581436950
+"972",12,"Population, male","EU-12","1990",51974919
+"973",13,"Population, male","EU-15","1990",177962270
+"974",14,"Population, male","Europe_Eastern","1990",30147777
+"975",15,"Population, male","Europe_Non_EU","1990",38626573
+"976",16,"Population, male","European Free Trade Association","1990",5519135
+"977",17,"Population, male","India","1990",449984059
+"978",18,"Population, male","Indonesia","1990",91388784
+"979",19,"Population, male","Japan","1990",60749784
+"980",20,"Population, male","Mexico","1990",40210868
+"981",21,"Population, male","Middle East","1990",69969361
+"982",22,"Population, male","Pakistan","1990",59844215
+"983",23,"Population, male","Russia","1990",69334125
+"984",24,"Population, male","South Africa","1990",19422611
+"985",25,"Population, male","South America_Northern","1990",10475820
+"986",26,"Population, male","South America_Southern","1990",30026936
+"987",27,"Population, male","South Asia","1990",79287207
+"988",28,"Population, male","South Korea","1990",21522813
+"989",29,"Population, male","Southeast Asia","1990",142118462
+"990",30,"Population, total","Taiwan","1990",0
+"991",31,"Population, male","Argentina","1990",16063515
+"992",32,"Population, male","Colombia","1990",16281573
+"993",1,"Population, male","USA","1991",125701029
+"994",2,"Population, male","Africa_Eastern","1991",76942050
+"995",3,"Population, male","Africa_Northern","1991",61988964
+"996",4,"Population, male","Africa_Southern","1991",42183008
+"997",5,"Population, male","Africa_Western","1991",124447342
+"998",6,"Population, male","Australia_NZ","1991",10334862
+"999",7,"Population, male","Brazil","1991",76207261
+"1000",8,"Population, male","Canada","1991",13898978
+"1001",9,"Population, male","Central America and Caribbean","1991",30063646
+"1002",10,"Population, male","Central Asia","1991",33792253
+"1003",11,"Population, male","China","1991",589646719
+"1004",12,"Population, male","EU-12","1991",51872072
+"1005",13,"Population, male","EU-15","1991",178942316
+"1006",14,"Population, male","Europe_Eastern","1991",30229055
+"1007",15,"Population, male","Europe_Non_EU","1991",39061452
+"1008",16,"Population, male","European Free Trade Association","1991",5573031
+"1009",17,"Population, male","India","1991",459463492
+"1010",18,"Population, male","Indonesia","1991",93025425
+"1011",19,"Population, male","Japan","1991",60968023
+"1012",20,"Population, male","Mexico","1991",40987927
+"1013",21,"Population, male","Middle East","1991",72292206
+"1014",22,"Population, male","Pakistan","1991",61767894
+"1015",23,"Population, male","Russia","1991",69574539
+"1016",24,"Population, male","South Africa","1991",19938864
+"1017",25,"Population, male","South America_Northern","1991",10715199
+"1018",26,"Population, male","South America_Southern","1991",30625911
+"1019",27,"Population, male","South Asia","1991",80761045
+"1020",28,"Population, male","South Korea","1991",21746739
+"1021",29,"Population, male","Southeast Asia","1991",145078310
+"1022",30,"Population, total","Taiwan","1991",0
+"1023",31,"Population, male","Argentina","1991",16298168
+"1024",32,"Population, male","Colombia","1991",16605752
+"1025",1,"Population, male","USA","1992",127523325
+"1026",2,"Population, male","Africa_Eastern","1992",79029287
+"1027",3,"Population, male","Africa_Northern","1992",63352430
+"1028",4,"Population, male","Africa_Southern","1992",43249109
+"1029",5,"Population, male","Africa_Western","1992",127924823
+"1030",6,"Population, male","Australia_NZ","1992",10445589
+"1031",7,"Population, male","Brazil","1992",77454942
+"1032",8,"Population, male","Canada","1992",14058366
+"1033",9,"Population, male","Central America and Caribbean","1992",30622437
+"1034",10,"Population, male","Central Asia","1992",34241436
+"1035",11,"Population, male","China","1992",597134496
+"1036",12,"Population, male","EU-12","1992",51734259
+"1037",13,"Population, male","EU-15","1992",179854771
+"1038",14,"Population, male","Europe_Eastern","1992",30338683
+"1039",15,"Population, male","Europe_Non_EU","1992",39364414
+"1040",16,"Population, male","European Free Trade Association","1992",5623928
+"1041",17,"Population, male","India","1992",469046096
+"1042",18,"Population, male","Indonesia","1992",94662415
+"1043",19,"Population, male","Japan","1992",61172864
+"1044",20,"Population, male","Mexico","1992",41768175
+"1045",21,"Population, male","Middle East","1992",74682012
+"1046",22,"Population, male","Pakistan","1992",63389141
+"1047",23,"Population, male","Russia","1992",69658422
+"1048",24,"Population, male","South Africa","1992",20288796
+"1049",25,"Population, male","South America_Northern","1992",10956403
+"1050",26,"Population, male","South America_Southern","1992",31217454
+"1051",27,"Population, male","South Asia","1992",82824531
+"1052",28,"Population, male","South Korea","1992",21974750
+"1053",29,"Population, male","Southeast Asia","1992",148104578
+"1054",30,"Population, total","Taiwan","1992",0
+"1055",31,"Population, male","Argentina","1992",16529209
+"1056",32,"Population, male","Colombia","1992",16926884
+"1057",1,"Population, male","USA","1993",129272388
+"1058",2,"Population, male","Africa_Eastern","1993",81183529
+"1059",3,"Population, male","Africa_Northern","1993",64714727
+"1060",4,"Population, male","Africa_Southern","1993",44365982
+"1061",5,"Population, male","Africa_Western","1993",131475317
+"1062",6,"Population, male","Australia_NZ","1993",10540112
+"1063",7,"Population, male","Brazil","1993",78689973
+"1064",8,"Population, male","Canada","1993",14205971
+"1065",9,"Population, male","Central America and Caribbean","1993",31172115
+"1066",10,"Population, male","Central Asia","1993",34570830
+"1067",11,"Population, male","China","1993",604258671
+"1068",12,"Population, male","EU-12","1993",51670084
+"1069",13,"Population, male","EU-15","1993",180685846
+"1070",14,"Population, male","Europe_Eastern","1993",30381224
+"1071",15,"Population, male","Europe_Non_EU","1993",39682464
+"1072",16,"Population, male","European Free Trade Association","1993",5669262
+"1073",17,"Population, male","India","1993",478735976
+"1074",18,"Population, male","Indonesia","1993",96284542
+"1075",19,"Population, male","Japan","1993",61348187
+"1076",20,"Population, male","Mexico","1993",42556060
+"1077",21,"Population, male","Middle East","1993",76584140
+"1078",22,"Population, male","Pakistan","1993",65019628
+"1079",23,"Population, male","Russia","1993",69615748
+"1080",24,"Population, male","South Africa","1993",20519374
+"1081",25,"Population, male","South America_Northern","1993",11196478
+"1082",26,"Population, male","South America_Southern","1993",31806293
+"1083",27,"Population, male","South Asia","1993",85246449
+"1084",28,"Population, male","South Korea","1993",22201921
+"1085",29,"Population, male","Southeast Asia","1993",151164991
+"1086",30,"Population, total","Taiwan","1993",0
+"1087",31,"Population, male","Argentina","1993",16757748
+"1088",32,"Population, male","Colombia","1993",17252549
+"1089",1,"Population, male","USA","1994",130918512
+"1090",2,"Population, male","Africa_Eastern","1994",82949169
+"1091",3,"Population, male","Africa_Northern","1994",66053329
+"1092",4,"Population, male","Africa_Southern","1994",45613145
+"1093",5,"Population, male","Africa_Western","1994",135399464
+"1094",6,"Population, male","Australia_NZ","1994",10645918
+"1095",7,"Population, male","Brazil","1994",79924696
+"1096",8,"Population, male","Canada","1994",14357602
+"1097",9,"Population, male","Central America and Caribbean","1994",31713267
+"1098",10,"Population, male","Central Asia","1994",34742273
+"1099",11,"Population, male","China","1994",611369051
+"1100",12,"Population, male","EU-12","1994",51617208
+"1101",13,"Population, male","EU-15","1994",181334390
+"1102",14,"Population, male","Europe_Eastern","1994",30259684
+"1103",15,"Population, male","Europe_Non_EU","1994",40101167
+"1104",16,"Population, male","European Free Trade Association","1994",5709776
+"1105",17,"Population, male","India","1994",488535405
+"1106",18,"Population, male","Indonesia","1994",97911576
+"1107",19,"Population, male","Japan","1994",61494860
+"1108",20,"Population, male","Mexico","1994",43350041
+"1109",21,"Population, male","Middle East","1994",78367763
+"1110",22,"Population, male","Pakistan","1994",66919877
+"1111",23,"Population, male","Russia","1994",69554464
+"1112",24,"Population, male","South Africa","1994",20745186
+"1113",25,"Population, male","South America_Northern","1994",11434892
+"1114",26,"Population, male","South America_Southern","1994",32395718
+"1115",27,"Population, male","South Asia","1994",87431698
+"1116",28,"Population, male","South Korea","1994",22430682
+"1117",29,"Population, male","Southeast Asia","1994",154134734
+"1118",30,"Population, total","Taiwan","1994",0
+"1119",31,"Population, male","Argentina","1994",16989567
+"1120",32,"Population, male","Colombia","1994",17580991
+"1121",1,"Population, male","USA","1995",132542401
+"1122",2,"Population, male","Africa_Eastern","1995",84928012
+"1123",3,"Population, male","Africa_Northern","1995",67358866
+"1124",4,"Population, male","Africa_Southern","1995",46860937
+"1125",5,"Population, male","Africa_Western","1995",139387487
+"1126",6,"Population, male","Australia_NZ","1995",10769068
+"1127",7,"Population, male","Brazil","1995",81155182
+"1128",8,"Population, male","Canada","1995",14502515
+"1129",9,"Population, male","Central America and Caribbean","1995",32253672
+"1130",10,"Population, male","Central Asia","1995",34844110
+"1131",11,"Population, male","China","1995",618291487
+"1132",12,"Population, male","EU-12","1995",51535142
+"1133",13,"Population, male","EU-15","1995",181917390
+"1134",14,"Population, male","Europe_Eastern","1995",30047605
+"1135",15,"Population, male","Europe_Non_EU","1995",40500043
+"1136",16,"Population, male","European Free Trade Association","1995",5744195
+"1137",17,"Population, male","India","1995",498432465
+"1138",18,"Population, male","Indonesia","1995",99551030
+"1139",19,"Population, male","Japan","1995",61612103
+"1140",20,"Population, male","Mexico","1995",44138340
+"1141",21,"Population, male","Middle East","1995",80289890
+"1142",22,"Population, male","Pakistan","1995",68906276
+"1143",23,"Population, male","Russia","1995",69473134
+"1144",24,"Population, male","South Africa","1995",20960968
+"1145",25,"Population, male","South America_Northern","1995",11673817
+"1146",26,"Population, male","South America_Southern","1995",32979197
+"1147",27,"Population, male","South Asia","1995",89334127
+"1148",28,"Population, male","South Korea","1995",22660743
+"1149",29,"Population, male","Southeast Asia","1995",156992214
+"1150",30,"Population, total","Taiwan","1995",0
+"1151",31,"Population, male","Argentina","1995",17220607
+"1152",32,"Population, male","Colombia","1995",17906602
+"1153",1,"Population, male","USA","1996",134152768
+"1154",2,"Population, male","Africa_Eastern","1996",87785693
+"1155",3,"Population, male","Africa_Northern","1996",68664132
+"1156",4,"Population, male","Africa_Southern","1996",47944336
+"1157",5,"Population, male","Africa_Western","1996",142972245
+"1158",6,"Population, male","Australia_NZ","1996",10902973
+"1159",7,"Population, male","Brazil","1996",82377561
+"1160",8,"Population, male","Canada","1996",14653835
+"1161",9,"Population, male","Central America and Caribbean","1996",32786778
+"1162",10,"Population, male","Central Asia","1996",35021564
+"1163",11,"Population, male","China","1996",625123694
+"1164",12,"Population, male","EU-12","1996",51430332
+"1165",13,"Population, male","EU-15","1996",182475190
+"1166",14,"Population, male","Europe_Eastern","1996",29809892
+"1167",15,"Population, male","Europe_Non_EU","1996",41020992
+"1168",16,"Population, male","European Free Trade Association","1996",5770607
+"1169",17,"Population, male","India","1996",508349160
+"1170",18,"Population, male","Indonesia","1996",101200715
+"1171",19,"Population, male","Japan","1996",61723445
+"1172",20,"Population, male","Mexico","1996",44906205
+"1173",21,"Population, male","Middle East","1996",82201375
+"1174",22,"Population, male","Pakistan","1996",71012953
+"1175",23,"Population, male","Russia","1996",69308240
+"1176",24,"Population, male","South Africa","1996",21154148
+"1177",25,"Population, male","South America_Northern","1996",11913062
+"1178",26,"Population, male","South America_Southern","1996",33553505
+"1179",27,"Population, male","South Asia","1996",91017473
+"1180",28,"Population, male","South Korea","1996",22879247
+"1181",29,"Population, male","Southeast Asia","1996",159841978
+"1182",30,"Population, total","Taiwan","1996",0
+"1183",31,"Population, male","Argentina","1996",17443158
+"1184",32,"Population, male","Colombia","1996",18226168
+"1185",1,"Population, male","USA","1997",135834199
+"1186",2,"Population, male","Africa_Eastern","1997",90646252
+"1187",3,"Population, male","Africa_Northern","1997",69993997
+"1188",4,"Population, male","Africa_Southern","1997",49054689
+"1189",5,"Population, male","Africa_Western","1997",146572469
+"1190",6,"Population, male","Australia_NZ","1997",11018758
+"1191",7,"Population, male","Brazil","1997",83593268
+"1192",8,"Population, male","Canada","1997",14802324
+"1193",9,"Population, male","Central America and Caribbean","1997",33313498
+"1194",10,"Population, male","Central Asia","1997",35171480
+"1195",11,"Population, male","China","1997",631756089
+"1196",12,"Population, male","EU-12","1997",51324605
+"1197",13,"Population, male","EU-15","1997",182987140
+"1198",14,"Population, male","Europe_Eastern","1997",29562402
+"1199",15,"Population, male","Europe_Non_EU","1997",41539990
+"1200",16,"Population, male","European Free Trade Association","1997",5792182
+"1201",17,"Population, male","India","1997",518303618
+"1202",18,"Population, male","Indonesia","1997",102859007
+"1203",19,"Population, male","Japan","1997",61841728
+"1204",20,"Population, male","Mexico","1997",45665366
+"1205",21,"Population, male","Middle East","1997",84165307
+"1206",22,"Population, male","Pakistan","1997",73104663
+"1207",23,"Population, male","Russia","1997",69154630
+"1208",24,"Population, male","South Africa","1997",21405714
+"1209",25,"Population, male","South America_Northern","1997",12152320
+"1210",26,"Population, male","South America_Southern","1997",34123709
+"1211",27,"Population, male","South Asia","1997",92714951
+"1212",28,"Population, male","South Korea","1997",23094304
+"1213",29,"Population, male","Southeast Asia","1997",162666743
+"1214",30,"Population, total","Taiwan","1997",0
+"1215",31,"Population, male","Argentina","1997",17655867
+"1216",32,"Population, male","Colombia","1997",18544061
+"1217",1,"Population, male","USA","1998",137491732
+"1218",2,"Population, male","Africa_Eastern","1998",93258166
+"1219",3,"Population, male","Africa_Northern","1998",71285794
+"1220",4,"Population, male","Africa_Southern","1998",50269752
+"1221",5,"Population, male","Africa_Western","1998",150488499
+"1222",6,"Population, male","Australia_NZ","1998",11119361
+"1223",7,"Population, male","Brazil","1998",84799768
+"1224",8,"Population, male","Canada","1998",14925642
+"1225",9,"Population, male","Central America and Caribbean","1998",33834324
+"1226",10,"Population, male","Central Asia","1998",35275579
+"1227",11,"Population, male","China","1998",638017629
+"1228",12,"Population, male","EU-12","1998",51217876
+"1229",13,"Population, male","EU-15","1998",183460011
+"1230",14,"Population, male","Europe_Eastern","1998",29325840
+"1231",15,"Population, male","Europe_Non_EU","1998",42024338
+"1232",16,"Population, male","European Free Trade Association","1998",5817951
+"1233",17,"Population, male","India","1998",528287413
+"1234",18,"Population, male","Indonesia","1998",104503918
+"1235",19,"Population, male","Japan","1998",61977978
+"1236",20,"Population, male","Mexico","1998",46420593
+"1237",21,"Population, male","Middle East","1998",86170336
+"1238",22,"Population, male","Pakistan","1998",75217269
+"1239",23,"Population, male","Russia","1998",69023959
+"1240",24,"Population, male","South Africa","1998",21703485
+"1241",25,"Population, male","South America_Northern","1998",12391108
+"1242",26,"Population, male","South America_Southern","1998",34686777
+"1243",27,"Population, male","South Asia","1998",94472321
+"1244",28,"Population, male","South Korea","1998",23260500
+"1245",29,"Population, male","Southeast Asia","1998",165441718
+"1246",30,"Population, total","Taiwan","1998",0
+"1247",31,"Population, male","Argentina","1998",17863135
+"1248",32,"Population, male","Colombia","1998",18858347
+"1249",1,"Population, male","USA","1999",139164697
+"1250",2,"Population, male","Africa_Eastern","1999",95936179
+"1251",3,"Population, male","Africa_Northern","1999",72537334
+"1252",4,"Population, male","Africa_Southern","1999",51505593
+"1253",5,"Population, male","Africa_Western","1999",154610641
+"1254",6,"Population, male","Australia_NZ","1999",11224073
+"1255",7,"Population, male","Brazil","1999",85981420
+"1256",8,"Population, male","Canada","1999",15047875
+"1257",9,"Population, male","Central America and Caribbean","1999",34353921
+"1258",10,"Population, male","Central Asia","1999",35383274
+"1259",11,"Population, male","China","1999",643751801
+"1260",12,"Population, male","EU-12","1999",51120873
+"1261",13,"Population, male","EU-15","1999",184004518
+"1262",14,"Population, male","Europe_Eastern","1999",29076510
+"1263",15,"Population, male","Europe_Non_EU","1999",42475723
+"1264",16,"Population, male","European Free Trade Association","1999",5853425
+"1265",17,"Population, male","India","1999",538244360
+"1266",18,"Population, male","Indonesia","1999",106101569
+"1267",19,"Population, male","Japan","1999",62057082
+"1268",20,"Population, male","Mexico","1999",47168279
+"1269",21,"Population, male","Middle East","1999",88227322
+"1270",22,"Population, male","Pakistan","1999",77366201
+"1271",23,"Population, male","Russia","1999",68794406
+"1272",24,"Population, male","South Africa","1999",21977029
+"1273",25,"Population, male","South America_Northern","1999",12627527
+"1274",26,"Population, male","South America_Southern","1999",35236085
+"1275",27,"Population, male","South Asia","1999",96305552
+"1276",28,"Population, male","South Korea","1999",23426381
+"1277",29,"Population, male","Southeast Asia","1999",168065233
+"1278",30,"Population, total","Taiwan","1999",0
+"1279",31,"Population, male","Argentina","1999",18072503
+"1280",32,"Population, male","Colombia","1999",19166664
+"1281",1,"Population, male","USA","2000",140797238
+"1282",2,"Population, male","Africa_Eastern","2000",98759905
+"1283",3,"Population, male","Africa_Northern","2000",73787984
+"1284",4,"Population, male","Africa_Southern","2000",52793122
+"1285",5,"Population, male","Africa_Western","2000",158922108
+"1286",6,"Population, male","Australia_NZ","2000",11336844
+"1287",7,"Population, male","Brazil","2000",87124330
+"1288",8,"Population, male","Canada","2000",15193559
+"1289",9,"Population, male","Central America and Caribbean","2000",34879910
+"1290",10,"Population, male","Central Asia","2000",35609657
+"1291",11,"Population, male","China","2000",649055277
+"1292",12,"Population, male","EU-12","2000",50850701
+"1293",13,"Population, male","EU-15","2000",184675884
+"1294",14,"Population, male","Europe_Eastern","2000",28807327
+"1295",15,"Population, male","Europe_Non_EU","2000",42902995
+"1296",16,"Population, male","European Free Trade Association","2000",5891945
+"1297",17,"Population, male","India","2000",548223581
+"1298",18,"Population, male","Indonesia","2000",107664942
+"1299",19,"Population, male","Japan","2000",62126711
+"1300",20,"Population, male","Mexico","2000",47900060
+"1301",21,"Population, male","Middle East","2000",90343243
+"1302",22,"Population, male","Pakistan","2000",79746052
+"1303",23,"Population, male","Russia","2000",68464819
+"1304",24,"Population, male","South Africa","2000",22221377
+"1305",25,"Population, male","South America_Northern","2000",12861291
+"1306",26,"Population, male","South America_Southern","2000",35765200
+"1307",27,"Population, male","South Asia","2000",97894535
+"1308",28,"Population, male","South Korea","2000",23622809
+"1309",29,"Population, male","Southeast Asia","2000",170608604
+"1310",30,"Population, total","Taiwan","2000",0
+"1311",31,"Population, male","Argentina","2000",18280746
+"1312",32,"Population, male","Colombia","2000",19469885
+"1313",1,"Population, male","USA","2001",142232826
+"1314",2,"Population, male","Africa_Eastern","2001",101693708
+"1315",3,"Population, male","Africa_Northern","2001",75047366
+"1316",4,"Population, male","Africa_Southern","2001",54096564
+"1317",5,"Population, male","Africa_Western","2001",163459209
+"1318",6,"Population, male","Australia_NZ","2001",11467157
+"1319",7,"Population, male","Brazil","2001",88233218
+"1320",8,"Population, male","Canada","2001",15366067
+"1321",9,"Population, male","Central America and Caribbean","2001",35399682
+"1322",10,"Population, male","Central Asia","2001",35868965
+"1323",11,"Population, male","China","2001",653919016
+"1324",12,"Population, male","EU-12","2001",50563348
+"1325",13,"Population, male","EU-15","2001",185467301
+"1326",14,"Population, male","Europe_Eastern","2001",28523749
+"1327",15,"Population, male","Europe_Non_EU","2001",43285452
+"1328",16,"Population, male","European Free Trade Association","2001",5928702
+"1329",17,"Population, male","India","2001",558291332
+"1330",18,"Population, male","Indonesia","2001",109210886
+"1331",19,"Population, male","Japan","2001",62241801
+"1332",20,"Population, male","Mexico","2001",48635540
+"1333",21,"Population, male","Middle East","2001",92485549
+"1334",22,"Population, male","Pakistan","2001",82212668
+"1335",23,"Population, male","Russia","2001",68107925
+"1336",24,"Population, male","South Africa","2001",22447806
+"1337",25,"Population, male","South America_Northern","2001",13088453
+"1338",26,"Population, male","South America_Southern","2001",36265305
+"1339",27,"Population, male","South Asia","2001",99419561
+"1340",28,"Population, male","South Korea","2001",23792460
+"1341",29,"Population, male","Southeast Asia","2001",173139745
+"1342",30,"Population, total","Taiwan","2001",0
+"1343",31,"Population, male","Argentina","2001",18484124
+"1344",32,"Population, male","Colombia","2001",19769644
+"1345",1,"Population, male","USA","2002",143543725
+"1346",2,"Population, male","Africa_Eastern","2002",104728991
+"1347",3,"Population, male","Africa_Northern","2002",76338102
+"1348",4,"Population, male","Africa_Southern","2002",55425989
+"1349",5,"Population, male","Africa_Western","2002",168163280
+"1350",6,"Population, male","Australia_NZ","2002",11610552
+"1351",7,"Population, male","Brazil","2002",89303580
+"1352",8,"Population, male","Canada","2002",15538106
+"1353",9,"Population, male","Central America and Caribbean","2002",35904115
+"1354",10,"Population, male","Central Asia","2002",36152988
+"1355",11,"Population, male","China","2002",658374296
+"1356",12,"Population, male","EU-12","2002",50221758
+"1357",13,"Population, male","EU-15","2002",186455527
+"1358",14,"Population, male","Europe_Eastern","2002",28260348
+"1359",15,"Population, male","Europe_Non_EU","2002",43728145
+"1360",16,"Population, male","European Free Trade Association","2002",5970601
+"1361",17,"Population, male","India","2002",568334873
+"1362",18,"Population, male","Indonesia","2002",110738346
+"1363",19,"Population, male","Japan","2002",62351052
+"1364",20,"Population, male","Mexico","2002",49386357
+"1365",21,"Population, male","Middle East","2002",94400944
+"1366",22,"Population, male","Pakistan","2002",84278393
+"1367",23,"Population, male","Russia","2002",67715029
+"1368",24,"Population, male","South Africa","2002",22681781
+"1369",25,"Population, male","South America_Northern","2002",13314439
+"1370",26,"Population, male","South America_Southern","2002",36738243
+"1371",27,"Population, male","South Asia","2002",101504728
+"1372",28,"Population, male","South Korea","2002",23906741
+"1373",29,"Population, male","Southeast Asia","2002",175622988
+"1374",30,"Population, total","Taiwan","2002",0
+"1375",31,"Population, male","Argentina","2002",18683681
+"1376",32,"Population, male","Colombia","2002",20066543
+"1377",1,"Population, male","USA","2003",144757450
+"1378",2,"Population, male","Africa_Eastern","2003",107867426
+"1379",3,"Population, male","Africa_Northern","2003",77645127
+"1380",4,"Population, male","Africa_Southern","2003",56819365
+"1381",5,"Population, male","Africa_Western","2003",172994315
+"1382",6,"Population, male","Australia_NZ","2003",11762293
+"1383",7,"Population, male","Brazil","2003",90318606
+"1384",8,"Population, male","Canada","2003",15680044
+"1385",9,"Population, male","Central America and Caribbean","2003",36394354
+"1386",10,"Population, male","Central Asia","2003",36466386
+"1387",11,"Population, male","China","2003",662523037
+"1388",12,"Population, male","EU-12","2003",50065800
+"1389",13,"Population, male","EU-15","2003",187571772
+"1390",14,"Population, male","Europe_Eastern","2003",28031011
+"1391",15,"Population, male","Europe_Non_EU","2003",44149718
+"1392",16,"Population, male","European Free Trade Association","2003",6013979
+"1393",17,"Population, male","India","2003",578236241
+"1394",18,"Population, male","Indonesia","2003",112245542
+"1395",19,"Population, male","Japan","2003",62447363
+"1396",20,"Population, male","Mexico","2003",50132595
+"1397",21,"Population, male","Middle East","2003",96331544
+"1398",22,"Population, male","Pakistan","2003",86127265
+"1399",23,"Population, male","Russia","2003",67309072
+"1400",24,"Population, male","South Africa","2003",22925383
+"1401",25,"Population, male","South America_Northern","2003",13540288
+"1402",26,"Population, male","South America_Southern","2003",37193206
+"1403",27,"Population, male","South Asia","2003",103661582
+"1404",28,"Population, male","South Korea","2003",24006936
+"1405",29,"Population, male","Southeast Asia","2003",178042247
+"1406",30,"Population, total","Taiwan","2003",0
+"1407",31,"Population, male","Argentina","2003",18879701
+"1408",32,"Population, male","Colombia","2003",20357979
+"1409",1,"Population, male","USA","2004",146101878
+"1410",2,"Population, male","Africa_Eastern","2004",111107363
+"1411",3,"Population, male","Africa_Northern","2004",78958958
+"1412",4,"Population, male","Africa_Southern","2004",58274264
+"1413",5,"Population, male","Africa_Western","2004",177992397
+"1414",6,"Population, male","Australia_NZ","2004",11898011
+"1415",7,"Population, male","Brazil","2004",91303580
+"1416",8,"Population, male","Canada","2004",15828266
+"1417",9,"Population, male","Central America and Caribbean","2004",36877398
+"1418",10,"Population, male","Central Asia","2004",36821461
+"1419",11,"Population, male","China","2004",666535987
+"1420",12,"Population, male","EU-12","2004",49934618
+"1421",13,"Population, male","EU-15","2004",188752579
+"1422",14,"Population, male","Europe_Eastern","2004",27814726
+"1423",15,"Population, male","Europe_Non_EU","2004",44576218
+"1424",16,"Population, male","European Free Trade Association","2004",6056427
+"1425",17,"Population, male","India","2004",587990365
+"1426",18,"Population, male","Indonesia","2004",113702084
+"1427",19,"Population, male","Japan","2004",62430367
+"1428",20,"Population, male","Mexico","2004",50881240
+"1429",21,"Population, male","Middle East","2004",98547675
+"1430",22,"Population, male","Pakistan","2004",88049526
+"1431",23,"Population, male","Russia","2004",66921101
+"1432",24,"Population, male","South Africa","2004",23176582
+"1433",25,"Population, male","South America_Northern","2004",13761017
+"1434",26,"Population, male","South America_Southern","2004",37637073
+"1435",27,"Population, male","South Asia","2004",105376707
+"1436",28,"Population, male","South Korea","2004",24076910
+"1437",29,"Population, male","Southeast Asia","2004",180508998
+"1438",30,"Population, total","Taiwan","2004",0
+"1439",31,"Population, male","Argentina","2004",19077001
+"1440",32,"Population, male","Colombia","2004",20643488
+"1441",1,"Population, male","USA","2005",147458064
+"1442",2,"Population, male","Africa_Eastern","2005",114416058
+"1443",3,"Population, male","Africa_Northern","2005",80276573
+"1444",4,"Population, male","Africa_Southern","2005",59788020
+"1445",5,"Population, male","Africa_Western","2005",183185986
+"1446",6,"Population, male","Australia_NZ","2005",12043030
+"1447",7,"Population, male","Brazil","2005",92281701
+"1448",8,"Population, male","Canada","2005",15980635
+"1449",9,"Population, male","Central America and Caribbean","2005",37356611
+"1450",10,"Population, male","Central Asia","2005",37204323
+"1451",11,"Population, male","China","2005",670520211
+"1452",12,"Population, male","EU-12","2005",49805064
+"1453",13,"Population, male","EU-15","2005",189932392
+"1454",14,"Population, male","Europe_Eastern","2005",27601152
+"1455",15,"Population, male","Europe_Non_EU","2005",44997223
+"1456",16,"Population, male","European Free Trade Association","2005",6101502
+"1457",17,"Population, male","India","2005",597477666
+"1458",18,"Population, male","Indonesia","2005",115167468
+"1459",19,"Population, male","Japan","2005",62398129
+"1460",20,"Population, male","Mexico","2005",51619299
+"1461",21,"Population, male","Middle East","2005",101130673
+"1462",22,"Population, male","Pakistan","2005",89942008
+"1463",23,"Population, male","Russia","2005",66542026
+"1464",24,"Population, male","South Africa","2005",23433293
+"1465",25,"Population, male","South America_Northern","2005",13978998
+"1466",26,"Population, male","South America_Southern","2005",38073972
+"1467",27,"Population, male","South Asia","2005",106938959
+"1468",28,"Population, male","South Korea","2005",24102905
+"1469",29,"Population, male","Southeast Asia","2005",182972674
+"1470",30,"Population, total","Taiwan","2005",0
+"1471",31,"Population, male","Argentina","2005",19279145
+"1472",32,"Population, male","Colombia","2005",20920388
+"1473",1,"Population, male","USA","2006",148875288
+"1474",2,"Population, male","Africa_Eastern","2006",117820219
+"1475",3,"Population, male","Africa_Northern","2006",81613833
+"1476",4,"Population, male","Africa_Southern","2006",61399413
+"1477",5,"Population, male","Africa_Western","2006",188539690
+"1478",6,"Population, male","Australia_NZ","2006",12206573
+"1479",7,"Population, male","Brazil","2006",93237364
+"1480",8,"Population, male","Canada","2006",16144134
+"1481",9,"Population, male","Central America and Caribbean","2006",37832544
+"1482",10,"Population, male","Central Asia","2006",37616708
+"1483",11,"Population, male","China","2006",674340281
+"1484",12,"Population, male","EU-12","2006",49685816
+"1485",13,"Population, male","EU-15","2006",191045226
+"1486",14,"Population, male","Europe_Eastern","2006",27407376
+"1487",15,"Population, male","Europe_Non_EU","2006",45404603
+"1488",16,"Population, male","European Free Trade Association","2006",6152643
+"1489",17,"Population, male","India","2006",606611392
+"1490",18,"Population, male","Indonesia","2006",116685330
+"1491",19,"Population, male","Japan","2006",62402271
+"1492",20,"Population, male","Mexico","2006",52329698
+"1493",21,"Population, male","Middle East","2006",104252216
+"1494",22,"Population, male","Pakistan","2006",91810143
+"1495",23,"Population, male","Russia","2006",66219710
+"1496",24,"Population, male","South Africa","2006",23696246
+"1497",25,"Population, male","South America_Northern","2006",14191314
+"1498",26,"Population, male","South America_Southern","2006",38506671
+"1499",27,"Population, male","South Asia","2006",108310358
+"1500",28,"Population, male","South Korea","2006",24209494
+"1501",29,"Population, male","Southeast Asia","2006",185431409
+"1502",30,"Population, total","Taiwan","2006",0
+"1503",31,"Population, male","Argentina","2006",19484104
+"1504",32,"Population, male","Colombia","2006",21186610
+"1505",1,"Population, male","USA","2007",150269475
+"1506",2,"Population, male","Africa_Eastern","2007",121367666
+"1507",3,"Population, male","Africa_Northern","2007",83007454
+"1508",4,"Population, male","Africa_Southern","2007",63091050
+"1509",5,"Population, male","Africa_Western","2007",194059297
+"1510",6,"Population, male","Australia_NZ","2007",12418812
+"1511",7,"Population, male","Brazil","2007",94163019
+"1512",8,"Population, male","Canada","2007",16300676
+"1513",9,"Population, male","Central America and Caribbean","2007",38312013
+"1514",10,"Population, male","Central Asia","2007",38073086
+"1515",11,"Population, male","China","2007",677942826
+"1516",12,"Population, male","EU-12","2007",49504691
+"1517",13,"Population, male","EU-15","2007",192257388
+"1518",14,"Population, male","Europe_Eastern","2007",27243617
+"1519",15,"Population, male","Europe_Non_EU","2007",45787986
+"1520",16,"Population, male","European Free Trade Association","2007",6223908
+"1521",17,"Population, male","India","2007",615506279
+"1522",18,"Population, male","Indonesia","2007",118236404
+"1523",19,"Population, male","Japan","2007",62443045
+"1524",20,"Population, male","Mexico","2007",53024314
+"1525",21,"Population, male","Middle East","2007",107695636
+"1526",22,"Population, male","Pakistan","2007",93744001
+"1527",23,"Population, male","Russia","2007",66050853
+"1528",24,"Population, male","South Africa","2007",23972107
+"1529",25,"Population, male","South America_Northern","2007",14397030
+"1530",26,"Population, male","South America_Southern","2007",38936601
+"1531",27,"Population, male","South Asia","2007",109255091
+"1532",28,"Population, male","South Korea","2007",24315489
+"1533",29,"Population, male","Southeast Asia","2007",187919542
+"1534",30,"Population, total","Taiwan","2007",0
+"1535",31,"Population, male","Argentina","2007",19685381
+"1536",32,"Population, male","Colombia","2007",21442913
+"1537",1,"Population, male","USA","2008",151659890
+"1538",2,"Population, male","Africa_Eastern","2008",125032070
+"1539",3,"Population, male","Africa_Northern","2008",84445292
+"1540",4,"Population, male","Africa_Southern","2008",64819733
+"1541",5,"Population, male","Africa_Western","2008",199743279
+"1542",6,"Population, male","Australia_NZ","2008",12654612
+"1543",7,"Population, male","Brazil","2008",95059746
+"1544",8,"Population, male","Canada","2008",16477121
+"1545",9,"Population, male","Central America and Caribbean","2008",38798943
+"1546",10,"Population, male","Central Asia","2008",38669712
+"1547",11,"Population, male","China","2008",681482650
+"1548",12,"Population, male","EU-12","2008",49335369
+"1549",13,"Population, male","EU-15","2008",193433973
+"1550",14,"Population, male","Europe_Eastern","2008",27100614
+"1551",15,"Population, male","Europe_Non_EU","2008",46156584
+"1552",16,"Population, male","European Free Trade Association","2008",6315163
+"1553",17,"Population, male","India","2008",624242020
+"1554",18,"Population, male","Indonesia","2008",119801561
+"1555",19,"Population, male","Japan","2008",62444510
+"1556",20,"Population, male","Mexico","2008",53699298
+"1557",21,"Population, male","Middle East","2008",111259687
+"1558",22,"Population, male","Pakistan","2008",95745628
+"1559",23,"Population, male","Russia","2008",65997139
+"1560",24,"Population, male","South Africa","2008",24278088
+"1561",25,"Population, male","South America_Northern","2008",14593780
+"1562",26,"Population, male","South America_Southern","2008",39345935
+"1563",27,"Population, male","South Asia","2008",110081981
+"1564",28,"Population, male","South Korea","2008",24483738
+"1565",29,"Population, male","Southeast Asia","2008",190400747
+"1566",30,"Population, total","Taiwan","2008",0
+"1567",31,"Population, male","Argentina","2008",19886051
+"1568",32,"Population, male","Colombia","2008",21686623
+"1569",1,"Population, male","USA","2009",152956186
+"1570",2,"Population, male","Africa_Eastern","2009",128775604
+"1571",3,"Population, male","Africa_Northern","2009",85923279
+"1572",4,"Population, male","Africa_Southern","2009",66564658
+"1573",5,"Population, male","Africa_Western","2009",205610006
+"1574",6,"Population, male","Australia_NZ","2009",12902077
+"1575",7,"Population, male","Brazil","2009",95935867
+"1576",8,"Population, male","Canada","2009",16666218
+"1577",9,"Population, male","Central America and Caribbean","2009",39287467
+"1578",10,"Population, male","Central Asia","2009",39299747
+"1579",11,"Population, male","China","2009",684925727
+"1580",12,"Population, male","EU-12","2009",49259371
+"1581",13,"Population, male","EU-15","2009",194315031
+"1582",14,"Population, male","Europe_Eastern","2009",26992425
+"1583",15,"Population, male","Europe_Non_EU","2009",46551819
+"1584",16,"Population, male","European Free Trade Association","2009",6400049
+"1585",17,"Population, male","India","2009",632892402
+"1586",18,"Population, male","Indonesia","2009",121344803
+"1587",19,"Population, male","Japan","2009",62409801
+"1588",20,"Population, male","Mexico","2009",54363696
+"1589",21,"Population, male","Middle East","2009",114761542
+"1590",22,"Population, male","Pakistan","2009",97833204
+"1591",23,"Population, male","Russia","2009",66009601
+"1592",24,"Population, male","South Africa","2009",24599914
+"1593",25,"Population, male","South America_Northern","2009",14782272
+"1594",26,"Population, male","South America_Southern","2009",39742420
+"1595",27,"Population, male","South Asia","2009",111122195
+"1596",28,"Population, male","South Korea","2009",24592587
+"1597",29,"Population, male","Southeast Asia","2009",192806355
+"1598",30,"Population, total","Taiwan","2009",0
+"1599",31,"Population, male","Argentina","2009",20095357
+"1600",32,"Population, male","Colombia","2009",21925966
+"1601",1,"Population, male","USA","2010",154193394
+"1602",2,"Population, male","Africa_Eastern","2010",132551855
+"1603",3,"Population, male","Africa_Northern","2010",87478231
+"1604",4,"Population, male","Africa_Southern","2010",68414519
+"1605",5,"Population, male","Africa_Western","2010",211668581
+"1606",6,"Population, male","Australia_NZ","2010",13095324
+"1607",7,"Population, male","Brazil","2010",96806825
+"1608",8,"Population, male","Canada","2010",16852629
+"1609",9,"Population, male","Central America and Caribbean","2010",39756752
+"1610",10,"Population, male","Central Asia","2010",40028362
+"1611",11,"Population, male","China","2010",688286135
+"1612",12,"Population, male","EU-12","2010",49102710
+"1613",13,"Population, male","EU-15","2010",195070693
+"1614",14,"Population, male","Europe_Eastern","2010",26903943
+"1615",15,"Population, male","Europe_Non_EU","2010",46979519
+"1616",16,"Population, male","European Free Trade Association","2010",6475050
+"1617",17,"Population, male","India","2010",641566029
+"1618",18,"Population, male","Indonesia","2010",122882663
+"1619",19,"Population, male","Japan","2010",62397763
+"1620",20,"Population, male","Mexico","2010",55086407
+"1621",21,"Population, male","Middle East","2010",117832615
+"1622",22,"Population, male","Pakistan","2010",99987484
+"1623",23,"Population, male","Russia","2010",66053102
+"1624",24,"Population, male","South Africa","2010",24927507
+"1625",25,"Population, male","South America_Northern","2010",14968165
+"1626",26,"Population, male","South America_Southern","2010",40155135
+"1627",27,"Population, male","South Asia","2010",112348544
+"1628",28,"Population, male","South Korea","2010",24701859
+"1629",29,"Population, male","Southeast Asia","2010",195177966
+"1630",30,"Population, total","Taiwan","2010",0
+"1631",31,"Population, male","Argentina","2010",20154486
+"1632",32,"Population, male","Colombia","2010",22167933
+"1633",1,"Population, male","USA","2011",155352189
+"1634",2,"Population, male","Africa_Eastern","2011",136237055
+"1635",3,"Population, male","Africa_Northern","2011",88963901
+"1636",4,"Population, male","Africa_Southern","2011",70417400
+"1637",5,"Population, male","Africa_Western","2011",217937110
+"1638",6,"Population, male","Australia_NZ","2011",13262678
+"1639",7,"Population, male","Brazil","2011",97676016
+"1640",8,"Population, male","Canada","2011",17020916
+"1641",9,"Population, male","Central America and Caribbean","2011",40227095
+"1642",10,"Population, male","Central Asia","2011",40767964
+"1643",11,"Population, male","China","2011",692073518
+"1644",12,"Population, male","EU-12","2011",49011601
+"1645",13,"Population, male","EU-15","2011",195082461
+"1646",14,"Population, male","Europe_Eastern","2011",26825220
+"1647",15,"Population, male","Europe_Non_EU","2011",47397218
+"1648",16,"Population, male","European Free Trade Association","2011",6558003
+"1649",17,"Population, male","India","2011",650244390
+"1650",18,"Population, male","Indonesia","2011",124451334
+"1651",19,"Population, male","Japan","2011",62263573
+"1652",20,"Population, male","Mexico","2011",55882073
+"1653",21,"Population, male","Middle East","2011",120562139
+"1654",22,"Population, male","Pakistan","2011",102047023
+"1655",23,"Population, male","Russia","2011",66137295
+"1656",24,"Population, male","South Africa","2011",25278908
+"1657",25,"Population, male","South America_Northern","2011",15151606
+"1658",26,"Population, male","South America_Southern","2011",40591650
+"1659",27,"Population, male","South Asia","2011",113785607
+"1660",28,"Population, male","South Korea","2011",24902531
+"1661",29,"Population, male","Southeast Asia","2011",197557644
+"1662",30,"Population, total","Taiwan","2011",0
+"1663",31,"Population, male","Argentina","2011",20395723
+"1664",32,"Population, male","Colombia","2011",22405198
+"1665",1,"Population, male","USA","2012",156603293
+"1666",2,"Population, male","Africa_Eastern","2012",139952970
+"1667",3,"Population, male","Africa_Northern","2012",90508646
+"1668",4,"Population, male","Africa_Southern","2012",72532449
+"1669",5,"Population, male","Africa_Western","2012",224319007
+"1670",6,"Population, male","Australia_NZ","2012",13468222
+"1671",7,"Population, male","Brazil","2012",98526889
+"1672",8,"Population, male","Canada","2012",17213242
+"1673",9,"Population, male","Central America and Caribbean","2012",40717045
+"1674",10,"Population, male","Central Asia","2012",41363095
+"1675",11,"Population, male","China","2012",696796502
+"1676",12,"Population, male","EU-12","2012",48921742
+"1677",13,"Population, male","EU-15","2012",195780614
+"1678",14,"Population, male","Europe_Eastern","2012",26781389
+"1679",15,"Population, male","Europe_Non_EU","2012",47888972
+"1680",16,"Population, male","European Free Trade Association","2012",6641937
+"1681",17,"Population, male","India","2012",658839435
+"1682",18,"Population, male","Indonesia","2012",126039491
+"1683",19,"Population, male","Japan","2012",62148992
+"1684",20,"Population, male","Mexico","2012",56674115
+"1685",21,"Population, male","Middle East","2012",123239344
+"1686",22,"Population, male","Pakistan","2012",103831984
+"1687",23,"Population, male","Russia","2012",66292589
+"1688",24,"Population, male","South Africa","2012",25651390
+"1689",25,"Population, male","South America_Northern","2012",15332839
+"1690",26,"Population, male","South America_Southern","2012",41044954
+"1691",27,"Population, male","South Asia","2012",115304514
+"1692",28,"Population, male","South Korea","2012",25062652
+"1693",29,"Population, male","Southeast Asia","2012",199980390
+"1694",30,"Population, total","Taiwan","2012",0
+"1695",31,"Population, male","Argentina","2012",20634269
+"1696",32,"Population, male","Colombia","2012",22632420
+"1697",1,"Population, male","USA","2013",157794470
+"1698",2,"Population, male","Africa_Eastern","2013",143783978
+"1699",3,"Population, male","Africa_Northern","2013",92308666
+"1700",4,"Population, male","Africa_Southern","2013",74778270
+"1701",5,"Population, male","Africa_Western","2013",230810008
+"1702",6,"Population, male","Australia_NZ","2013",13677683
+"1703",7,"Population, male","Brazil","2013",99355387
+"1704",8,"Population, male","Canada","2013",17402916
+"1705",9,"Population, male","Central America and Caribbean","2013",41205920
+"1706",10,"Population, male","Central Asia","2013",42004528
+"1707",11,"Population, male","China","2013",701420834
+"1708",12,"Population, male","EU-12","2013",48837165
+"1709",13,"Population, male","EU-15","2013",196674688
+"1710",14,"Population, male","Europe_Eastern","2013",26749767
+"1711",15,"Population, male","Europe_Non_EU","2013",48486525
+"1712",16,"Population, male","European Free Trade Association","2013",6727485
+"1713",17,"Population, male","India","2013",667322883
+"1714",18,"Population, male","Indonesia","2013",127582414
+"1715",19,"Population, male","Japan","2013",62046104
+"1716",20,"Population, male","Mexico","2013",57427865
+"1717",21,"Population, male","Middle East","2013",125951324
+"1718",22,"Population, male","Pakistan","2013",105378643
+"1719",23,"Population, male","Russia","2013",66481170
+"1720",24,"Population, male","South Africa","2013",26036121
+"1721",25,"Population, male","South America_Northern","2013",15512063
+"1722",26,"Population, male","South America_Southern","2013",41508150
+"1723",27,"Population, male","South Asia","2013",116752604
+"1724",28,"Population, male","South Korea","2013",25204806
+"1725",29,"Population, male","Southeast Asia","2013",202371635
+"1726",30,"Population, total","Taiwan","2013",0
+"1727",31,"Population, male","Argentina","2013",20870445
+"1728",32,"Population, male","Colombia","2013",22850386
+"1729",1,"Population, male","USA","2014",159040737
+"1730",2,"Population, male","Africa_Eastern","2014",147599834
+"1731",3,"Population, male","Africa_Northern","2014",94152148
+"1732",4,"Population, male","Africa_Southern","2014",77115375
+"1733",5,"Population, male","Africa_Western","2014",237482431
+"1734",6,"Population, male","Australia_NZ","2014",13880846
+"1735",7,"Population, male","Brazil","2014",100185186
+"1736",8,"Population, male","Canada","2014",17582153
+"1737",9,"Population, male","Central America and Caribbean","2014",41690164
+"1738",10,"Population, male","Central Asia","2014",42686684
+"1739",11,"Population, male","China","2014",705805131
+"1740",12,"Population, male","EU-12","2014",48760187
+"1741",13,"Population, male","EU-15","2014",197601577
+"1742",14,"Population, male","Europe_Eastern","2014",26668187
+"1743",15,"Population, male","Europe_Non_EU","2014",49207938
+"1744",16,"Population, male","European Free Trade Association","2014",6813803
+"1745",17,"Population, male","India","2014",675549357
+"1746",18,"Population, male","Indonesia","2014",129071050
+"1747",19,"Population, male","Japan","2014",61951317
+"1748",20,"Population, male","Mexico","2014",58145362
+"1749",21,"Population, male","Middle East","2014",128723352
+"1750",22,"Population, male","Pakistan","2014",106815000
+"1751",23,"Population, male","Russia","2014",66665787
+"1752",24,"Population, male","South Africa","2014",26500685
+"1753",25,"Population, male","South America_Northern","2014",15684963
+"1754",26,"Population, male","South America_Southern","2014",41992976
+"1755",27,"Population, male","South Asia","2014",118267617
+"1756",28,"Population, male","South Korea","2014",25390519
+"1757",29,"Population, male","Southeast Asia","2014",204710443
+"1758",30,"Population, total","Taiwan","2014",0
+"1759",31,"Population, male","Argentina","2014",21106519
+"1760",32,"Population, male","Colombia","2014",23060580
+"1761",1,"Population, male","USA","2015",160288318
+"1762",2,"Population, male","Africa_Eastern","2015",151431964
+"1763",3,"Population, male","Africa_Northern","2015",95951032
+"1764",4,"Population, male","Africa_Southern","2015",79579075
+"1765",5,"Population, male","Africa_Western","2015",244274209
+"1766",6,"Population, male","Australia_NZ","2015",14088398
+"1767",7,"Population, male","Brazil","2015",101008689
+"1768",8,"Population, male","Canada","2015",17714395
+"1769",9,"Population, male","Central America and Caribbean","2015",42168168
+"1770",10,"Population, male","Central Asia","2015",43390146
+"1771",11,"Population, male","China","2015",709837062
+"1772",12,"Population, male","EU-12","2015",48688640
+"1773",13,"Population, male","EU-15","2015",198516112
+"1774",14,"Population, male","Europe_Eastern","2015",26623863
+"1775",15,"Population, male","Europe_Non_EU","2015",49917040
+"1776",16,"Population, male","European Free Trade Association","2015",6893872
+"1777",17,"Population, male","India","2015",683543213
+"1778",18,"Population, male","Indonesia","2015",130517327
+"1779",19,"Population, male","Japan","2015",61873910
+"1780",20,"Population, male","Mexico","2015",58824776
+"1781",21,"Population, male","Middle East","2015",131638929
+"1782",22,"Population, male","Pakistan","2015",107983708
+"1783",23,"Population, male","Russia","2015",66823446
+"1784",24,"Population, male","South Africa","2015",27155417
+"1785",25,"Population, male","South America_Northern","2015",15848201
+"1786",26,"Population, male","South America_Southern","2015",42510779
+"1787",27,"Population, male","South Asia","2015",119734686
+"1788",28,"Population, male","South Korea","2015",25548338
+"1789",29,"Population, male","Southeast Asia","2015",207048277
+"1790",30,"Population, total","Taiwan","2015",0
+"1791",31,"Population, male","Argentina","2015",21340426
+"1792",32,"Population, male","Colombia","2015",23272374
+"1793",1,"Population, male","USA","2016",161521419
+"1794",2,"Population, male","Africa_Eastern","2016",155379242
+"1795",3,"Population, male","Africa_Northern","2016",97714369
+"1796",4,"Population, male","Africa_Southern","2016",82171458
+"1797",5,"Population, male","Africa_Western","2016",251278548
+"1798",6,"Population, male","Australia_NZ","2016",14320295
+"1799",7,"Population, male","Brazil","2016",101794390
+"1800",8,"Population, male","Canada","2016",17917265
+"1801",9,"Population, male","Central America and Caribbean","2016",42636982
+"1802",10,"Population, male","Central Asia","2016",44094047
+"1803",11,"Population, male","China","2016",713787908
+"1804",12,"Population, male","EU-12","2016",48604097
+"1805",13,"Population, male","EU-15","2016",199431682
+"1806",14,"Population, male","Europe_Eastern","2016",26551761
+"1807",15,"Population, male","Europe_Non_EU","2016",50548004
+"1808",16,"Population, male","European Free Trade Association","2016",6971685
+"1809",17,"Population, male","India","2016",691623419
+"1810",18,"Population, male","Indonesia","2016",131909809
+"1811",19,"Population, male","Japan","2016",61830297
+"1812",20,"Population, male","Mexico","2016",59489629
+"1813",21,"Population, male","Middle East","2016",134401307
+"1814",22,"Population, male","Pakistan","2016",108894512
+"1815",23,"Population, male","Russia","2016",66964302
+"1816",24,"Population, male","South Africa","2016",27418165
+"1817",25,"Population, male","South America_Northern","2016",15947153
+"1818",26,"Population, male","South America_Southern","2016",43086087
+"1819",27,"Population, male","South Asia","2016",121253760
+"1820",28,"Population, male","South Korea","2016",25651599
+"1821",29,"Population, male","Southeast Asia","2016",209433065
+"1822",30,"Population, total","Taiwan","2016",0
+"1823",31,"Population, male","Argentina","2016",21571303
+"1824",32,"Population, male","Colombia","2016",23517966
+"1825",1,"Population, male","USA","2017",162602724
+"1826",2,"Population, male","Africa_Eastern","2017",159412651
+"1827",3,"Population, male","Africa_Northern","2017",99446614
+"1828",4,"Population, male","Africa_Southern","2017",84794765
+"1829",5,"Population, male","Africa_Western","2017",258463109
+"1830",6,"Population, male","Australia_NZ","2017",14567328
+"1831",7,"Population, male","Brazil","2017",102567011
+"1832",8,"Population, male","Canada","2017",18138320
+"1833",9,"Population, male","Central America and Caribbean","2017",43095564
+"1834",10,"Population, male","Central Asia","2017",44777798
+"1835",11,"Population, male","China","2017",717926611
+"1836",12,"Population, male","EU-12","2017",48534864
+"1837",13,"Population, male","EU-15","2017",200184350
+"1838",14,"Population, male","Europe_Eastern","2017",26450367
+"1839",15,"Population, male","Europe_Non_EU","2017",51018192
+"1840",16,"Population, male","European Free Trade Association","2017",7041913
+"1841",17,"Population, male","India","2017",699587889
+"1842",18,"Population, male","Indonesia","2017",133245399
+"1843",19,"Population, male","Japan","2017",61765051
+"1844",20,"Population, male","Mexico","2017",60126616
+"1845",21,"Population, male","Middle East","2017",136822508
+"1846",22,"Population, male","Pakistan","2017",110003086
+"1847",23,"Population, male","Russia","2017",67064796
+"1848",24,"Population, male","South Africa","2017",27465269
+"1849",25,"Population, male","South America_Northern","2017",15850588
+"1850",26,"Population, male","South America_Southern","2017",43728661
+"1851",27,"Population, male","South Asia","2017",122916595
+"1852",28,"Population, male","South Korea","2017",25706975
+"1853",29,"Population, male","Southeast Asia","2017",211747971
+"1854",30,"Population, total","Taiwan","2017",0
+"1855",31,"Population, male","Argentina","2017",21800696
+"1856",32,"Population, male","Colombia","2017",23874571
+"1857",1,"Population, male","USA","2018",163478709
+"1858",2,"Population, male","Africa_Eastern","2018",163563977
+"1859",3,"Population, male","Africa_Northern","2018",101134710
+"1860",4,"Population, male","Africa_Southern","2018",87383756
+"1861",5,"Population, male","Africa_Western","2018",265695539
+"1862",6,"Population, male","Australia_NZ","2018",14798064
+"1863",7,"Population, male","Brazil","2018",103354449
+"1864",8,"Population, male","Canada","2018",18405543
+"1865",9,"Population, male","Central America and Caribbean","2018",43558698
+"1866",10,"Population, male","Central Asia","2018",45466701
+"1867",11,"Population, male","China","2018",721041033
+"1868",12,"Population, male","EU-12","2018",48488870
+"1869",13,"Population, male","EU-15","2018",200920296
+"1870",14,"Population, male","Europe_Eastern","2018",26325657
+"1871",15,"Population, male","Europe_Non_EU","2018",51316638
+"1872",16,"Population, male","European Free Trade Association","2018",7097768
+"1873",17,"Population, male","India","2018",707149230
+"1874",18,"Population, male","Indonesia","2018",134536680
+"1875",19,"Population, male","Japan","2018",61670382
+"1876",20,"Population, male","Mexico","2018",60685164
+"1877",21,"Population, male","Middle East","2018",139312288
+"1878",22,"Population, male","Pakistan","2018",111438323
+"1879",23,"Population, male","Russia","2018",67084512
+"1880",24,"Population, male","South Africa","2018",27822349
+"1881",25,"Population, male","South America_Northern","2018",15486516
+"1882",26,"Population, male","South America_Southern","2018",44481159
+"1883",27,"Population, male","South Asia","2018",124563217
+"1884",28,"Population, male","South Korea","2018",25802041
+"1885",29,"Population, male","Southeast Asia","2018",213977694
+"1886",30,"Population, total","Taiwan","2018",0
+"1887",31,"Population, male","Argentina","2018",22027014
+"1888",32,"Population, male","Colombia","2018",24331054
+"1889",1,"Population, male","USA","2019",164294083
+"1890",2,"Population, male","Africa_Eastern","2019",167921464
+"1891",3,"Population, male","Africa_Northern","2019",102759829
+"1892",4,"Population, male","Africa_Southern","2019",89957326
+"1893",5,"Population, male","Africa_Western","2019",273008740
+"1894",6,"Population, male","Australia_NZ","2019",15032210
+"1895",7,"Population, male","Brazil","2019",104119798
+"1896",8,"Population, male","Canada","2019",18680213
+"1897",9,"Population, male","Central America and Caribbean","2019",44002521
+"1898",10,"Population, male","Central Asia","2019",46184575
+"1899",11,"Population, male","China","2019",723344681
+"1900",12,"Population, male","EU-12","2019",48466369
+"1901",13,"Population, male","EU-15","2019",201389006
+"1902",14,"Population, male","Europe_Eastern","2019",26178481
+"1903",15,"Population, male","Europe_Non_EU","2019",51594057
+"1904",16,"Population, male","European Free Trade Association","2019",7152886
+"1905",17,"Population, male","India","2019",714325057
+"1906",18,"Population, male","Indonesia","2019",135798442
+"1907",19,"Population, male","Japan","2019",61567714
+"1908",20,"Population, male","Mexico","2019",61187228
+"1909",21,"Population, male","Middle East","2019",141754988
+"1910",22,"Population, male","Pakistan","2019",113015042
+"1911",23,"Population, male","Russia","2019",67076532
+"1912",24,"Population, male","South Africa","2019",28207948
+"1913",25,"Population, male","South America_Northern","2019",15058130
+"1914",26,"Population, male","South America_Southern","2019",45247329
+"1915",27,"Population, male","South Asia","2019",126172331
+"1916",28,"Population, male","South Korea","2019",25874966
+"1917",29,"Population, male","Southeast Asia","2019",216157988
+"1918",30,"Population, total","Taiwan","2019",0
+"1919",31,"Population, male","Argentina","2019",22249019
+"1920",32,"Population, male","Colombia","2019",24779301
+"1921",1,"Population, male","USA","2020",165910939
+"1922",2,"Population, male","Africa_Eastern","2020",172371530
+"1923",3,"Population, male","Africa_Northern","2020",104348043
+"1924",4,"Population, male","Africa_Southern","2020",92585310
+"1925",5,"Population, male","Africa_Western","2020",280486602
+"1926",6,"Population, male","Australia_NZ","2020",15253142
+"1927",7,"Population, male","Brazil","2020",104779288
+"1928",8,"Population, male","Canada","2020",18885404
+"1929",9,"Population, male","Central America and Caribbean","2020",44424696
+"1930",10,"Population, male","Central Asia","2020",46901607
+"1931",11,"Population, male","China","2020",724698782
+"1932",12,"Population, male","EU-12","2020",48385620
+"1933",13,"Population, male","EU-15","2020",201798351
+"1934",14,"Population, male","Europe_Eastern","2020",26014846
+"1935",15,"Population, male","Europe_Non_EU","2020",51848634
+"1936",16,"Population, male","European Free Trade Association","2020",7205924
+"1937",17,"Population, male","India","2020",720997448
+"1938",18,"Population, male","Indonesia","2020",136927582
+"1939",19,"Population, male","Japan","2020",61375600
+"1940",20,"Population, male","Mexico","2020",61587451
+"1941",21,"Population, male","Middle East","2020",143347211
+"1942",22,"Population, male","Pakistan","2020",114815641
+"1943",23,"Population, male","Russia","2020",66925854
+"1944",24,"Population, male","South Africa","2020",28580784
+"1945",25,"Population, male","South America_Northern","2020",14806315
+"1946",26,"Population, male","South America_Southern","2020",45845963
+"1947",27,"Population, male","South Asia","2020",128007462
+"1948",28,"Population, male","South Korea","2020",25897329
+"1949",29,"Population, male","Southeast Asia","2020",218293972
+"1950",30,"Population, total","Taiwan","2020",0
+"1951",31,"Population, male","Argentina","2020",22465694
+"1952",32,"Population, male","Colombia","2020",25139588
+"1953",1,"Population, male","USA","2021",166072196
+"1954",2,"Population, male","Africa_Eastern","2021",176791419
+"1955",3,"Population, male","Africa_Northern","2021",105889746
+"1956",4,"Population, male","Africa_Southern","2021",95246292
+"1957",5,"Population, male","Africa_Western","2021",288058485
+"1958",6,"Population, male","Australia_NZ","2021",15285354
+"1959",7,"Population, male","Brazil","2021",105291292
+"1960",8,"Population, male","Canada","2021",18995529
+"1961",9,"Population, male","Central America and Caribbean","2021",44825968
+"1962",10,"Population, male","Central Asia","2021",47603673
+"1963",11,"Population, male","China","2021",724881682
+"1964",12,"Population, male","EU-12","2021",48091620
+"1965",13,"Population, male","EU-15","2021",201915753
+"1966",14,"Population, male","Europe_Eastern","2021",25797690
+"1967",15,"Population, male","Europe_Non_EU","2021",51999888
+"1968",16,"Population, male","European Free Trade Association","2021",7258473
+"1969",17,"Population, male","India","2021",726503429
+"1970",18,"Population, male","Indonesia","2021",137852478
+"1971",19,"Population, male","Japan","2021",61087180
+"1972",20,"Population, male","Mexico","2021",61856137
+"1973",21,"Population, male","Middle East","2021",144684642
+"1974",22,"Population, male","Pakistan","2021",116815852
+"1975",23,"Population, male","Russia","2021",66624709
+"1976",24,"Population, male","South Africa","2021",28894608
+"1977",25,"Population, male","South America_Northern","2021",14655833
+"1978",26,"Population, male","South America_Southern","2021",46340271
+"1979",27,"Population, male","South Asia","2021",130010740
+"1980",28,"Population, male","South Korea","2021",25842376
+"1981",29,"Population, male","Southeast Asia","2021",220180356
+"1982",30,"Population, total","Taiwan","2021",0
+"1983",31,"Population, male","Argentina","2021",22678199
+"1984",32,"Population, male","Colombia","2021",25415242
+"1985",1,"Population, male","USA","2022",166590173
+"1986",2,"Population, male","Africa_Eastern","2022",181201256
+"1987",3,"Population, male","Africa_Northern","2022",107384631
+"1988",4,"Population, male","Africa_Southern","2022",97917052
+"1989",5,"Population, male","Africa_Western","2022",295740537
+"1990",6,"Population, male","Australia_NZ","2022",15439784
+"1991",7,"Population, male","Brazil","2022",105733027
+"1992",8,"Population, male","Canada","2022",19346659
+"1993",9,"Population, male","Central America and Caribbean","2022",45216874
+"1994",10,"Population, male","Central Asia","2022",48517319
+"1995",11,"Population, male","China","2022",724357271
+"1996",12,"Population, male","EU-12","2022",47779907
+"1997",13,"Population, male","EU-15","2022",202665359
+"1998",14,"Population, male","Europe_Eastern","2022",22923589
+"1999",15,"Population, male","Europe_Non_EU","2022",52181755
+"2000",16,"Population, male","European Free Trade Association","2022",7323823
+"2001",17,"Population, male","India","2022",731180498
+"2002",18,"Population, male","Indonesia","2022",138703277
+"2003",19,"Population, male","Japan","2022",60810077
+"2004",20,"Population, male","Mexico","2022",62194954
+"2005",21,"Population, male","Middle East","2022",146670975
+"2006",22,"Population, male","Pakistan","2022",118960880
+"2007",23,"Population, male","Russia","2022",66670833
+"2008",24,"Population, male","South Africa","2022",29168006
+"2009",25,"Population, male","South America_Northern","2022",14700398
+"2010",26,"Population, male","South America_Southern","2022",46758087
+"2011",27,"Population, male","South Asia","2022",131669912
+"2012",28,"Population, male","South Korea","2022",25773753
+"2013",29,"Population, male","Southeast Asia","2022",222197640
+"2014",30,"Population, total","Taiwan","2022",0
+"2015",31,"Population, male","Argentina","2022",22889298
+"2016",32,"Population, male","Colombia","2022",25575607
