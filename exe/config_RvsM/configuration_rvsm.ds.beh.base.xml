@@ -62,7 +62,7 @@
 		<Value name = "land5">../input/gcamdata/xml/land_input_5_IRR_MGMT.xml</Value>
 		<Value name = "protected_land2">../input/gcamdata/xml/protected_land_input_2.xml</Value>
 		<Value name = "protected_land3">../input/gcamdata/xml/protected_land_input_3.xml</Value>
-		<Value name = "demand">../input/gcamdata/xml/ag_an_demand_input.xml</Value>
+		<Value name = "demand">../input/gcamdata/xml/ag_an_demand_input_R-M-F.xml</Value>
 		<Value name = "bio_trade">../input/gcamdata/xml/bio_trade.xml</Value>
 		<Value name = "ag_trade">../input/gcamdata/xml/ag_trade.xml</Value>
 
@@ -105,7 +105,7 @@
         <Value name = "prune_ag">../input/gcamdata/xml/prune_empty_ag.xml</Value>
 		<Value name = "new_ref">../input/policy/diets/nonstaple_incelas_0.4.xml</Value>
 
-		<Value name = "fuelPrefRvsM">../input/policy/diets/fuelprefelast_RvsM_Rreduced_0.XXX.xml</Value>
+		<Value name = "fuelPrefRvsM">../input/policy/diets/fuelPrefElast_RvsM/fuelprefelast_RvsM_Rreduced_XXX.xml</Value>
 
 		<Value name = "solver">../input/solution/cal_broyden_config.xml</Value>
 		
