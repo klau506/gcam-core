@@ -10,10 +10,11 @@ load_mapping_data = function() {
   regions_key <<- left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
     select(-1)
 
-  list_scen_reference <<- db_scen_mapping$db_scen_name[db_scen_mapping$scen_type == 'Reference']
-  list_scen_reference_calibrate <<- db_scen_mapping$db_scen_name[db_scen_mapping$scen_type == 'Reference_Calibrate']
-  list_scen_fvv <<- db_scen_mapping$db_scen_name[db_scen_mapping$scen_type == 'FVV']
-  list_scen_noRumiants <<- db_scen_mapping$db_scen_name[db_scen_mapping$scen_type == 'noRumiants']
+  list_scen = list()
+  for(tt in unique(db_scen_mapping$scen_type)) {
+    tmp_list <<- db_scen_mapping$scen_name[db_scen_mapping$scen_type == tt]
+    list_scen[[paste0('list_scen_',tt)]] = tmp_list
+  }
 
   ## food items
   food_sector <<- c('Beef','Corn','Dairy','FiberCrop','FodderHerb','Fruits','Legumes',

@@ -1,5 +1,9 @@
-db_name,db_scen_name,scen_type
+db_name,scen_name,scen_type
 St7_db_studyReference,St7_Reference_R-M-F,Reference_Calibrate
 St7_db_studyReference,St7_Reference_R-M-F,Reference
 behaviour_basexdb_RvsM_45_49,RvsM_Rreduced_0.45,Reference_Calibrate
 st7_db_studyReference,St7_Reference_original,Reference
+snr_x2_0-005,snr_x2_2025_0d005,snr_x2_0-005
+snr_x2_0-005,snr_x2_2035_0d005,snr_x2_0-005
+snr_x2_0-405,snr_x2_2025_0d405,snr_x2_0-405
+snr_x2_0-405,snr_x2_2035_0d405,snr_x2_0-405

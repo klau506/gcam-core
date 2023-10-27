@@ -79,11 +79,15 @@ module_aglu_L201.snr_parameters <- function(command, ...) {
       add_precursors("aglu/A_snr_parameters") ->
       L201.snr_parameters
 
+    # save the database - scenario (- type) mapping to run the scenarios in parallel
     tmp = data.frame(scenarios = names(L201.snr_parameters_2)) %>%
-      mutate(database = sub("_[0-9]{4}_", "_", scenarios)) %>%
-      mutate(database = gsub("\\.", "-", database)) %>%
-      mutate(scenarios = gsub("\\.", "d", scenarios))
+      dplyr::mutate(database = sub("_[0-9]{4}_", "_", scenarios)) %>%
+      dplyr::mutate(database = gsub("\\.", "-", database)) %>%
+      dplyr::mutate(scenarios = gsub("\\.", "d", scenarios))
     write.csv(tmp, file = paste0(outputs_path,'snr/L201.snr_scenarios_database_mapping_complete.csv'), row.names = FALSE)
+    tmp = tmp %>%
+      dplyr::mutate(type = database)
+    write.csv(tmp, file = paste0(outputs_path,'snr/L201.snr_scenarios_database_mapping_complete_withType.csv'), row.names = FALSE)
 
     paste0(names(L201.snr_parameters_2), ".xml") %>% tibble::as_tibble() %>%
       add_legacy_name("L201.snr_parameters") %>%

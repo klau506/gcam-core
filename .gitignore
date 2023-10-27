@@ -81,3 +81,5 @@ ModelInterface/*
 input/gcamdata/inst/extdata/emissions/CEDS/desktop.ini
 exe/config_diets_old/
 *.dat
+output/*
+*.log
