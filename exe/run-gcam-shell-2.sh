@@ -30,12 +30,3 @@ done < $csvfile
 # Launch the R script to generate the project
 trimmed_database=$(echo "$database" | tr -d '[:space:]' | tr -d '"')
 ./run-r-scripts.bat $trimmed_database
-
-# # cd "/cygdrive/c/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata/study7_analysis"
-# cd "/cygdrive/c/Program Files/R/R-4.3.1/bin/x64"
-# # ./create_project_st7.R $trimmed_database
-# LC_CTYPE=en_US.UTF-8  ./R.exe --vanilla /cygdrive/c/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata/study7_analysis/create_project_st7.R
-# # LC_CTYPE=en_US.UTF-8  ./R.exe --vanilla /cygdrive/c/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata/study7_analysis/create_project_st7.R
-# # ./R.exe --vanilla /cygdrive/c/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata/study7_analysis/create_project_st7.R $trimmed_database
-# # ./R.exe --vanilla create_project_st7.R $trimmed_database
-# echo 'PATH=$PATH:/cygdrive/c/Program\ Files/R/R-4.3.1/bin' >> .bashrc

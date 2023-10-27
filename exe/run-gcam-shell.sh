@@ -16,9 +16,22 @@ process_element() {
     ./run-gcam-shell-2.sh $element > $logFile
 }
 
+# Counter for running processes
+count=0
+
 # Loop through unique elements and launch the processing function in parallel
 for element in "${unique_elements[@]}"; do
+    # Run process_element function in the background
     process_element "$element" &
+
+    # Increment the count of running processes
+    ((count++))
+
+    # Wait if the number of running processes exceeds 5
+    if [ $count -ge 5 ]; then
+        wait # Wait for all background processes to finish
+        count=0 # Reset the counter
+    fi
 done
 
 # Wait for all background processes to finish
