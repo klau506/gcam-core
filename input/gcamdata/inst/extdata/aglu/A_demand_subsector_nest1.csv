@@ -13,7 +13,7 @@ FoodDemand_Staples,RootTuber,-0.25,start-year,1,share-weight,final-calibration-y
 FoodDemand_Staples,Wheat,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,FiberCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,FruitsVeg,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-FoodDemand_NonStaples,Protein,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
+FoodDemand_NonStaples,Protein,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,MiscCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,Oil,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,SugarCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,

@@ -106,8 +106,6 @@
 		<Value name = "new_ref">../input/policy/diets/nonstaple_incelas_0.4.xml</Value>
 
 		<Value name = "fuelPrefRvsM">../input/gcamdata/xml/snr_x2_2025_0.005.xml</Value>
-		<!-- <Value name = "fuelPrefRvsM">../input/policy/diets/fuelprefelast_0.45.xml</Value> -->
-		<!-- <Value name = "fuelPrefRvsM">../input/policy/diets/fuelPrefElast_RvsM/fuelprefelast_RvsM_Rreduced_30.xml</Value> -->
 
 		<Value name = "solver">../input/solution/cal_broyden_config.xml</Value>
 		

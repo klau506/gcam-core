@@ -1,0 +1,5 @@
+db_name,db_scen_name,scen_type
+St7_db_studyReference,St7_Reference_R-M-F,Reference_Calibrate
+St7_db_studyReference,St7_Reference_R-M-F,Reference
+behaviour_basexdb_RvsM_45_49,RvsM_Rreduced_0.45,Reference_Calibrate
+st7_db_studyReference,St7_Reference_original,Reference
