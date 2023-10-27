@@ -26,7 +26,7 @@ FoodDemand_NonStaples,Protein,Animal,Rumiant,Dairy,share-weight,final-calibratio
 FoodDemand_NonStaples,Protein,Animal,Monogastric,Pork,share-weight,final-calibration-year,end-year,fixed,regional pork,1
 FoodDemand_NonStaples,Protein,Animal,Monogastric,Poultry,share-weight,final-calibration-year,end-year,fixed,regional poultry,1
 FoodDemand_NonStaples,Protein,Animal,Rumiant,SheepGoat,share-weight,final-calibration-year,end-year,fixed,regional sheepgoat,1
-FoodDemand_NonStaples,Protein,Animal,OtherMeat_Fish,OtherMeat_Fish,share-weight,final-calibration-year,end-year,fixed,OtherMeat_Fish,1
+FoodDemand_NonStaples,Protein,OtherMeat_Fish,OtherMeat_Fish,OtherMeat_Fish,share-weight,final-calibration-year,end-year,fixed,OtherMeat_Fish,1
 NonFoodDemand_Crops,Corn,Corn,Corn,Corn,share-weight,final-calibration-year,end-year,fixed,regional corn,1
 NonFoodDemand_Crops,FiberCrop,FiberCrop,FiberCrop,FiberCrop,share-weight,final-calibration-year,end-year,fixed,regional fibercrop,1
 NonFoodDemand_Crops,FodderGrass,FodderGrass,FodderGrass,FodderGrass,share-weight,final-calibration-year,end-year,fixed,FodderGrass,1

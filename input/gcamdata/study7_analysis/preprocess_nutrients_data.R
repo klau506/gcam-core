@@ -145,4 +145,4 @@ micronutrients = merge(micronutrients_RNI %>%
                          mutate(nutrient_name = tolower(nutrient_name)),
                        by = c('region','year','nutrient_name'))
 
-write.csv(micronutrients, file = paste0(folder_analysis_path,'data/micronutrients_data.csv'))
+write.csv(micronutrients, file = paste0(folder_analysis_path,'data/micronutrients_data_RvsM.csv'))

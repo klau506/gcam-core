@@ -210,6 +210,24 @@ color_by_sign = function(values) {
 }
 
 
+rename_scen = function(data) {
+
+  if ('scenario' %in% colnames(data)) {
+    data = data %>%
+      mutate(scenario_type = if_else(scenario == 'RvsM_SW_newDS_Reference', 'Reference',
+                                     if_else(scenario == 'RvsM_RreducedRandom_logitProtein6_fishNewNest_v1', 'RredRandom_6',
+                                             if_else(scenario == 'RvsM_RreducedRandom_logitProtein3_fishNewNest_v1', 'RredRandom_3', scenario)))) %>%
+      mutate(scenario = scenario_type)
+  } else {
+    data = data %>%
+      rename('Reference' = 'RvsM_SW_newDS_Reference',
+             'Rred_Mincr' = 'RvsM_SW_newDS_FuelPrefElast_0.45',
+             'Rred_RandomIncr' = 'RvsM_RreducedRandom_0.45')
+  }
+
+  return(invisible(data))
+}
+
 ### compute pm and o3 premature mortalities
 add_mort_scen = function(scen) {
   db_name = find_db_name(scen)
@@ -315,24 +333,8 @@ fill_queries = function(db_path, db_name, prj_name, sc) {
 
 
 ### given the scenario name, find the corresponding db
-find_db_name = function(sc) {
-  if (sc == 'Reference') {
-    db_name = 'behaviour_basexdb_ref'
-  } else {
-    sc_num <- as.numeric(sub(".*beh(.*)$", "\\1", sc))
-
-    if (sc_num <= 5) {
-      db_name = paste0(db_name_base,'_1_5')
-    } else if (sc_num > 5 & sc_num <= 10) {
-      db_name = paste0(db_name_base,'_6_10')
-    } else if (sc_num > 10 & sc_num <= 15) {
-      db_name = paste0(db_name_base,'_11_15')
-    } else if (sc_num > 15 & sc_num <= 20) {
-      db_name = paste0(db_name_base,'_16_20')
-    } else if (sc_num > 20 & sc_num <= 25) {
-      db_name = paste0(db_name_base,'_21_25')
-    }
-  }
+find_db_name = function(arg1, arg2) {
+  db_name = paste0(db_name_base, arg1, '_', arg2)
 
   return(db_name)
 }
@@ -485,16 +487,24 @@ load_queries = function() {
 
   food_consumption_world <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
     filter(scenario %in% selected_scen) %>%
-    group_by(Units, scenario, technology, year) %>%
+    group_by(Units, scenario, subsector...5, subsector...6, technology, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
+    rename(nestingSubector = subsector...6) %>%
+    separate(nestingSubector, into = c("nestingSubector", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
+    rename(nestingSector = subsector...5) %>%
+    separate(nestingSector, into = c("nestingSector", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
     filter(year >= year_s, year <= year_e)
 
   food_consumption_regional <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
     filter(scenario %in% selected_scen) %>%
-    group_by(Units, region, scenario, technology, year) %>%
+    group_by(Units, region, scenario, subsector...5, subsector...6, technology, year) %>%
     summarise(value = sum(value)) %>%
     ungroup() %>%
+    rename(nestingSubector = subsector...6) %>%
+    separate(nestingSubector, into = c("nestingSubector", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
+    rename(nestingSector = subsector...5) %>%
+    separate(nestingSector, into = c("nestingSector", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
     filter(year >= year_s, year <= year_e)
 
   ag_production_world <<- rgcam::getQuery(prj, "ag production by crop type") %>%

@@ -21,6 +21,7 @@ FoodDemand_NonStaples,Oil,Soybean,-0.25,start-year,1,share-weight,final-calibrat
 FoodDemand_NonStaples,SugarCrop,SugarCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,FruitsVeg,Vegetables,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,Protein,Animal,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
+FoodDemand_NonStaples,Protein,OtherMeat_Fish,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,Corn,Corn,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FiberCrop,FiberCrop,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FodderGrass,FodderGrass,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,

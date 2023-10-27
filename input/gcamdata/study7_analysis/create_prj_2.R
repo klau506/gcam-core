@@ -25,12 +25,21 @@ arg2 = args[2]
 print(arg1)
 print(arg2)
 
+# db_path <<- paste0(gcam_path, "output")
+# db_name_base <<- 'behaviour_basexdb_RvsM_'
+# prj_name <<- paste0('behaviour_basexdb_RvsM_v1_',arg1,'_',arg2,'.dat')
+# query_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
+# queries <<- 'queries_beh.xml'
+# desired_scen <<- paste0("RvsM_Rreduced_0.", arg1:arg2)
+
 db_path <<- paste0(gcam_path, "output")
-db_name_base <<- 'behaviour_basexdb_RvsM_'
-prj_name <<- paste0('behaviour_basexdb_RvsM_v1_',arg1,'_',arg2,'.dat')
+db_name_base <<- 'prova_RvsM_basexdb2'
+prj_name <<- 'prj_Rreduced_v2.dat'
 query_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
 queries <<- 'queries_beh.xml'
-desired_scen <<- paste0("RvsM_Rreduced_0.", arg1:arg2)
+desired_scen <<- c('RvsM_SW_newDS_Reference', 'RvsM_SW_newDS_FuelPrefElast_0.45','RvsM_RreducedRandom_0.45', 'RvsM_rev_v2',
+                   'RvsM_RreducedRandom_logitProtein3_fishNewNest_v1', 'RvsM_RreducedRandom_logitProtein6_fishNewNest_v1')
+
 
 iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
 id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
@@ -52,13 +61,13 @@ if (!file.exists(prj_name)) {
   for (sc in desired_scen) {
     print(sc)
 
-    db_name = find_db_name(arg1, arg2)
+    db_name = db_name_base
 
     ## create prj
     conn <- rgcam::localDBConn(db_path, db_name)
     prj <<- rgcam::addScenario(conn, prj_name, sc,
-                        paste0(query_path, queries),
-                        clobber = FALSE)
+                               paste0(query_path, queries),
+                               clobber = FALSE)
 
     # add 'nonCO2' large query
     fill_queries(db_path, db_name, prj_name, sc)

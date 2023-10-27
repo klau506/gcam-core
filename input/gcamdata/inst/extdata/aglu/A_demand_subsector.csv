@@ -22,7 +22,7 @@ FoodDemand_NonStaples,SugarCrop,SugarCrop,SugarCrop,-0.25,start-year,1,share-wei
 FoodDemand_NonStaples,FruitsVeg,Vegetables,Vegetables,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,Protein,Animal,Rumiant,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,Protein,Animal,Monogastric,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-FoodDemand_NonStaples,Protein,Animal,OtherMeat_Fish,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
+FoodDemand_NonStaples,Protein,OtherMeat_Fish,OtherMeat_Fish,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,Corn,Corn,Corn,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FiberCrop,FiberCrop,FiberCrop,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FodderGrass,FodderGrass,FodderGrass,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
