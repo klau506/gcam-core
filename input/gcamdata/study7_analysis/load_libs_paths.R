@@ -2,7 +2,7 @@
 # ==============================================================================
 .libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1')
 library(rgcam)
-library(dplyr)
+library(dplyr) #1.1.2
 library(tidyr)
 library(ggplot2)
 library(rfasst)

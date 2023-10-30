@@ -28,7 +28,7 @@ for element in "${unique_elements[@]}"; do
     ((count++))
 
     # Wait if the number of running processes exceeds 5
-    if [ $count -ge 5 ]; then
+    if [ $count -ge 10 ]; then
         wait # Wait for all background processes to finish
         count=0 # Reset the counter
     fi

@@ -21,7 +21,7 @@ load_mapping_data()
 # load project
 prj_name = paste0('st7_',db_it,'.dat')
 list_scen_it = list_scen[[paste0('list_scen_',db_it)]]
-prj_ref = load_prj(prj_name,list_scen_it)
+prj = load_prj(prj_name,list_scen_it)
 
 # # load queries
 # year_s = 2000

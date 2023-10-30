@@ -7,14 +7,15 @@ load_mapping_data = function() {
   id_gcam_regions <<- read.csv(paste0(inputs_path,"mappings/gcam_id_to_region.csv"))
   colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
   country_gcam_regions <- read.csv(paste0(inputs_path,"mappings/country_to_gcam_id.csv"))
-  regions_key <<- left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
-    select(-1)
+  regions_key <<- dplyr::left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
+    dplyr::select(-1)
 
   list_scen = list()
   for(tt in unique(db_scen_mapping$scen_type)) {
     tmp_list <<- db_scen_mapping$scen_name[db_scen_mapping$scen_type == tt]
     list_scen[[paste0('list_scen_',tt)]] = tmp_list
   }
+  list_scen <<- list_scen
 
   ## food items
   food_sector <<- c('Beef','Corn','Dairy','FiberCrop','FodderHerb','Fruits','Legumes',
@@ -113,7 +114,7 @@ load_basic_data = function() {
 
 # find the db name given the scenario name
 find_db_name = function(scenario) {
-  return(db_scen_mapping$db_name[db_scen_mapping$db_scen_name == scenario])
+  return(db_scen_mapping$db_name[db_scen_mapping$scen_name == scenario])
 }
 
 
