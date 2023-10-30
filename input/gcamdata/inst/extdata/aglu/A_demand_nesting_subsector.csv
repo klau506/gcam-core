@@ -5,7 +5,7 @@
 # Source: GCAM assumptions
 # Column types: ccnciccccc 
 # ----------
-supplysector,subsector_nest1,logit.exponent,year.fillout,share.weight,apply.to,from.year,to.year,interpolation.function,logit.type
+supplysector,subsector,logit.exponent,year.fillout,share.weight,apply.to,from.year,to.year,interpolation.function,logit.type
 FoodDemand_Staples,Corn,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_Staples,OtherGrain,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_Staples,Rice,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
