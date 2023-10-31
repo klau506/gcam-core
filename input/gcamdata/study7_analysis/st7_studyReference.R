@@ -14,10 +14,10 @@ source('utils_style.R')
 load_mapping_data()
 
 # load project
-prj_ref = load_prj('st7_Reference_Calibrate.dat',list_scen_reference_calibrate,
-                   onlyFoodConsumption = TRUE)
+prj_ref = load_prj('st7_Reference_Calibrate.dat',list_scen_reference,
+                   onlyFoodConsumption = FALSE)
 
-# load queries
+load_queries()
 year_s = 2000
 year_e = 2050
 selected_scen = list_scen_reference_calibrate

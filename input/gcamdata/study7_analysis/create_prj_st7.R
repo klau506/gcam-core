@@ -3,7 +3,7 @@
 
 # setwd to file location === #####
 setwd('C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core\\input\\gcamdata\\study7_analysis')
-.libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library')
+.libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1')
 
 # read arguments
 args = commandArgs(trailingOnly=TRUE)

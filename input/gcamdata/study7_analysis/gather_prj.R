@@ -1,39 +1,27 @@
-library(rgcam)
-library(dplyr)
-library(ggplot2)
-library(rfasst)
-#####
 
 #### Paths =====================================================================
 # ==============================================================================
-setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata')
+setwd('C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core\\input\\gcamdata\\study7_analysis')
+.libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1')
 
-gcam_path <<- substr(getwd(), start = 1, stop = regexpr("gcam-core/", getwd()) + 9)
-tmp_output_data_path <<- paste0(gcam_path, "/input/gcamdata/outputs_binomial/")
-figures_path <<- paste0(gcam_path, "/input/gcamdata/figures_binomial/")
-folder_analysis_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/")
+source('load_libs_paths.R')
+source('utils_data.R')
+source('utils_style.R')
 
-db_path <<- paste0(gcam_path, "output")
-db_name_base <<- 'behaviour_basexdb_v2'
-prj_name <<- paste0('behavioral_change_v2_x5_ref_1_25.dat')
-query_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
-queries <<- 'queries_beh.xml'
-desired_scen <<- c('Reference', paste0("Flex.ds.beh", 1:25))
-
-iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
-id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
-colnames(id_gcam_regions) = c('GCAM_region_id', 'region')
-
-
-source(paste0(folder_analysis_path,'zzz.R'))
+prj_name = 'snr_gathered.dat'
 
 
 #### Gather subprj =============================================================
 # ==============================================================================
 # prj
-sub_prj_names = c('behavioral_change_v2_x5_1_5.dat','behavioral_change_v2_x5_6_10.dat','behavioral_change_v2_x5_11_15.dat',
-                  'behavioral_change_v2_x5_16_20.dat','behavioral_change_v2_x5_21_25.dat','behavioral_change_v2_x5_ref.dat')
-prj <<- rgcam::mergeProjects(prj_name, sub_prj_names, saveProj = TRUE)
+sub_prj_names <- list.files('.', pattern = '^st7_snr_')
+for (it in sub_prj_names) {
+  rgcam::loadProject(it)
+  assign(gsub("\\.dat$", "", it),
+         rgcam::loadProject(it))
+}
+prj_gathered <<- rgcam::mergeProjects(prjname = prj_name, prjlist = sub_prj_names)
+rgcam::saveProject(prj_gathered, file = paste0(outputs_path, "/", prj_name))
 
 
 # mort
