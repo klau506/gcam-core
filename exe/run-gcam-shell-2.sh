@@ -18,8 +18,8 @@ while IFS=, read -r scenario col2; do
         echo "Consider database = $trimmed_database and scenario = $trimmed_scenario"
 
         # Set the configuration file
-        config_file_base=C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core\\exe\\config_spp\\configuration_SPP.xml
-        config_file_loop=C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core\\exe\\configuration_$trimmed_database.xml
+        config_file_base=C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core-spp\\exe\\config_spp\\configuration_SPP.xml
+        config_file_loop=C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core-spp\\exe\\configuration_$trimmed_database.xml
 
         sed -e "s/XXXDBXXX/$trimmed_database/g" -e "s/XXXSCENXXX/$trimmed_scenario/g"  -e "s/XXXSCENXMLXXX/$trimmed_scenario_xml/g" $config_file_base > $config_file_loop
 

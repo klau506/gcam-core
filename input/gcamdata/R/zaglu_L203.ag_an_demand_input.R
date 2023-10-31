@@ -332,19 +332,22 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
     # Keep the nesting subsector 1 and 2
     # if (!file.exists(paste0(outputs_path, '/spp/L203.FuelPrefElast_spp.RData'))) {
       spp_CONVERSION_FACTOR = 0.007326843
-      names_FuelPrefElast_nest <- c("region", "supplysector", "subsector_nest1", "subsector_nest2", "subsector", "year.fillout", "fuelprefElasticity")
+      names_FuelPrefElast_nest <- c("region", "supplysector", "subsector0", "subsector",  "year.fillout", "fuelprefElasticity")
       L203.FuelPrefElast_spp = list()
       for(n in names(L202.spp_logisticFun)) {
         print(n)
         L203.FuelPrefElast_spp_tmp1 = L202.spp_logisticFun[[n]] %>%
           dplyr::mutate(value_scaled = value * spp_CONVERSION_FACTOR)
 
-        L203.FuelPrefElast_spp_tmp1 %>%
-          select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
-          mutate(subsector = 'Rumiant') %>%
-          mutate(fuelprefElasticity = -fuelprefElasticity) %>%
-          mutate(subsector_nest1 = 'Protein',
-                 subsector_nest2 = 'Animal',
+        bind_rows(L203.FuelPrefElast_spp_tmp1 %>%
+                    select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                    mutate(subsector = 'Animal') %>%
+                    mutate(fuelprefElasticity = -fuelprefElasticity),
+                  L203.FuelPrefElast_spp_tmp1 %>%
+                    select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                    mutate(subsector = 'Plant') %>%
+                    mutate(fuelprefElasticity = +fuelprefElasticity)) %>%
+          mutate(subsector0 = 'Protein',
                  supplysector = 'FoodDemand_NonStaples') %>%
           select(names_FuelPrefElast_nest) %>%
           filter(!region %in% aglu.NO_AGLU_REGIONS) ->           # Remove any regions for which agriculture and land use are not modeled

@@ -16,7 +16,7 @@
 #' @author CR July 2023
 module_aglu_L202.spp_scenarios <- function(command, ...) {
 
-  MODEL_HALF_CENTURY_YEAR <- 2015
+  MODEL_HALF_CENTURY_YEAR <- 2050
   MODULE_INPUTS <-
     c("L201.spp_parameters")
 

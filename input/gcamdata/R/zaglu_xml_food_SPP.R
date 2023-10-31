@@ -29,9 +29,8 @@ module_aglu_food_SPP_xml <- function(command, ...) {
 
       assign(xml_name,
              create_xml(xml_name) %>%
-               add_xml_data(data, "L3_FuelPrefElast") %>%
+               add_xml_data_generate_levels(data, "FuelPrefElast", "subsector", "nesting-subsector",1,FALSE) %>%
                add_node_equiv_xml("subsector") %>%
-               add_rename_foodsubsec_xml() %>%
                add_precursors("L203.FuelPrefElast_spp"))
     }
 

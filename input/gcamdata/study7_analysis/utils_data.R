@@ -121,7 +121,7 @@ find_db_name = function(scenario) {
 
 # load or create rgcam project
 load_prj = function(prj_name, prj_desired_scen, onlyFoodConsumption = FALSE) {
-  db_path = 'C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core\\output'
+  db_path = 'C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core-spp\\output'
   query_path = paste0(inputs_path, 'queries/')
   queries <<- if_else(onlyFoodConsumption, 'queries_beh_foodConsumption.xml', 'queries_beh.xml')
 
