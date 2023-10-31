@@ -1,0 +1,4 @@
+db_name,db_scen_name,scen_type
+St7_db_studyReference,St7_Reference_original,Reference_Calibrate
+St7_db_studyReference,St7_Reference_original,Reference
+St7_db_studyReference,SPP_fuelPrefElast_0.45,Reference_Calibrate
