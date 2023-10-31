@@ -79,6 +79,16 @@ module_aglu_L201.spp_parameters <- function(command, ...) {
       add_precursors("aglu/A_spp_parameters") ->
       L201.spp_parameters
 
+    tmp = data.frame(scenarios = names(L201.spp_parameters_2)) %>%
+      mutate(database = sub("_[0-9]{4}_", "_", scenarios)) %>%
+      mutate(database = gsub("\\.", "-", database)) %>%
+      mutate(scenarios = gsub("\\.", "d", scenarios))
+    write.csv(tmp, file = paste0(outputs_path,'/spp/L201.spp_scenarios_database_mapping.csv'), row.names = FALSE)
+    tmp = tmp %>%
+      mutate(scen_type = database) %>%
+      select(database, scenarios, scen_type)
+    write.csv(tmp, file = paste0(outputs_path,'/spp/L201.spp_scenarios_database_mapping_complete.csv'), row.names = FALSE)
+
     paste0(names(L201.spp_parameters_2), ".xml") %>% tibble::as_tibble() %>%
       add_legacy_name("L201.spp_parameters") %>%
       add_precursors("aglu/A_spp_parameters") ->
