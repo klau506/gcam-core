@@ -1,81 +1,26 @@
-## script to produce all the outputs (figures and tables) to do a system-wide
-## analysis of the FVV scenarios
-
-#### Libraries =================================================================
+#### PREPROCESS ================================================================
 # ==============================================================================
+
+# setwd to file location === #####
+setwd('C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core\\input\\gcamdata\\study7_analysis')
 .libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1')
-library(rgcam)
-library(dplyr)
-library(ggplot2)
-library(rfasst)
-library(waterfalls)
-library(tidyr)
-#####
 
-#### Paths =====================================================================
-# ==============================================================================
-gcam_path <<- substr(getwd(), start = 1, stop = regexpr("gcam-core/", getwd()) + 9)
-tmp_output_data_path <<- paste0(gcam_path, "/input/gcamdata/outputs_binomial/")
-figures_path <<- paste0(gcam_path, "/input/gcamdata/figures_binomial/")
-folder_analysis_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/")
+# load libraries and paths' variables, and extra functions and styles
+source('load_libs_paths.R')
+source('utils_data.R')
+source('utils_style.R')
 
-db_path <<- paste0(gcam_path, "output")
-db_name_base <<- 'behaviour_basexdb'
-prj_name <<- 'behavioral_change_v2_x5_ref_1_25.dat'
-query_path <<- paste0(gcam_path, "input/gcamdata/study7_analysis/data/")
-queries <<- 'queries_beh.xml'
+# load basic data
+load_mapping_data()
+
 desired_scen <<- c('St7_Reference_R-M-F', db_scen_mapping %>% filter(grepl("snr", scen_name)) %>% pull(scen_name))
 
-# Ancillary functions
-source(paste0(folder_analysis_path,'zzz.R'))
-
-# Basic data
-food_subsector <- read.csv(paste0(folder_analysis_path,"data/food_subsector.csv"))
-country_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/country_to_gcam_id.csv"))
-iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
-id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
-colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
-regions_key <- left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
-  select(-1)
-
-
+# load projects
+# prj_gathered = rgcam::loadProject("snr_gathered.dat")
+# prj_ref = rgcam::loadProject("snr_reference.dat")
 #####
 
 #### SYSTEM-WIDE EFFECTS SECTION ===============================================
-#### Create prj ================================================================
-# ==============================================================================
-
-# if prj does not exist, create it. Load it otherwise
-if (!file.exists(prj_name)) {
-
-  print('create prj')
-  ## select db according to the scenario
-  for (sc in desired_scen) {
-    print(sc)
-
-    db_name = find_db_name(sc)
-
-    ## create prj
-    conn <- localDBConn(db_path, db_name)
-    prj <<- addScenario(conn, prj_name, sc,
-                        paste0(query_path, queries),
-                        clobber = FALSE)
-
-    # add 'nonCO2' large query
-    fill_queries(db_path, db_name, prj_name, sc)
-
-  }
-
-  saveProject(prj, file = prj_name)
-
-} else {
-  ## load prj
-  print('load prj')
-  prj <<- loadProject(prj_name)
-  listQueries(prj)
-  listScenarios(prj)
-}
-
 
 #### Data preprocess ===========================================================
 # ==============================================================================
@@ -87,141 +32,143 @@ selected_scen = desired_scen
 selected_year = 2030
 
 # load queries
-load_queries()
+load(paste0(outputs_path, 'snr_queries_all.RData'))
 
-# compute premature mortalities due to AP
-mort = load_premature_mortalities() %>%
-  rename('value' = 'mort',
-         'fasst_region' = 'region')
+# prj = prj_ref
+# load_queries()
+# prj = prj_gathered
+# load_queries()
 
-mort_by_poll = mort %>%
-  rename_scen() %>%
-  group_by(year, fasst_region, scenario_type, pollutant) %>%
-  summarise(median_value = median(value),
-            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup()
-
-mort_total = mort_by_poll %>%
-  group_by(year, fasst_region, scenario_type) %>%
-  summarise(median_value = sum(median_value),
-            min_value = sum(min_value),
-            max_value = sum(max_value)) %>%
-  ungroup()
-
-# compute crop_loss due to AP
-crop_loss = load_crop_loss()
-crop_loss = lapply(crop_loss, process_crop_loss)
-
-# clean memory
-rm(prj)
-gc()
-
-# compute socioeconomic data
-# Socio-econ data
-ssp_data <- read.csv(paste0(folder_analysis_path,"data/SSP2 population by demographic.csv"), skip = 1)
-ssp_data_clean <- iso_gcam_regions %>%
-  select(-region_GCAM3, -GCAM_region_ID) %>%
-  left_join(ssp_data, by = "iso", multiple = 'all') %>%
-  select(-MODEL, -REGION) %>%
-  rename(scenario = SCENARIO,
-         variable = VARIABLE,
-         unit = UNIT)
-# Remove X from year columns
-colnames(ssp_data_clean) <- gsub("X", "", colnames(ssp_data_clean))
-# Pivot longer
-ssp_data_long <- ssp_data_clean %>%
-  tidyr::pivot_longer(cols = 6:24, names_to = "year", values_to = "value") %>%
-  mutate(value = value * 1e6,
-         unit = "total population")
-# Isolate reference (total) population
-reference_pop <- ssp_data_long %>%
-  filter(variable == "Population") %>%
-  rename(total_pop = value) %>%
-  select(iso, year, total_pop)
-# Join and calculate demographic shares of population
-ssp_data_final <- ssp_data_long %>%
-  filter(variable != "Population") %>%
-  left_join(reference_pop, by = c("iso", "year")) %>%
-  mutate(demo_share = value / total_pop) %>%
-  rename(sub_pop = value)  %>%
-  # Remove total male and total female pop, we want by age/sex
-  filter(!(variable %in% c("Population|Male", "Population|Female"))) %>%
-  rename(pop_units = unit)
-# Get population by sex and age
-# Population weighting
-total_regional_pop <- ssp_data_final %>%
-  filter(year >= year_s, year <= year_e) %>%
-  select(-scenario, -iso) %>%
-  # get GCAM regions instead of country names
-  left_join(regions_key, by = "country_name") %>%
-  # get total regional population
-  group_by(year, GCAM_region_ID, country_name, region) %>%
-  # isolate total population by country
-  distinct(total_pop) %>%
-  group_by(year, GCAM_region_ID, region) %>%
-  # sum for total regional population
-  mutate(total_regional_pop = sum(total_pop)) %>%
-  ungroup()
-
-weighted_pop <- ssp_data_final %>%
-  filter(year >= year_s, year <= year_e) %>%
-  select(-scenario, -iso) %>%
-  # get GCAM regions instead of country names
-  left_join(regions_key, by = "country_name") %>%
-  # get total regional population
-  left_join(total_regional_pop) %>%
-  # weight each country by its population over total regional pop
-  group_by(country_name, year) %>%
-  mutate(weight = total_pop / total_regional_pop) %>%
-  # get GCAM population
-  left_join(mutate(pop_all_regions, year = as.character(year)), by = c("region", "year"),
-            multiple = "all") %>%
-  # compute GCAM population by sex and age for each country
-  mutate(weighted_demographics = demo_share * weight * population)
-
-weighted_pop_sex_age <- weighted_pop %>%
-  select(-pop_units, -sub_pop, -total_pop, -demo_share, -weight) %>%
-  group_by(variable, year, region) %>%
-  # sum the weighted averages for each country into GCAM regions
-  summarize(pop_sex_age = sum(weighted_demographics))
-
-
-
-# crop_loss_by_crop_name = crop_loss %>%
+# # compute premature mortalities due to AP
+# mort = load_premature_mortalities() %>%
+#   rename('value' = 'mort',
+#          'fasst_region' = 'region')
+#
+# mort_by_poll = mort %>%
 #   rename_scen() %>%
-#   group_by(year, fasst_region, scenario_type, crop_name) %>%
+#   group_by(year, fasst_region, scenario_type, pollutant) %>%
 #   summarise(median_value = median(value),
 #             min_value = quantile(value, probs= 0.05, na.rm = TRUE),
 #             max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
 #   ungroup()
 #
-# crop_loss_total = crop_loss_by_crop_name %>%
+# mort_total = mort_by_poll %>%
 #   group_by(year, fasst_region, scenario_type) %>%
 #   summarise(median_value = sum(median_value),
 #             min_value = sum(min_value),
 #             max_value = sum(max_value)) %>%
 #   ungroup()
+#
+# # compute crop_loss due to AP
+# crop_loss = load_crop_loss()
+# crop_loss = lapply(crop_loss, process_crop_loss)
+#
+# # clean memory
+# rm(prj)
+# gc()
 
 
-#### System-wide effects figures ===============================================
+#### FIGURES ===================================================================
 # ==============================================================================
 
-dir_name = 'RvsM_v2'
-prefix = 'Rred'
-other_cols = c('Rred_RandomIncr','Rred_Mincr', 'RredRand')
-if (!dir.exists(paste0(figures_path,dir_name))) dir.create(paste0(figures_path,dir_name))
-
+# select year and scenario palette
 selected_year = 2030
+scen_palette = scen_palette_calibrateSppFuelPrefElast
+
+# create figures' subdirectory
+dir_name = 'SNR'
+if (!dir.exists(paste0(figures_path,dir_name))) dir.create(paste0(figures_path,dir_name))
+if (!dir.exists(paste0(outputs_path,dir_name))) dir.create(paste0(outputs_path,dir_name))
+
+# share noRumiant consumption world
+share_snr_data = dt$food_consumption_world %>%
+  # subset protein
+  dplyr::filter(nestingSector1 == 'Protein', nestingSector2 != 'noR') %>%
+  select(Units, scenario, scen_type, nestingSector3, year, value) %>% unique() %>%
+  # sum consumption by animal vs noR protein
+  group_by(Units, scenario, scen_type, nestingSector3, year) %>%
+  summarise(value = sum(value)) %>%
+  ungroup() %>%
+  # compute noR_share
+  group_by(Units, scenario, year, scen_type) %>%
+  summarise(noR_share = 100 * sum(value[nestingSector3 != "Rumiant"]) / sum(value)) %>%
+  ungroup() %>%
+  filter(scenario %in% selected_scen) %>% rename_scen()
+
+pl_protein_share_world = ggplot(data = share_snr_data) +
+  geom_line(aes(x = year, y = noR_share, group = scenario, color = scen_type), alpha = 1, linewidth = 2) +
+  # scale
+  scale_color_manual(values = scen_palette_refVsAllSnr, name = 'Scenario') +
+  # labs
+  labs(y = 'share of noR protein (%)', x = '') +
+  ggtitle('World noR share consumption') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_protein_share_world, file = paste0(figures_path,dir_name,"/",'pl_protein_noR_share_world.pdf'),
+       # width = 2000, height = 1000, units = 'mm', limitsize = F)
+       width = 500, height = 500, units = 'mm')
+
+
+# share noRumiant consumption regional
+share_snr_data = dt$food_consumption_regional %>%
+  # subset protein
+  dplyr::filter(nestingSector1 == 'Protein', nestingSector2 != 'noR') %>%
+  select(Units, region, scenario, scen_type, nestingSector3, year, value) %>% unique() %>%
+  # sum consumption by animal vs noR protein
+  group_by(Units, region, scenario, scen_type, nestingSector3, year) %>%
+  summarise(value = sum(value)) %>%
+  ungroup() %>%
+  # compute noR_share
+  group_by(Units, region, scenario, year, scen_type) %>%
+  summarise(noR_share = 100 * sum(value[nestingSector3 != "Rumiant"]) / sum(value)) %>%
+  ungroup() %>%
+  filter(scenario %in% selected_scen) %>% rename_scen()
+
+pl_protein_share_regional = ggplot(data = share_snr_data) +
+  geom_line(aes(x = year, y = noR_share, group = scenario, color = scen_type), alpha = 1, linewidth = 2) +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # scale
+  scale_color_manual(values = scen_palette_refVsSnr, name = 'Scenario') +
+  # labs
+  labs(y = 'share of noR protein (%)', x = '') +
+  ggtitle('Regional noR share consumption free scales') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_protein_share_regional, file = paste0(figures_path,dir_name,"/",'pl_protein_noR_share_reg_freeS.pdf'),
+       width = 2000, height = 1000, units = 'mm', limitsize = F)
+
+
+
+ #### System-wide effects figures ===============================================
+ # ==============================================================================
+
+
 
 #### Fig: food consumption, production & demand ====
 # =============================
 ## WORLD
 # R vs M vs Plant vs Fish
-pltD_food_consumption_grouped = food_consumption_world %>%
-  dplyr::filter(nestingSubector %in% c('Rumiant','Monogastric','OtherMeat_Fish','Plant')) %>%
-  group_by(Units, scenario, nestingSector, year) %>% mutate(value_nestingSubector = sum(value)) %>% ungroup() %>%
-  group_by(Units, scenario, nestingSubector, year) %>% mutate(value_nestingSector = sum(value)) %>% ungroup() %>%
+pltD_food_consumption = food_consumption_world %>%
+  dplyr::filter(technology %in% c('Rumiant','Monogastric','OtherMeat_Fish','Plant')) %>%
+  group_by(Units, scenario, technology, year) %>% mutate(value_nestingSubector = sum(value)) %>% ungroup() %>%
+  group_by(Units, scenario, technology, year) %>% mutate(value_nestingSector = sum(value)) %>% ungroup() %>%
   filter(scenario %in% selected_scen) %>% rename_scen()
 
 pltD_food_consumption$technology = factor(pltD_food_consumption$technology, levels = c('Beef','Pork','Poultry','Other Meat and Fish','Legumes','Nuts and Seeds'))

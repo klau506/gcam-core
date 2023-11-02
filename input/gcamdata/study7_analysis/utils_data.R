@@ -19,9 +19,9 @@ load_mapping_data = function() {
 
   ## food items
   food_sector <<- c('Beef','Corn','Dairy','FiberCrop','FodderHerb','Fruits','Legumes',
-                  'MiscCrop','NutsSeeds','OilCrop','Pork','Poultry','Rice','RootTuber',
-                  'SheepGoat','Soybean','SugarCrop','Vegetables','Wheat','OilPalm',
-                  'FodderGrass')
+                    'MiscCrop','NutsSeeds','OilCrop','Pork','Poultry','Rice','RootTuber',
+                    'SheepGoat','Soybean','SugarCrop','Vegetables','Wheat','OilPalm',
+                    'FodderGrass')
   # staple commodities
   staples <<- c("Corn", "OtherGrain", "Rice", "RootTuber", "Wheat")
   # animal commodities
@@ -214,6 +214,34 @@ fill_queries = function(db_path, db_name, prj_name, sc) {
 
 
 
+
+# if query exists, append the new scenarios
+update_query = function(data, data_name) {
+  data = data %>%
+    tidyr::separate(scenario, into = c("scen_type1", "scen_type2", "t0", "k"), sep = "_", remove = FALSE) %>%
+    dplyr::mutate(scen_type = paste0(scen_type1 ,'_',scen_type2)) %>%
+    dplyr::select(-scen_type1) %>%
+    dplyr::select(-scen_type2)
+
+  if (exists(as.character(data_name))) {
+    data = rbind(data, get(data_name))
+  }
+
+  list_queries <<- c(list_queries, data_name)
+
+  return(invisible(data))
+}
+
+
+save_queries = function() {
+  dt = list()
+  for (q in list_queries) {
+    dt[[q]] = get(q)
+  }
+  save(dt, file = paste0(outputs_path, 'snr_queries_all.RData'))
+}
+
+
 # load queries
 load_queries = function(onlyFoodConsumption = FALSE) {
 
@@ -229,7 +257,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       separate(nestingSector2, into = c("nestingSector2", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
       rename(nestingSector3 = subsector...6) %>%
       separate(nestingSector3, into = c("nestingSector3", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_consumption_world')
 
     food_consumption_regional <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
       filter(scenario %in% selected_scen) %>%
@@ -242,8 +271,13 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       separate(nestingSector2, into = c("nestingSector2", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
       rename(nestingSector3 = subsector...6) %>%
       separate(nestingSector3, into = c("nestingSector3", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_consumption_regional')
   } else {
+
+    if (!exists('list_queries')) {
+      list_queries <<- c()
+    }
 
     ###### ==== food and agriculture ====
     food_demand_world <<- rgcam::getQuery(prj, "food demand") %>%
@@ -251,14 +285,16 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(scenario, input, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_demand_world')
 
     food_demand_regional <<- rgcam::getQuery(prj, "food demand") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(region, scenario, input, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_demand_regional')
 
     # staple and non-staple calories
     staples_nonstaples_world <<- getQuery(prj, "food demand") %>%
@@ -274,7 +310,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
                   filter(year >= year_s, year <= year_e) %>%
                   select(-input) %>%
                   group_by(scenario, Units, year) %>%
-                  summarize(Total = sum(value)))
+                  summarize(Total = sum(value))) %>%
+      update_query(., 'staples_nonstaples_world')
 
     staples_nonstaples_regional <<- getQuery(prj, "food demand") %>%
       filter(scenario %in% selected_scen) %>%
@@ -287,7 +324,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
                   select(-input) %>%
                   group_by(scenario, region, Units, year) %>%
                   summarize(Total = sum(value))) %>%
-      select(-c('gcam-consumer', 'nodeinput'))
+      select(-c('gcam-consumer', 'nodeinput')) %>%
+      update_query(., 'staples_nonstaples_regional')
 
 
     food_consumption_world <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
@@ -301,7 +339,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       separate(nestingSector2, into = c("nestingSector2", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
       rename(nestingSector3 = subsector...6) %>%
       separate(nestingSector3, into = c("nestingSector3", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_consumption_world')
 
     food_consumption_regional <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
       filter(scenario %in% selected_scen) %>%
@@ -314,56 +353,64 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       separate(nestingSector2, into = c("nestingSector2", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
       rename(nestingSector3 = subsector...6) %>%
       separate(nestingSector3, into = c("nestingSector3", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_consumption_regional')
 
     ag_production_world <<- rgcam::getQuery(prj, "ag production by crop type") %>%
       filter(scenario %in% selected_scen, sector %in% food_sector) %>%
       group_by(scenario, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_production_world')
 
     ag_production_regional <<- rgcam::getQuery(prj, "ag production by crop type") %>%
       filter(scenario %in% selected_scen, sector %in% food_sector) %>%
       group_by(region, scenario, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_production_regional')
 
     food_demand_prices_world <<- rgcam::getQuery(prj, "food demand prices") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(Units, scenario, input, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_demand_prices_world')
 
     food_demand_prices_regional <<- rgcam::getQuery(prj, "food demand prices") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(Units, region, scenario, input, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'food_demand_prices_regional')
 
     ag_prices <<- rgcam::getQuery(prj, "ag import vs. domestic prices") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(scenario, sector, subsector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_prices')
 
     ag_prices_world <<- rgcam::getQuery(prj, "ag regional prices (weighted average b/t domestic and imported prices)") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(scenario, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_prices_world')
 
     ag_prices_regional <<- rgcam::getQuery(prj, "ag regional prices (weighted average b/t domestic and imported prices)") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(scenario, region, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_prices_regional')
 
     ag_import_vs_domestic_world <<- rgcam::getQuery(prj, "ag import vs. domestic supply (Regional Armington competition)") %>%
       filter(scenario %in% selected_scen) %>%
@@ -375,7 +422,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
              sector = sub(".*\\s", "", sector)) %>%
       filter(scenario %in% selected_scen) %>%
       filter(!is.na(subsector)) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_import_vs_domestic_world')
 
     ag_import_vs_domestic_regional <<- rgcam::getQuery(prj, "ag import vs. domestic supply (Regional Armington competition)") %>%
       filter(scenario %in% selected_scen) %>%
@@ -387,49 +435,56 @@ load_queries = function(onlyFoodConsumption = FALSE) {
              sector = sub(".*\\s", "", sector)) %>%
       filter(scenario %in% selected_scen) %>%
       filter(!is.na(subsector)) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_import_vs_domestic_regional')
 
     ag_meet_dairy_prices_world <<- rgcam::getQuery(prj, "meat and dairy prices") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(scenario, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_meet_dairy_prices_world')
 
     ag_meet_dairy_prices_regional <<- rgcam::getQuery(prj, "meat and dairy prices") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(scenario, region, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_meet_dairy_prices_regional')
 
     ag_meet_dairy_production_world <<- rgcam::getQuery(prj, "meat and dairy production by tech") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(Units, scenario, sector, subsector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_meet_dairy_production_world')
 
     ag_meet_dairy_production_regional <<- rgcam::getQuery(prj, "meat and dairy production by tech") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(Units, scenario, sector, subsector, year, region) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'ag_meet_dairy_production_regional')
 
     feed_consumption_world <<- rgcam::getQuery(prj, "feed consumption by region") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(scenario, Units, year, input) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'feed_consumption_world')
 
     feed_consumption_regional <<- rgcam::getQuery(prj, "feed consumption by region") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(region, scenario, Units, year, input) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'feed_consumption_regional')
 
 
     ###### ==== water ====
@@ -438,42 +493,48 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(scenario, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_withdrawals_world')
 
     water_withdrawals_regional <<- rgcam::getQuery(prj, "water withdrawals by region") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(region, scenario, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_withdrawals_regional')
 
     water_consumption <<- rgcam::getQuery(prj, "water consumption by subsector") %>%
       filter(scenario %in% selected_scen, sector %in% food_sector) %>%
       group_by(Units, scenario, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_consumption')
 
     water_consumption_world <<- rgcam::getQuery(prj, "water consumption by subsector") %>%
       filter(scenario %in% selected_scen, sector %in% food_sector) %>%
       group_by(Units, scenario, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_consumption_world')
 
     water_consumption_regional <<- rgcam::getQuery(prj, "water consumption by subsector") %>%
       filter(scenario %in% selected_scen, sector %in% food_sector) %>%
       group_by(Units, scenario, year, region) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_consumption_regional')
 
     water_consumption_regional_sectorial <<- rgcam::getQuery(prj, "water consumption by subsector") %>%
       filter(scenario %in% selected_scen, sector %in% food_sector) %>%
       group_by(scenario, region, sector, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_consumption_regional_sectorial')
 
     water_irr_rfd_world <<- rgcam::getQuery(prj, "land allocation by crop and water source") %>%
       filter(!is.na(water)) %>%
@@ -484,7 +545,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(Units, scenario, year, water, crop) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_irr_rfd_world')
 
     water_irr_rfd_regional <<- rgcam::getQuery(prj, "land allocation by crop and water source") %>%
       filter(!is.na(water)) %>%
@@ -495,7 +557,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(region, Units, scenario, year, water, crop) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_irr_rfd_regional')
 
 
     ###### ==== emissions ====
@@ -506,7 +569,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       summarise(value = sum(value)) %>%
       ungroup() %>%
       mutate(ghg = "CO2") %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'co2_emiss')
 
     luc <<- getQuery(prj,"LUC emissions by region") %>%
       group_by(Units, scenario, region, year) %>%
@@ -514,17 +578,20 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       ungroup() %>%
       mutate(ghg = "LUC CO2",
              Units = "MTC") %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'luc')
 
     nonco2 <<- getQuery(prj,"nonCO2 emissions by region") %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'nonco2')
 
     nonco2_luc <<- getQuery(prj,"nonCO2 emissions by sector (excluding resource production)") %>%
       filter(year >= year_s, year <= year_e) %>%
       filter(sector %in% food_sector) %>%
       filter(ghg %in% c('CH4_AGR','N2O_AGR')) %>%
-      mutate(ghg = ifelse(ghg == 'CH4_AGR','CH4','N2O')) %>%
-      mutate(Units = 'Mt') #Tg is equivalent to Mt
+      mutate(ghg = ifelse(ghg == 'CH4_AGR', 'CH4','N2O')) %>%
+      mutate(Units = 'Mt')%>% #Tg is equivalent to Mt
+      update_query(., 'nonco2_luc')
 
 
     ###### ==== GHG emissions ====
@@ -535,7 +602,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(group, scenario, year, Units) %>%
       summarise(value = sum(value, na.rm = T)) %>%
       ungroup() %>%
-      filter(!is.na(group))
+      filter(!is.na(group)) %>%
+      update_query(., 'ghg_by_ghg_world')
 
     ghg_by_ghg_regional <<- bind_rows(luc,co2_emiss,nonco2) %>%
       left_join(GWP, by = c("Units", "ghg")) %>%
@@ -544,7 +612,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(region, group, scenario, year, Units) %>%
       summarise(value = sum(value, na.rm = T)) %>%
       ungroup() %>%
-      filter(!is.na(group))
+      filter(!is.na(group)) %>%
+      update_query(., 'ghg_by_ghg_regional')
 
     ghg_regional <<- bind_rows(luc,co2_emiss,nonco2) %>%
       left_join(GWP, by = c("Units", "ghg")) %>%
@@ -552,7 +621,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
              Units = "MtCO2e") %>%
       group_by(scenario, region, year, Units) %>%
       summarise(value = sum(value, na.rm = T)) %>%
-      ungroup()
+      ungroup() %>%
+      update_query(., 'ghg_regional')
 
     ghg_world <<- bind_rows(luc,co2_emiss,nonco2) %>%
       left_join(GWP, by = c("Units", "ghg")) %>%
@@ -560,7 +630,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
              Units = "MtCO2e") %>%
       group_by(scenario, year, Units) %>%
       summarise(value = sum(value, na.rm = T)) %>%
-      ungroup()
+      ungroup() %>%
+      update_query(., 'ghg_world')
 
 
 
@@ -575,7 +646,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
                                     ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
                                            ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
                                                   ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
-                                                         'Other Natural')))))
+                                                         'Other Natural'))))) %>%
+      update_query(., 'land_use_world')
 
     land_use_regional <<- getQuery(prj,"aggregated land allocation") %>%
       filter(scenario %in% selected_scen) %>%
@@ -587,7 +659,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
                                     ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
                                            ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
                                                   ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
-                                                         'Other Natural')))))
+                                                         'Other Natural'))))) %>%
+      update_query(., 'land_use_regional')
 
     land_crop_world <<- getQuery(prj,"land allocation by crop") %>%
       dplyr::mutate(landleaf = sub("C4$", "", landleaf)) %>%
@@ -596,7 +669,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       summarise(value = sum(value)) %>%
       ungroup() %>%
       filter(scenario %in% selected_scen) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'land_crop_world')
 
     land_crop_regional <<- getQuery(prj,"land allocation by crop") %>%
       dplyr::mutate(landleaf = sub("C4$", "", landleaf)) %>%
@@ -605,7 +679,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       summarise(value = sum(value)) %>%
       ungroup() %>%
       filter(scenario %in% selected_scen) %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'land_crop_regional')
 
 
     carbon_stock_world <<- getQuery(prj,"vegetative carbon stock by region") %>%
@@ -613,14 +688,16 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(Units, scenario, year, landleaf) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'carbon_stock_world')
 
     carbon_stock_regional <<- getQuery(prj,"vegetative carbon stock by region") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(Units, scenario, year, region, landleaf) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'carbon_stock_regional')
 
 
     fertilizer_consumption_world <<- getQuery(prj,"fertilizer consumption by crop type") %>%
@@ -628,14 +705,16 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       group_by(Units, scenario, year, sector) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'fertilizer_consumption_world')
 
     fertilizer_consumption_regional <<- getQuery(prj,"fertilizer consumption by crop type") %>%
       filter(scenario %in% selected_scen) %>%
       group_by(Units, scenario, year, region, sector) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      filter(year >= year_s, year <= year_e)
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'fertilizer_consumption_regional')
 
 
     ###### ===== population ======
@@ -644,7 +723,8 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       filter(year >= year_s, year <= year_e) %>%
       mutate(value = value * 1000) %>% # Convert from thous ppl to total ppl
       select(-Units) %>%
-      rename(population = value)
+      rename(population = value) %>%
+      update_query(., 'pop_all_regions')
 
 
     ###### ===== nutritional basic data ======

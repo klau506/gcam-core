@@ -8,15 +8,15 @@ source('load_libs_paths.R')
 source('utils_data.R')
 source('utils_style.R')
 
-prj_name = 'snr_gathered.dat'
+prj_name = 'snr_gathered2.dat'
 
 
 #### Gather subprj =============================================================
 # ==============================================================================
 # prj
-sub_prj_names <- list.files('.', pattern = '^st7_snr_')
+sub_prj_names <- c(list.files('.', pattern = '^st7_snr_'), 'snr_reference.dat')
 for (it in sub_prj_names) {
-  rgcam::loadProject(it)
+  print(it)
   assign(gsub("\\.dat$", "", it),
          rgcam::loadProject(it))
 }
