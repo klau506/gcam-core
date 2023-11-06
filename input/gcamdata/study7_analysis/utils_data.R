@@ -114,6 +114,64 @@ load_basic_data = function() {
 }
 
 
+# compute premature mortality through rfasst
+calc_mort_rfasst = function(scen) {
+
+  rm(mort.data)
+
+  for (i in 1:length(scen)) {
+    print(i)
+    rm(list = clean_pkg_outputs())
+    pm.mort = rfasst::m3_get_mort_pm25(prj_name = 'rfasst_diets.dat',
+                                           rdata_name = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core-spp/input/gcamdata/study7_analysis/outputs/rfasst_queries_all.RData',
+                                           scen_name = scen[i], final_db_year = 2050, map = F) %>%
+    dplyr::mutate('scenario' = scen[i])
+    pm.mort = tidyr::pivot_longer(pm.mort, cols = c('BURNETT2014_medium',
+                                                    'BURNETT2018WITH_high',
+                                                    'BURNETT2018WITH_low',
+                                                    'BURNETT2018WITH_medium',
+                                                    'BURNETT2018WITHOUT_high',
+                                                    'BURNETT2018WITHOUT_low',
+                                                    'BURNETT2018WITHOUT_medium',
+                                                    'GBD2016_high',
+                                                    'GBD2016_low',
+                                                    'GBD2016_medium'), names_to = 'method', values_to = 'mort_by_disease')
+    pm.mort = pm.mort %>%
+      dplyr::group_by(region,year,scenario,method) %>%
+      dplyr::summarise('mort' = sum(mort_by_disease))
+
+    o3.mort = rfasst::m3_get_mort_o3(prj_name = 'rfasst_diets.dat',
+                                     rdata_name = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core-spp/input/gcamdata/study7_analysis/outputs/rfasst_queries_all.RData',
+                                     scen_name = scen[i], final_db_year = 2050, map = F) %>%
+    dplyr::mutate('scenario' = scen[i])
+    o3.mort = tidyr::pivot_longer(o3.mort, cols = c('mort_o3_jer_med',
+                                                    'mort_o3_jer_low',
+                                                    'mort_o3_jer_high',
+                                                    'mort_o3_gbd2016_med',
+                                                    'mort_o3_gbd2016_low',
+                                                    'mort_o3_gbd2016_high'), names_to = 'method', values_to = 'mort_by_disease')
+    o3.mort = o3.mort %>%
+      dplyr::group_by(region,year,scenario,method) %>%
+      dplyr::summarise('mort' = sum(mort_by_disease))
+
+    mort.tmp = dplyr::bind_rows(pm.mort %>% dplyr::mutate('pollutant' = 'pm25'),
+                                o3.mort %>% dplyr::mutate('pollutant' = 'o3'))
+
+    if(exists('mort.data')) {
+      mort.data = rbind(mort.data, mort.tmp)
+    } else {
+      mort.data = mort.tmp
+    }
+  }
+
+  rm(list = clean_pkg_outputs())
+  save(mort.data, file = paste0(outputs_path, 'mort.data.RData'))
+  return(mort.data)
+}
+
+
+
+
 # find the db name given the scenario name
 find_db_name = function(scenario) {
   return(db_scen_mapping$db_name[db_scen_mapping$scen_name == scenario])
@@ -218,12 +276,15 @@ fill_queries = function(db_path, db_name, prj_name, sc) {
 
 
 # if query exists, append the new scenarios
-update_query = function(data, data_name) {
-  data = data %>%
-    tidyr::separate(scenario, into = c("scen_type1", "scen_type2", "t0", "k"), sep = "_", remove = FALSE) %>%
-    dplyr::mutate(scen_type = paste0(scen_type1 ,'_',scen_type2)) %>%
-    dplyr::select(-scen_type1) %>%
-    dplyr::select(-scen_type2)
+update_query = function(data, data_name, rfasst = FALSE) {
+
+  if (!rfasst) {
+    data = data %>%
+      tidyr::separate(scenario, into = c("scen_type1", "scen_type2", "t0", "k"), sep = "_", remove = FALSE) %>%
+      dplyr::mutate(scen_type = paste0(scen_type1 ,'_',scen_type2)) %>%
+      dplyr::select(-scen_type1) %>%
+      dplyr::select(-scen_type2)
+  }
 
   if (exists(as.character(data_name))) {
     data = rbind(data, get(data_name))
@@ -246,6 +307,45 @@ save_queries = function() {
     dt[[q]] = get(q)
   }
   save(dt, file = paste0(outputs_path, 'spp_queries_all.RData'))
+}
+
+save_rfasst_queries = function() {
+  dt = list()
+  for (q in list_queries) {
+    dt[[q]] = get(q)
+  }
+  save(dt, file = paste0(outputs_path, 'rfasst_queries_all.RData'))
+}
+
+
+load_rfasst_queries = function() {
+
+  rfasst_queries = c('International Aviation emissions',
+                     'International Shipping emissions',
+                     'nonCO2 emissions by resource production',
+                     'Ag Commodity Prices',
+                     'prices of all markets',
+                     'ag production by subsector (land use region)',
+                     'ag production by crop type',
+                     'nonCO2 emissions by sector (excluding resource production)')
+
+  prj1 = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core-spp/input/gcamdata/study7_analysis/spp_gathered.dat'
+  prj2 = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core-spp/input/gcamdata/study7_analysis/spp_reference.dat'
+  prj3 = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata/study7_analysis/snr_gathered2.dat'
+  prj4 = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core/input/gcamdata/study7_analysis/snr_reference.dat'
+  rm(list_queries)
+  for (prj in c('prj1','prj2','prj3','prj4')) {
+    assign(prj,rgcam::loadProject(get(prj)))
+    for (qn in rfasst_queries) {
+      print(qn)
+      assign(qn,
+             rgcam::getQuery(get(prj), qn) %>%
+               update_query(., qn, rfasst = TRUE)
+      )
+    }
+  }
+
+  save_rfasst_queries()
 }
 
 

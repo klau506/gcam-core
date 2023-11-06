@@ -232,6 +232,14 @@ ggsave(pl_protein_share_regional, file = paste0(figures_path,dir_name,"/",'pl_pr
 #          c(snr_data))
 # save(dt, file = paste0(outputs_path, 'snr_spp_queries.RData'))
 load(paste0(outputs_path, 'snr_spp_queries.RData'))
+desired_scen = unique(dt$food_demand_world$scenario)
+selected_scen = unique(dt$food_demand_world$scenario)
+
+# rfasst mortality
+# assign('prj_rd', get(load('C:/GCAM/GCAM_7.0_Claudia/gcam-core-spp/input/gcamdata/study7_analysis/outputs/rfasst_queries_all.RData')))
+# dt.mort = calc_mort_rfasst(selected_scen)
+dt.mort = get(load(paste0(outputs_path, 'mort.data.RData')))
+
 
 #### Fig: food consumption, production & demand ====
 # =============================
@@ -1470,52 +1478,95 @@ ggsave(pl_ghg_diffPer_world_bars, file = paste0(figures_path,dir_name, '/pl2_ghg
 # =============================
 ### MAPS
 ## -- map (abs difference)
-mort_diffAbs_regional = tidyr::pivot_wider(mort, names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ . - Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select('fasst_region','year','method','pollutant',matches("_diff$")) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median by region and pollutant
-  group_by(year, fasst_region, pollutant) %>%
-  summarise(median_value = median(value),
-            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
-  # compute the total deaths by region (pm25 + o3)
-  group_by(year, fasst_region) %>%
-  summarise(median_value = -sum(median_value),
-            min_value = -sum(min_value),
-            max_value = -sum(max_value)) %>%
-  ungroup() %>%
-  # filter desired year
-  dplyr::filter(year == selected_year) %>%
-  # merge with GCAM regions
-  left_join(rfasst::fasst_reg %>%
-              dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
-            multiple = 'all') %>%
-  # merge with world data
-  dplyr::rename('adm0_a3' = 'ISO3')
 
-mort_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+rm(mort_diffAbs_regional_all)
+for (s_type in c('spp','snr')) {
+  mort_diffAbs_regional = tidyr::pivot_wider(dt.mort %>%
+                                               filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                               mutate(scenario = ifelse(startsWith(scenario, 'St7_Reference'), 'St7_Reference', scenario)) %>%
+                                               # add pm + o3 deaths
+                                               group_by(region, year, scenario, method) %>%
+                                               summarise(value = sum(mort)) %>%
+                                               # compute the mean across methods
+                                               group_by(region, year, scenario, method) %>%
+                                               summarise(value = mean(value)) %>%
+                                               rename(fasst_region = region) %>%
+                                               ungroup(),
+                                              names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ . - St7_Reference)) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset and do median across impact functions
+    mutate(scen_type = s_type) %>%
+    group_by(fasst_region, year, scen_type) %>%
+    summarise(diff = median(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    left_join(rfasst::fasst_reg %>%
+                dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+              multiple = 'all') %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO3')
+
+  if (exists('mort_diffAbs_regional_all')) {
+    mort_diffAbs_regional_all = mort_diffAbs_regional_all %>%
+      rbind(mort_diffAbs_regional)
+  } else {
+    mort_diffAbs_regional_all = mort_diffAbs_regional
+  }
+
+  mort_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                  dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                  dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                  dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                  rowwise(),
+                                mort_diffAbs_regional, by = 'adm0_a3')
+
+  pl_mort_diffAbs_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = mort_diffAbs_regional, aes(fill = -diff)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = expression(paste("Avoided deaths (nº)","\n"))) +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 30, angle = 90, vjust = 0.5, hjust=0.5), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # title
+    labs(title = paste0("Annual avoided deaths in ", selected_year))
+  ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,dir_name, '/pl2_mort_diffAbs_regional_map_',s_type,'.pdf'), width = 500, height = 300, units = 'mm')
+
+}
+
+mort_diffAbs_regional_all = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
                                 dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
                                 dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
                                 dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
-                                rowwise() %>%
-                                mutate(
-                                  avg_x = (st_bbox(geometry)$xmax + st_bbox(geometry)$xmin) / 2,
-                                  avg_y = (st_bbox(geometry)$ymax + st_bbox(geometry)$ymin) / 2
-                                ),
-                              mort_diffAbs_regional, by = 'adm0_a3')
+                                rowwise(),
+                              mort_diffAbs_regional_all, by = 'adm0_a3')
 
-# plot
 pl_mort_diffAbs_regional_map <- ggplot() +
   # color map by regions
-  geom_sf(data = mort_diffAbs_regional, aes(fill = median_value)) +
+  geom_sf(data = mort_diffAbs_regional_all, aes(fill = -diff)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided deaths (nº)","\n"))) +
+  # facet
+  facet_wrap(. ~ toupper(scen_type)) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
   theme_light() +
@@ -1533,49 +1584,101 @@ pl_mort_diffAbs_regional_map <- ggplot() +
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
   labs(title = paste0("Annual avoided deaths in ", selected_year))
-ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,dir_name, '/pl2_mort_diffAbs_regional_map.pdf'), width = 500, height = 300, units = 'mm')
+ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,dir_name, '/pl2_mort_diffAbs_regional_map.pdf'), width = 900, height = 600, units = 'mm')
+png(paste0(figures_path,dir_name, '/pl2_mort_diffAbs_regional_map.png'), width = 3401.575, height = 1267.717)
+print(pl_mort_diffAbs_regional_map)
+dev.off()
 
 
+## -- map (per difference)
+rm(mort_diffPer_regional_all)
+for (s_type in c('spp','snr')) {
+  mort_diffPer_regional = tidyr::pivot_wider(dt.mort %>%
+                                               filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                               mutate(scenario = ifelse(startsWith(scenario, 'St7_Reference'), 'St7_Reference', scenario)) %>%
+                                               # add pm + o3 deaths
+                                               group_by(region, year, scenario, method) %>%
+                                               summarise(value = sum(mort)) %>%
+                                               # compute the mean across methods
+                                               group_by(region, year, scenario, method) %>%
+                                               summarise(value = mean(value)) %>%
+                                               rename(fasst_region = region) %>%
+                                               ungroup(),
+                                              names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(. - St7_Reference != 0, 100*(. - St7_Reference)/St7_Reference, 0))) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset and do median across impact functions
+    mutate(scen_type = s_type) %>%
+    group_by(fasst_region, year, scen_type) %>%
+    summarise(diff = median(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    left_join(rfasst::fasst_reg %>%
+                dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+              multiple = 'all') %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO3')
 
-# percentage to add over each region
-per_text = tidyr::pivot_wider(mort, names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select('fasst_region','year','method','pollutant',matches("_diff$")) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median by region and pollutant
-  group_by(year, fasst_region, pollutant) %>%
-  summarise(median_value = median(value),
-            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
-  # compute the total deaths by region (pm25 + o3)
-  group_by(year, fasst_region) %>%
-  summarise(percentage_text = paste0(as.character(round(-sum(median_value), digits = 1)),'%')) %>%
-  ungroup() %>%
-  # filter desired year
-  dplyr::filter(year == selected_year) %>%
-  # merge with GCAM regions
-  left_join(rfasst::fasst_reg %>%
-              dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
-            multiple = 'all') %>%
-  # merge with world data
-  dplyr::rename('adm0_a3' = 'ISO3')
+  if (exists('mort_diffPer_regional_all')) {
+    mort_diffPer_regional_all = mort_diffPer_regional_all %>%
+      rbind(mort_diffPer_regional)
+  } else {
+    mort_diffPer_regional_all = mort_diffPer_regional
+  }
 
+  mort_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                  dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                  dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                  dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                  rowwise(),
+                                mort_diffPer_regional, by = 'adm0_a3')
 
-mort_diffAbs_regional = merge(mort_diffAbs_regional,per_text, by = c('year', 'fasst_region', 'adm0_a3'))
+  pl_mort_diffPer_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = mort_diffPer_regional, aes(fill = -diff)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = expression(paste("Avoided deaths (nº)","\n"))) +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 30, angle = 90, vjust = 0.5, hjust=0.5), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # title
+    labs(title = paste0("Annual avoided deaths in ", selected_year))
+  ggsave(pl_mort_diffPer_regional_map, file = paste0(figures_path,dir_name, '/pl2_mort_diffPer_regional_map_',s_type,'.pdf'), width = 500, height = 300, units = 'mm')
 
-# plot
-pl_mort_diffAbs_regional_map <- ggplot() +
+}
+
+mort_diffPer_regional_all = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                rowwise(),
+                              mort_diffPer_regional_all, by = 'adm0_a3')
+
+pl_mort_diffPer_regional_map <- ggplot() +
   # color map by regions
-  geom_sf(data = mort_diffAbs_regional, aes(fill = median_value)) +
+  geom_sf(data = mort_diffPer_regional_all, aes(fill = -diff)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                        mid = '#f7f7f7', midpoint = 0,
-                       name = expression(paste("Avoided deaths (nº)","\n"))) +
-  geom_text(data = mort_diffAbs_regional, aes(x = avg_x, y = avg_y, label = percentage_text),
-            size = 5) +
+                       name = expression(paste("Avoided deaths (%)","\n"))) +
+  # facet
+  facet_wrap(. ~ toupper(scen_type)) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
   theme_light() +
@@ -1585,15 +1688,18 @@ pl_mort_diffAbs_regional_map <- ggplot() +
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
         panel.border = element_blank(),
-        panel.background = element_rect(fill = "#ffffff",
-                                        colour = "#ffffff"),
+        panel.background = element_rect(fill = "transparent",
+                                        colour = NA),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
         legend.text = element_text(size = 30, angle = 90, vjust = 0.5, hjust=0.5), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
   labs(title = paste0("Annual avoided deaths in ", selected_year))
-ggsave(pl_mort_diffAbs_regional_map, file = paste0(figures_path,dir_name, '/pl2_mort_diffAbs_with_text_regional_map.pdf'), width = 500, height = 300, units = 'mm')
+ggsave(pl_mort_diffPer_regional_map, file = paste0(figures_path,dir_name, '/pl2_mort_diffPer_regional_map.pdf'), width = 900, height = 600, units = 'mm')
+png(paste0(figures_path,dir_name, '/pl2_mort_diffPer_regional_map.png'), width = 3401.575, height = 1267.717)
+print(pl_mort_diffPer_regional_map)
+dev.off()
 
 
 
