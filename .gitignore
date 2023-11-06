@@ -81,3 +81,7 @@ ModelInterface/*
 input/gcamdata/inst/extdata/emissions/CEDS/desktop.ini
 exe/config_diets_old/
 *.dat
+output/st7_*
+output/spp_*
+*.log
+input/gcamdata/study7_analysis/inputs/nutrition/micronutrients_computed.csv

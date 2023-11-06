@@ -33,6 +33,8 @@ load_mapping_data = function() {
 
 # load nutritional data
 load_nutritional_data = function() {
+  food_subsector <<- read.csv(paste0(inputs_path,"nutrition/food_subsector.csv"))
+
   # compute socioeconomic data
   # Socio-econ data
   ssp_data <<- read.csv(paste0(inputs_path,"nutrition/SSP2_population_by_demographic.csv"), skip = 1)
@@ -91,7 +93,7 @@ load_nutritional_data = function() {
     group_by(country_name, year) %>%
     mutate(weight = total_pop / total_regional_pop) %>%
     # get GCAM population
-    left_join(mutate(pop_all_regions, year = as.character(year)), by = c("region", "year"),
+    left_join(mutate(dt$pop_all_regions, year = as.character(year)), by = c("region", "year"),
               multiple = "all") %>%
     # compute GCAM population by sex and age for each country
     mutate(weighted_demographics = demo_share * weight * population)

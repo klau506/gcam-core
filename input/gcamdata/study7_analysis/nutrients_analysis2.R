@@ -1,25 +1,17 @@
 #### NUTRITIONAL VALUES ========================================================
 #### Basic data ================================================================
 # ==============================================================================
-# GCAM regions and iso codes
-country_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/country_to_gcam_id.csv"))
-iso_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/iso_GCAM_regID.csv"), skip = 6)
-id_gcam_regions <- read.csv(paste0(folder_analysis_path,"data/gcam_id_to_region.csv"))
-colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
-regions_key <- left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
-  select(-1)
 
+if(!dir.exists(paste0(figures_path,dir_name))) dir.create(paste0(figures_path,dir_name))
+if(!dir.exists(paste0(figures_path,dir_name,"/macronutrients/"))) dir.create(paste0(figures_path,dir_name,"/macronutrients/"))
 
-# SSP population
-ssp_data <- read.csv(paste0(folder_analysis_path,"data/SSP2 population by demographic.csv"), skip = 1)
 
 # Read in MDER (calculated exogenously, FAO data)
-mder <- read.csv(paste0(folder_analysis_path,"data/MDER.csv")) %>%
-  rename(variable = ï..variable,
-         mder_units = unit) %>%
+mder <- read.csv(paste0(inputs_path,"nutrition/MDER.csv")) %>%
+  rename(mder_units = unit) %>%
   mutate(mder_units = 'kcal/capita/day')
 # Macronutrients: this comes from module_aglu_L100.FAO_SUA_connection
-gcamdata_macro <- read.csv(paste0(folder_analysis_path,"data/gcamdata_macronutrient.csv"))
+gcamdata_macro <- read.csv(paste0(inputs_path,"nutrition/gcamdata_macronutrient.csv"))
 gcamdata_macro[is.na(gcamdata_macro)] <- 0
 
 #####
@@ -27,18 +19,18 @@ gcamdata_macro[is.na(gcamdata_macro)] <- 0
 # Units: kcal/capita/day
 # By region
 # Get total consumption in calories
-dietary_energy_supply <- getQuery(prj, "food consumption by type (general)") %>%
+dietary_energy_supply <- dt$food_consumption_regional %>%
   filter(year >= year_s, year <= year_e) %>%
   group_by(scenario, region, year) %>%
   # Aggregate staple and non-staple calories
   summarize(value = sum(value)) %>%
-  left_join(pop_all_regions, by = c("year", "scenario", "region")) %>%
+  left_join(dt$pop_all_regions, by = c("year", "scenario", "region")) %>%
   # Convert from Pcal to kcal/capita/day
   mutate(value = (value * 1e12) / (population * 365),
          units = "kcal/capita/day")
 ## Share of dietary energy supply from staples =================================
 # Find share of staple and non-staple calories in total calories
-share_diet_staples_region <- staples_nonstaples_regional %>%
+share_diet_staples_region <- dt$staples_nonstaples_regional %>%
   mutate(staples_in_total = Staples/Total,
          nonstaples_in_total = NonStaples/Total,
          percent_staples_in_total = staples_in_total * 100)
@@ -110,14 +102,14 @@ weighted_pop <- ssp_data_final %>%
   group_by(country_name, year) %>%
   mutate(weight = total_pop / total_regional_pop) %>%
   # get GCAM population
-  left_join(mutate(pop_all_regions, year = as.character(year)), by = c("region", "year"),
+  left_join(mutate(dt$pop_all_regions, year = as.character(year)), by = c("region", "year"),
             multiple = "all") %>%
   # compute GCAM population by sex and age for each country
   mutate(weighted_demographics = demo_share * weight * population)
 
 weighted_pop_sex_age <- weighted_pop %>%
   select(-pop_units, -sub_pop, -total_pop, -demo_share, -weight) %>%
-  group_by(variable, year, region) %>%
+  group_by(scenario, t0, k, scen_type, variable, year, region) %>%
   # sum the weighted averages for each country into GCAM regions
   summarize(pop_sex_age = sum(weighted_demographics))
 
@@ -125,13 +117,13 @@ weighted_pop_sex_age <- weighted_pop %>%
 adesa_denominator <- weighted_pop_sex_age %>%
   left_join(mder, by = "variable") %>%
   select(-std) %>%
-  group_by(variable, year, region) %>%
+  group_by(scenario, t0, k, scen_type, variable, year, region) %>%
   # compute a range because of differing physical activity levels
   summarize(cal_req_x_pop = mder * pop_sex_age,
             min_cal_req_x_pop = min * pop_sex_age,
             max_cal_req_x_pop = max * pop_sex_age) %>%
   # aggregate caloric requirements to get total regional values
-  group_by(region, year) %>%
+  group_by(scenario, t0, k, scen_type, region, year) %>%
   summarize(denominator_sum = sum(cal_req_x_pop),
             min_denominator_sum = sum(min_cal_req_x_pop),
             max_denominator_sum = sum(max_cal_req_x_pop)) %>%
@@ -140,13 +132,128 @@ adesa_denominator <- weighted_pop_sex_age %>%
 # add in regional calorie info, calculate ADESA
 adesa <- left_join(adesa_denominator, total_regional_calories) %>%
   # select(-population) %>%
-  group_by(year, region, scenario) %>%
+  group_by(year, region, scenario, t0, k, scen_type) %>%
   reframe(adesa = (value / denominator_sum) * population * 100, # convert to unitless and percentage
           min_adesa = (value / min_denominator_sum) * population * 100,
           max_adesa = (value / max_denominator_sum) * population * 100,
           .groups = "keep")
 
+# check for ADESA trends and get rid of the scenarios with a down-going ADESA
+pl = ggplot(adesa %>%
+              filter(scen_type != 'St7_Reference') %>%
+              rbind(adesa %>% filter(scen_type == 'St7_Reference') %>%
+                          group_by(year, region) %>%
+                          mutate(scenario = 'St7_Reference',
+                                 t0 = NA,
+                                 k = NA,
+                                 scen_type = 'St7_Reference',
+                                 adesa = mean(adesa),
+                                 min_adesa = mean(min_adesa),
+                                 max_adesa = mean(max_adesa),
+                                 .groups = 'keep')) %>%
+              mutate(scen_type = substr(scen_type, 1, 3)) %>%
+              group_by(scen_type, year) %>%
+              mutate(mean_adesa = mean(adesa)) %>%
+              ungroup() %>%
+              group_by(scen_type, scenario, year) %>%
+              mutate(adesa = mean(adesa)) %>%
+              ungroup())+
+  geom_line(aes(x = year, y = mean_adesa, color = scen_type), linewidth = 2, alpha = 1) +  # Median line
+  geom_line(aes(x = year, y = adesa, group = scenario, color = scen_type), linewidth = 1, alpha = 0.8) +  # Median line
+  scale_color_manual(values = scen_palette_refVsSppVsSnr, labels = scen_palette_refVsSppVsSnr.labs, name = 'Scenario') +
+  labs(y = 'ADESA value', x = '') +
+  ggtitle('ADESA regional values') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl, filename = paste0(figures_path,dir_name,"/",'pl_adesa_world.png'),
+       width = 750, height = 450, units = 'mm', limitsize = F)
 
+# check for ADESA trends and get rid of the scenarios with a down-going ADESA
+pl = ggplot(adesa  %>%
+              filter(scen_type != 'St7_Reference') %>%
+              rbind(adesa %>% filter(scen_type == 'St7_Reference') %>%
+                      group_by(year, region) %>%
+                      mutate(scenario = 'St7_Reference',
+                             t0 = NA,
+                             k = NA,
+                             scen_type = 'St7_Reference',
+                             adesa = mean(adesa),
+                             min_adesa = mean(min_adesa),
+                             max_adesa = mean(max_adesa),
+                             .groups = 'keep')) %>%
+              mutate(scen_type = substr(scen_type, 1, 3)) %>%
+              group_by(scen_type, region, year) %>%
+              mutate(mean_adesa = mean(adesa)) %>%
+              ungroup())+
+  geom_line(aes(x = year, y = mean_adesa, color = scen_type), linewidth = 2, alpha = 1) +  # Median line
+  geom_line(aes(x = year, y = adesa, group = scenario, color = scen_type), linewidth = 1, alpha = 0.8) +  # Median line
+  scale_color_manual(values = scen_palette_refVsSppVsSnr, labels = scen_palette_refVsSppVsSnr.labs, name = 'Scenario') +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  labs(y = 'ADESA value', x = '') +
+  ggtitle('ADESA regional values') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl, file = paste0(figures_path,dir_name,"/",'pl_adesa_reg_freeS.png'),
+       width = 2000, height = 2000, units = 'mm', limitsize = F)
+pl = ggplot(adesa  %>%
+              filter(scen_type != 'St7_Reference') %>%
+              rbind(adesa %>% filter(scen_type == 'St7_Reference') %>%
+                      group_by(year, region) %>%
+                      mutate(scenario = 'St7_Reference',
+                             t0 = NA,
+                             k = NA,
+                             scen_type = 'St7_Reference',
+                             adesa = mean(adesa),
+                             min_adesa = mean(min_adesa),
+                             max_adesa = mean(max_adesa),
+                             .groups = 'keep')) %>%
+              mutate(scen_type = substr(scen_type, 1, 3)) %>%
+              group_by(scen_type, region, year) %>%
+              mutate(mean_adesa = mean(adesa)) %>%
+              ungroup())+
+  geom_line(aes(x = year, y = mean_adesa, color = scen_type), linewidth = 2, alpha = 1) +  # Median line
+  geom_line(aes(x = year, y = adesa, group = scenario, color = scen_type), linewidth = 1, alpha = 0.8) +  # Median line
+  scale_color_manual(values = scen_palette_refVsSppVsSnr, labels = scen_palette_refVsSppVsSnr.labs, name = 'Scenario') +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  labs(y = 'ADESA value', x = '') +
+  ggtitle('ADESA regional values') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl, file = paste0(figures_path,dir_name,"/",'pl_adesa_reg_fixedS.png'),
+       width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+
+## Macronutrients ==============================================================
+# Figures from preprocess_GramProteinFatPerKcal unitl line 487
+
+
+# TODO 3/11/2023: order the code from here. Check with preprocess_GramProteinFatPerKcal and preprocess_nutrients.R
 ## Macronutrients ==============================================================
 
 # Note from Xin
@@ -173,11 +280,10 @@ macronutrients$GCAM_region_ID <- as.numeric(macronutrients$GCAM_region_ID)
 # 1. Get share of individual commodities over staple or non-staple cals
 # 2. Multiply shares of commodities by staple or non-staple calories by consumer
 
-consumption_cals <- getQuery(prj, "food consumption by type (specific)") %>%
-  select(-4, -5) %>%
-  left_join(staples_nonstaples_regional,
-            by = c("scenario", "region", "year")) %>%
-  select(-7)
+consumption_cals <- dt$food_consumption_regional %>%
+  select(-starts_with('nestingSector')) %>%
+  left_join(dt$staples_nonstaples_regional,
+            by = c("scenario", "t0", "k", "scen_type", "region", "year"))
 
 # Share of staple commodities in staple calories (and total)
 consumption_shares_staples <- consumption_cals %>%
@@ -185,7 +291,8 @@ consumption_shares_staples <- consumption_cals %>%
   select(-NonStaples) %>%
   mutate(share_of_comm = value / Staples, # Share of staple commodity in staple calories
          share_of_comm_total = value / Total) %>% # Share of staple commodity in total calories
-  select(-Total, -Staples, -value, -Units.x)
+  select(-Total, -Staples, -value, -Units.x) %>%
+  rename(Units = Units.y)
 
 # Share of non-staple commodities in non-staple calories (and total)
 consumption_shares_nonstaples <- consumption_cals %>%
@@ -193,15 +300,16 @@ consumption_shares_nonstaples <- consumption_cals %>%
   select(-Staples) %>%
   mutate(share_of_comm = value / NonStaples,
          share_of_comm_total = value / Total) %>%
-  select(-Total, -NonStaples, -value, -Units.x)
+  select(-Total, -NonStaples, -value, -Units.x) %>%
+  rename(Units = Units.y)
 
 # Get calorie information
-consumption_by_comm_deciles_staples <- staples_nonstaples_regional %>%
-  left_join(consumption_shares_staples, by = c("region", "year", "scenario"), multiple = 'all') %>%
+consumption_by_comm_deciles_staples <- share_diet_staples_region %>%
+  left_join(consumption_shares_staples, by = c("region", "year", "scenario", "t0", "k", "scen_type", "Units"), multiple = 'all') %>%
   mutate(commodity_cals = Staples * share_of_comm)
 
-consumption_by_comm_deciles_nonstaples <- staples_nonstaples_regional %>%
-  left_join(consumption_shares_nonstaples, by = c("region", "year", "scenario"), multiple = 'all') %>%
+consumption_by_comm_deciles_nonstaples <- share_diet_staples_region %>%
+  left_join(consumption_shares_nonstaples, by = c("region", "year", "scenario", "t0", "k", "scen_type", "Units"), multiple = 'all') %>%
   mutate(commodity_cals = NonStaples * share_of_comm)
 
 # Combine staples and non-staples information
@@ -213,9 +321,11 @@ consum_macronutrient <- consumption_by_commodity_decile %>%
   # Add in GCAM region ID
   left_join(id_gcam_regions, by = "region") %>%
   # Add population by region
-  left_join(pop_all_regions, by = c("scenario", "region", "year")) %>%
+  left_join(dt$pop_all_regions, by = c("scenario", "t0", "k", "scen_type", "region", "year")) %>%
   # Add regional macronutrient data
-  left_join(macronutrients, by = c("GCAM_region_ID", "technology")) %>%
+  left_join(macronutrients %>%
+              mutate(GCAM_region_ID = as.integer(GCAM_region_ID)),
+            by = c("GCAM_region_ID", "technology")) %>%
   rename(commodity = technology)
 
 consum_macronutrient$fat_per_100g <- as.numeric(consum_macronutrient$fat_per_100g)
@@ -224,7 +334,7 @@ consum_macronutrient$protein_per_100g <- as.numeric(consum_macronutrient$protein
 ### Avg protein supply =========================================================
 # SUM_commodity(protein/kg_c * consumption_c) / population
 protein_supply_by_commodity <- consum_macronutrient %>%
-  select(1:5, 8:13, 16, 17, grams_protein_per_kcal_comm) %>%
+  select(1:7, 14:19, 21, 22, grams_protein_per_kcal_comm) %>%
   filter(protein_per_100g != 0) %>%
   mutate(commodity_cals = commodity_cals * 1e12, # convert Pcal to kcal
          Units = "kcal") %>%
@@ -251,22 +361,24 @@ protein_oneconsumer <- consumption_by_commodity_decile %>%
   # Add in GCAM region ID
   left_join(id_gcam_regions, by = "region") %>%
   # Add population by region
-  left_join(pop_all_regions, by = c("scenario", "region", "year")) %>%
+  left_join(dt$pop_all_regions, by = c("scenario", "t0", "k", "scen_type", "region", "year")) %>%
   # Add regional macronutrient data
-  left_join(macronutrients, by = c("GCAM_region_ID", "technology")) %>%
+  left_join(macronutrients %>%
+              mutate(GCAM_region_ID = as.integer(GCAM_region_ID)),
+            by = c("GCAM_region_ID", "technology")) %>%
   rename(commodity = technology) %>%
-  select(1:5, 8:13, 16, 18, grams_protein_per_kcal_comm) %>%
+  select(1:7, 10, 14:19, 21, 22, grams_protein_per_kcal_comm) %>%
   mutate(protein_per_100g = as.numeric(protein_per_100g)) %>%
   filter(protein_per_100g != 0) %>%
   mutate(commodity_cals = commodity_cals * 1e12, # convert Pcal to kcal
          Units = "kcal") %>%
-  group_by(scenario, region, year, commodity) %>%
+  group_by(scenario, t0, k, scen_type, region, year, commodity) %>%
   reframe(numerator = (as.numeric(grams_protein_per_kcal_comm) * commodity_cals), # protein (g per kcal) * calories
           denominator = population,
           protein_supply = numerator / (denominator * 365), # convert year to day
           units = "g/capita/day") %>%
   select(-numerator, -denominator) %>% distinct() %>%
-  group_by(scenario, region, year) %>%
+  group_by(scenario, t0, k, scen_type, region, year) %>%
   # Sum protein supply by commodity to get total protein supply for each region
   reframe(value = sum(protein_supply),
           units = units,
@@ -274,8 +386,9 @@ protein_oneconsumer <- consumption_by_commodity_decile %>%
 
 
 
-pl = ggplot(protein_oneconsumer %>% filter(scenario %in% c('Reference','Flex.ds.beh1'))) +
-  geom_line(aes(year, value, color = scenario)) +
+pl = ggplot(protein_oneconsumer %>% filter(scenario %in% selected_scen)) +
+  geom_line(aes(year, value, group = scenario, color = scen_type)) +
+  scale_color_manual(values = scen_palette_refVsAllSpp) +
   facet_wrap(. ~ region) +
   labs(title = 'Total protein', y = '[g/capita/day]', x = 'year') +
   theme_light() +
@@ -288,13 +401,17 @@ pl = ggplot(protein_oneconsumer %>% filter(scenario %in% c('Reference','Flex.ds.
         legend.text = element_text(size = 50),
         legend.title = element_text(size = 60),
         title = element_text(size = 60))
-ggsave(pl, file = paste0(figures_path,"tmp_figs/macronutrients/",'protein_oneconsumer.pdf'), width = 1000, height = 1000, units = 'mm')
+ggsave(pl, file = paste0(figures_path,dir_name,"/macronutrients/",'protein_oneconsumer.png'), width = 1000, height = 1000, units = 'mm')
 
 
-pl = ggplot(protein_oneconsumer %>% filter(scenario %in% c('Reference','Flex.ds.beh1')) %>%
+pl = ggplot(protein_oneconsumer %>% filter(scenario %in% selected_scen) %>%
+              group_by(scen_type, year, units, data) %>%
+              mutate(mean_value = median(value)) %>%
               group_by(scenario, year, units, data) %>%
-              summarise(value = median(value))) +
-  geom_line(aes(year, value, color = scenario)) +
+              mutate(value = median(value))) +
+  geom_line(aes(year, mean_value, color = scen_type), linewidth = 2) +
+  geom_line(aes(year, value, group = scenario, color = scen_type)) +
+  scale_color_manual(values = scen_palette_refVsAllSpp) +
   labs(title = 'World total median protein', y = '[g/capita/day]', x = 'year') +
   theme_light() +
   theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
@@ -306,18 +423,19 @@ pl = ggplot(protein_oneconsumer %>% filter(scenario %in% c('Reference','Flex.ds.
         legend.text = element_text(size = 50),
         legend.title = element_text(size = 60),
         title = element_text(size = 60))
-ggsave(pl, file = paste0(figures_path,"tmp_figs/macronutrients/",'protein_median_oneconsumer_world.pdf'), width = 500, height = 500, units = 'mm')
+ggsave(pl, file = paste0(figures_path,dir_name,"/macronutrients/",'protein_median_oneconsumer_world.png'),
+       width = 1000, height = 500, units = 'mm', limitsize = F)
 
 
 ### Protein supply from animals ================================================
 # Same process as above but filtered for animal commodities
 animal_protein_supply_by_commodity <- consum_macronutrient %>%
-  select(1:5, 8:13, 16, 17, grams_protein_per_kcal_comm) %>%
+  select(1:7, 10, 14:19, 21, 22, grams_protein_per_kcal_comm) %>%
   filter(protein_per_100g != 0,
          commodity %in% animal_commodities) %>%
   mutate(commodity_cals = commodity_cals * 1e12, # convert Pcal to kcal
          Units = "kcal") %>%
-  group_by(scenario, region, year, commodity) %>%
+  group_by(scenario, t0, k, scen_type, region, year, commodity) %>%
   reframe(numerator = (as.numeric(grams_protein_per_kcal_comm) * commodity_cals), # protein (g per kcal) * calories
           denominator = population,
           animal_protein_supply = numerator / (denominator * 365), # convert year to day
@@ -328,7 +446,7 @@ animal_protein_supply_by_commodity <- consum_macronutrient %>%
 
 # Total regional supply
 animal_protein_supply <- animal_protein_supply_by_commodity %>%
-  group_by(scenario, region, year) %>%
+  group_by(scenario, t0, k, scen_type, region, year) %>%
   # Sum protein supply by commodity to get total protein supply for each region
   reframe(value = sum(animal_protein_supply),
           units = units) %>%
@@ -340,11 +458,13 @@ animal_protein_oneconsumer <- consumption_by_commodity_decile %>%
   # Add in GCAM region ID
   left_join(id_gcam_regions, by = "region") %>%
   # Add population by region
-  left_join(pop_all_regions, by = c("scenario", "region", "year")) %>%
+  left_join(dt$pop_all_regions, by = c("scenario", "t0", "k", "scen_type", "region", "year")) %>%
   # Add regional macronutrient data
-  left_join(macronutrients, by = c("GCAM_region_ID", "technology")) %>%
+  left_join(macronutrients %>%
+              mutate(GCAM_region_ID = as.integer(GCAM_region_ID)),
+            by = c("GCAM_region_ID", "technology")) %>%
   rename(commodity = technology) %>%
-  select(1:5, 8:14, 16, 18, grams_protein_per_kcal_comm) %>%
+  select(1:7, 10, 14:19, 21, 22, grams_protein_per_kcal_comm) %>%
   mutate(protein_per_100g = as.numeric(protein_per_100g)) %>%
   filter(protein_per_100g != 0,
          commodity %in% animal_commodities) %>%
@@ -364,11 +484,16 @@ animal_protein_oneconsumer <- consumption_by_commodity_decile %>%
   distinct()
 
 
-pl = ggplot(animal_protein_oneconsumer %>%
+pl = ggplot(protein_oneconsumer %>%
+              mutate(scen_type = substr(scen_type, 1, 3)) %>%
+              # filter(scenario %in% selected_scen) %>%
+              group_by(scen_type, region, year, units, data) %>%
+              mutate(mean_value = median(value)) %>%
               group_by(scenario, region, year, units, data) %>%
-              summarise(animal_protein_supply = sum(animal_protein_supply)) %>%
-              filter(scenario %in% c('Reference','Flex.ds.beh1'))) +
-  geom_line(aes(year, as.numeric(animal_protein_supply), color = scenario)) +
+              mutate(value = median(value))) +
+  geom_line(aes(year, mean_value, color = scen_type), linewidth = 2) +
+  geom_line(aes(year, value, group = scenario, color = scen_type)) +
+  # scale_color_manual(values = scen_palette_refVsAllSpp) +
   facet_wrap(. ~ region) +
   labs(title = 'Animal protein', y = '[g/capita/day]', x = 'year') +
   theme_light() +
@@ -381,16 +506,16 @@ pl = ggplot(animal_protein_oneconsumer %>%
         legend.text = element_text(size = 50),
         legend.title = element_text(size = 60),
         title = element_text(size = 60))
-ggsave(pl, file = paste0(figures_path,"tmp_figs/macronutrients/",'animal_protein.pdf'), width = 1000, height = 1000, units = 'mm')
+ggsave(pl, file = paste0(figures_path,dir_name,"/macronutrients/",'animal_protein.png'), width = 1000, height = 1000, units = 'mm')
 
 ### Avg fat supply =============================================================
 # SUM_commodity(fat/kg_c * consumption_c) / population
 fat_supply_by_commodity <- consum_macronutrient %>%
-  select(1:4, 8:16, 18:19) %>%
+  select(1:7, 10, 14:19, 21, 22, grams_fat_per_kcal_comm, grams_protein_per_kcal_comm) %>%
   filter(fat_per_100g != 0) %>%
   mutate(commodity_cals = commodity_cals * 1e12, # convert Pcal to kcal
          Units = "kcal") %>%
-  group_by(scenario, region, year, commodity) %>%
+  group_by(scenario, t0, k, scen_type, region, year, commodity) %>%
   reframe(numerator = (as.numeric(grams_fat_per_kcal_comm) * commodity_cals), # protein (g per kcal) * calories
           denominator = population,
           fat_supply = numerator / (denominator * 365), # convert year to day
@@ -400,7 +525,7 @@ fat_supply_by_commodity <- consum_macronutrient %>%
 
 # Total regional values
 fat_supply <- fat_supply_by_commodity %>%
-  group_by(scenario, region, year) %>%
+  group_by(scenario, t0, k, scen_type, region, year) %>%
   # Sum protein supply by commodity to get total protein supply for each region
   reframe(fat_agg = sum(fat_supply),
           units = units) %>%
@@ -413,22 +538,23 @@ fat_oneconsumer <- consumption_by_commodity_decile %>%
   # Add in GCAM region ID
   left_join(id_gcam_regions, by = "region") %>%
   # Add population by region
-  left_join(pop_all_regions, by = c("scenario", "region", "year")) %>%
+  left_join(dt$pop_all_regions, by = c("scenario", "t0", "k", "scen_type", "region", "year")) %>%
   # Add regional macronutrient data
-  left_join(macronutrients, by = c("GCAM_region_ID", "technology")) %>%
+  left_join(macronutrients %>%
+              mutate(GCAM_region_ID = as.integer(GCAM_region_ID)), by = c("GCAM_region_ID", "technology")) %>%
   rename(commodity = technology) %>%
-  select(1:5, 8:14, 15, 18, grams_fat_per_kcal_comm) %>%
+  select(1:7, 10, 14:19, 21, 22, grams_fat_per_kcal_comm, grams_protein_per_kcal_comm) %>%
   mutate(fat_per_100g = as.numeric(fat_per_100g)) %>%
   filter(fat_per_100g != 0) %>%
   mutate(commodity_cals = commodity_cals * 1e12, # convert Pcal to kcal
          Units = "kcal") %>%
-  group_by(scenario, region, year, commodity) %>%
+  group_by(scenario, t0, k, scen_type, region, year, commodity) %>%
   reframe(numerator = (as.numeric(grams_fat_per_kcal_comm) * commodity_cals), # protein (g per kcal) * calories
           denominator = population,
           fat_supply = numerator / (denominator * 365), # convert year to day
           units = "g/capita/day") %>%
   select(-numerator, -denominator) %>%
-  group_by(scenario, region, year) %>%
+  group_by(scenario, t0, k, scen_type, region, year) %>%
   # Sum fat supply by commodity to get total fat supply for each region
   reframe(value = sum(fat_supply),
           units = units,
@@ -436,9 +562,9 @@ fat_oneconsumer <- consumption_by_commodity_decile %>%
   distinct()
 
 
-pl = ggplot(fat_oneconsumer %>%
-              filter(scenario %in% c('Reference','Flex.ds.beh1'))) +
-  geom_line(aes(year, as.numeric(value), color = scenario)) +
+pl = ggplot(fat_oneconsumer%>%
+              mutate(scen_type = substr(scen_type, 1, 3))) +
+  geom_line(aes(year, as.numeric(value), group = scenario, color = scen_type)) +
   facet_wrap(. ~ region) +
   labs(title = 'Fat', y = '[g/capita/day]', x = 'year') +
   theme_light() +
@@ -451,13 +577,14 @@ pl = ggplot(fat_oneconsumer %>%
         legend.text = element_text(size = 50),
         legend.title = element_text(size = 60),
         title = element_text(size = 60))
-ggsave(pl, file = paste0(figures_path,"tmp_figs/macronutrients/",'fat_oneconsumer.pdf'), width = 1000, height = 1000, units = 'mm')
+ggsave(pl, file = paste0(figures_path,dir_name,"/macronutrients/",'fat_oneconsumer.png'), width = 1000, height = 1000, units = 'mm')
 
 pl = ggplot(fat_oneconsumer %>%
-              group_by(scenario, year, units, data) %>%
-              summarise(value = median(value)) %>%
-              filter(scenario %in% c('Reference','Flex.ds.beh1'))) +
-  geom_line(aes(year, as.numeric(value), color = scenario)) +
+              mutate(scen_type = substr(scen_type, 1, 3)) %>%
+              group_by(scen_type, year, units, data) %>%
+              mutate(mean_value = median(value))) +
+  geom_line(aes(year, as.numeric(value), group = scenario, color = scen_type)) +
+  geom_line(aes(year, as.numeric(mean_value), color = scen_type), linewidth = 2) +
   labs(title = 'World Fat', y = '[g/capita/day]', x = 'year') +
   theme_light() +
   theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
@@ -469,13 +596,13 @@ pl = ggplot(fat_oneconsumer %>%
         legend.text = element_text(size = 50),
         legend.title = element_text(size = 60),
         title = element_text(size = 60))
-ggsave(pl, file = paste0(figures_path,"tmp_figs/macronutrients/",'fat_median_oneconsumer_world.pdf'), width = 1000, height = 1000, units = 'mm')
+ggsave(pl, file = paste0(figures_path,dir_name,"/macronutrients/",'fat_median_oneconsumer_world.png'), width = 1000, height = 1000, units = 'mm')
 
 
 ## TODO: from here
 ## USDA data -------------------------------------------------------------------
 # Read in USDA data
-raw_data <- read.csv(paste0(folder_analysis_path,"data/USDA data final.csv"))
+raw_data <- read.csv(paste0(inputs_path, "nutrition/USDA_data_final.csv"))
 
 # Clean up column names
 colnames(raw_data) <- c("Food", "GCAM commodity", "Calories (kcal)", "Protein (g)",
@@ -527,7 +654,7 @@ consum_macronutrient_usda <- consumption_by_commodity_decile %>%
   # Add in GCAM region ID
   left_join(id_gcam_regions, by = "region") %>%
   # Add population by region
-  left_join(pop_all_regions, by = c("scenario", "region", "year")) %>%
+  left_join(dt$pop_all_regions, by = c("scenario", "t0", "k", "scen_type", "region", "year")) %>%
   # Add regional macronutrient data
   left_join(usda_macronutrients, by = "technology") %>%
   rename(commodity = technology) %>%
@@ -537,10 +664,10 @@ consum_macronutrient_usda <- consumption_by_commodity_decile %>%
 ### Avg protein supply =========================================================
 # SUM_commodity(protein/kg_c * consumption_c) / population
 protein_supply_by_commodity_usda <- consum_macronutrient_usda %>%
-  select(1:5, 8:16, g_protein_per_kcal_comm) %>%
+  select(1:7, 10, 14:19, 21, 22, g_protein_per_kcal_comm) %>%
   mutate(commodity_cals = commodity_cals * 1e12, # convert Pcal to kcal
          Units = "kcal") %>%
-  group_by(scenario, region, year, commodity) %>%
+  group_by(scenario, t0, k, scen_type, region, year, commodity) %>%
   reframe(numerator = (g_protein_per_kcal_comm * commodity_cals), # protein (g per kcal) * calories
           denominator = population,
           protein_supply = numerator / (denominator * 365), # convert year to day
@@ -549,7 +676,7 @@ protein_supply_by_commodity_usda <- consum_macronutrient_usda %>%
   select(-numerator, -denominator)
 
 protein_supply_usda <- protein_supply_by_commodity_usda %>%
-  group_by(scenario, region, year) %>%
+  group_by(scenario, t0, k, scen_type, region, year) %>%
   # Sum protein supply by commodity to get total protein supply for each region
   reframe(protein_agg = sum(protein_supply),
           units = units) %>%
@@ -562,21 +689,21 @@ protein_oneconsumer_usda <- consumption_by_commodity_decile %>%
   # Add in GCAM region ID
   left_join(id_gcam_regions, by = "region") %>%
   # Add population by region
-  left_join(pop_all_regions, by = c("scenario", "region", "year")) %>%
+  left_join(dt$pop_all_regions, by = c("scenario", "t0", "k", "scen_type", "region", "year")) %>%
   # Add regional macronutrient data
   left_join(usda_macronutrients, by = "technology") %>%
   rename(commodity = technology) %>%
   filter(commodity != "FiberCrop") %>%
-  select(1:5, 8:16, g_protein_per_kcal_comm) %>%
+  select(1:7, 10, 14:19, 21, 22, g_protein_per_kcal_comm) %>%
   mutate(commodity_cals = commodity_cals * 1e12, # convert Pcal to kcal
          Units = "kcal") %>%
-  group_by(scenario, region, year, commodity) %>%
+  group_by(scenario, t0, k, scen_type, region, year, commodity) %>%
   reframe(numerator = (g_protein_per_kcal_comm * commodity_cals), # protein (g per kcal) * calories
           denominator = population,
           protein_supply = numerator / (denominator * 365), # convert year to day
           units = "g/capita/day") %>%
   select(-numerator, -denominator) %>%
-  group_by(scenario, region, year) %>%
+  group_by(scenario, t0, k, scen_type, region, year) %>%
   # Sum protein supply by commodity to get total protein supply for each region
   reframe(value = sum(protein_supply),
           units = units,
@@ -584,7 +711,7 @@ protein_oneconsumer_usda <- consumption_by_commodity_decile %>%
   distinct()
 
 # compare USDA macro data to FAO, add source column, can compare commodity to commodity
-protein_compare <- bind_rows(protein_supply_agg, protein_supply_agg_usda)
+protein_compare <- protein_supply_agg_usda
 
 
 # TODO: from here, but protein_supply_agg missing
