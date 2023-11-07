@@ -12,6 +12,7 @@ source('utils_style.R')
 
 # load basic data
 load_mapping_data()
+load_nutritional_data()
 
 desired_scen <<- c('St7_Reference_original', db_scen_mapping %>% filter(grepl("spp", scen_name)) %>% pull(scen_name))
 
@@ -36,7 +37,7 @@ ref_scen_spp = 'St7_Reference_original'
 ref_scen_snr = 'St7_Reference_R-M-F'
 
 # load queries
-load(paste0(outputs_path, '/spp_queries.RData'))
+# load(paste0(outputs_path, '/spp_queries.RData'))
 
 # prj = prj_gathered
 # load_queries()
@@ -238,7 +239,8 @@ selected_scen = unique(dt$food_demand_world$scenario)
 # rfasst mortality
 # assign('prj_rd', get(load('C:/GCAM/GCAM_7.0_Claudia/gcam-core-spp/input/gcamdata/study7_analysis/outputs/rfasst_queries_all.RData')))
 # dt.mort = calc_mort_rfasst(selected_scen)
-dt.mort = get(load(paste0(outputs_path, 'mort.data.RData')))
+dt.mort = get(load(paste0(outputs_path, 'mort.data.RData'))) %>%
+  mutate(pollutant = if_else(grepl("mort_o3", method), 'O3', "PM25"))
 
 
 #### Fig: food consumption, production & demand ====
@@ -962,6 +964,7 @@ ggsave(pl, file = paste0(figures_path,dir_name,"/",'pl5_food_consumption_by_tech
 ######
 
 food_econ_basket_bill_regional = dt$food_consumption_regional %>%
+  filter(region != 'South America_Northern') %>%
   left_join(food_subsector %>%
               rename('technology' = 'subsector')) %>%
   # Pcal to kcal/capita/day
@@ -1034,34 +1037,45 @@ for (s_type in c('spp','snr')) {
           legend.title = element_text(size = 40),
           title = element_text(size = 40)) +
     guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
-  ggsave(pl_food_econ_basket_bill_diffPer_regional, file = paste0(figures_path,dir_name,"/",'pl2_food_econ_basket_bill_diffPer_regional_',s_type,'.png'),
-         width = 750, height = 450, units = 'mm', limitsize = FALSE)
+  # ggsave(pl_food_econ_basket_bill_diffPer_regional, file = paste0(figures_path,dir_name,"/",'pl2_food_econ_basket_bill_diffPer_regional_',s_type,'.png'),
+  #        width = 750, height = 450, units = 'mm', limitsize = FALSE)
+  assign(paste0('pl_food_econ_basket_bill_diffPer_regional_',s_type), pl_food_econ_basket_bill_diffPer_regional)
+  png(paste0(figures_path,dir_name,"/",'pl2_food_econ_basket_bill_diffPer_regional_',s_type,'.png'), width = 3401.575, height = 2267.717)
+  print(pl_food_econ_basket_bill_diffPer_regional)
+  dev.off()
+
 }
 
-pl_food_econ_basket_bill_diffPer_regional = ggplot(data = pld_food_econ_basket_bill_diffPer_regional) +
-  geom_bar(stat = 'identity', aes(x = reorder(region, median_value), y = median_value, fill = scen_type), alpha = 1) +
-  geom_errorbar(aes(x = region, ymin = min_value, ymax = max_value), width=0.3, colour="#757575", alpha=1, linewidth=1.2) +
-  #facet
-  facet_wrap(. ~ toupper(scen_type)) +
-  scale_fill_manual(name = 'Scenario',
-                    values = scen_palette_refVsSppVsSnr,
-                    labels = scen_palette_refVsSppVsSnr.labs,
-                    drop = F) +  # labs
-  labs(y = '% per capita/day', x = '', title = 'Annual regional percentual change in food basket per capita expenditure') +
-  # theme
-  theme_light() +
-  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
-        strip.background = element_blank(),
-        strip.text = element_text(color = 'black', size = 40),
-        strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=30, angle = 90, hjust = 1, vjust = 0.25),
-        axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 35),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40)) +
-  guides(fill = guide_legend(ncol = 2), color = guide_legend(ncol = 2))
-ggsave(pl_food_econ_basket_bill_diffPer_regional, file = paste0(figures_path,dir_name,"/",'pl2_food_econ_basket_bill_diffPer_regional.png'),
-       width = 750, height = 450, units = 'mm', limitsize = FALSE)
+leg = ggpubr::get_legend(ggplot(data = pld_food_econ_basket_bill_diffPer_regional) +
+                           geom_bar(stat = 'identity', aes(x = reorder(region, median_value), y = median_value, fill = scen_type), alpha = 1) +
+                           scale_fill_manual(name = 'Scenario',
+                                             values = scen_palette_refVsSppVsSnr,
+                                             labels = scen_palette_refVsSppVsSnr.labs,
+                                             drop = F) +
+                           theme_light() +
+                           theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+                                 legend.text = element_text(size = 35),
+                                 legend.title = element_text(size = 40)))
+blank_p <- patchwork::plot_spacer() + theme_void()
+pl_food_econ_basket_bill_diffPer_regional = cowplot::ggdraw() +
+  cowplot::draw_plot(pl_food_econ_basket_bill_diffPer_regional_snr +
+                       ylim(-12, 2.5) + ggtitle('') +
+                       geom_text(aes(x = 2, y = 2.5, label = 'SNR'), color = "black", size = 13) +
+                       theme(legend.position = 'none'), x = 0.01, y = 0.075, width = 0.48, height = 0.95) +
+  cowplot::draw_plot(pl_food_econ_basket_bill_diffPer_regional_spp +
+                       ylim(-12, 2.5) + ggtitle('') +
+                       geom_text(aes(x = 2, y = 2.5, label = 'SPP'), color = "black", size = 13) +
+                       theme(legend.position = 'none',
+                             axis.title.y = element_blank()), x = 0.5, y = 0.075, width = 0.48, height = 0.95) +
+  cowplot::draw_plot(cowplot::plot_grid(leg,blank_p,nrow=1), x = 0.25, y = -0.45, width = 1, height = 1)
+
+pl_food_econ_basket_bill_diffPer_regional = ggpubr::annotate_figure(pl_food_econ_basket_bill_diffPer_regional,
+                                                 top = ggpubr::text_grob("Annual regional percentual change in food basket per capita expenditure",
+                                                                         color = "black", size = 40))
+png(paste0(figures_path,dir_name,"/",'pl2_food_econ_basket_bill_diffPer_regional.png'), width = 3401.575, height = 2267.717)
+print(pl_food_econ_basket_bill_diffPer_regional)
+dev.off()
+
 
 
 
@@ -1484,24 +1498,23 @@ for (s_type in c('spp','snr')) {
   mort_diffAbs_regional = tidyr::pivot_wider(dt.mort %>%
                                                filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
                                                mutate(scenario = ifelse(startsWith(scenario, 'St7_Reference'), 'St7_Reference', scenario)) %>%
+                                               # consider mean deaths from pm25 and o3
+                                               group_by(region, year, scenario, pollutant) %>%
+                                               summarise(value = median(mort)) %>%
                                                # add pm + o3 deaths
-                                               group_by(region, year, scenario, method) %>%
-                                               summarise(value = sum(mort)) %>%
-                                               # compute the mean across methods
-                                               group_by(region, year, scenario, method) %>%
-                                               summarise(value = mean(value)) %>%
+                                               group_by(region, year, scenario) %>%
+                                               summarise(value = sum(value)) %>%
                                                rename(fasst_region = region) %>%
                                                ungroup(),
-                                              names_from = 'scenario', values_from = 'value') %>%
+                                             names_from = 'scenario', values_from = 'value') %>%
     rename_scen() %>%
     # compute difference between Reference and runs
     dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ . - St7_Reference)) %>%
+    dplyr::filter(!is.na(diff)) %>%
     # clean the dataset and keep only the "difference" columns
-    dplyr::select(-'St7_Reference') %>%
-    # reshape dataset and do median across impact functions
+    dplyr::select(-matches("^snr|^spp|^St7")) %>%
+    # add a column with the scenario type
     mutate(scen_type = s_type) %>%
-    group_by(fasst_region, year, scen_type) %>%
-    summarise(diff = median(diff)) %>%
     # filter desired year
     dplyr::filter(year == selected_year) %>%
     # merge with GCAM regions
@@ -1596,24 +1609,23 @@ for (s_type in c('spp','snr')) {
   mort_diffPer_regional = tidyr::pivot_wider(dt.mort %>%
                                                filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
                                                mutate(scenario = ifelse(startsWith(scenario, 'St7_Reference'), 'St7_Reference', scenario)) %>%
+                                               # consider mean deaths from pm25 and o3
+                                               group_by(region, year, scenario, pollutant) %>%
+                                               summarise(value = median(mort)) %>%
                                                # add pm + o3 deaths
-                                               group_by(region, year, scenario, method) %>%
-                                               summarise(value = sum(mort)) %>%
-                                               # compute the mean across methods
-                                               group_by(region, year, scenario, method) %>%
-                                               summarise(value = mean(value)) %>%
+                                               group_by(region, year, scenario) %>%
+                                               summarise(value = sum(value)) %>%
                                                rename(fasst_region = region) %>%
                                                ungroup(),
                                               names_from = 'scenario', values_from = 'value') %>%
     rename_scen() %>%
     # compute difference between Reference and runs
-    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(. - St7_Reference != 0, 100*(. - St7_Reference)/St7_Reference, 0))) %>%
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(St7_Reference != 0 & . != 0, 100*(. - St7_Reference)/St7_Reference, NA))) %>%
+    dplyr::filter(!is.na(diff)) %>%
     # clean the dataset and keep only the "difference" columns
-    dplyr::select(-'St7_Reference') %>%
-    # reshape dataset and do median across impact functions
+    dplyr::select(-matches("^snr|^spp|^St7")) %>%
+    # add a column with the scenario type
     mutate(scen_type = s_type) %>%
-    group_by(fasst_region, year, scen_type) %>%
-    summarise(diff = median(diff)) %>%
     # filter desired year
     dplyr::filter(year == selected_year) %>%
     # merge with GCAM regions
@@ -2904,6 +2916,7 @@ ggsave(pl_luc_co2_regional, file = paste0(figures_path,dir_name,"/",'pl2_luc_co2
   #         ungroup() %>%
   #         distinct())
 
+rm(land_use_diffAbs_world_all)
 for (s_type in c('spp','snr')) {
   land_use_diffAbs_world = tidyr::pivot_wider(dt$land_use_world %>%
                                                 filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
@@ -2922,6 +2935,12 @@ for (s_type in c('spp','snr')) {
     dplyr::group_by(Units,land_use_type,year,scen_type) %>%
     dplyr::summarise(median_value = sum(diff))
 
+  if (exists('land_use_diffAbs_world_all')) {
+    land_use_diffAbs_world_all = land_use_diffAbs_world_all %>%
+      rbind(land_use_diffAbs_world)
+  } else {
+    land_use_diffAbs_world_all = land_use_diffAbs_world
+  }
 
   pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world) +
     geom_area(aes(x = year, y = median_value, fill = land_use_type), alpha = 1) +  # Median area
@@ -2942,25 +2961,38 @@ for (s_type in c('spp','snr')) {
           legend.text = element_text(size = 35),
           legend.title = element_text(size = 40),
           title = element_text(size = 40))
-  ggsave(pl_land_use_diffAbs_world, file = paste0(figures_path,dir_name,"/",'pl2_land_use_diffAbs_world_', s_type, '.png'),
-         width = 750, height = 450, units = 'mm', limitsize = FALSE)
+  # ggsave(pl_land_use_diffAbs_world, file = paste0(figures_path,dir_name,"/",'pl2_land_use_diffAbs_world_', s_type, '.png'),
+  #        width = 750, height = 450, units = 'mm', limitsize = FALSE)
+  png(paste0(figures_path,dir_name,"/",'pl2_land_use_diffAbs_world_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_land_use_diffAbs_world)
+  dev.off()
 
   assign(paste0('plt_landuse_',s_type), pl_land_use_diffAbs_world)
 }
 
-pl_land_use_diffAbs_world = ggpubr::ggarrange(
-  plt_landuse_spp + theme(plot.title = element_blank()),
-  plt_landuse_snr + theme(axis.title.y = element_blank(),
-                          plot.title = element_blank()),
-  ncol = 2, align = "h", common.legend = TRUE,
-  legend = 'bottom'
-)
-pl_land_use_diffAbs_world = ggpubr::annotate_figure(pl_land_use_diffAbs_world,
-                                            top = ggpubr::text_grob("Global median land-use abs change between SPP & SNR and Reference",
-                                                            color = "black", size = 40))
 
-ggsave(pl_land_use_diffAbs_world, file = paste0(figures_path,dir_name,"/",'pl2_land_use_diffAbs_world.png'),
-       width = 750, height = 450, units = 'mm', limitsize = FALSE)
+pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world_all) +
+  geom_area(aes(x = year, y = median_value, fill = land_use_type), alpha = 1) +  # Median area
+  geom_hline(aes(yintercept = 0)) +
+  scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                    breaks = land_use_order_palette) +
+  facet_wrap(. ~ scen_type) +
+  # labs
+  labs(y = expression(paste('Thous. ', km^2, ' difference')), x = '', title = 'Global median land-use abs change between SPP & SNR and Reference') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+png(paste0(figures_path,dir_name,"/",'pl2_land_use_diffAbs_world.png'), width = 3401.575, height = 2267.717)
+print(pl_land_use_diffAbs_world)
+dev.off()
 
 
 #####
@@ -3873,6 +3905,61 @@ pl_water_irr_rfd_world = ggpubr::annotate_figure(pl_water_irr_rfd_world,
                                                                          color = "black", size = 40))
 ggsave(pl_water_irr_rfd_world, file = paste0(figures_path,dir_name,"/",'pl_water_irr_rfd_world.png'),
        width = 750, height = 600, units = 'mm', limitsize = FALSE)
+
+
+pl_water_irr_rfd_world = ggplot(data = dt$water_irr_rfd_world %>%
+                                  mutate(scen_type = substr(scen_type, 1, 3)) %>%
+                                  group_by(Units, scenario, year, water) %>%
+                                  mutate(value = sum(value)) %>%
+                                  ungroup() %>%
+                                  rename_scen() %>%
+                                  dplyr::group_by(year, scen_type, water) %>%
+                                  dplyr::mutate(median_value = median(value)) %>%
+                                  dplyr::mutate(min_value = min(value)) %>%
+                                  dplyr::mutate(max_value = max(value))) +
+  geom_line(aes(x = year, y = value, group = interaction(scen_type,scenario,water), color = interaction(water,scen_type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = interaction(water,scen_type)), linewidth = 1.5, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(water,scen_type)), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = irr_rfd_scenario_palette, name = 'Scenario', labels = irr_rfd_scenario.labs,
+                     drop = FALSE) +
+  scale_fill_manual(values = irr_rfd_scenario_palette, name = 'Scenario', labels = irr_rfd_scenario.labs,
+                    drop = FALSE) +
+  # labs
+  labs(y = expression(paste('thous.',km^2)), x = '', title = paste('Annual World IRR and RFD water consumption')) +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  geom_text(aes(x = 2010, y = 2075, label = 'IRR'), color = "black", size = 13) +
+  geom_text(aes(x = 2010, y = 9555, label = 'RFD'), color = "black", size = 13)
+
+pl_water_irr_rfd_world_up = pl_water_irr_rfd_world + ylim(8500,11500)
+pl_water_irr_rfd_world_down = pl_water_irr_rfd_world + ylim(1900,2200)
+
+pl_water_irr_rfd_world = ggpubr::ggarrange(
+  pl_water_irr_rfd_world_up + theme(plot.title = element_blank()),
+  pl_water_irr_rfd_world_down + theme(plot.title = element_blank()),
+  ncol = 1, align = "v", common.legend = TRUE, heights = c(3,1),
+  legend = 'bottom'
+)
+pl_water_irr_rfd_world = ggpubr::annotate_figure(pl_water_irr_rfd_world,
+                                                 top = ggpubr::text_grob("Annual World IRR and RFD water consumption",
+                                                                         color = "black", size = 40))
+
+
+png(paste0(figures_path,dir_name, '/pl_water_irr_rfd_world.png'), width = 3401.575, height = 2267.717)
+print(pl_water_irr_rfd_world)
+dev.off()
+
+
+
 
 
 ## water total
