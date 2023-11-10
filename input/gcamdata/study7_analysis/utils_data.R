@@ -33,7 +33,24 @@ load_mapping_data = function() {
 
 # load nutritional data
 load_nutritional_data = function() {
+  # Map of the supplysectors and technologies
   food_subsector <<- read.csv(paste0(inputs_path,"nutrition/food_subsector.csv"))
+
+  # Read in MDER (calculated exogenously, FAO data)
+  mder <- read.csv(paste0(inputs_path,"nutrition/MDER.csv")) %>%
+    rename(mder_units = unit) %>%
+    mutate(mder_units = 'kcal/capita/day')
+  # Macronutrients: this comes from module_aglu_L100.FAO_SUA_connection
+  gcamdata_macro <- read.csv(paste0(inputs_path,"nutrition/gcamdata_macronutrient.csv"))
+  gcamdata_macro[is.na(gcamdata_macro)] <- 0
+
+  # Gram of Protein & Fat Per Kcal data
+  GramProteinFatPerKcal <- readr::read_csv(paste0(inputs_path,"nutrition/GramProteinFatPerKcal.csv"))
+
+
+  # micronutrients data
+  micronutrients = read.csv(file = paste0(inputs_path,'nutrition/micronutrients_computed.csv')) %>%
+    select(-1)
 
   # compute socioeconomic data
   # Socio-econ data
@@ -82,7 +99,7 @@ load_nutritional_data = function() {
     mutate(total_regional_pop = sum(total_pop)) %>%
     ungroup()
 
-  weighted_pop <<- ssp_data_final %>%
+  total_regional_pop <<- ssp_data_final %>%
     filter(year >= year_s, year <= year_e) %>%
     select(-scenario, -iso) %>%
     # get GCAM regions instead of country names
@@ -98,11 +115,12 @@ load_nutritional_data = function() {
     # compute GCAM population by sex and age for each country
     mutate(weighted_demographics = demo_share * weight * population)
 
-  weighted_pop_sex_age <<- weighted_pop %>%
+  weighted_pop_sex_age <<- total_regional_pop %>%
     select(-pop_units, -sub_pop, -total_pop, -demo_share, -weight) %>%
-    group_by(variable, year, region) %>%
+    group_by(scenario, t0, k, scen_type, variable, year, region) %>%
     # sum the weighted averages for each country into GCAM regions
-    summarize(pop_sex_age = sum(weighted_demographics))
+    summarize(pop_sex_age = sum(weighted_demographics)) %>%
+    ungroup()
 }
 
 

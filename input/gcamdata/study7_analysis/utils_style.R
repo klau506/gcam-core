@@ -60,43 +60,43 @@ scen_palette_refVsSpp = c(
 )
 
 scen_palette_refVsSppVsSnr = c(
-  'snr' = '#500f96',
-  'spp' = '#198a22',
-  'St7' = '#7d0c1a'
+  'SPP' = '#198a22',
+  'SNR' = '#500f96',
+  'REF' = '#7d0c1a'
 )
-scen_palette_refVsSppVsSnr.labs <- c("SNR", 'SPP', 'REF')
-names(scen_palette_refVsSppVsSnr.labs) = c("snr", "spp",'St7')
+scen_palette_refVsSppVsSnr.labs <- c('SPP', "SNR", 'REF')
+names(scen_palette_refVsSppVsSnr.labs) = c("SPP", "SNR", 'REF')
 
 
 irr_rfd_scenario_palette = c(
-  'RFD.snr' = '#500f96',
-  'IRR.snr' = '#9b50e6',
-  'RFD.spp' = '#198a22',
-  'IRR.spp' = '#5bcf74',
-  'RFD.St7' = '#7d0c1a',
-  'IRR.St7' = '#e65566'
+  'RFD.SNR' = '#500f96',
+  'IRR.SNR' = '#9b50e6',
+  'RFD.SPP' = '#198a22',
+  'IRR.SPP' = '#5bcf74',
+  'RFD.REF' = '#7d0c1a',
+  'IRR.REF' = '#e65566'
 )
 irr_rfd_scenario.labs <- c("SNR - RFD", 'SNR - IRR',
                            'SPP - RFD', 'SPP - IRR',
                            'REF - RFD', 'REF - IRR')
-names(irr_rfd_scenario.labs) = c("RFD.snr", "IRR.snr",
-                                 "RFD.spp", "IRR.spp",
-                                 'RFD.St7', 'IRR.St7')
+names(irr_rfd_scenario.labs) = c("RFD.SNR", "IRR.SNR",
+                                 "RFD.SPP", "IRR.SPP",
+                                 'RFD.REF', 'IRR.REF')
 
 macronutrients_scenario_palette = c(
-  'gProteinPerCapita.snr' = '#500f96',
-  'gFatPerCapita.snr' = '#9b50e6',
-  'gProteinPerCapita.spp' = '#198a22',
-  'gFatPerCapita.spp' = '#5bcf74',
-  'gProteinPerCapita.St7' = '#7d0c1a',
-  'gFatPerCapita.St7' = '#e65566'
+  'gProteinPerCapita.SNR' = '#500f96',
+  'gFatPerCapita.SNR' = '#9b50e6',
+  'gProteinPerCapita.SPP' = '#198a22',
+  'gFatPerCapita.SPP' = '#5bcf74',
+  'gProteinPerCapita.REF' = '#7d0c1a',
+  'gFatPerCapita.REF' = '#e65566'
 )
 macronutrients_scenario.labs <- c('SNR - Protein',"SNR - Fat",
                                   'SPP - Protein','SPP - Fat',
                                   'REF - Protein','REF - Fat')
-names(macronutrients_scenario.labs) = c("gProteinPerCapita.snr", "gFatPerCapita.snr",
-                                        "gProteinPerCapita.spp", "gFatPerCapita.spp",
-                                        'gProteinPerCapita.St7', 'gFatPerCapita.St7')
+names(macronutrients_scenario.labs) = c("gProteinPerCapita.SNR", "gFatPerCapita.SNR",
+                                        "gProteinPerCapita.SPP", "gFatPerCapita.SPP",
+                                        'gProteinPerCapita.REF', 'gFatPerCapita.REF')
 
 land_use_scenario_palette =
   c('Cropland' = 'chocolate4',
@@ -120,4 +120,23 @@ rename_scen = function(data) {
   #                            scenario))
 
   return(invisible(data))
+}
+
+order_facets = function(data) {
+
+  data = data %>%
+    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+    dplyr::mutate(scen_type = ifelse(scen_type == 'ST7', 'REF', scen_type))
+  data$scen_type = factor(data$scen_type, levels = c('SPP','SNR','REF'))
+
+  return(invisible(data))
+}
+
+# return vector of colors: color_positive if the position of the value in the values'
+# vector is positive, color_negative otherwise
+color_by_sign = function(values) {
+  color_positive = 6
+  color_negative = 7
+  color_vector <- ifelse(values > 0, color_positive, color_negative)
+  return(color_vector)
 }
