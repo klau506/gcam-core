@@ -32,7 +32,9 @@ module_aglu_L100.regional_ag_an_for_prices <- function(command, ...) {
       # price data
       FILE = "aglu/FAO/GCAMDATA_FAOSTAT_ProducerPrice_170Regs_185PrimaryItems_2010to2020",
       FILE = "aglu/FAO/GCAMDATA_FAOSTAT_ForExportPrice_214Regs_Roundwood_1973to2020","L110.IO_Coefs_pulp",
-      FILE="aglu/A_forest_mapping")
+      FILE="aglu/A_forest_mapping",
+      # Supply utilization for crops
+      "L109.ag_ALL_Mt_R_C_Y")
 
   MODULE_OUTPUTS <-
     c("L1321.ag_prP_R_C_75USDkg",
@@ -200,7 +202,7 @@ module_aglu_L100.regional_ag_an_for_prices <- function(command, ...) {
                                          RegP_interpolated)) %>%
       select(GCAM_region_ID, GCAM_commodity, RegP_interpolated)
 
-    ## Fill in missing where needed ----
+    ## 2.8. Fill in missing where needed ----
     L100.FAO_ag_an_ProducerPrice_R_C_Y <-
       L100.FAO_ag_an_ProducerPrice_R_C_Y_0 %>%
       left_join(L100.FAO_ag_an_ProducerPrice_R_C_Y_1_interpolated,
@@ -234,8 +236,41 @@ module_aglu_L100.regional_ag_an_for_prices <- function(command, ...) {
         )
     }
 
+    ## 2.9. Update producer prices when domestic production is zero
+    # This is important for pricing opening stocks
+    # We want to use imported price (world price) as opposed  to the value interpolated above using relative regional index
 
+    # Calculate import prices for crops
 
+    L1321.ag_tradedP_C_75USDkg <-
+      L109.ag_ALL_Mt_R_C_Y %>%
+      select(GCAM_region_ID, GCAM_commodity, year, GrossExp_Mt, GrossImp_Mt) %>%
+      filter(year == max(MODEL_BASE_YEARS),
+             GCAM_commodity%in% aglu.TRADED_CROPS) %>%
+      inner_join(L100.FAO_ag_an_ProducerPrice_R_C_Y, by = c("GCAM_region_ID", "GCAM_commodity")) %>%
+      mutate(Exp_wtd_price = GrossExp_Mt * value) %>%
+      group_by(GCAM_commodity) %>%
+      summarise(GrossExp_Mt = sum(GrossExp_Mt),
+                Exp_wtd_price = sum(Exp_wtd_price)) %>%
+      ungroup() %>%
+      mutate(tradedP = Exp_wtd_price / GrossExp_Mt) %>%
+      select(GCAM_commodity, tradedP)
+
+    L100.FAO_ag_an_ProducerPrice_R_C_Y %>%
+      left_join(L1321.ag_tradedP_C_75USDkg, by = "GCAM_commodity") %>%
+      left_join(
+        L109.ag_ALL_Mt_R_C_Y %>%
+          filter(year == max(MODEL_BASE_YEARS), GCAM_commodity%in% aglu.TRADED_CROPS) %>%
+          select(GCAM_commodity, GCAM_region_ID, Prod_Mt) %>%
+          filter(Prod_Mt == 0), by = c("GCAM_region_ID", "GCAM_commodity")
+      ) %>%
+      mutate(value = if_else(Prod_Mt == 0 & !is.na(Prod_Mt), tradedP, value)) %>%
+      select(-Prod_Mt, -tradedP) ->
+      L100.FAO_ag_an_ProducerPrice_R_C_Y
+
+    assertthat::assert_that(
+      L100.FAO_ag_an_ProducerPrice_R_C_Y %>% filter(is.na(value)) %>% nrow == 0
+    )
 
     ## clean more ----
     rm(L100.FAO_ag_an_ProducerPrice_R_C_Y_0,
