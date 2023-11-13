@@ -7,23 +7,23 @@
 # Column types: clcccn
 # ----------
 GCAM_commodity,storage_model,supplysector,minicam_energy_input,technology,logit.exponent
-Corn,T,regional corn,total corn,ag-storage,2
-FiberCrop,T,regional fibercrop,total fibercrop,ag-storage,2
-Fruits,F,regional fruits,total fruits,ag-storage,2
-Legumes,T,regional legumes,total legumes,ag-storage,2
-MiscCrop,T,regional misccrop,total misccrop,ag-storage,2
-NutsSeeds,T,regional nuts_seeds,total nuts_seeds,ag-storage,2
-OilCrop,T,regional oilcrop,total oilcrop,ag-storage,2
-OtherGrain,T,regional othergrain,total othergrain,ag-storage,2
-OilPalm,T,regional oilpalm,total oilpalm,ag-storage,2
-Rice,T,regional rice,total rice,ag-storage,2
-RootTuber,T,regional root_tuber,total root_tuber,ag-storage,2
-Soybean,T,regional soybean,total soybean,ag-storage,2
-SugarCrop,T,regional sugarcrop,total sugarcrop,ag-storage,2
-Vegetables,F,regional vegetables,total vegetables,ag-storage,2
-Wheat,T,regional wheat,total wheat,ag-storage,2
-Beef,F,regional beef,total beef,ag-storage,2
-Dairy,F,regional dairy,total dairy,ag-storage,2
-Pork,F,regional pork,total pork,ag-storage,2
-Poultry,F,regional poultry,total poultry,ag-storage,2
-SheepGoat,F,regional sheepgoat,total sheepgoat,ag-storage,2
+Corn,T,regional corn,total corn,ag-storage,1
+FiberCrop,T,regional fibercrop,total fibercrop,ag-storage,1
+Fruits,F,regional fruits,total fruits,ag-storage,1
+Legumes,T,regional legumes,total legumes,ag-storage,1
+MiscCrop,T,regional misccrop,total misccrop,ag-storage,1
+NutsSeeds,T,regional nuts_seeds,total nuts_seeds,ag-storage,1
+OilCrop,T,regional oilcrop,total oilcrop,ag-storage,1
+OtherGrain,T,regional othergrain,total othergrain,ag-storage,1
+OilPalm,T,regional oilpalm,total oilpalm,ag-storage,1
+Rice,T,regional rice,total rice,ag-storage,1
+RootTuber,T,regional root_tuber,total root_tuber,ag-storage,1
+Soybean,T,regional soybean,total soybean,ag-storage,1
+SugarCrop,T,regional sugarcrop,total sugarcrop,ag-storage,1
+Vegetables,F,regional vegetables,total vegetables,ag-storage,1
+Wheat,T,regional wheat,total wheat,ag-storage,1
+Beef,F,regional beef,total beef,ag-storage,1
+Dairy,F,regional dairy,total dairy,ag-storage,1
+Pork,F,regional pork,total pork,ag-storage,1
+Poultry,F,regional poultry,total poultry,ag-storage,1
+SheepGoat,F,regional sheepgoat,total sheepgoat,ag-storage,1
