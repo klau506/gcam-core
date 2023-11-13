@@ -1081,7 +1081,7 @@ print(pl_food_econ_basket_bill_diffPer_world)
 dev.off()
 #####
 
-#### Fig: ghg emissions ============================ DONE
+#### Fig: GHG emissions ============================ DONE
 # =============================
 ## WORLD
 ## -- annual trend
@@ -1128,9 +1128,9 @@ dev.off()
 
 
 ## -- map (abs difference)
-rm(ghg_diffAbs_regional)
+rm(ghg_diffAbs_regional_all)
 for (s_type in c('spp','snr')) {
-  tmp = tidyr::pivot_wider(dt$ghg_regional %>%
+  ghg_diffAbs_regional = tidyr::pivot_wider(dt$ghg_regional %>%
                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
                              select(-c(scen_type,t0,k)), names_from = 'scenario', values_from = 'value') %>%
@@ -1154,22 +1154,21 @@ for (s_type in c('spp','snr')) {
     # merge with world data
     dplyr::rename('adm0_a3' = 'ISO 3')
 
-  if (exists('ghg_diffAbs_regional')) {
-    ghg_diffAbs_regional = ghg_diffAbs_regional %>%
-      rbind(tmp)
+  if (exists('ghg_diffAbs_regional_all')) {
+    ghg_diffAbs_regional_all = ghg_diffAbs_regional_all %>%
+      rbind(ghg_diffAbs_regional)
   } else {
-    ghg_diffAbs_regional = tmp
+    ghg_diffAbs_regional_all = ghg_diffAbs_regional
   }
-
-  ghg_diffAbs_regional_plt = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                 dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                 dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                 dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                               tmp, by = 'adm0_a3')
 
   pl_ghg_diffAbs_map <- ggplot() +
     # color map by regions
-    geom_sf(data = order_facets(ghg_diffAbs_regional_plt), aes(fill = -median_value)) +
+    geom_sf(data = order_facets(merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                        dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                        dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                        dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                      ghg_diffAbs_regional, by = 'adm0_a3')),
+            aes(fill = -median_value)) +
     scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                          mid = '#f7f7f7', midpoint = 0,
                          name = expression(paste(MtCO[2],' difference'))) +
@@ -1202,7 +1201,7 @@ pl_ghg_diffAbs_map <- ggplot() +
                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                        ghg_diffAbs_regional, by = 'adm0_a3') %>%
+                        ghg_diffAbs_regional_all, by = 'adm0_a3') %>%
             order_facets(.),
           aes(fill = -median_value)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
@@ -1233,9 +1232,9 @@ dev.off()
 
 
 ## -- map (per difference)
-rm(ghg_diffPer_regional)
+rm(ghg_diffPer_regional_all)
 for (s_type in c('spp','snr')) {
-  tmp = tidyr::pivot_wider(dt$ghg_regional %>%
+  ghg_diffPer_regional = tidyr::pivot_wider(dt$ghg_regional %>%
                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
                              select(-c(scen_type,t0,k)), names_from = 'scenario', values_from = 'value') %>%
@@ -1258,22 +1257,21 @@ for (s_type in c('spp','snr')) {
     # merge with world data
     dplyr::rename('adm0_a3' = 'ISO 3')
 
-  if (exists('ghg_diffPer_regional')) {
-    ghg_diffPer_regional = ghg_diffPer_regional %>%
-      rbind(tmp)
+  if (exists('ghg_diffPer_regional_all')) {
+    ghg_diffPer_regional_all = ghg_diffPer_regional_all %>%
+      rbind(ghg_diffPer_regional)
   } else {
-    ghg_diffPer_regional = tmp
+    ghg_diffPer_regional_all = ghg_diffPer_regional
   }
-
-  ghg_diffPer_regional_plt = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                     dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                     dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                     dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                                   tmp, by = 'adm0_a3')
 
   pl_ghg_diffPer_map <- ggplot() +
     # color map by regions
-    geom_sf(data = order_facets(ghg_diffPer_regional_plt), aes(fill = -per_diff)) +
+    geom_sf(data = order_facets(merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                        dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                        dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                        dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                      ghg_diffPer_regional, by = 'adm0_a3')),
+            aes(fill = -per_diff)) +
     scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                          mid = '#f7f7f7', midpoint = 0,
                          name = expression(paste(MtCO[2],' difference'))) +
@@ -1306,7 +1304,7 @@ pl_ghg_diffPer_map <- ggplot() +
                          dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
                          dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
                          dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                       ghg_diffPer_regional, by = 'adm0_a3') %>%
+                       ghg_diffPer_regional_all, by = 'adm0_a3') %>%
             order_facets(.),
           aes(fill = -per_diff)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
@@ -1570,16 +1568,15 @@ for (s_type in c('spp','snr')) {
     mort_diffAbs_regional_all = mort_diffAbs_regional
   }
 
-  mort_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                  dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                  dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                  dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
-                                  rowwise(),
-                                mort_diffAbs_regional, by = 'adm0_a3')
-
   pl_mort_diffAbs_regional_map <- ggplot() +
     # color map by regions
-    geom_sf(data = order_facets(mort_diffAbs_regional), aes(fill = -diff)) +
+    geom_sf(data = order_facets(merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                        dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                        dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                        dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                        rowwise(),
+                                      mort_diffAbs_regional, by = 'adm0_a3')),
+            aes(fill = -diff)) +
     scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                          mid = '#f7f7f7', midpoint = 0,
                          name = expression(paste("Avoided premature mortalities (nº)","\n"))) +
@@ -1605,16 +1602,15 @@ for (s_type in c('spp','snr')) {
   dev.off()
 }
 
-mort_diffAbs_regional_all = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
-                                rowwise(),
-                              mort_diffAbs_regional_all, by = 'adm0_a3')
-
 pl_mort_diffAbs_regional_map <- ggplot() +
   # color map by regions
-  geom_sf(data = order_facets(mort_diffAbs_regional_all), aes(fill = -diff)) +
+  geom_sf(data = order_facets(merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                      dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                      dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                      dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                      rowwise(),
+                                    mort_diffAbs_regional_all, by = 'adm0_a3')),
+          aes(fill = -diff)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided premature mortalities (nº)","\n"))) +
@@ -1639,6 +1635,117 @@ pl_mort_diffAbs_regional_map <- ggplot() +
   labs(title = paste0("Annual avoided deaths in ", selected_year))
 png(paste0(figures_path,dir_name, '/pl2_mort_diffAbs_regional_map.png'), width = 3401.575, height = 1267.717)
 print(pl_mort_diffAbs_regional_map)
+dev.off()
+
+## -- map (per difference)
+rm(mort_diffPer_regional_all)
+for (s_type in c('spp','snr')) {
+  mort_diffPer_regional = tidyr::pivot_wider(dt.mort %>%
+                                               filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                               mutate(scenario = ifelse(startsWith(scenario, 'St7_Reference'), 'St7_Reference', scenario)) %>%
+                                               # consider mean deaths from pm25 and o3
+                                               group_by(region, year, scenario, pollutant) %>%
+                                               summarise(value = median(mort)) %>%
+                                               # add pm + o3 deaths
+                                               group_by(region, year, scenario) %>%
+                                               summarise(value = sum(value)) %>%
+                                               rename(fasst_region = region) %>%
+                                               ungroup(),
+                                             names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(St7_Reference != 0, 100 * (. - St7_Reference) / St7_Reference, 0))) %>%
+    # mutate(per_diff = 100*diff/St7_Reference)
+    dplyr::filter(!is.na(diff)) %>%
+    # clean the dataset and keep only the "difference" columns
+    # dplyr::select(-matches("^snr|^spp|^St7")) %>%
+    rename(Ref_deaths = St7_Reference,
+           Scen_deaths = get(paste0('base_scen_',s_type))) %>%
+    # add a column with the scenario type
+    mutate(scen_type = s_type) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    left_join(rfasst::fasst_reg %>%
+                dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
+              multiple = 'all') %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO3')
+
+  if (exists('mort_diffPer_regional_all')) {
+    mort_diffPer_regional_all = mort_diffPer_regional_all %>%
+      rbind(mort_diffPer_regional)
+  } else {
+    mort_diffPer_regional_all = mort_diffPer_regional
+  }
+
+  pl_mort_diffPer_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = order_facets(merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                        dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                        dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                        dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                        rowwise(),
+                                      mort_diffPer_regional, by = 'adm0_a3')),
+            aes(fill = -diff)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = expression(paste("Avoided premature mortalities (%)","\n"))) +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # title
+    labs(title = paste0("Annual avoided deaths in ", selected_year))
+  png(paste0(figures_path,dir_name, '/pl2_mort_diffPer_regional_map_',s_type,'.png'), width = 3401.575, height = 2267.717)
+  print(pl_mort_diffPer_regional_map)
+  dev.off()
+}
+
+pl_mort_diffPer_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = order_facets(merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                      dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                      dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                      dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
+                                      rowwise(),
+                                    mort_diffPer_regional_all, by = 'adm0_a3')),
+          aes(fill = -diff)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = expression(paste("Avoided premature mortalities (%)","\n"))) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 30), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # title
+  labs(title = paste0("Annual avoided deaths in ", selected_year))
+png(paste0(figures_path,dir_name, '/pl2_mort_diffPer_regional_map.png'), width = 3401.575, height = 1267.717)
+print(pl_mort_diffPer_regional_map)
 dev.off()
 
 
@@ -2003,15 +2110,15 @@ for (s_type in c('spp','snr')) {
     water_consumption_diffPer_regional_all = water_consumption_diffPer_regional
   }
 
-  water_consumption_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                                       water_consumption_diffPer_regional, by = 'adm0_a3')
   # plot
   pl_water_consumption_diffPer_map <- ggplot() +
     # color map by regions
-    geom_sf(data = water_consumption_diffPer_regional, aes(fill = diff)) +
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         water_consumption_diffPer_regional, by = 'adm0_a3'),
+            aes(fill = diff)) +
     scale_fill_gradient2(low = "#0DA800", high = "#C60000",
                          mid = '#f7f7f7', midpoint = 0,
                          name = expression(paste('Percentual difference'))) +
@@ -2400,6 +2507,225 @@ png(paste0(figures_path,dir_name, '/pl2_ch4_regional_fixedScales.png'), width = 
 print(pl_ch4_regional)
 dev.off()
 
+
+## maps
+rm(ch4_diffAbs_regional_all)
+for (s_type in c('spp','snr')) {
+  ch4_diffAbs_regional = tidyr::pivot_wider(dt$nonco2_luc %>% filter(ghg == 'CH4') %>%
+                                                  filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                                  mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                                  select(-c(scen_type,t0,k)) %>%
+                                                  group_by(region,Units,scenario,ghg,year) %>%
+                                                  summarise(value = sum(value)),
+                                                names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ . - St7_Reference)) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('ch4_diffAbs_regional_all')) {
+    ch4_diffAbs_regional_all = ch4_diffAbs_regional_all %>%
+      rbind(ch4_diffAbs_regional)
+  } else {
+    ch4_diffAbs_regional_all = ch4_diffAbs_regional
+  }
+
+  # plot
+  pl_ch4_diffAbs_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         ch4_diffAbs_regional, by = 'adm0_a3') %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Mt') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_ch4_diffAbs_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_ch4_diffAbs_regional_map)
+  dev.off()
+}
+
+
+pl_ch4_diffAbs_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       ch4_diffAbs_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'Mt') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided CH4 emissions according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_ch4_diffAbs_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_ch4_diffAbs_regional_map)
+dev.off()
+
+
+## maps (per diff)
+rm(ch4_diffPer_regional_all)
+for (s_type in c('spp','snr')) {
+  ch4_diffPer_regional = tidyr::pivot_wider(dt$nonco2_luc %>% filter(ghg == 'CH4') %>%
+                                                  filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                                  mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                                  select(-c(scen_type,t0,k)) %>%
+                                                  group_by(region,Units,scenario,ghg,year) %>%
+                                                  summarise(value = sum(value)),
+                                                names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(St7_Reference != 0, 100 * (. - St7_Reference) / St7_Reference, 0))) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('ch4_diffPer_regional_all')) {
+    ch4_diffPer_regional_all = ch4_diffPer_regional_all %>%
+      rbind(ch4_diffPer_regional)
+  } else {
+    ch4_diffPer_regional_all = ch4_diffPer_regional
+  }
+
+  # plot
+  pl_ch4_diffPer_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         ch4_diffPer_regional, by = 'adm0_a3') %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Percentual difference') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_ch4_diffPer_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_ch4_diffPer_regional_map)
+  dev.off()
+}
+
+
+pl_ch4_diffPer_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       ch4_diffPer_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'Percentual difference') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided CH4 emissions according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_ch4_diffPer_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_ch4_diffPer_regional_map)
+dev.off()
+
+
 #####
 
 #### Fig: N2O ====================================== DONE
@@ -2512,6 +2838,189 @@ png(paste0(figures_path,dir_name, '/pl2_n2o_regional_fixedScales.png'), width = 
 print(pl_n2o_regional)
 dev.off()
 
+
+
+## maps
+rm(n2o_diffAbs_regional_all)
+for (s_type in c('spp','snr')) {
+  n2o_diffAbs_regional = tidyr::pivot_wider(dt$nonco2_luc %>% filter(ghg == 'N2O') %>%
+                                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                              select(-c(scen_type,t0,k)) %>%
+                                              group_by(region,Units,scenario,ghg,year) %>%
+                                              summarise(value = sum(value)),
+                                            names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ . - St7_Reference)) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('n2o_diffAbs_regional_all')) {
+    n2o_diffAbs_regional_all = n2o_diffAbs_regional_all %>%
+      rbind(n2o_diffAbs_regional)
+  } else {
+    n2o_diffAbs_regional_all = n2o_diffAbs_regional
+  }
+
+  # plot
+  pl_n2o_diffAbs_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         n2o_diffAbs_regional, by = 'adm0_a3') %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Mt') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_n2o_diffAbs_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_n2o_diffAbs_regional_map)
+  dev.off()
+
+
+## maps (per diff)
+rm(n2o_diffPer_regional_all)
+for (s_type in c('spp','snr')) {
+  n2o_diffPer_regional = tidyr::pivot_wider(dt$nonco2_luc %>% filter(ghg == 'N2O') %>%
+                                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                              select(-c(scen_type,t0,k)) %>%
+                                              group_by(region,Units,scenario,ghg,year) %>%
+                                              summarise(value = sum(value)),
+                                            names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(St7_Reference != 0, 100 * (. - St7_Reference) / St7_Reference, 0))) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('n2o_diffPer_regional_all')) {
+    n2o_diffPer_regional_all = n2o_diffPer_regional_all %>%
+      rbind(n2o_diffPer_regional)
+  } else {
+    n2o_diffPer_regional_all = n2o_diffPer_regional
+  }
+
+  # plot
+  pl_n2o_diffPer_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         n2o_diffPer_regional, by = 'adm0_a3') %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Percentual difference') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_n2o_diffPer_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_n2o_diffPer_regional_map)
+  dev.off()
+}
+
+
+pl_n2o_diffPer_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       n2o_diffPer_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'Percentual difference') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided N2O emissions according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_n2o_diffPer_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_n2o_diffPer_regional_map)
+dev.off()
+
 #####
 
 #### Fig: LUC CO2 ================================== DONE
@@ -2622,6 +3131,225 @@ pl_luc_co2_regional = ggplot(data = dt$luc %>%
         title = element_text(size = 40))
 png(paste0(figures_path,dir_name, '/pl2_luc_co2_regional_fixedScales.png'), width = 3401.575, height = 3267.717)
 print(pl_luc_co2_regional)
+dev.off()
+
+
+
+## maps
+rm(luc_diffAbs_regional_all)
+for (s_type in c('spp','snr')) {
+  luc_diffAbs_regional = tidyr::pivot_wider(dt$luc %>%
+                                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                              select(-c(scen_type,t0,k)) %>%
+                                              group_by(region,Units,scenario,ghg,year) %>%
+                                              summarise(value = sum(value)),
+                                            names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ . - St7_Reference)) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('luc_diffAbs_regional_all')) {
+    luc_diffAbs_regional_all = luc_diffAbs_regional_all %>%
+      rbind(luc_diffAbs_regional)
+  } else {
+    luc_diffAbs_regional_all = luc_diffAbs_regional
+  }
+
+  # plot
+  pl_luc_diffAbs_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         luc_diffAbs_regional, by = 'adm0_a3') %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'MTC') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_luc_diffAbs_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_luc_diffAbs_regional_map)
+  dev.off()
+}
+
+
+pl_luc_diffAbs_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       luc_diffAbs_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'MTC') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided LUC CO2 emissions according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_luc_diffAbs_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_luc_diffAbs_regional_map)
+dev.off()
+
+
+## maps (per diff)
+rm(luc_diffPer_regional_all)
+for (s_type in c('spp','snr')) {
+  luc_diffPer_regional = tidyr::pivot_wider(dt$luc %>%
+                                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                              select(-c(scen_type,t0,k)) %>%
+                                              group_by(region,Units,scenario,ghg,year) %>%
+                                              summarise(value = sum(value)),
+                                            names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(St7_Reference != 0, 100 * (. - St7_Reference) / St7_Reference, 0))) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('luc_diffPer_regional_all')) {
+    luc_diffPer_regional_all = luc_diffPer_regional_all %>%
+      rbind(luc_diffPer_regional)
+  } else {
+    luc_diffPer_regional_all = luc_diffPer_regional
+  }
+
+  # plot
+  pl_luc_diffPer_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         luc_diffPer_regional, by = 'adm0_a3') %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Percentual difference') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_luc_diffPer_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_luc_diffPer_regional_map)
+  dev.off()
+}
+
+
+pl_luc_diffPer_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       luc_diffPer_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'Percentual difference') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided LUC CO2 emissions according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_luc_diffPer_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_luc_diffPer_regional_map)
 dev.off()
 
 #####
@@ -2862,15 +3590,14 @@ for (s_type in c('spp','snr')) {
     forestation_diffAbs_regional_all = forestation_diffAbs_regional
   }
 
-  forestation_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                                       forestation_diffAbs_regional, by = 'adm0_a3')
   # plot
   pl_forestation_diffAbs_regional_map <- ggplot() +
     # color map by regions
-    geom_sf(data = forestation_diffAbs_regional %>%
+    geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                           dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                           dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                           dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                         forestation_diffAbs_regional, by = 'adm0_a3') %>%
               order_facets(), aes(fill = median_value)) +
     scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                          mid = '#f7f7f7', midpoint = 0,
@@ -3305,6 +4032,222 @@ pl__fertilizer_demand_regional = ggplot(data = dt$fertilizer_consumption_regiona
 png(paste0(figures_path,dir_name, '/pl2_fertilizer_demand_bySector_regional.png'), width = 3401.575, height = 3267.717)
 print(pl__fertilizer_demand_regional)
 dev.off()
+
+
+## maps
+rm(fertilizer_demand_diffAbs_regional_all)
+for (s_type in c('spp','snr')) {
+  fertilizer_demand_diffAbs_regional = tidyr::pivot_wider(dt$fertilizer_consumption_regional %>%
+                                                      filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                                      mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                                      select(-c(scen_type,t0,k)),
+                                                    names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ . - St7_Reference)) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('fertilizer_demand_diffAbs_regional_all')) {
+    fertilizer_demand_diffAbs_regional_all = fertilizer_demand_diffAbs_regional_all %>%
+      rbind(fertilizer_demand_diffAbs_regional)
+  } else {
+    fertilizer_demand_diffAbs_regional_all = fertilizer_demand_diffAbs_regional
+  }
+
+  fertilizer_demand_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                       fertilizer_demand_diffAbs_regional, by = 'adm0_a3')
+  # plot
+  pl_fertilizer_demand_diffAbs_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = fertilizer_demand_diffAbs_regional %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Mt N') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_fertilizer_demand_diffAbs_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_fertilizer_demand_diffAbs_regional_map)
+  dev.off()
+}
+
+
+pl_fertilizer_demand_diffAbs_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       fertilizer_demand_diffAbs_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'Mt N') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided fertilizer demand according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_fertilizer_demand_diffAbs_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_fertilizer_demand_diffAbs_regional_map)
+dev.off()
+
+## maps (per diff)
+rm(fertilizer_demand_diffPer_regional_all)
+for (s_type in c('spp','snr')) {
+  fertilizer_demand_diffPer_regional = tidyr::pivot_wider(dt$fertilizer_consumption_regional %>%
+                                                      filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                                      mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                                      select(-c(scen_type,t0,k)),
+                                                    names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(St7_Reference != 0, 100 * (. - St7_Reference)/St7_Reference, 0))) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute median
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    dplyr::group_by(Units,year,scen_type,region) %>%
+    dplyr::summarise(median_value = sum(diff)) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(median_value = ifelse(region == 'South America_Northern', 0, median_value))
+
+  if (exists('fertilizer_demand_diffPer_regional_all')) {
+    fertilizer_demand_diffPer_regional_all = fertilizer_demand_diffPer_regional_all %>%
+      rbind(fertilizer_demand_diffPer_regional)
+  } else {
+    fertilizer_demand_diffPer_regional_all = fertilizer_demand_diffPer_regional
+  }
+
+  fertilizer_demand_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                       fertilizer_demand_diffPer_regional, by = 'adm0_a3')
+  # plot
+  pl_fertilizer_demand_diffPer_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = fertilizer_demand_diffPer_regional %>%
+              order_facets(), aes(fill = -median_value)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Percentual difference') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_fertilizer_demand_diffPer_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_fertilizer_demand_diffPer_regional_map)
+  dev.off()
+}
+
+
+pl_fertilizer_demand_diffPer_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       fertilizer_demand_diffPer_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -median_value)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'Percentual difference') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided fertilizer demand according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_fertilizer_demand_diffPer_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_fertilizer_demand_diffPer_regional_map)
+dev.off()
+
 #####
 
 #### Fig: irr vs rfd water ========================= DONE
@@ -3450,6 +4393,232 @@ pl_water_share_world = ggplot(data = dt$water_irr_rfd_world %>%
 
 png(paste0(figures_path,dir_name, '/pl2_water_shareRFD_world.png'), width = 3401.575, height = 3001.575) #2267.717
 print(pl_water_share_world)
+dev.off()
+
+
+## maps
+rm(water_irr_reduction_diffAbs_regional_all)
+for (s_type in c('spp','snr')) {
+  water_irr_reduction_diffAbs_regional = tidyr::pivot_wider(dt$water_irr_rfd_regional %>%
+                                                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                                              select(-c(scen_type,t0,k)) %>%
+                                                              # compute total irr - rfd consumption
+                                                              dplyr::group_by(Units,year,scenario,region,water) %>%
+                                                              dplyr::summarise(value = sum(value)) %>%
+                                                              # consider only IRR water
+                                                              tidyr::pivot_wider(names_from = water, values_from = value) %>%
+                                                              dplyr::mutate(value = IRR) %>%
+                                                              select(-c(IRR,RFD)),
+                                                          names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ . - St7_Reference)) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute scen_type
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(diff = ifelse(region == 'South America_Northern', 0, diff))
+
+  if (exists('water_irr_reduction_diffAbs_regional_all')) {
+    water_irr_reduction_diffAbs_regional_all = water_irr_reduction_diffAbs_regional_all %>%
+      rbind(water_irr_reduction_diffAbs_regional)
+  } else {
+    water_irr_reduction_diffAbs_regional_all = water_irr_reduction_diffAbs_regional
+  }
+
+  water_irr_reduction_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                               dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                               dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                               dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                             water_irr_reduction_diffAbs_regional, by = 'adm0_a3')
+  # plot
+  pl_water_irr_reduction_diffAbs_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = water_irr_reduction_diffAbs_regional %>%
+              order_facets(), aes(fill = -diff)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = expression(paste('Thous ', km^2))) +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_water_irr_reduction_diffAbs_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_water_irr_reduction_diffAbs_regional_map)
+  dev.off()
+}
+
+
+pl_water_irr_reduction_diffAbs_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       water_irr_reduction_diffAbs_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -diff)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = expression(paste('Thous ', km^2))) +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided IRR water demand according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_water_irr_reduction_diffAbs_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_water_irr_reduction_diffAbs_regional_map)
+dev.off()
+
+## maps (per diff)
+rm(water_irr_reduction_diffPer_regional_all)
+for (s_type in c('spp','snr')) {
+  water_irr_reduction_diffPer_regional = tidyr::pivot_wider(dt$water_irr_rfd_regional %>%
+                                                              filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
+                                                              mutate(scenario = ifelse(scen_type == 'St7_Reference', 'St7_Reference', scenario)) %>%
+                                                              select(-c(scen_type,t0,k)) %>%
+                                                              # compute total irr - rfd consumption
+                                                              dplyr::group_by(Units,year,scenario,region,water) %>%
+                                                              dplyr::summarise(value = sum(value)) %>%
+                                                              # compute irr share (%)
+                                                              tidyr::pivot_wider(names_from = water, values_from = value) %>%
+                                                              # dplyr::mutate(value = 100 * IRR / (RFD + IRR)) %>%
+                                                              mutate(value = IRR) %>%
+                                                              select(-c(IRR,RFD)),
+                                                          names_from = 'scenario', values_from = 'value') %>%
+    rename_scen() %>%
+    # compute difference between Reference and runs
+    dplyr::mutate_at(vars(matches("^snr|^spp")), list(diff = ~ ifelse(St7_Reference != 0, 100 * (. - St7_Reference)/St7_Reference, 0))) %>%
+    # clean the dataset and keep only the "difference" columns
+    dplyr::select(-'St7_Reference') %>%
+    # reshape dataset
+    tidyr::pivot_longer(cols = matches("^snr|^spp"), names_to = 'scenario') %>%
+    # compute scen_type
+    dplyr::mutate(scen_type = toupper(substr(scenario, 1, 3))) %>%
+    # filter desired year
+    dplyr::filter(year == selected_year) %>%
+    # merge with GCAM regions
+    dplyr::mutate('GCAM Region' = region) %>%
+    inner_join(GCAM_reg, by = 'GCAM Region', multiple = "all") %>%
+    # merge with world data
+    dplyr::rename('adm0_a3' = 'ISO 3') %>%
+    ungroup() %>%
+    # fix southAm-Northern
+    dplyr::mutate(diff = ifelse(region == 'South America_Northern', 0, diff))
+
+  if (exists('water_irr_reduction_diffPer_regional_all')) {
+    water_irr_reduction_diffPer_regional_all = water_irr_reduction_diffPer_regional_all %>%
+      rbind(water_irr_reduction_diffPer_regional)
+  } else {
+    water_irr_reduction_diffPer_regional_all = water_irr_reduction_diffPer_regional
+  }
+
+  water_irr_reduction_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                                               dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                               dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                               dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                             water_irr_reduction_diffPer_regional, by = 'adm0_a3')
+  # plot
+  pl_water_irr_reduction_diffPer_regional_map <- ggplot() +
+    # color map by regions
+    geom_sf(data = water_irr_reduction_diffPer_regional %>%
+              order_facets(), aes(fill = -diff)) +
+    scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                         mid = '#f7f7f7', midpoint = 0,
+                         name = 'Avoided percentage') +
+    # theme
+    guides(fill = guide_colorbar(title.position = "left")) +
+    theme_light() +
+    theme(axis.title=element_blank(),
+          axis.text=element_blank(),
+          axis.ticks=element_blank(),
+          panel.grid.major = element_blank(),
+          panel.grid.minor = element_blank(),
+          panel.border = element_blank(),
+          panel.background = element_rect(fill = "#ffffff",
+                                          colour = "#ffffff"),
+          legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+          legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+          strip.text = element_text(size = 40, color = 'black'),
+          strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+    # facet
+    facet_wrap(. ~ scen_type)
+  png(paste0(figures_path,dir_name, '/pl2_water_irr_reduction_diffPer_regional_map_', s_type, '.png'), width = 3401.575, height = 2267.717)
+  print(pl_water_irr_reduction_diffPer_regional_map)
+  dev.off()
+}
+
+
+pl_water_irr_reduction_diffPer_regional_map <- ggplot() +
+  # color map by regions
+  geom_sf(data = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+                         dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                         dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                       water_irr_reduction_diffPer_regional_all, by = 'adm0_a3') %>%
+            order_facets(), aes(fill = -diff)) +
+  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
+                       mid = '#f7f7f7', midpoint = 0,
+                       name = 'Avoided percentage') +
+  # theme
+  guides(fill = guide_colorbar(title.position = "left")) +
+  theme_light() +
+  theme(axis.title=element_blank(),
+        axis.text=element_blank(),
+        axis.ticks=element_blank(),
+        panel.grid.major = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_rect(fill = "#ffffff",
+                                        colour = "#ffffff"),
+        legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
+        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
+  # facet
+  facet_wrap(. ~ scen_type) +
+  labs(title = "Global median avoided IRR water demand according to SPP & SNR")
+
+png(paste0(figures_path,dir_name, '/pl_water_irr_reduction_diffPer_regional_map.png'), width = 3401.575, height = 2267.717)
+print(pl_water_irr_reduction_diffPer_regional_map)
 dev.off()
 
 
@@ -3706,9 +4875,9 @@ for (s_type in c('spp','snr')) {
 # =============================
 ### MAPS
 ## -- map (abs difference)
-rm(croploss_diffAbs_regional_all)
+rm(croploss_diffPer_regional_all)
 for (s_type in c('spp','snr')) {
-  croploss_diffAbs_regional = tidyr::pivot_wider(dt.croploss %>%
+  croploss_diffPer_regional = tidyr::pivot_wider(dt.croploss %>%
                                                filter(scenario %in% c(get(paste0('ref_scen_',s_type)),get(paste0('base_scen_',s_type)))) %>%
                                                mutate(scenario = ifelse(startsWith(scenario, 'St7_Reference'), 'St7_Reference', scenario)) %>%
                                                # consider mean crop loss from wheat, rice, maize, and soy
@@ -3738,23 +4907,23 @@ for (s_type in c('spp','snr')) {
     # merge with world data
     dplyr::rename('adm0_a3' = 'ISO3')
 
-  if (exists('croploss_diffAbs_regional_all')) {
-    croploss_diffAbs_regional_all = croploss_diffAbs_regional_all %>%
-      rbind(croploss_diffAbs_regional)
+  if (exists('croploss_diffPer_regional_all')) {
+    croploss_diffPer_regional_all = croploss_diffPer_regional_all %>%
+      rbind(croploss_diffPer_regional)
   } else {
-    croploss_diffAbs_regional_all = croploss_diffAbs_regional
+    croploss_diffPer_regional_all = croploss_diffPer_regional
   }
 
-  croploss_diffAbs_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+  croploss_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
                                   dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
                                   dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
                                   dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
                                   rowwise(),
-                                croploss_diffAbs_regional, by = 'adm0_a3')
+                                croploss_diffPer_regional, by = 'adm0_a3')
 
-  pl_croploss_diffAbs_regional_map <- ggplot() +
+  pl_croploss_diffPer_regional_map <- ggplot() +
     # color map by regions
-    geom_sf(data = order_facets(croploss_diffAbs_regional), aes(fill = -diff)) +
+    geom_sf(data = order_facets(croploss_diffPer_regional), aes(fill = -diff)) +
     scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                          mid = '#f7f7f7', midpoint = 0,
                          name = expression(paste("Avoided relative crop loss (%)","\n"))) +
@@ -3775,21 +4944,21 @@ for (s_type in c('spp','snr')) {
           strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
     # title
     labs(title = paste0("Annual avoided relative crop loss in ", selected_year))
-  png(paste0(figures_path,dir_name, '/pl2_croploss_diffAbs_regional_map_',s_type,'.png'), width = 3401.575, height = 2267.717)
-  print(pl_croploss_diffAbs_regional_map)
+  png(paste0(figures_path,dir_name, '/pl2_croploss_diffPer_regional_map_',s_type,'.png'), width = 3401.575, height = 2267.717)
+  print(pl_croploss_diffPer_regional_map)
   dev.off()
 }
 
-croploss_diffAbs_regional_all = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
+croploss_diffPer_regional = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
                                     dplyr::mutate('adm0_a3' = if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
                                     dplyr::mutate('adm0_a3' = if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
                                     dplyr::filter(!adm0_a3 %in% c("ATA","FJI")) %>%
                                     rowwise(),
-                                  croploss_diffAbs_regional_all, by = 'adm0_a3')
+                                  croploss_diffPer_regional_all, by = 'adm0_a3')
 
-pl_croploss_diffAbs_regional_map <- ggplot() +
+pl_croploss_diffPer_regional_map <- ggplot() +
   # color map by regions
-  geom_sf(data = order_facets(croploss_diffAbs_regional_all), aes(fill = -diff)) +
+  geom_sf(data = order_facets(croploss_diffPer_regional), aes(fill = -diff)) +
   scale_fill_gradient2(low = "#C60000", high = "#0DA800",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided relative crop loss (%)","\n"))) +
@@ -3812,8 +4981,8 @@ pl_croploss_diffAbs_regional_map <- ggplot() +
         strip.background =element_rect(fill="white"), title = element_text(size = 40)) +
   # title
   labs(title = paste0("Annual avoided relative crop loss in ", selected_year))
-png(paste0(figures_path,dir_name, '/pl2_croploss_diffAbs_regional_map.png'), width = 3401.575, height = 1267.717)
-print(pl_croploss_diffAbs_regional_map)
+png(paste0(figures_path,dir_name, '/pl2_croploss_diffPer_regional_map.png'), width = 3401.575, height = 1267.717)
+print(pl_croploss_diffPer_regional_map)
 dev.off()
 
 
@@ -3910,49 +5079,36 @@ dev.off()
 ### Fig: summary fig ==============================
 # =============================
 
-## SDG 15 ==================
-# forestation
-data_summary_forestation = tidyr::pivot_wider(land_use_regional %>%
-                                                filter(land_use_type == 'Forest'),
-                                              names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # sum all forest types
-  dplyr::group_by(region,Units,land_use_type,year,scenario) %>%
-  dplyr::summarise(value = sum(value)) %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = median(value),
-                   min_value = min(value),
-                   max_value = max(value)) %>%
-  # add column indicating the impact
-  mutate(impact = 're-forestation',
-         year = as.numeric(year))
-
-data_summary_cropland = tidyr::pivot_wider(land_use_regional %>%
-                                             filter(land_use_type == 'Cropland'),
-                                           names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ 100*(. - Reference)/Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -min(value),
-                   max_value = -max(value)) %>%
-  # add column indicating the impact
-  mutate(impact = 'avoided cropland area',
-         year = as.numeric(year))
-
-data_summary_crop_loss = unique(crop_loss$ryl.mi) %>%
+population_by_fasst_region = total_regional_pop %>%
+  select(year, country_name, country_pop = total_pop, GCAM_region_ID, region) %>%
+  distinct(.) %>%
+  dplyr::filter(year == selected_year) %>%
+  left_join(iso_gcam_regions, by = c('GCAM_region_ID','country_name')) %>%
+  rename('adm0_a3' = 'iso') %>%
+  mutate(adm0_a3 = toupper(adm0_a3)) %>%
   # merge with GCAM regions
+  left_join(rfasst::fasst_reg %>%
+              dplyr::rename('adm0_a3' = 'subRegionAlt'), by = 'adm0_a3',
+            multiple = 'all') %>%
+  # compute total population by fasst-region
+  group_by(year, fasst_region) %>%
+  mutate(fasst_region_pop = sum(country_pop)) %>%
+  # compute the population-weigth by fasst_region
+  mutate(pop_w = country_pop / fasst_region_pop)
+
+## SDG 15 ================= DONE
+#####
+# forestation
+data_summary_afforestation = forestation_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = median_value) %>%
+  distinct(.) %>%
+  # add column indicating the impact
+  mutate(impact = 'afforestation',
+         year = as.numeric(year)) %>%
+  order_facets()
+
+data_summary_croploss = croploss_diffPer_regional_all %>%
+  # merge with ISO codes and GCAM regions
   left_join(rfasst::fasst_reg %>%
               dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
             multiple = 'all') %>%
@@ -3961,191 +5117,106 @@ data_summary_crop_loss = unique(crop_loss$ryl.mi) %>%
                dplyr::rename('ISO3' = 'iso'),
              by = 'ISO3') %>%
   left_join(id_gcam_regions, by = 'GCAM_region_ID') %>%
-  # median by GCAM region
-  group_by(region, scenario, unit, crop_name, year) %>%
-  summarise(value = median(value)) %>%
-  ungroup() %>%
-  # keep only meaningful columns
-  select(unit, year, scenario, value, crop_name, region) %>% distinct(., .keep_all = TRUE) %>%
-  # reshape dataset
-  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select('unit', 'region','year','crop_name',matches("_diff$")) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median by region and pollutant
-  group_by(unit, region, year, crop_name) %>%
-  summarise(median_value = median(value),
-            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
-  # compute the total deaths by region (pm25 + o3)
-  group_by(unit, region, year) %>%
-  summarise(median_value = -sum(median_value),
-            min_value = -sum(min_value),
-            max_value = -sum(max_value)) %>%
-  ungroup() %>%
+  select(-c(adm0_a3,region_GCAM3)) %>% distinct(.) %>%
+  # merge with weighted population
+  left_join(population_by_fasst_region %>%
+              select(year, GCAM_region_ID, fasst_region, ISO3 = adm0_a3, pop_w) %>%
+              distinct(.),
+            by = c('GCAM_region_ID','fasst_region','ISO3','year')) %>%
+  filter(!is.na(pop_w)) %>%
+  # compute country associated deaths
+  mutate(country_av_deaths = -diff * pop_w) %>%
+  # aggregate the deaths by GCAM-regions
+  group_by(year, scen_type, GCAM_region_ID, region) %>%
+  summarise(value = sum(country_av_deaths)) %>%
   # add column indicating that's "mort"
   mutate(impact = 'avoided crop loss',
-         Units = 'People',
-         year = as.numeric(as.character(year)))
+         Units = '%',
+         year = as.numeric(as.character(year))) %>%
+  order_facets()
 
 
-data_summary_fertilizer = tidyr::pivot_wider(fertilizer_consumption_regional %>%
-                                               group_by(Units, scenario, year, region) %>%
-                                               summarise(value = sum(value)) %>%
-                                               ungroup(),
-                                             names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -min(value),
-                   max_value = -max(value)) %>%
+data_summary_fertilizer = fertilizer_demand_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = median_value) %>%
+  distinct(.) %>%
   # add column indicating the impact
   mutate(impact = 'avoided fertilizer usage',
-         year = as.numeric(year))
+         year = as.numeric(year)) %>%
+  order_facets()
+#####
 
-
-## SDG 6 ==================
+## SDG 6 ================== DONE
+#####
 # total water consumption
-data_summary_water = tidyr::pivot_wider(water_consumption_regional, names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ 100*(. - Reference)/Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
+data_summary_water = water_consumption_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = diff) %>%
+  mutate(value = -value) %>%
+  distinct(.) %>%
   # add column indicating the impact
   mutate(impact = 'avoided water consumption',
-         year = as.numeric(year))
+         year = as.numeric(year))%>%
+  order_facets()
 
 # irr water consumption
-data_summary_irr_water = tidyr::pivot_wider(water_irr_rfd_regional %>%
-                                              filter(water == 'IRR') %>%
-                                              group_by(Units,scenario,region,water,year) %>%
-                                              summarise(value = sum(value)) %>%
-                                              ungroup(),
-                                            names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ 100*(. - Reference)/Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
+data_summary_irr_water = water_irr_reduction_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = diff) %>%
+  mutate(value = -value) %>%
+  distinct(.) %>%
   # add column indicating the impact
   mutate(impact = 'avoided irrigated water consumption',
-         year = as.numeric(year))
+         Units = '%',
+         year = as.numeric(year))%>%
+  order_facets()
 
-## SDG 13 ==================
+#####
+
+## SDG 13 ================= DONE
+#####
 # total GHG
-data_summary_ghg = tidyr::pivot_wider(ghg_regional, names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ 100*(. - Reference)/Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
+data_summary_ghg = ghg_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = per_diff) %>%
+  mutate(value = -value) %>%
+  distinct(.) %>%
   # add column indicating that's "ghg"
   mutate(impact = 'avoided GHG emissions',
-         year = as.numeric(year))
+         year = as.numeric(year)) %>%
+  order_facets()
 
 # agricultural CH4
-data_summary_ch4 = tidyr::pivot_wider(nonco2_luc %>% filter(ghg == 'CH4') %>%
-                                        group_by(Units,scenario,ghg,year,region) %>%
-                                        summarise(value = sum(value)) %>%
-                                        ungroup(),
-                                      names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ 100*(. - Reference)/Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
-  # add column indicating that's "ghg"
+data_summary_ch4 = ch4_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = median_value) %>%
+  mutate(value = -value) %>%
+  distinct(.) %>%
+  # add column indicating that's "ch4"
   mutate(impact = 'avoided CH4 emissions',
-         year = as.numeric(year))
-
+         year = as.numeric(year)) %>%
+  order_facets()
 
 # agricultural N2O
-data_summary_n2o = tidyr::pivot_wider(nonco2_luc %>% filter(ghg == 'N2O') %>%
-                                        group_by(Units,scenario,ghg,year,region) %>%
-                                        summarise(value = sum(value)) %>%
-                                        ungroup(),
-                                      names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ 100*(. - Reference)/Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
-  # add column indicating that's "ghg"
+data_summary_n2o = n2o_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = median_value) %>%
+  mutate(value = -value) %>%
+  distinct(.) %>%
+  # add column indicating that's "n2o"
   mutate(impact = 'avoided N2O emissions',
-         year = as.numeric(year))
+         year = as.numeric(year)) %>%
+  order_facets()
 
 # agricultural LUC CO2
-data_summary_luc_co2 = tidyr::pivot_wider(luc %>%
-                                            group_by(Units,scenario,ghg,year,region) %>%
-                                            summarise(value = sum(value)) %>%
-                                            ungroup(),
-                                          names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ 100*(. - Reference)/Reference)) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select(-c(matches("[0-9]$"),'Reference',other_cols)) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median
-  dplyr::group_by(region,Units,year) %>%
-  dplyr::summarise(median_value = -median(value),
-                   min_value = -quantile(value, probs= 0.05, na.rm = TRUE),
-                   max_value = -quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
-  # add column indicating that's "ghg"
+data_summary_luc_co2 = luc_diffPer_regional_all %>%
+  select(Units, year, scen_type, region, value = median_value) %>%
+  mutate(value = -value) %>%
+  distinct(.) %>%
+  # add column indicating that's "LUC CO2"
   mutate(impact = 'avoided LUC CO2 emissions',
-         year = as.numeric(year))
+         year = as.numeric(year)) %>%
+  order_facets()
+#####
 
-
-## SDG 3 ==================
-data_summary_mort = mort %>%
-  # merge with GCAM regions
+## SDG 3 ================== DONE
+#####
+data_summary_mort = mort_diffPer_regional_all %>%
+  # merge with ISO codes and GCAM regions
   left_join(rfasst::fasst_reg %>%
               dplyr::rename('ISO3' = 'subRegionAlt'), by = 'fasst_region',
             multiple = 'all') %>%
@@ -4154,86 +5225,83 @@ data_summary_mort = mort %>%
                dplyr::rename('ISO3' = 'iso'),
              by = 'ISO3') %>%
   left_join(id_gcam_regions, by = 'GCAM_region_ID') %>%
-  # keep only meaningful columns
-  select(year, scenario, method, value, pollutant, region) %>% distinct(., .keep_all = TRUE) %>%
-  # reshape dataset
-  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
-  # compute difference between Reference and runs
-  dplyr::mutate_at(vars(starts_with(prefix)), list(diff = ~ ifelse(. - Reference != 0, 100*(. - Reference)/Reference, 0))) %>%
-  # clean the dataset and keep only the "difference" columns
-  dplyr::select('region','year','method','pollutant',matches("_diff$")) %>%
-  # reshape dataset
-  tidyr::pivot_longer(cols = starts_with(prefix), names_to = 'scenario') %>%
-  # compute median by region and pollutant
-  group_by(region, year, pollutant) %>%
-  summarise(median_value = median(value),
-            min_value = quantile(value, probs= 0.05, na.rm = TRUE),
-            max_value = quantile(value, probs= 0.95, na.rm = TRUE)) %>%
-  ungroup() %>%
-  # compute the total deaths by region (pm25 + o3)
-  group_by(region, year) %>%
-  summarise(median_value = -sum(median_value),
-            min_value = -sum(min_value),
-            max_value = -sum(max_value)) %>%
-  ungroup() %>%
+  select(-c(adm0_a3,region_GCAM3)) %>% distinct(.) %>%
+  # merge with weighted population
+  left_join(population_by_fasst_region %>%
+              select(year, GCAM_region_ID, fasst_region, ISO3 = adm0_a3, pop_w) %>%
+              distinct(.),
+            by = c('GCAM_region_ID','fasst_region','ISO3','year')) %>%
+  filter(!is.na(pop_w)) %>%
+  # compute country associated deaths
+  mutate(country_ref_deaths = Ref_deaths * pop_w) %>%
+  mutate(country_scen_deaths = Scen_deaths * pop_w) %>%
+  # aggregate the deaths by GCAM-regions
+  group_by(year, scen_type, GCAM_region_ID, region) %>%
+  summarise(value_ref = sum(country_ref_deaths),
+            value_scen = sum(country_scen_deaths)) %>%
+  # compute percentual difference (avoided deaths)
+  mutate(value = -100 * (value_scen - value_ref) / value_ref) %>%
   # add column indicating that's "mort"
   mutate(impact = 'avoided premautre deaths',
-         Units = 'People',
-         year = as.numeric(year))
+         year = as.numeric(year)) %>%
+  order_facets()
+#####
 
 ## plot ===================
-data_summary = bind_rows(remove_attributes(data_summary_mort),
-                         remove_attributes(data_summary_ghg),
-                         remove_attributes(data_summary_ch4),
-                         remove_attributes(data_summary_n2o),
-                         # remove_attributes(data_summary_luc_co2),
-                         remove_attributes(data_summary_irr_water),
-                         remove_attributes(data_summary_water),
-                         remove_attributes(data_summary_forestation),
-                         # remove_attributes(data_summary_cropland),
-                         remove_attributes(data_summary_crop_loss),
-                         remove_attributes(data_summary_fertilizer)
-) %>%
+data_summary = bind_rows(data_summary_mort,
+                         data_summary_ghg,
+                         data_summary_ch4,
+                         data_summary_n2o,
+                         data_summary_luc_co2,
+                         data_summary_irr_water,
+                         data_summary_water,
+                         data_summary_afforestation,
+                         data_summary_croploss,
+                         data_summary_fertilizer) %>%
   filter(year == selected_year)
-data_summary$impact = factor(data_summary$impact,
-                             levels = c('avoided crop loss',
-                                        're-forestation',
-                                        'avoided water consumption',
-                                        'avoided irrigated water consumption',
-                                        'avoided GHG emissions',
-                                        # 'avoided LUC CO2 emissions',
-                                        'avoided CH4 emissions',
-                                        'avoided N2O emissions',
-                                        # 'avoided cropland area',
-                                        'avoided fertilizer usage',
-                                        'avoided premautre deaths'))
+# data_summary$impact = factor(data_summary$impact,
+#                              levels = c('avoided crop loss',
+#                                         're-forestation',
+#                                         'avoided water consumption',
+#                                         'avoided irrigated water consumption',
+#                                         'avoided GHG emissions',
+#                                         # 'avoided LUC CO2 emissions',
+#                                         'avoided CH4 emissions',
+#                                         'avoided N2O emissions',
+#                                         # 'avoided cropland area',
+#                                         'avoided fertilizer usage',
+#                                         'avoided premature deaths'))
 data_summary$region = forcats::fct_rev(data_summary$region)
 
-pl_summary = ggplot(data_summary, aes(x = impact, y = region, fill = median_value)) +
+pl_summary = ggplot(data_summary %>%
+                      filter(abs(value) < 100), aes(x = impact, y = region, fill = value)) +
   geom_tile(width = 1, height = 1) +
   coord_equal() +
-  scale_fill_gradient2(low = "#C60000", high = "#0DA800",
-                       mid = '#f7f7f7', midpoint = 0,
+  scale_fill_gradientn(colours = c('#C11717','#CFD835','white','#6CD060','#208A13'),
+                       limits = c(-100, 100),
                        name = '% difference') +
   guides(fill = guide_colorbar(title.position = "top")) +
   scale_y_discrete(position = 'right') +
+  # facet
+  facet_wrap(. ~ scen_type) +
   # labs
-  labs(y = '', x = '', title = 'Percentual regional\ndifference of different\nsystem-wide effects') +
+  labs(y = '', x = '', title = 'Percentual regional difference of different system-wide effects') +
   # theme
   theme_light() +
   theme(legend.position = 'right', legend.direction = 'vertical',
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=20, angle = -45, hjust = 0),
-        axis.text.y = element_text(size=20),
-        legend.text = element_text(size = 35),
+        axis.text.x = element_text(size=30, angle = -45, hjust = 0),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 30),
         legend.title = element_text(size = 40),
         title = element_text(size = 40),
-        legend.key.height = unit(3, "cm"),
-        legend.key.width = unit(1.5, "cm"))
-ggsave(pl_summary, file = paste0(figures_path,dir_name,"/",'pl4_summary.pdf'),
-       width = 300, height = 500, units = 'mm', limitsize = FALSE)
+        legend.key.height = unit(1.5, "cm"),
+        legend.key.width = unit(1, "cm"))
+png(paste0(figures_path,dir_name, '/pl_summary.png'), width = 3001.575, height = 3001.575)
+print(pl_summary)
+dev.off()
 
 
 data_summary$region = forcats::fct_rev(data_summary$region)

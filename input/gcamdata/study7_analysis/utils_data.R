@@ -396,7 +396,7 @@ load_rfasst_queries = function() {
 
 
 # load queries
-load_queries = function(onlyFoodConsumption = FALSE) {
+load_queries = function(onlyFoodConsumption = FALSE, onlyVegetativeCarbonStock = FALSE) {
 
   if (onlyFoodConsumption) {
     food_consumption_world <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
@@ -426,6 +426,24 @@ load_queries = function(onlyFoodConsumption = FALSE) {
       separate(nestingSector3, into = c("nestingSector3", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'food_consumption_regional')
+
+  } else if (onlyVegetativeCarbonStock) {
+    carbon_stock_world <<- getQuery(prj,"vegetative carbon stock by region") %>%
+      filter(scenario %in% selected_scen) %>%
+      group_by(Units, scenario, year, landleaf) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'carbon_stock_world')
+
+    carbon_stock_regional <<- getQuery(prj,"vegetative carbon stock by region") %>%
+      filter(scenario %in% selected_scen) %>%
+      group_by(Units, scenario, year, region, landleaf) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'carbon_stock_regional')
+
   } else {
 
     if (!exists('list_queries')) {
