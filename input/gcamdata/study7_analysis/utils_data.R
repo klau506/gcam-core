@@ -26,6 +26,8 @@ load_mapping_data = function() {
   staples <<- c("Corn", "OtherGrain", "Rice", "RootTuber", "Wheat")
   # animal commodities
   animal_commodities <<- c("Beef", "Dairy", "OtherMeat_Fish", "Pork", "Poultry", "SheepGoat")
+  # plant protein commodities
+  plant_prot_commodities <<- c("Legumes", "NutsSeeds")
 
 }
 
@@ -132,7 +134,7 @@ load_basic_data = function() {
 }
 
 
-# compute premature mortality through rfasst
+# compute premature mortality due to AP through rfasst
 calc_mort_rfasst = function(scen) {
 
   rm(mort.data)
@@ -187,6 +189,32 @@ calc_mort_rfasst = function(scen) {
   return(mort.data)
 }
 
+
+
+# compute crop loss due to AP through rfasst
+calc_croploss_rfasst = function(scen) {
+
+  rm(croploss.data)
+
+  for (i in 1:length(scen)) {
+    print(i)
+    rm(list = clean_pkg_outputs())
+    ryl.mi.croploss = rfasst::m4_get_ryl_mi(prj_name = 'rfasst_diets.dat',
+                                    rdata_name = 'C:/GCAM/GCAM_7.0_Claudia/gcam-core-spp/input/gcamdata/study7_analysis/outputs/rfasst_queries_all.RData',
+                                    scen_name = scen[i], final_db_year = 2050, map = F) %>%
+    dplyr::mutate('scenario' = scen[i])
+
+    if(exists('croploss.data')) {
+      croploss.data = rbind(croploss.data, ryl.mi.croploss)
+    } else {
+      croploss.data = ryl.mi.croploss
+    }
+  }
+
+  rm(list = clean_pkg_outputs())
+  save(croploss.data, file = paste0(outputs_path, 'croploss.data.RData'))
+  return(croploss.data)
+}
 
 
 
