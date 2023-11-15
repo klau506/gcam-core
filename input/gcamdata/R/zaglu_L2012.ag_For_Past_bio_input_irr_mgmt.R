@@ -202,6 +202,8 @@ module_aglu_L2012.ag_For_Past_bio_input_irr_mgmt <- function(command, ...) {
       select(region, GLU_name, year, harvests.per.year) ->
       L2012.ag_HA_to_CropLand_R_Y_GLU
 
+    Perennial_Identifier <- "Tree|SugarCrop"
+
     # Then start from production table, join in the HA:CL, and expand the final base year to all future years
     L2012.AgProduction_ag_irr_mgmt %>%
       select(LEVEL2_DATA_NAMES[["AgTechYr"]]) %>%
@@ -213,7 +215,8 @@ module_aglu_L2012.ag_For_Past_bio_input_irr_mgmt <- function(command, ...) {
                year = MODEL_YEARS) %>%
       group_by(region, AgSupplySector, AgSupplySubsector, AgProductionTechnology) %>%
       mutate(harvests.per.year = approx_fun(year, harvests.per.year, rule = 2)) %>%
-      ungroup() ->
+      ungroup() %>%
+      mutate(harvests.per.year = if_else(grepl(Perennial_Identifier, AgSupplySubsector), 1,  harvests.per.year)) ->
       L2012.AgHAtoCL_irr_mgmt
 
     # L2012.AgYield_bio_ref: bioenergy yields.
