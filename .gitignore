@@ -85,3 +85,4 @@ output/st7_*
 output/spp_*
 *.log
 input/gcamdata/study7_analysis/inputs/nutrition/micronutrients_computed.csv
+exe/configuration_s*
