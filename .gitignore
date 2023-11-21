@@ -79,8 +79,8 @@ input/gcamdata/inst/extdata/emissions/CEDS/desktop.ini
 exe/run-gcam.bat
 input/gcamdata/.Rprofile
 output/modelinterface/modelinterface
-exe/configuration*.xml
 /exe/country-specific_config
+/exe/configuration.xml
 /exe/old
 input/*.xml
 *outputs*
