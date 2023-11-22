@@ -476,6 +476,7 @@ driver_drake <- function(
   write_xml = !return_data_map_only,
   xmldir = XML_DIR,
   policyxmldir = POLICY_XML_DIR,
+  dietsxmldir = DIETS_XML_DIR,
   quiet = FALSE,
   user_modifications = NULL,
   xml_suffix = NULL,
@@ -652,6 +653,7 @@ driver_drake <- function(
    }
   dir.create(xmldir, showWarnings = FALSE, recursive = TRUE)
   dir.create(policyxmldir, showWarnings = FALSE, recursive = TRUE)
+  dir.create(dietsxmldir, showWarnings = FALSE, recursive = TRUE)
 
   # Loop over each chunk and add a target for it and the command to build it
   # as appropriate for if it is just loading a FILE or running an actual chunk.
@@ -729,6 +731,10 @@ driver_drake <- function(
         # If policy xml chunk, add to policy xml
         if (grepl("module_policy", chunk)){
           po_xml_path = file.path(policyxmldir, po_xml) %>% gsub("/{2,}", "/", .)# Don't want multiple consecutive slashes, as drake views that as separate object
+        }
+        # If diets xml chunk, add to diets xml
+        if (grepl("module_diets", chunk)){
+          po_xml_path = file.path(dietsxmldir, po_xml) %>% gsub("/{2,}", "/", .)# Don't want multiple consecutive slashes, as drake views that as separate object
         }
         target <- c(target, make.names(po_xml_path))
         # Generate the command to run the XML conversion:

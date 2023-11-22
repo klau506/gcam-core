@@ -84,3 +84,4 @@ output/modelinterface/modelinterface
 /exe/old
 input/*.xml
 *outputs*
+ModelInterface/*

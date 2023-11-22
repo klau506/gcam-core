@@ -5,6 +5,7 @@
 OUTPUTS_DIR              <- "outputs/"
 XML_DIR                  <- "xml/"
 POLICY_XML_DIR           <- "xml_policy/"
+DIETS_XML_DIR            <- "xml_diets/"
 COMMENT_CHAR             <- "#"
 UNDER_TIMESHIFT          <- FALSE
 YEAR_PATTERN             <- "^(1|2)[0-9]{3}$"   # a 1 or 2 followed by three digits, and nothing else
@@ -28,6 +29,8 @@ HISTORICAL_YEARS        <- 1971:2015
 # Future years for level 1 data processing, for the few chunks that
 # produce future data (e.g., population projections)
 FUTURE_YEARS            <- 2016:2100
+# Future years, half century
+MODEL_HALF_CENTURY_YEAR = 2050
 # Calibrated periods in the model. Only level 2 chunks should reference these
 MODEL_BASE_YEARS        <- c(1975, 1990, 2005, 2010, 2015)
 # Future (not calibrated) model periods. Only level 2 chunks should reference these
