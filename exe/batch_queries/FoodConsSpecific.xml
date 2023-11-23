@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<queries>
+
+<aQuery>
+
+	<region name="USA" /> 
+	<region name="Canada"/>		
+	<region name="Africa_Eastern"/>		
+	<region name="Africa_Northern"/>		
+	<region name="Africa_Southern"/>
+	<region name="Africa_Western"/>
+	<region name="Japan"/>
+	<region name="South Korea"/>
+	<region name="China"/>
+	<region name="India"/>
+	<region name="Brazil"/>
+	<region name="Central America and Caribbean"/>
+	<region name="Central Asia"/>
+	<region name="EU-12"/>	
+	<region name="EU-15"/>
+	<region name="Europe_Eastern"/>
+	<region name="Europe_Non_EU"/>
+	<region name="European Free Trade Association"/>
+	<region name="Indonesia"/>
+	<region name="Mexico"/>
+	<region name="Middle East"/>
+	<region name="Pakistan"/>
+	<region name="Russia"/>
+	<region name="South Africa"/>
+	<region name="South America_Northern"/>
+	<region name="South America_Southern"/>
+	<region name="South Asia"/>
+	<region name="Southeast Asia"/>
+	<region name="Taiwan"/>
+	<region name="Argentina"/>
+	<region name="Colombia"/>
+	<region name="Australia_NZ"/>
+
+<query title="food consumption by type (specific)">
+	<axis1 name="technology">technology</axis1>
+	<axis2 name="Year">physical-output[@vintage]</axis2>
+	<xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='FoodDemand_Staples' or @name='FoodDemand_NonStaples')]//
+	*[@type='subsector']//*[@type='technology']/
+	*[@type='output' (:collapse:)]/physical-output/node()</xPath>
+	<comments />
+</query>
+
+</aQuery>
+</queries>
+
+ 
+

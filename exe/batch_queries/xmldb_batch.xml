@@ -1,0 +1,22 @@
+<ModelInterfaceBatch>
+    <!-- Note multiple sets of the following are allowed to run several
+         batch queries sequentially.
+      -->
+    <class name="ModelInterface.ModelGUI2.DbViewer">
+
+        <command name="XMLDB Batch File"> 
+            <!-- The Batch queries to run -->
+            <queryFile>batch_queries/FoodConsSpecific.xml</queryFile>
+             <!-- Where to write results -->
+            <outFile>DB/FoodConsSpecific_RESULTS.csv</outFile>
+            <!-- Which database to query -->
+            <xmldbLocation>../database_basexdb</xmldbLocation>
+            <!-- Additinoal query options which will be ignored when saving to CSV -->
+            <batchQueryResultsInDifferentSheets>false</batchQueryResultsInDifferentSheets>
+            <batchQueryIncludeCharts>false</batchQueryIncludeCharts>
+            <batchQuerySplitRunsInDifferentSheets>false</batchQuerySplitRunsInDifferentSheets>
+            <batchQueryReplaceResults>true</batchQueryReplaceResults>
+        </command>
+
+    </class>
+</ModelInterfaceBatch>
