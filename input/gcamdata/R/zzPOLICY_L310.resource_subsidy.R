@@ -137,10 +137,9 @@ module_policy_L310.resource_subsidy <- function(command, ...) {
       # Switch minicam energy input name to the subsidy
       distinct(xml, region, supplysector, tranSubsector, stub.technology, year, market.name, sce) %>%
       left_join_error_no_match(distinct(A_resource_subsidy, xml, region, subsidy.name, supplysector,
-                                        tranSubsector = subsector, stub.technology = new.tech.name),
+                                        tranSubsector = subsector, stub.technology = new.tech.name, coefficient),
                                by = c("region", "supplysector", "tranSubsector", "stub.technology", "xml")) %>%
-      rename(minicam.energy.input = subsidy.name) %>%
-      mutate(coefficient = 1e9)
+      rename(minicam.energy.input = subsidy.name)
 
     L310.StubTranTechCoef <- bind_rows(L310.StubTranTechCoef,
                                        L310.StubTranTechCoef_subsidy)
