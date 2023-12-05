@@ -141,7 +141,7 @@ module_policy_L310.resource_subsidy <- function(command, ...) {
                                by = c("region", "supplysector", "tranSubsector", "stub.technology", "xml")) %>%
       rename(minicam.energy.input = subsidy.name)
 
-    L310.StubTranTechCoef <- bind_rows(L310.StubTranTechCoef,
+    L310.StubTranTechCoef <- bind_rows(L310.StubTranTechCoef_energy,
                                        L310.StubTranTechCoef_subsidy)
 
     # Produce outputs ------------------
