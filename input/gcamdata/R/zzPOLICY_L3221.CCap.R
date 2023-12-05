@@ -20,7 +20,7 @@ module_policy_L3221.CCap <- function(command, ...) {
              FILE = "policy/mappings/policy_tranSubsector_mappings",
              FILE = "policy/mappings/policy_resource_mappings",
              FILE = "policy/mappings/ghg_link",
-             FILE = "policy/GCAM_results/CO2ByTech",
+             FILE = "policy/GCAM_results/CO2byTech",
              FILE = "policy/mappings/market_region_mappings",
              "L210.ResTechCoef",
              "L221.StubTech_en",
@@ -93,7 +93,7 @@ module_policy_L3221.CCap <- function(command, ...) {
       distinct(region, resource, reserve.subresource, resource.reserve.technology)
 
     L201.GDP_Scen <- get_data(all_data, "L201.GDP_Scen")
-    CO2byTech <- get_data(all_data, "policy/GCAM_results/CO2ByTech") %>%
+    CO2byTech <- get_data(all_data, "policy/GCAM_results/CO2byTech") %>%
       gather_years()
 
     # 1. Write constraint to correct regions ----------------------------
