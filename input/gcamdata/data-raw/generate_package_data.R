@@ -239,6 +239,7 @@ generate_level2_data_names <- function() {
   level2_data_names[["CalorieContent"]] <- c(level2_data_names[["TechYr"]], "minicam.energy.input", "efficiency")
   level2_data_names[["DeleteInput"]] <- c("region", "supplysector", "subsector", "technology", "year", "minicam.energy.input")
   level2_data_names[["ResTechShrwt"]] <- c("region", "resource", "subresource", "technology", "year", "share.weight")
+  level2_data_names[["RenewResTechShrwt"]] <- c("region", "renewresource", "smooth.renewable.subresource", "technology", "year", "share.weight")
   level2_data_names[["ResTechCoef"]] <- c("region", "resource", "subresource", "technology", "year", "minicam.energy.input", "coefficient")
   level2_data_names[["DeleteResTechInput"]] <- c("region", "resource", "subresource", "technology", "year", "minicam.energy.input")
   level2_data_names[["ResReserveTechCost"]] <- c("region", "resource", "reserve.subresource", "resource.reserve.technology", "year", "minicam.non.energy.input", "input.cost")
