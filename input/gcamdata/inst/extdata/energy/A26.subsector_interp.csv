@@ -1,10 +1,10 @@
-# File: A26.subsector_interp.csv,,,,,,
-# Title: Final energy delivery subsector shareweight interpolation,,,,,,
-# Units: NA,,,,,,
-# Description: form of interpolation function to calculate shareweights for future years for final energy delivery subsectors,,,,,,
-# Source: NA,,,,,,
-# Column types: cccccnc ,,,,,,
-# ----------,,,,,,
+# File: A26.subsector_interp.csv
+# Title: Final energy delivery subsector shareweight interpolation
+# Units: NA
+# Description: form of interpolation function to calculate shareweights for future years for final energy delivery subsectors
+# Source: NA
+# Column types: cccccnc
+# ----------
 supplysector,subsector,apply.to,from.year,to.year,to.value,interpolation.function
 delivered biomass,delivered biomass,share-weight,final-calibration-year,end-year,,linear
 delivered biomass industry,delivered biomass industry,share-weight,final-calibration-year,end-year,,linear
@@ -29,3 +29,5 @@ refined liquids bunkers,refined liquids bunkers,share-weight,final-calibration-y
 wholesale gas feedstocks,wholesale gas feedstocks,share-weight,final-calibration-year,end-year,,linear
 refined liquids feedstocks,refined liquids feedstocks,share-weight,final-calibration-year,end-year,,linear
 delivered coal feedstocks,delivered coal feedstocks,share-weight,final-calibration-year,end-year,,linear
+backup_electricity,hydrogen,share-weight,final-calibration-year,initial-future-year,,linear
+backup_electricity,hydrogen,share-weight,initial-future-year,2025,,linear

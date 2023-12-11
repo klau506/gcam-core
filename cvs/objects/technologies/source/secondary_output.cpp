@@ -166,6 +166,7 @@ void SecondaryOutput::postCalc( const string& aRegionName,
 }
 
 void SecondaryOutput::scaleCoefficient( const double aScaler ){
+    mOutputRatio = aScaler;
     // Secondary outputs do not support scaling.
     // TODO: Should they? This interface is not great.
 }

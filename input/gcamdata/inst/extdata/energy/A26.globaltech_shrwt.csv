@@ -1,33 +1,34 @@
-# File: A26.globaltech_shrwt.csv,,,,
-# Title: Final energy transformation default technology shareweights,,,,
-# Units: NA,,,,
-# Description: Default shareweights for final energy transformation technologies, used to interpolate shareweights for all model years.,,,
-# Source: NA,,,,
-# Column types: cccii ,,,,
-# ----------,,,,
-supplysector,subsector,technology,1971,2100
-backup_electricity,gas,gas (steam/CT),1,1
-csp_backup,gas,CSP gas hybrid mode,1,1
-delivered biomass,delivered biomass,delivered biomass,1,1
-delivered biomass industry,delivered biomass industry,delivered biomass industry,1,1
-delivered coal,delivered coal,delivered coal,1,1
-delivered coal industry,delivered coal industry,delivered coal industry,1,1
-electricity_net_ownuse,electricity_net_ownuse,electricity_net_ownuse,1,1
-elect_td_bld,rooftop_pv,rooftop_pv,1,1
-elect_td_bld,elect_td_bld,elect_td_bld,1,1
-elect_td_ind,elect_td_ind,elect_td_ind,1,1
-elect_td_trn,elect_td_trn,elect_td_trn,1,1
-elect_td_h2,elect_td_h2,elect_td_h2,1,1
-elect_td_en,elect_td_en,elect_td_en,1,1
-gas pipeline,gas pipeline,gas pipeline,1,1
-wholesale gas,wholesale gas,wholesale gas,1,1
-delivered gas,delivered gas,delivered gas,1,1
-delivered gas h2,delivered gas h2,delivered gas h2,1,1
-delivered gas transport,delivered gas transport,delivered gas transport,1,1
-refined liquids enduse,refined liquids enduse,refined liquids enduse,1,1
-refined liquids industrial,refined liquids industrial,refined liquids industrial,1,1
-refined liquids transport,refined liquids transport,refined liquids transport,1,1
-refined liquids bunkers,refined liquids bunkers,refined liquids bunkers,1,1
-refined liquids feedstocks,refined liquids feedstocks,refined liquids feedstocks,1,1
-wholesale gas feedstocks,wholesale gas feedstocks,wholesale gas feedstocks,1,1
-delivered coal feedstocks,delivered coal feedstocks,delivered coal feedstocks,1,1
+# File: A26.globaltech_shrwt.csv
+# Title: Final energy transformation default technology shareweights
+# Units: NA
+# Description: Default shareweights for final energy transformation technologies, used to interpolate shareweights for all model years.
+# Source: NA
+# Column types: ccciiii 
+# ----------
+supplysector,subsector,technology,1971,2020,2025,2100
+backup_electricity,gas,gas (steam/CT),1,1,1,1
+csp_backup,gas,CSP gas hybrid mode,1,1,1,1
+delivered biomass,delivered biomass,delivered biomass,1,1,1,1
+delivered biomass industry,delivered biomass industry,delivered biomass industry,1,1,1,1
+delivered coal,delivered coal,delivered coal,1,1,1,1
+delivered coal industry,delivered coal industry,delivered coal industry,1,1,1,1
+electricity_net_ownuse,electricity_net_ownuse,electricity_net_ownuse,1,1,1,1
+elect_td_bld,rooftop_pv,rooftop_pv,1,1,1,1
+elect_td_bld,elect_td_bld,elect_td_bld,1,1,1,1
+elect_td_ind,elect_td_ind,elect_td_ind,1,1,1,1
+elect_td_trn,elect_td_trn,elect_td_trn,1,1,1,1
+elect_td_h2,elect_td_h2,elect_td_h2,1,1,1,1
+elect_td_en,elect_td_en,elect_td_en,1,1,1,1
+gas pipeline,gas pipeline,gas pipeline,1,1,1,1
+wholesale gas,wholesale gas,wholesale gas,1,1,1,1
+delivered gas,delivered gas,delivered gas,1,1,1,1
+delivered gas h2,delivered gas h2,delivered gas h2,1,1,1,1
+delivered gas transport,delivered gas transport,delivered gas transport,1,1,1,1
+refined liquids enduse,refined liquids enduse,refined liquids enduse,1,1,1,1
+refined liquids industrial,refined liquids industrial,refined liquids industrial,1,1,1,1
+refined liquids transport,refined liquids transport,refined liquids transport,1,1,1,1
+refined liquids bunkers,refined liquids bunkers,refined liquids bunkers,1,1,1,1
+refined liquids feedstocks,refined liquids feedstocks,refined liquids feedstocks,1,1,1,1
+backup_electricity,hydrogen,hydrogen combustion turbine,0,0,1,1
+delivered coal feedstocks,delivered coal feedstocks,delivered coal feedstocks,1,1,1,1
+wholesale gas feedstocks,wholesale gas feedstocks,wholesale gas feedstocks,1,1,1,1

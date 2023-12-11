@@ -28,25 +28,29 @@
 #' @importFrom tidyr replace_na
 #' @author ACS August 2017
 module_aglu_L124.LC_R_UnMgd_Yh_GLU <- function(command, ...) {
+
+  MODULE_INPUTS <-
+    c("L120.LC_bm2_R_LT_Yh_GLU",
+      "L122.LC_bm2_R_ExtraCropLand_Yh_GLU",
+      "L123.LC_bm2_R_MgdPast_Yh_GLU",
+      "L123.LC_bm2_R_MgdFor_Yh_GLU")
+
+  MODULE_OUTPUTS <-
+    c("L124.LC_bm2_R_Shrub_Yh_GLU_adj",
+      "L124.LC_bm2_R_Grass_Yh_GLU_adj",
+      "L124.LC_bm2_R_UnMgdPast_Yh_GLU_adj",
+      "L124.LC_bm2_R_UnMgdFor_Yh_GLU_adj")
   if(command == driver.DECLARE_INPUTS) {
-    return(c("L120.LC_bm2_R_LT_Yh_GLU",
-              "L122.LC_bm2_R_ExtraCropLand_Yh_GLU",
-              "L123.LC_bm2_R_MgdPast_Yh_GLU",
-              "L123.LC_bm2_R_MgdFor_Yh_GLU"))
+    return(MODULE_INPUTS)
   } else if(command == driver.DECLARE_OUTPUTS) {
-    return(c("L124.LC_bm2_R_Shrub_Yh_GLU_adj",
-             "L124.LC_bm2_R_Grass_Yh_GLU_adj",
-             "L124.LC_bm2_R_UnMgdPast_Yh_GLU_adj",
-             "L124.LC_bm2_R_UnMgdFor_Yh_GLU_adj"))
+    return(MODULE_OUTPUTS)
   } else if(command == driver.MAKE) {
 
     all_data <- list(...)[[1]]
 
-    # Load required inputs
-    L120.LC_bm2_R_LT_Yh_GLU <- get_data(all_data, "L120.LC_bm2_R_LT_Yh_GLU", strip_attributes = TRUE)
-    L122.LC_bm2_R_ExtraCropLand_Yh_GLU <- get_data(all_data, "L122.LC_bm2_R_ExtraCropLand_Yh_GLU")
-    L123.LC_bm2_R_MgdPast_Yh_GLU <- get_data(all_data, "L123.LC_bm2_R_MgdPast_Yh_GLU")
-    L123.LC_bm2_R_MgdFor_Yh_GLU <- get_data(all_data, "L123.LC_bm2_R_MgdFor_Yh_GLU")
+    # Load required inputs ----
+
+    get_data_list(all_data, MODULE_INPUTS, strip_attributes = TRUE)
 
     # silence package check notes
     GCAM_region_ID <- value <- year <- GLU <-  Land_Type <- TotPasture <-
@@ -84,13 +88,13 @@ module_aglu_L124.LC_R_UnMgd_Yh_GLU <- function(command, ...) {
     # Calculate initial estimate of unmanaged forest = total
     # forest from SAGE/Hyde minus managed forest
     L120.LC_bm2_R_LT_Yh_GLU %>%
-      filter(Land_Type == "Forest") %>%
+      filter(Land_Type %in% c(aglu.FOREST_NODE_NAMES)) %>%
       rename(TotForest = value) %>%
       left_join_error_no_match(L123.LC_bm2_R_MgdFor_Yh_GLU, by = c("GCAM_region_ID", "GLU", "Land_Type", "year")) %>%
       rename(MgdForest = value) %>%
       # have to use value instead of more informative name so that binding all unmanaged land later goes smoothly:
       mutate(value = TotForest - MgdForest,
-             Land_Type = "UnmanagedForest") %>%
+             Land_Type = paste0("Unmanaged",Land_Type)) %>%
       select(-TotForest, -MgdForest) ->
       L124.LC_bm2_R_UnMgdFor_Yh_GLU
 
@@ -128,7 +132,9 @@ module_aglu_L124.LC_R_UnMgd_Yh_GLU <- function(command, ...) {
       L124.LC_UnMgdAdj_R_Yh_GLU
 
     # Check that enough unmanaged land is available for the cropland expansion in all regions/GLUs
-    if(any(L124.LC_UnMgdAdj_R_Yh_GLU$adjustmentRatio < 0)) {
+    # Only keep the check for base years
+    if(L124.LC_UnMgdAdj_R_Yh_GLU %>% filter(year %in% MODEL_BASE_YEARS) %>%
+       filter(adjustmentRatio <0) %>% nrow >0) {
       stop("Increase in cropland exceeds available unmanaged land")
     }
 
@@ -190,7 +196,7 @@ module_aglu_L124.LC_R_UnMgd_Yh_GLU <- function(command, ...) {
       L124.LC_bm2_R_UnMgdPast_Yh_GLU_adj
 
     L124.LC_bm2_R_LTunmgd_Yh_GLU_adj %>%
-      filter(Land_Type == "UnmanagedForest") %>%
+      filter(Land_Type %in% c("UnmanagedHardwood_Forest", "UnmanagedSoftwood_Forest")) %>%
       add_title("Unmanaged Forest land cover by GCAM region / historical year / GLU") %>%
       add_units("billion square meters (bm2)") %>%
       add_comments("Initial unmanaged forest area in each region-glu-year is calculated as total forest are in ") %>%
@@ -205,7 +211,8 @@ module_aglu_L124.LC_R_UnMgd_Yh_GLU <- function(command, ...) {
       same_precursors_as(L124.LC_bm2_R_Shrub_Yh_GLU_adj) ->
       L124.LC_bm2_R_UnMgdFor_Yh_GLU_adj
 
-    return_data(L124.LC_bm2_R_Shrub_Yh_GLU_adj, L124.LC_bm2_R_Grass_Yh_GLU_adj, L124.LC_bm2_R_UnMgdPast_Yh_GLU_adj, L124.LC_bm2_R_UnMgdFor_Yh_GLU_adj)
+    return_data(MODULE_OUTPUTS)
+
   } else {
     stop("Unknown command")
   }
