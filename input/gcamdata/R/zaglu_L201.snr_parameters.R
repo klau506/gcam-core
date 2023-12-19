@@ -92,7 +92,7 @@ module_aglu_L201.snr_parameters <- function(command, ...) {
 
     paste0(names(L201.snr_parameters_2), ".xml") %>% tibble::as_tibble() %>%
       add_legacy_name("L201.snr_parameters") %>%
-      add_precursors("aglu/A_snr_parameters") ->
+      add_precursors("aglu/A_snr_initial_shares") ->
       L201.snr_scenarios_names
 
     save(L201.snr_parameters, file = paste0(outputs_path, '/L201.snr_parameters.RData'))
