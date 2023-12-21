@@ -13,7 +13,7 @@
 module_energy_solar_adv_xml <- function(command, ...) {
   if(command == driver.DECLARE_INPUTS) {
     return(c("L223.GlobalTechCapital_sol_adv",
-              "L223.GlobalIntTechCapital_sol_adv",
+             "L223.GlobalIntTechCapital_sol_adv",
              # for adjusting rooftop_pv for capital tracking purposes
              "L223.StubTechCapFactor_elec"))
   } else if(command == driver.DECLARE_OUTPUTS) {
@@ -59,7 +59,6 @@ module_energy_solar_adv_xml <- function(command, ...) {
                        "L223.StubTechCapFactor_elec") ->
         solar_adv.xml
     }
-
 
 
     return_data(solar_adv.xml)

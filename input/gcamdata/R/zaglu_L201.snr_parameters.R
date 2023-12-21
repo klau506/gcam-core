@@ -77,7 +77,7 @@ module_aglu_L201.snr_parameters <- function(command, ...) {
     ## save results
     L201.snr_parameters_2 %>% tibble::as_tibble() %>%
       add_legacy_name("L201.snr_parameters") %>%
-      add_precursors("aglu/A_snr_parameters") ->
+      add_precursors("aglu/A_snr_initial_shares") ->
       L201.snr_parameters
 
     # save the database - scenario (- type) mapping to run the scenarios in parallel
