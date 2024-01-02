@@ -5,7 +5,7 @@
 		<Value name="BatchFileName">batch_ag.xml</Value>
 		<Value name="policy-target-file">../input/policy/forcing_target_4p5.xml</Value>
 		<Value name="GHGInputFileName">../input/magicc/inputs/input_gases.emk</Value>
-		<Value write-output="1" append-scenario-name="0" name="xmldb-location">../output/database_basexdb_2100</Value>
+		<Value write-output="1" append-scenario-name="0" name="xmldb-location">../output/database_basexdb_ref</Value>
 		<Value write-output="1" append-scenario-name="0" name="restart">./restart/restart</Value>
 		<Value write-output="0" append-scenario-name="1" name="xmlDebugFileName">debug.xml</Value>
 		<Value write-output="1" append-scenario-name="0" name="climatFileName">gas.emk</Value>
@@ -65,6 +65,7 @@
 		<Value name = "demand">../input/gcamdata/xml/ag_an_demand_input.xml</Value>
 		<Value name = "bio_trade">../input/gcamdata/xml/bio_trade.xml</Value>
 		<Value name = "ag_trade">../input/gcamdata/xml/ag_trade.xml</Value>
+		<Value name = "ag_storage">../input/gcamdata/xml/ag_storage.xml</Value>
 
 		<Value name = "unlim_supply_water">../input/gcamdata/xml/unlimited_water_supply.xml</Value>
 		<Value name = "water_supply">../input/gcamdata/xml/water_supply_constrained.xml</Value>
@@ -107,13 +108,14 @@
 		<!-- IAM COMPACT STUDY7 - DIETS files -->
 		<Value name = "new_ref">../input/policy/diets/nonstaple_incelas_0.4.xml</Value>
 		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_SouthAmericaNorthern.xml</Value>
+		
 
 		<Value name = "solver">../input/solution/cal_broyden_config.xml</Value>
 
         <Value name = "RESID_ELEC_CALIB">../input/gcamdata/xml_policy/bldeleccorr_world.xml</Value>
 	</ScenarioComponents>
 	<Strings>
-		<Value name="scenarioName">REF_IAMCOMPACT</Value>
+		<Value name="scenarioName">REF_IAMCOMPACT+XIN</Value>
 		<Value name="debug-region">USA</Value>
 		<Value name="MAGICC-input-dir">../input/magicc/inputs</Value>
 		<Value name="MAGICC-output-dir">../output</Value>
@@ -141,7 +143,7 @@
 		<Value name="climateOutputInterval">5</Value>
 		<Value name="parallel-grain-size">50</Value>
 		<Value name="stop-period">-1</Value>
-		<Value name="stop-year">-1</Value>
+		<Value name="stop-year">2050</Value>
 		<Value name="restart-period">-1</Value>
 		<Value name="restart-year">-1</Value>
 		<Value name="max-parallelism">-1</Value>
