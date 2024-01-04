@@ -61,7 +61,7 @@ module_aglu_L202.snr_scenarios <- function(command, ...) {
 
       L202.snr_logisticFun %>% tibble::as_tibble() %>%
         add_legacy_name("L202.snr_logisticFun") %>%
-        add_title("Plant Protein Share by region for all scenarios") %>%
+        add_title("NoRumiant Protein Share by region for all scenarios") %>%
         add_units("%") %>%
         add_comments("Estimation of the snr through different logit functions") %>%
         add_precursors("L201.snr_parameters") ->

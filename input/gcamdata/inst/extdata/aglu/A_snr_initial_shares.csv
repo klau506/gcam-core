@@ -1,41 +1,41 @@
 # File: A_snr_initial_shares.csv
-# Title: Plant protein enhanced diet models' parameters
+# Title: NoRuminant protein enhanced diet models' parameters
 # Unit: Unitless
-# Description: parameters used in Plant Protein's diet computation
-# ssp_i: share of plant protein consumption in 2015
-# Source: ambrosia (GCAM) according to SSP2
+# Description: parameters used in No Ruminant's diet computation
+# ssp_i: share of no ruminant protein consumption in 2015
+# Source: ambrosia (GCAM) according to SSP2-IAMCOMPACT-XIN
 # Column types: cn
 # ----------
 region,snr_i
-Africa_Eastern,22.34921847
-Africa_Northern,36.45763414
-Africa_Southern,53.24119528
-Africa_Western,54.20100113
-Argentina,38.23974149
-Australia_NZ,40.60751367
-Brazil,47.38971802
-Canada,53.89427485
-Central America and Caribbean,55.25434803
-Central Asia,18.29859443
-China,85.59500327
-Colombia,45.49821821
-EU-12,56.85358037
-EU-15,48.18761495
-Europe_Eastern,50.21854308
-Europe_Non_EU,27.86906371
-European Free Trade Association,46.06297543
-India,13.63225187
-Indonesia,79.9556113
-Japan,68.45083126
-Mexico,63.16831603
-Middle East,44.82495131
-Pakistan,10.94821545
-Russia,49.83572427
-South Africa,50.57259407
-South America_Northern,48.19375335
-South America_Southern,56.28696292
-South Asia,41.79055274
-South Korea,76.40025625
-Southeast Asia,85.7108445
-Taiwan,83.18924523
-USA,43.87646548
+Africa_Eastern,62.8476564226353
+Africa_Northern,48.9978151603561
+Africa_Southern,77.3183494842526
+Africa_Western,83.6830689715379
+Argentina,39.9045057650693
+Australia_NZ,45.047321822172
+Brazil,55.4866792301132
+Canada,61.8783072878538
+Central America and Caribbean,66.8671183502847
+Central Asia,22.6641838849539
+China,87.3748540160828
+Colombia,51.3893191554447
+EU-12,58.5773945183064
+EU-15,52.2920102090879
+Europe_Eastern,52.5686867198688
+Europe_Non_EU,42.8506674539518
+European Free Trade Association,52.1189338523527
+India,49.1486861118786
+Indonesia,84.7427604171998
+Japan,70.640606320812
+Mexico,69.5035533516583
+Middle East,57.6241486768411
+Pakistan,19.4718038610697
+Russia,51.9864266091583
+South Africa,53.7373745842823
+South America_Northern,53.9929585555669
+South America_Southern,61.4059361943552
+South Asia,60.2421087396957
+South Korea,78.5605614010136
+Southeast Asia,88.015753428106
+Taiwan,85.3946457741577
+USA,50.2666703640308

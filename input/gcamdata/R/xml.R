@@ -259,6 +259,42 @@ add_rename_foodsubsec_xml <- function(dot) {
   add_xml_data(dot, food_name_table, "NodeRename", NULL)
 }
 
+#' Add a table to an XML pipeline that instructs the ModelInterface to rename
+#' SubsectorX to Nesting-subsector.
+#'
+#' Such a table is necessary to help work around limitations in the XML processing
+#' that node names of the same name can not be nested with in each other:
+#' Nesting-subsector/Nesting-subsector/Subsector thus instead we say
+#' Subsector0/Subsector1/Subsector and rename as the last step.
+#' Therefore in most cases a user should add this table near the end of the XML pipeline.
+#' @param dot The current state of the pipeline started from \code{create_xml}
+#' @return A "data structure" to hold the various parts needed to run the model
+#' interface CSV to XML conversion.
+#' @author Clàudia Rodés
+#' @export
+add_rename_foodsubsecSPP1_xml <- function(dot) {
+  food_name_table <- tibble(from = "subsector_nest1", to = "nesting-subsector")
+  add_xml_data(dot, food_name_table, "NodeRename", NULL)
+}
+
+#' Add a table to an XML pipeline that instructs the ModelInterface to rename
+#' SubsectorX to Nesting-subsector.
+#'
+#' Such a table is necessary to help work around limitations in the XML processing
+#' that node names of the same name can not be nested with in each other:
+#' Nesting-subsector/Nesting-subsector/Subsector thus instead we say
+#' Subsector0/Subsector1/Subsector and rename as the last step.
+#' Therefore in most cases a user should add this table near the end of the XML pipeline.
+#' @param dot The current state of the pipeline started from \code{create_xml}
+#' @return A "data structure" to hold the various parts needed to run the model
+#' interface CSV to XML conversion.
+#' @author Clàudia Rodés
+#' @export
+add_rename_foodsubsecSPP2_xml <- function(dot) {
+  food_name_table <- tibble(from = "subsector_nest2", to = "subsector")
+  add_xml_data(dot, food_name_table, "NodeRename", NULL)
+}
+
 
 #' Add a table to an XML pipeline that instructs the ModelInterface to rename
 #' LandNodeX to LandNode.

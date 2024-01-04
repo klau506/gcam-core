@@ -17,7 +17,7 @@
 #'   \code{L203.StubTechProd_food}, \code{L203.StubTechProd_nonfood_crop}, \code{L203.StubTechProd_nonfood_meat},
 #'   \code{L203.StubTechProd_For}, \code{L203.StubCalorieContent},
 #'   \code{L203.PerCapitaBased}, \code{L203.BaseService}, \code{L203.IncomeElasticity}, \code{L203.PriceElasticity},
-#'   \code{L203.FuelPrefElast_ssp1}, \code{L203.FuelPrefElast_snr}.
+#'   \code{L203.FuelPrefElast_ssp1}, \code{L203.FuelPrefElast_spp}, \code{L203.FuelPrefElast_snr}.
 #'   The corresponding file in the original data system was \code{L203.demand_input.R} (aglu level2).
 #' @details This chunk specifies the input tables for agriculture demand: generic information for supply sector, subsector and technology,
 #' food and non-food demand in calibration years, forest product demand, net exports and caloric contents in calibration and future years,
@@ -42,11 +42,14 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       FILE = "aglu/A_demand_technology",
       FILE = "aglu/A_fuelprefElasticity_ssp1",
       FILE = "aglu/A_diet_bias",
+      FILE = "common/GCAM_region_names",
       "L101.CropMeat_Food_Pcal_R_C_Y",
       "L109.ag_ALL_Mt_R_C_Y",
       "L109.an_ALL_Mt_R_C_Y",
       "L110.For_ALL_bm3_R_Y",
-      "L202.snr_logisticFun")
+      "L202.spp_logisticFun",
+      "L202.snr_logisticFun",
+      "L102.pcgdp_thous90USD_GCAM_IC_R_Y")
 
 
   if(command == driver.DECLARE_INPUTS) {
@@ -80,6 +83,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
              "L203.IncomeElasticity",
              "L203.PriceElasticity",
              "L203.FuelPrefElast_ssp1",
+             "L203.FuelPrefElast_spp",
              "L203.FuelPrefElast_snr",
              "L203.GlobalTechInterp_demand"))
   } else if(command == driver.MAKE) {
@@ -349,16 +353,71 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
 
 
     # Fuel preference elasticity
-    # Build L203.FuelPrefElast_snr: Fuel preference elasticities for plant and animal protein
+    # Build L203.FuelPrefElast_spp: Fuel preference elasticities for plant and animal protein
+    # Keep the nesting subsector 1 and 2
+    # if (!file.exists(paste0(outputs_path, '/L203.FuelPrefElast_spp.RData'))) {
+    SPP_CONVERSION_FACTOR = 0.005
+    L102.pcgdp_thous90USD_GCAM_IC_R_Y
+    names_FuelPrefElast_nest <- c("region", "supplysector", "subsector_nest1", "subsector_nest2", "year.fillout", "fuelprefElasticity")
+    L203.FuelPrefElast_spp = list()
+    for(n in names(L202.spp_logisticFun)) {
+      print(n)
+      L203.FuelPrefElast_spp_tmp1 = as_tibble(L202.spp_logisticFun[[n]]) %>%
+        # left_join_error_no_match(
+        #   left_join_error_no_match(L102.pcgdp_thous90USD_GCAM_IC_R_Y,
+        #                            GCAM_region_names) %>%
+        #     rename('GDPpc' = 'value') %>%
+        #     group_by(region) %>%
+        #     mutate(GDPpcRef = GDPpc[year == MODEL_FINAL_BASE_YEAR]) %>%
+        #     ungroup() %>%
+        #     mutate(GDPpcNorm = GDPpc/GDPpcRef) %>%
+        #     filter(year >= MODEL_FINAL_BASE_YEAR & year <= MODEL_HALF_CENTURY_YEAR),
+        #   by = c('region','year')) %>%
+        mutate(value_scaled = (spp_f - value) * SPP_CONVERSION_FACTOR)
+
+      bind_rows(L203.FuelPrefElast_spp_tmp1 %>%
+                  select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                  mutate(subsector_nest2 = 'Animal') %>%
+                  mutate(fuelprefElasticity = -fuelprefElasticity),
+                L203.FuelPrefElast_spp_tmp1 %>%
+                  select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
+                  mutate(subsector_nest2 = 'Plant') %>%
+                  mutate(fuelprefElasticity = +fuelprefElasticity)) %>%
+        mutate(subsector_nest1 = 'Protein',
+               supplysector = 'FoodDemand_NonStaples') %>%
+        select(names_FuelPrefElast_nest) %>%
+        filter(!region %in% aglu.NO_AGLU_REGIONS) ->           # Remove any regions for which agriculture and land use are not modeled
+        L203.FuelPrefElast_spp_tmp2
+
+      L203.FuelPrefElast_spp[[n]] = L203.FuelPrefElast_spp_tmp2
+    }
+    save(L203.FuelPrefElast_spp, file = paste0(outputs_path, '/L203.FuelPrefElast_spp.RData'))
+    # } else {
+    #   load(paste0(outputs_path, '/L203.FuelPrefElast_spp.RData'))
+    # }
+
+    # Fuel preference elasticity
+    # Build L203.FuelPrefElast_snr: Fuel preference elasticities for no-rumiant protein
     # Keep the nesting subsector 1 and 2
     # if (!file.exists(paste0(outputs_path, '/L203.FuelPrefElast_snr.RData'))) {
-    SNR_CONVERSION_FACTOR = 0.005805109
+    SNR_CONVERSION_FACTOR = 0.005
+    L102.pcgdp_thous90USD_GCAM_IC_R_Y
     names_FuelPrefElast_nest <- c("region", "supplysector", "subsector_nest1", "subsector_nest2", "subsector", "year.fillout", "fuelprefElasticity")
     L203.FuelPrefElast_snr = list()
     for(n in names(L202.snr_logisticFun)) {
       print(n)
-      L203.FuelPrefElast_snr_tmp1 = L202.snr_logisticFun[[n]] %>%
-        dplyr::mutate(value_scaled = value * SNR_CONVERSION_FACTOR)
+      L203.FuelPrefElast_snr_tmp1 = as_tibble(L202.snr_logisticFun[[n]]) %>%
+        left_join_error_no_match(
+          left_join_error_no_match(L102.pcgdp_thous90USD_GCAM_IC_R_Y,
+                                   GCAM_region_names) %>%
+            rename('GDPpc' = 'value') %>%
+            group_by(region) %>%
+            mutate(GDPpcRef = GDPpc[year == MODEL_FINAL_BASE_YEAR]) %>%
+            ungroup() %>%
+            mutate(GDPpcNorm = GDPpc/GDPpcRef) %>%
+            filter(year >= MODEL_FINAL_BASE_YEAR & year <= MODEL_HALF_CENTURY_YEAR),
+          by = c('region','year')) %>%
+        mutate(value_scaled = value * SNR_CONVERSION_FACTOR)
 
       L203.FuelPrefElast_snr_tmp1 %>%
         select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
@@ -671,6 +730,15 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       add_precursors("aglu/A_fuelprefElasticity_ssp1") ->
       L203.FuelPrefElast_ssp1
 
+    L203.FuelPrefElast_spp %>% tibble::as_tibble() %>%
+      add_title("Fuel preference elasticities for plant and animal protein share") %>%
+      add_units("Unitless") %>%
+      add_comments("Specify the minimum base year value") %>%
+      add_comments("Remove any regions for which agriculture and land use are not modeled") %>%
+      add_legacy_name("L203.FuelPrefElast_spp") %>%
+      add_precursors("L202.spp_scenarios") ->
+      L203.FuelPrefElast_spp
+
     L203.FuelPrefElast_snr %>% tibble::as_tibble() %>%
       add_title("Fuel preference elasticities for plant and animal protein share") %>%
       add_units("Unitless") %>%
@@ -743,7 +811,7 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
                 L203.GlobalTechCoef_demand, L203.GlobalTechShrwt_demand, L203.GlobalTechInterp_demand, L203.StubTechProd_food,
                 L203.StubTechProd_nonfood_crop, L203.StubTechProd_nonfood_meat, L203.StubTechProd_For,
                 L203.StubCalorieContent, L203.PerCapitaBased, L203.BaseService,
-                L203.IncomeElasticity, L203.PriceElasticity, L203.FuelPrefElast_ssp1,L203.FuelPrefElast_snr,
+                L203.IncomeElasticity, L203.PriceElasticity, L203.FuelPrefElast_ssp1,L203.FuelPrefElast_spp,L203.FuelPrefElast_snr,
                 L203.SubregionalShares, L203.DemandFunction_food, L203.DemandStapleParams, L203.DemandNonStapleParams,
                 L203.DemandStapleRegBias, L203.DemandNonStapleRegBias, L203.StapleBaseService, L203.NonStapleBaseService)
   } else {
