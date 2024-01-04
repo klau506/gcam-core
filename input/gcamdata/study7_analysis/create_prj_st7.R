@@ -4,7 +4,7 @@
 # setwd to file location === #####
 gcam_folder = 'gcam-core-iamcompact'
 setwd(paste0('C:\\GCAM\\GCAM_7.0_Claudia\\',gcam_folder,'\\input\\gcamdata\\study7_analysis'))
-.libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1 - gcamdata_CP/')
+# .libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1 - gcamdata_CP/')
 
 # read arguments
 args = commandArgs(trailingOnly=TRUE)
@@ -33,7 +33,7 @@ selected_year = 2030
 load_mapping_data()
 selected_scen = list_scen_it
 
-load_queries()
-dt = save_queries(queries_file_name = 'REF_queries_all.RData')
+load_queries(onlyFoodConsumption = T)
+dt = save_queries(queries_file_name = 'Calibration_queries_all.RData')
 rm(prj)
 gc()

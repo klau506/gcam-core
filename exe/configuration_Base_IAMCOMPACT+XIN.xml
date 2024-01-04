@@ -116,7 +116,7 @@
 		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_SouthAfrica.xml</Value>
 		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_SouthAmericaNorthern.xml</Value>
 		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_SouthKorea.xml</Value>
-		<!-- <Value name = "scenario">../input/gcamdata/xml_diets/spp_all60_2035_0.405.xml</Value> -->
+		<Value name = "scenario">../input/gcamdata/xml_diets/spp_all60_2035_0.405.xml</Value>
 		
 
 		<Value name = "solver">../input/solution/cal_broyden_config.xml</Value>
@@ -124,8 +124,7 @@
         <Value name = "RESID_ELEC_CALIB">../input/gcamdata/xml_policy/bldeleccorr_world.xml</Value>
 	</ScenarioComponents>
 	<Strings>
-		<!-- <Value name="scenarioName">REF_IAMCOMPACT+XIN</Value> -->
-		<Value name="scenarioName">SPP_IAMCOMPACT+XIN_all60_2035_0405_prova_0005</Value>
+		<Value name="scenarioName">SPP_IAMCOMPACT+XIN_logitexponent_p1A_m1P</Value>
 		<Value name="debug-region">USA</Value>
 		<Value name="MAGICC-input-dir">../input/magicc/inputs</Value>
 		<Value name="MAGICC-output-dir">../output</Value>

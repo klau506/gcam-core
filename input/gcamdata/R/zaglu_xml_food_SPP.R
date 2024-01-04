@@ -34,10 +34,6 @@ module_diets_food_SPP_xml <- function(command, ...) {
                add_rename_foodsubsecSPP1_xml() %>%
                add_rename_foodsubsecSPP2_xml() %>%
                add_precursors("L203.FuelPrefElast_spp"))
-               # add_xml_data(data, "L2_FuelPrefElast") %>%
-               # add_node_equiv_xml("subsector") %>%
-               # add_rename_foodsubsec_xml() %>%
-               # add_precursors("L203.FuelPrefElast_spp"))
     }
 
     # Need this for loop because having issues with lapply(all_xml_names, get)

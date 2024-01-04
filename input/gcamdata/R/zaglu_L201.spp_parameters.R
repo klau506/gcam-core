@@ -49,16 +49,20 @@ module_aglu_L201.spp_parameters <- function(command, ...) {
         # no higher than 100
         dplyr::mutate(spp_f = if_else(spp_f > 100, 100, spp_f)) %>%
         # spp_i <= spp_f
-        dplyr::mutate(spp_f = if_else(spp_f < spp_i, spp_i, spp_f))
+        dplyr::mutate(spp_f = if_else(spp_f < spp_i, spp_i, spp_f)) %>%
+        # spp_f computed according the scenario <= spp_f data from ssp2
+        dplyr::mutate(spp_f = if_else(spp_f > spp_f_data, spp_f, spp_f_data))
       return(invisible(data))
     }
 
     L201.spp_parameters_1 = list()
     for (i in 1:nrow(A_spp_scenarios)) {
       tmp_list = A_spp_initial_shares %>%
+        dplyr::rename('spp_f_data' = 'spp_f') %>%
         dplyr::mutate(spp_f = eval(parse(text = A_spp_scenarios[i,]$spp_f_computation))) %>%
         dplyr::mutate(scenario = A_spp_scenarios[i,]$scen_name) %>%
-        check_no_higher_100_and_no_diminishing(.)
+        check_no_higher_100_and_no_diminishing(.) %>%
+        dplyr::select(-spp_f_data)
 
       L201.spp_parameters_1[[A_spp_scenarios[i,]$scen_name]] = tmp_list
     }

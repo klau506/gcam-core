@@ -373,7 +373,8 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
         #     mutate(GDPpcNorm = GDPpc/GDPpcRef) %>%
         #     filter(year >= MODEL_FINAL_BASE_YEAR & year <= MODEL_HALF_CENTURY_YEAR),
         #   by = c('region','year')) %>%
-        mutate(value_scaled = (spp_f - value) * SPP_CONVERSION_FACTOR)
+        mutate(value_scaled = (spp_f - value) * SPP_CONVERSION_FACTOR) %>%
+        mutate(value_scaled = if_else(abs(value_scaled) < 1e-3, 0, value_scaled)) #avoid c++ pb
 
       bind_rows(L203.FuelPrefElast_spp_tmp1 %>%
                   select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
@@ -391,15 +392,10 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
 
       L203.FuelPrefElast_spp[[n]] = L203.FuelPrefElast_spp_tmp2
     }
-    save(L203.FuelPrefElast_spp, file = paste0(outputs_path, '/L203.FuelPrefElast_spp.RData'))
-    # } else {
-    #   load(paste0(outputs_path, '/L203.FuelPrefElast_spp.RData'))
-    # }
 
     # Fuel preference elasticity
     # Build L203.FuelPrefElast_snr: Fuel preference elasticities for no-rumiant protein
     # Keep the nesting subsector 1 and 2
-    # if (!file.exists(paste0(outputs_path, '/L203.FuelPrefElast_snr.RData'))) {
     SNR_CONVERSION_FACTOR = 0.005
     L102.pcgdp_thous90USD_GCAM_IC_R_Y
     names_FuelPrefElast_nest <- c("region", "supplysector", "subsector_nest1", "subsector_nest2", "subsector", "year.fillout", "fuelprefElasticity")
@@ -407,17 +403,19 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
     for(n in names(L202.snr_logisticFun)) {
       print(n)
       L203.FuelPrefElast_snr_tmp1 = as_tibble(L202.snr_logisticFun[[n]]) %>%
-        left_join_error_no_match(
-          left_join_error_no_match(L102.pcgdp_thous90USD_GCAM_IC_R_Y,
-                                   GCAM_region_names) %>%
-            rename('GDPpc' = 'value') %>%
-            group_by(region) %>%
-            mutate(GDPpcRef = GDPpc[year == MODEL_FINAL_BASE_YEAR]) %>%
-            ungroup() %>%
-            mutate(GDPpcNorm = GDPpc/GDPpcRef) %>%
-            filter(year >= MODEL_FINAL_BASE_YEAR & year <= MODEL_HALF_CENTURY_YEAR),
-          by = c('region','year')) %>%
-        mutate(value_scaled = value * SNR_CONVERSION_FACTOR)
+        # left_join_error_no_match(
+        #   left_join_error_no_match(L102.pcgdp_thous90USD_GCAM_IC_R_Y,
+        #                            GCAM_region_names) %>%
+        #     rename('GDPpc' = 'value') %>%
+        #     group_by(region) %>%
+        #     mutate(GDPpcRef = GDPpc[year == MODEL_FINAL_BASE_YEAR]) %>%
+        #     ungroup() %>%
+        #     mutate(GDPpcNorm = GDPpc/GDPpcRef) %>%
+        #     filter(year >= MODEL_FINAL_BASE_YEAR & year <= MODEL_HALF_CENTURY_YEAR),
+        #   by = c('region','year')) %>%
+        mutate(value_scaled = (snr_f - value) * SNR_CONVERSION_FACTOR) %>%
+        mutate(value_scaled = if_else(abs(value_scaled) < 1e-3, 0, value_scaled)) #avoid c++ pb
+
 
       L203.FuelPrefElast_snr_tmp1 %>%
         select(region, year.fillout = year, fuelprefElasticity = value_scaled) %>%
@@ -433,9 +431,6 @@ module_aglu_L203.ag_an_demand_input <- function(command, ...) {
       L203.FuelPrefElast_snr[[n]] = L203.FuelPrefElast_snr_tmp2
     }
     save(L203.FuelPrefElast_snr, file = paste0(outputs_path, '/L203.FuelPrefElast_snr.RData'))
-    # } else {
-    #   load(paste0(outputs_path, '/L203.FuelPrefElast_snr.RData'))
-    # }
 
 
     # Build L203.BaseService: base service of (standard) final demands

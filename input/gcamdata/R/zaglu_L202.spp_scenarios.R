@@ -50,27 +50,22 @@ module_aglu_L202.spp_scenarios <- function(command, ...) {
     }
 
     # Estimate the cumulative regional spp over time if not estimated yet
-    if (!file.exists(paste0(outputs_path, '/L202.spp_logisticFun.RData'))) {
-      L202.spp_logisticFun = list()
-      for (n in names(L201.spp_parameters)) {
-        print(n)
-        L202.spp_logisticFun_tmp = bind_rows(lapply(seq(MODEL_FINAL_BASE_YEAR,MODEL_HALF_CENTURY_YEAR,by=5), function(year) append_year(L201.spp_parameters[[n]], year))) %>%
-          logit_function(.)
-        L202.spp_logisticFun[[n]] = L202.spp_logisticFun_tmp
-      }
-
-      L202.spp_logisticFun %>% tibble::as_tibble() %>%
-        add_legacy_name("L202.spp_logisticFun") %>%
-        add_title("Plant Protein Share by region for all scenarios") %>%
-        add_units("%") %>%
-        add_comments("Estimation of the spp through different logit functions") %>%
-        add_precursors("L201.spp_parameters") ->
-        L202.spp_logisticFun
-
-      save(L202.spp_logisticFun, file = paste0(outputs_path, '/L202.spp_logisticFun.RData'))
-    } else {
-      load(paste0(outputs_path, '/L202.spp_logisticFun.RData'))
+    L202.spp_logisticFun = list()
+    for (n in names(L201.spp_parameters)) {
+      print(n)
+      L202.spp_logisticFun_tmp = bind_rows(lapply(seq(MODEL_FINAL_BASE_YEAR,MODEL_HALF_CENTURY_YEAR,by=5), function(year) append_year(L201.spp_parameters[[n]], year))) %>%
+        logit_function(.)
+      L202.spp_logisticFun[[n]] = L202.spp_logisticFun_tmp
     }
+
+    L202.spp_logisticFun %>% tibble::as_tibble() %>%
+      add_legacy_name("L202.spp_logisticFun") %>%
+      add_title("Plant Protein Share by region for all scenarios") %>%
+      add_units("%") %>%
+      add_comments("Estimation of the spp through different logit functions") %>%
+      add_precursors("L201.spp_parameters") ->
+      L202.spp_logisticFun
+
 
     return_data(L202.spp_logisticFun)
   } else {

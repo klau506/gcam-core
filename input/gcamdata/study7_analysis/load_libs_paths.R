@@ -1,6 +1,6 @@
 #### Libraries =================================================================
 # ==============================================================================
-.libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1 - gcamdata_CP')
+# .libPaths('C:\\Users\\claudia.rodes\\Documents\\R\\win-library\\4.1 - gcamdata_CP')
 library(rgcam)
 library(dplyr)
 # library(tidyr)
@@ -8,7 +8,7 @@ library(ggplot2)
 library(rfasst)
 library(data.table)
 library(hrbrthemes)
-library(GGally)
+# library(GGally)
 library(viridis)
 
 
