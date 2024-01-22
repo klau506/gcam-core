@@ -1,9 +1,9 @@
 # File: A_demand_subsector.csv
-# Title: Subsectors of agricultural production
+# Title: Nesting subsectors of agricultural production
 # Unit: NA
-# Description: Generic information for subsectors of agricultural production
+# Description: Generic information for nesting subsectors of agricultural production
 # Source: GCAM assumptions
-# Column types: ccccnciccccc 
+# Column types: ccccncnccccc
 # ----------
 supplysector,subsector_nest1,subsector_nest2,subsector,logit.exponent,year.fillout,share.weight,apply.to,from.year,to.year,interpolation.function,logit.type
 FoodDemand_Staples,Corn,Corn,Corn,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
@@ -20,9 +20,9 @@ FoodDemand_NonStaples,Oil,OilPalm,OilPalm,-0.25,start-year,1,share-weight,final-
 FoodDemand_NonStaples,Oil,Soybean,Soybean,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,SugarCrop,SugarCrop,SugarCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,FruitsVeg,Vegetables,Vegetables,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-FoodDemand_NonStaples,Protein,Animal,Rumiant,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
+FoodDemand_NonStaples,Protein,Animal,Ruminant,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,Protein,Animal,Monogastric,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-FoodDemand_NonStaples,Protein,OtherMeat_Fish,OtherMeat_Fish,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
+FoodDemand_NonStaples,Protein,Animal,OtherMeat_Fish,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,Corn,Corn,Corn,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FiberCrop,FiberCrop,FiberCrop,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FodderGrass,FodderGrass,FodderGrass,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,

@@ -68,6 +68,8 @@ module_aglu_ag_an_demand_input_xml <- function(command, ...) {
       add_xml_data(L203.SubsectorNest2All_demand_food, "L2_SubsectorShrwtFllt") %>%
       add_xml_data(L203.SubsectorNest2All_demand_food, "L2_SubsectorInterp") %>%
       add_logit_tables_xml(L203.SubsectorAll_demand_food, "L3_SubsectorLogit") %>%
+      add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorShrwtFllt") %>%
+      add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorInterp") %>%
       # add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorInterp") %>%       # only consider it if the subsectors' sw are modified to.value
       add_node_equiv_xml("subsector") %>%
       add_rename_foodsubsec_xml() %>%
@@ -109,5 +111,3 @@ module_aglu_ag_an_demand_input_xml <- function(command, ...) {
     stop("Unknown command")
   }
 }
-
-

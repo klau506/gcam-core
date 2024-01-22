@@ -1,4 +1,4 @@
-# File: A_demand_subsector_nest1.csv
+# File: A_demand_nesting_subsector1.csv
 # Title: Nesting subsectors of agricultural production
 # Unit: NA
 # Description: Generic information for nesting subsectors of agricultural production
@@ -11,9 +11,8 @@ FoodDemand_Staples,OtherGrain,-0.25,start-year,1,share-weight,final-calibration-
 FoodDemand_Staples,Rice,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_Staples,RootTuber,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_Staples,Wheat,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-FoodDemand_NonStaples,FiberCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,FruitsVeg,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-FoodDemand_NonStaples,Protein,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
+FoodDemand_NonStaples,Protein,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,MiscCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,Oil,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,SugarCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,

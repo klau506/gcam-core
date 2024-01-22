@@ -122,7 +122,6 @@ generate_level2_data_names <- function() {
   level2_data_names[["DeleteSubsector"]] <- level2_data_names[["Subsector"]]
   level2_data_names[["DeleteNestingSubsector1"]] <- c("region", "supplysector", "nesting-subsector")
 
-
   # Subsectors food
   level2_data_names[["L0_Supplysector"]] <- c("region", "supplysector", "output.unit", "input.unit", "price.unit", "logit.year.fillout", "logit.exponent")
   level2_data_names[["L0_Supplysector_absolute-cost-logit"]] <- c("region", "supplysector")
@@ -179,7 +178,6 @@ generate_level2_data_names <- function() {
   level2_data_names[["L3_SubsectorInterpTo"]] <- c(level2_data_names[["L3_Subsector"]], "apply.to", "from.year", "to.year", "to.value", "interpolation.function")
   level2_data_names[["L3_FuelPrefElast"]] <- c(level2_data_names[["L3_Subsector"]], "year.fillout", "fuelprefElasticity")
   level2_data_names[["L3_DeleteSubsector"]] <- level2_data_names[["L3_Subsector"]]
-
 
   level2_data_names[["L4_Tech"]] <- c("region", "supplysector", "subsector_nest1", "subsector_nest2", "subsector", "technology")
   level2_data_names[["L4_TechNonFood"]] <- c("region", "supplysector", "subsector", "technology")

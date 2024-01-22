@@ -1,9 +1,9 @@
-# File: A_demand_subsector_nest2.csv
-# Title: Subsectors of agricultural productionyear
+# File: A_demand_nesting_subsector2.csv
+# Title: Nesting subsectors of agricultural production
 # Unit: NA
-# Description: Generic information for subsectors of agricultural production
+# Description: Generic information for nesting subsectors of agricultural production
 # Source: GCAM assumptions
-# Column types: cccnciccccc 
+# Column types: cccncnccccc
 # ----------
 supplysector,subsector_nest1,subsector_nest2,logit.exponent,year.fillout,share.weight,apply.to,from.year,to.year,interpolation.function,logit.type
 FoodDemand_Staples,Corn,Corn,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
@@ -21,7 +21,6 @@ FoodDemand_NonStaples,Oil,Soybean,-0.25,start-year,1,share-weight,final-calibrat
 FoodDemand_NonStaples,SugarCrop,SugarCrop,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,FruitsVeg,Vegetables,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 FoodDemand_NonStaples,Protein,Animal,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-FoodDemand_NonStaples,Protein,OtherMeat_Fish,-0.25,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,Corn,Corn,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FiberCrop,FiberCrop,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Crops,FodderGrass,FodderGrass,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
@@ -45,5 +44,4 @@ NonFoodDemand_Meat,Pork,Pork,-6,start-year,1,share-weight,final-calibration-year
 NonFoodDemand_Meat,Poultry,Poultry,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Meat,SheepGoat,SheepGoat,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
 NonFoodDemand_Meat,OtherMeat_Fish,OtherMeat_Fish,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-NonFoodDemand_sawnwood,Forest,Forest,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
-NonFoodDemand_woodpulp,Forest,Forest,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,
+NonFoodDemand_Forest,Forest,Forest,-6,start-year,1,share-weight,final-calibration-year,end-year,fixed,

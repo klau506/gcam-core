@@ -21,12 +21,12 @@ FoodDemand_Staples,RootTuber,RootTuber,RootTuber,RootTuber,share-weight,final-ca
 FoodDemand_NonStaples,SugarCrop,SugarCrop,SugarCrop,SugarCrop,share-weight,final-calibration-year,end-year,fixed,regional sugarcrop,1
 FoodDemand_NonStaples,FruitsVeg,Vegetables,Vegetables,Vegetables,share-weight,final-calibration-year,end-year,fixed,regional vegetables,1
 FoodDemand_Staples,Wheat,Wheat,Wheat,Wheat,share-weight,final-calibration-year,end-year,fixed,regional wheat,1
-FoodDemand_NonStaples,Protein,Animal,Rumiant,Beef,share-weight,final-calibration-year,end-year,fixed,regional beef,1
-FoodDemand_NonStaples,Protein,Animal,Rumiant,Dairy,share-weight,final-calibration-year,end-year,fixed,regional dairy,1
+FoodDemand_NonStaples,Protein,Animal,Ruminant,Beef,share-weight,final-calibration-year,end-year,fixed,regional beef,1
+FoodDemand_NonStaples,Protein,Animal,Ruminant,Dairy,share-weight,final-calibration-year,end-year,fixed,regional dairy,1
 FoodDemand_NonStaples,Protein,Animal,Monogastric,Pork,share-weight,final-calibration-year,end-year,fixed,regional pork,1
 FoodDemand_NonStaples,Protein,Animal,Monogastric,Poultry,share-weight,final-calibration-year,end-year,fixed,regional poultry,1
-FoodDemand_NonStaples,Protein,Animal,Rumiant,SheepGoat,share-weight,final-calibration-year,end-year,fixed,regional sheepgoat,1
-FoodDemand_NonStaples,Protein,OtherMeat_Fish,OtherMeat_Fish,OtherMeat_Fish,share-weight,final-calibration-year,end-year,fixed,OtherMeat_Fish,1
+FoodDemand_NonStaples,Protein,Animal,Ruminant,SheepGoat,share-weight,final-calibration-year,end-year,fixed,regional sheepgoat,1
+FoodDemand_NonStaples,Protein,Animal,OtherMeat_Fish,OtherMeat_Fish,share-weight,final-calibration-year,end-year,fixed,OtherMeat_Fish,1
 NonFoodDemand_Crops,Corn,Corn,Corn,Corn,share-weight,final-calibration-year,end-year,fixed,regional corn,1
 NonFoodDemand_Crops,FiberCrop,FiberCrop,FiberCrop,FiberCrop,share-weight,final-calibration-year,end-year,fixed,regional fibercrop,1
 NonFoodDemand_Crops,FodderGrass,FodderGrass,FodderGrass,FodderGrass,share-weight,final-calibration-year,end-year,fixed,FodderGrass,1
