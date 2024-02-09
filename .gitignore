@@ -87,3 +87,4 @@ input/*.xml
 ModelInterface/*
 *figures*
 *.dat
+server2dipc.sh

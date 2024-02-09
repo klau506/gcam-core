@@ -107,17 +107,7 @@
 
 		<!-- IAM COMPACT STUDY7 - DIETS files -->
 		<Value name = "new_ref">../input/policy/diets/nonstaple_incelas_0.4.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_Argentina.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_Brazil.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_EuropeanFreeTradeAssociation.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_EuropeEastern.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_Mexico.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_Japan.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_SouthAfrica.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_SouthAmericaNorthern.xml</Value>
-		<Value name = "gdp_fix">../input/policy/diets/gdp_fix_SouthKorea.xml</Value>
-		
-
+	
 		<Value name = "solver">../input/solution/cal_broyden_config.xml</Value>
 
         <Value name = "RESID_ELEC_CALIB">../input/gcamdata/xml_policy/bldeleccorr_world.xml</Value>
