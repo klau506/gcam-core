@@ -57,7 +57,7 @@ plant_percentage <- food_consumption %>%
   dplyr::ungroup() %>%
   # compute the plant % (plant/total food consumption)
   dplyr::group_by(scenario, region, Units) %>%
-  dplyr::summarise(across(tidyr::starts_with('X'), function(x) return(x[2]/x[1]))) %>%
+  dplyr::summarise(across(tidyr::starts_with('X'), function(x) return(x[2]/(x[1]+x[2])))) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(Units = 'Percentage')
 
@@ -83,7 +83,7 @@ conversion_factor <- merge(plant_percentage_mod %>%
                            share_weights_percentage,
                            by = c('scenario', 'region', 'year')) %>%
   dplyr::filter(year > 2020, scenario != 'REF_IAMCOMPACT+XIN') %>%
-  dplyr::mutate(conv_factor = share_weight_increase / plant_per_increase) %>%
+  dplyr::mutate(conv_factor = plant_per_increase / share_weight_increase) %>%
   dplyr::group_by(scenario, region) %>%
   dplyr::mutate(std_conv_factor = median(conv_factor)) %>%
   dplyr::ungroup() %>%
@@ -92,8 +92,31 @@ conversion_factor <- merge(plant_percentage_mod %>%
   tibble::as_tibble() %>%
   add_comments("Source: calibrate_sw_plant.R")
 
-write.csv(conversion_factor, 'conversion_factor.csv')
+write.csv(conversion_factor, 'conversion_factor.csv', row.names = F)
 
+
+##### Compute the REF plant protein consumption (plant protein consumption / total protein intake) -----------------------------------
+
+plant_percentage_csv <- food_consumption %>%
+  dplyr::filter(subsector == 'Protein') %>%
+  dplyr::mutate(is_plant = ifelse(subsector.1 == 'Plant',TRUE,FALSE)) %>%
+  dplyr::select(scenario,region,is_plant,X1990:X2050,Units) %>%
+  # compute the total and plant Pcal by region
+  dplyr::group_by(scenario, region, is_plant, Units) %>%
+  dplyr::summarise(across(everything(), sum)) %>%
+  dplyr::ungroup() %>%
+  # compute the plant % (plant/total food consumption)
+  dplyr::group_by(scenario, region, Units) %>%
+  dplyr::summarise(across(tidyr::starts_with('X'), function(x) return(x[2]/(x[1]+x[2])))) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(Units = 'Percentage') %>%
+  dplyr::filter(scenario == 'REF_IAMCOMPACT+XIN')
+write.csv(plant_percentage_csv, 'diets_plant_percentage_REF.csv', row.names = F)
+
+share_weights_csv <- share_weights %>%
+  dplyr::mutate(Units = 'Unitless') %>%
+  dplyr::filter(scenario == 'REF_IAMCOMPACT+XIN')
+write.csv(share_weights_csv, 'diets_plant_sw_REF.csv', row.names = F)
 
 
 

@@ -1,0 +1,25 @@
+# File: diets_scenarios.csv
+# Title: Scenario type and goals of the dietary plant and no-ruminant behavioural change
+# Units: Various
+# Comments: There are the considered scenarios to develop the study
+# Column types: ccn
+# ----------
+scen_sec_type,scen_reg_type,scen_goal
+spp,all,10
+spp,all,20
+spp,all,30
+spp,all,40
+spp,all,50
+spp,all,60
+spp,all,70
+spp,all,80
+spp,all,90
+spp,plus,10
+spp,plus,20
+spp,plus,30
+spp,plus,40
+spp,plus,50
+spp,plus,60
+spp,plus,70
+spp,plus,80
+spp,plus,90

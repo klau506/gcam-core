@@ -58,8 +58,8 @@ find_header <- function(fqfn) {
 #' @author CR October 2023
 #' @export
 return_xml_names <- function(xml_names) {
-  assign('data', get(load(paste0('outputs/',xml_names))))
-  all_xml_names <- setNames(data$value, rep("XML", length(data$value)))
+  assign('data', get(load(xml_names)))
+  all_xml_names <- setNames(paste0(names(data),'.xml'), rep("XML", length(names(data))))
   all_xml_names
 }
 

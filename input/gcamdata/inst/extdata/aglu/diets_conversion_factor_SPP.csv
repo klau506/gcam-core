@@ -1,0 +1,39 @@
+# File: diets_conversion_factor_SPP.csv
+# Title: SPP scenario conversion factor (food increment / sw increment)
+# Source: calibrate_sw_plant.R
+# Units: Unitless
+# Column types: cn
+# ----------
+region,conv_factor
+Africa_Eastern,1.01603794963246
+Africa_Northern,0.998792521004791
+Africa_Southern,1.01016427773102
+Africa_Western,1.01259320255881
+Argentina,0.990014069838444
+Australia_NZ,0.986523670678773
+Brazil,0.985902603281583
+Canada,0.981158885577219
+Central America and Caribbean,0.991696133581716
+Central Asia,0.997105203737347
+China,0.991817475704204
+Colombia,0.988986203648957
+EU-12,0.989792062995119
+EU-15,0.985716461744594
+Europe_Eastern,0.995821021268502
+Europe_Non_EU,0.98652515728793
+European Free Trade Association,0.984864327614448
+India,1.00370150846163
+Indonesia,1.00148967402658
+Japan,0.986526814317253
+Mexico,0.9865710991948
+Middle East,0.985907433463724
+Pakistan,1.02014756702844
+Russia,0.986191171114499
+South Africa,0.995473923302772
+South America_Northern,0.996351397106424
+South America_Southern,0.993912701982103
+South Asia,1.02226603928152
+South Korea,0.983354861760277
+Southeast Asia,0.997196209474109
+Taiwan,0.98379015821845
+USA,0.982949679711067
