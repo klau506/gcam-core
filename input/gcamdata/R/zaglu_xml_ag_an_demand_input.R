@@ -65,8 +65,13 @@ module_aglu_ag_an_demand_input_xml <- function(command, ...) {
       add_xml_data(L203.SubsectorNest1All_demand_food, "L1_SubsectorShrwtFllt") %>%
       add_xml_data(L203.SubsectorNest1All_demand_food, "L1_SubsectorInterp") %>%
       add_logit_tables_xml(L203.SubsectorNest2All_demand_food, "L2_SubsectorLogit") %>%
-      add_xml_data(L203.SubsectorNest2All_demand_food, "L2_SubsectorShrwtFllt") %>%
-      add_xml_data(L203.SubsectorNest2All_demand_food, "L2_SubsectorInterp") %>%
+      add_xml_data(L203.SubsectorNest2All_demand_food %>%
+                     dplyr::filter(subsector_nest2 != 'Plant'), "L2_SubsectorShrwtFllt") %>%
+      add_xml_data(L203.SubsectorNest2All_demand_food %>%
+                     dplyr::filter(subsector_nest2 == 'Plant') %>%
+                     dplyr::rename(year = year.fillout), "L2_SubsectorShrwt") %>%
+      add_xml_data(L203.SubsectorNest2All_demand_food %>%
+                     dplyr::filter(subsector_nest2 != 'Plant'), "L2_SubsectorInterp") %>%
       add_logit_tables_xml(L203.SubsectorAll_demand_food, "L3_SubsectorLogit") %>%
       add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorShrwtFllt") %>%
       add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorInterp") %>%

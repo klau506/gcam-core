@@ -4113,6 +4113,22 @@ element input {
             *[@type='output' (:collapse:)]/physical-output/node()</xPath>
                 <comments/>
             </supplyDemandQuery>
+            <supplyDemandQuery title="food consumption by type (Total Meat)">
+                <axis1 name="technology">technology</axis1>
+                <axis2 name="Year">physical-output[@vintage]</axis2>
+                <xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='FoodDemand_Staples' or @name='FoodDemand_NonStaples')]//
+            *[@type='subsector']//*[@type='technology' and (@name='Beef' or @name='Pork' or @name='Poultry' or @name='SheepGoat')]/
+            *[@type='output' (:collapse:)]/physical-output/node()</xPath>
+                <comments/>
+            </supplyDemandQuery>
+            <supplyDemandQuery title="food consumption by type (Ruminant Meat)">
+                <axis1 name="technology">technology</axis1>
+                <axis2 name="Year">physical-output[@vintage]</axis2>
+                <xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='FoodDemand_Staples' or @name='FoodDemand_NonStaples')]//
+            *[@type='subsector']//*[@type='technology' and (@name='Beef' or @name='SheepGoat')]/
+            *[@type='output' (:collapse:)]/physical-output/node()</xPath>
+                <comments/>
+            </supplyDemandQuery>
             <supplyDemandQuery title="demand balances by crop commodity">
                 <axis1 name="sector">sector</axis1>
                 <axis2 name="Year">demand-physical[@vintage]</axis2>
@@ -4155,6 +4171,30 @@ element input {
                 <axis1 name="input">input[@name]</axis1>
                 <axis2 name="Year">regional-bias[@year]</axis2>
                 <xPath buildList="true" dataName="regional-bias" group="false" sumAll="false">gcam-consumer[@name='FoodDemand']//*[@type='input']/regional-bias/node()</xPath>
+                <comments/>
+            </supplyDemandQuery>
+            <supplyDemandQuery title="food share-weights by subsector">
+                <axis1 name="subsector">subsector</axis1>
+                <axis2 name="Year">share-weight</axis2>
+                <xPath buildList="true" dataName="price" group="false" sumAll="false">*[@type='sector' and (@name='FoodDemand_NonStaples')]/
+               *[@type='subsector']/*[@type='subsector']/
+               share-weight/text()</xPath>
+                <comments/>
+            </supplyDemandQuery>
+            <supplyDemandQuery title="food share-weights by sub-subsector">
+                <axis1 name="subsector">subsector</axis1>
+                <axis2 name="Year">share-weight</axis2>
+                <xPath buildList="true" dataName="price" group="false" sumAll="false">*[@type='sector' and (@name='FoodDemand_NonStaples')]/
+               *[@type='subsector']//*[@type='subsector']/
+               share-weight/text()</xPath>
+                <comments/>
+            </supplyDemandQuery>
+            <supplyDemandQuery title="food share-weights by technology">
+                <axis1 name="technology">technology</axis1>
+                <axis2 name="Year">technology</axis2>
+                <xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='sector' (:collapse:) and (@name='FoodDemand_Staples' or @name='FoodDemand_NonStaples')]/
+                *[@type='subsector' ]//*[@type='technology']/
+                share-weight/node()</xPath>
                 <comments/>
             </supplyDemandQuery>
         </queryGroup>
