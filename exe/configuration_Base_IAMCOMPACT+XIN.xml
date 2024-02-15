@@ -5,7 +5,7 @@
 		<Value name="BatchFileName">batch_ag.xml</Value>
 		<Value name="policy-target-file">../input/policy/forcing_target_4p5.xml</Value>
 		<Value name="GHGInputFileName">../input/magicc/inputs/input_gases.emk</Value>
-		<Value write-output="1" append-scenario-name="0" name="xmldb-location">../output/database_basexdb_calib_sw</Value>
+		<Value write-output="1" append-scenario-name="0" name="xmldb-location">../output/database_basexdb_calib_sw2</Value>
 		<Value write-output="1" append-scenario-name="0" name="restart">./restart/restart</Value>
 		<Value write-output="0" append-scenario-name="1" name="xmlDebugFileName">debug.xml</Value>
 		<Value write-output="1" append-scenario-name="0" name="climatFileName">gas.emk</Value>
@@ -63,8 +63,7 @@
 		<Value name = "protected_land2">../input/gcamdata/xml/protected_land_input_2.xml</Value>
 		<Value name = "protected_land3">../input/gcamdata/xml/protected_land_input_3.xml</Value>
 		<Value name = "demand">../input/gcamdata/xml/ag_an_demand_input.xml</Value>
-		<Value name = "diets_sw_scen">../input/gcamdata/xml_diets/spp_all_20_x0_2045_k_0.405.xml</Value>
-		<Value name = "calib_sw">../input/gcamdata/share_weights_to_xml.xml</Value>
+		<Value name = "diets_sw_scen">../input/gcamdata/xml_diets/spp_all_50_x0_2035_k_0.805.xml</Value>
 		<Value name = "bio_trade">../input/gcamdata/xml/bio_trade.xml</Value>
 		<Value name = "ag_trade">../input/gcamdata/xml/ag_trade.xml</Value>
 		<Value name = "ag_storage">../input/gcamdata/xml/ag_storage.xml</Value>
@@ -115,7 +114,7 @@
         <Value name = "RESID_ELEC_CALIB">../input/gcamdata/xml_policy/bldeleccorr_world.xml</Value>
 	</ScenarioComponents>
 	<Strings>
-		<Value name="scenarioName">spp_all_20_x0_2045_k_0.405</Value>
+		<Value name="scenarioName">spp_all_50_x0_2035_k_0.805</Value>
 		<Value name="debug-region">USA</Value>
 		<Value name="MAGICC-input-dir">../input/magicc/inputs</Value>
 		<Value name="MAGICC-output-dir">../output</Value>

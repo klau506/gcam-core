@@ -19,7 +19,6 @@ module_diets_L203.dietary_share_weights <- function(command, ...) {
     c(
       FILE = "aglu/diets_conversion_factor_SPP",
       FILE = "aglu/diets_plant_sw_REF",
-      "L202.diets_plant_per_intake_ref",
       "L202.diets_plant_per_intake_list"
     )
 
@@ -36,27 +35,32 @@ module_diets_L203.dietary_share_weights <- function(command, ...) {
     diets_plant_sw_REF <- diets_plant_sw_REF %>%
       tidyr::pivot_longer(cols = X1990:X2050, names_to = "year", values_to = "ref_share_weight") %>%
       dplyr::mutate(year = as.numeric(gsub("X", "", year))) %>%
-      dplyr::select(-scenario)
-
-    diets_plant_sw_REF_hist <- diets_plant_sw_REF %>%
-      dplyr::filter(year <= 2015)
-    diets_plant_sw_REF_new <- diets_plant_sw_REF %>%
+      dplyr::select(-scenario) %>%
       dplyr::filter(year >= 2015)
+
+    # Useful functions ----
+    calibrate_sw <- function(data) {
+      for (y in unique(data$year)[2:length(unique(data$year))]) {
+        data[data$year == y,]$share_weight =
+          data[data$year == y-5,]$share_weight + data[data$year == y,]$per_incr * data[data$year == y,]$conv_factor * 0.01
+      }
+      return(data)
+    }
 
     # Compute annual plant share weight
     L203.diets_plant_sw_list <- list()
     for (i in 1:length(L202.diets_plant_per_intake_list)) {
       L203.diets_plant_sw_list_tmp <- L202.diets_plant_per_intake_list[[i]] %>%
-        left_join_error_no_match(
-          L202.diets_plant_per_intake_ref %>%
-            select(-scenario) %>%
-            select(region, Units, year, ref_value = value),
-          by = c("region", "Units", "year")
-        ) %>%
-        # compute percentual difference between the scenario and the reference
-        mutate(per_incr = value / ref_value - 1) %>%
+        # compute percentual difference between each year and the previous one
+        group_by(scenario, region, Units) %>%
+        arrange(year) %>%
+        # mutate(value_lag = lag(value)) %>%
+        mutate(per_incr = value / lag(value) - 1) %>%
+        ungroup() %>%
+        # set NA to 0
+        mutate(per_incr = ifelse(is.na(per_incr), 0, per_incr)) %>%
         # add share-weights ref data
-        left_join_error_no_match(diets_plant_sw_REF_new,
+        left_join_error_no_match(diets_plant_sw_REF,
           by = c("region", "year")
         ) %>%
         # add conversion factor data
@@ -64,7 +68,10 @@ module_diets_L203.dietary_share_weights <- function(command, ...) {
           by = c("region")
         ) %>%
         # compute new share-weights: sw = sw_ini + %incr * conv_factor
-        mutate(share_weight = ref_share_weight + per_incr * conv_factor)
+        mutate(share_weight = ref_share_weight + per_incr * conv_factor * 0.01) %>%
+        group_by(scenario, region, Units) %>%
+        calibrate_sw() %>%
+        ungroup()
 
       # save the sw to create an xml
       scen_name_complete <- unique(L203.diets_plant_sw_list_tmp$scenario)

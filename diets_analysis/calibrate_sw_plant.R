@@ -49,9 +49,10 @@ write.csv(share_weights_csv, 'share_weights_to_xml.csv', row.names = F)
 ##### Compute the regional conversion factor -----------------------------------
 # compute the plant consumption percentage (plant / total food consumption)
 plant_percentage <- food_consumption %>%
+  dplyr::filter(subsector == 'Protein') %>%
   dplyr::mutate(is_plant = ifelse(subsector.1 == 'Plant',TRUE,FALSE)) %>%
   dplyr::select(scenario,region,is_plant,X1990:X2050,Units) %>%
-  # compute the total and plant Pcal by region
+  # compute the total protein and plant protein Pcal by region
   dplyr::group_by(scenario, region, is_plant, Units) %>%
   dplyr::summarise(across(everything(), sum)) %>%
   dplyr::ungroup() %>%
