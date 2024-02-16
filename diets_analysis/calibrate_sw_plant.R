@@ -72,6 +72,8 @@ plant_percentage_mod <- plant_percentage %>%
 
 # extract the share weights
 share_weights_percentage <- share_weights %>%
+  dplyr::mutate(X1990 = as.numeric(X1990),
+                X2005 = as.numeric(X2005)) %>%
   tidyr::pivot_longer(cols = 'X1990':'X2050', names_to = 'year', values_to = 'share_weight') %>%
   dplyr::mutate(year = gsub('X','',year)) %>%
   dplyr::filter(year >= 2020) %>%
@@ -88,7 +90,7 @@ conversion_factor <- merge(plant_percentage_mod %>%
   dplyr::group_by(scenario, region) %>%
   dplyr::mutate(std_conv_factor = median(conv_factor)) %>%
   dplyr::ungroup() %>%
-  dplyr::select(region, conv_factor = std_conv_factor) %>%
+  dplyr::select(scenario, region, conv_factor = std_conv_factor) %>%
   dplyr::distinct() %>%
   tibble::as_tibble() %>%
   add_comments("Source: calibrate_sw_plant.R")

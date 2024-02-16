@@ -9,10 +9,10 @@
 #' the generated outputs: \code{spp_x2_2025_0.005.xml}
 module_diets_spp_sw_xml <- function(command, ...) {
 
-  all_xml_names <- return_xml_names(file.path('tmp_outputs','L203.diets_plant_sw_list.RData'))
+  all_xml_names <- return_xml_names(file.path('tmp_outputs','L202.diets_plant_sw_list.RData'))
 
   MODULE_INPUTS <-
-    c("L203.diets_plant_sw_list")
+    c("L202.diets_plant_sw_list")
 
   if(command == driver.DECLARE_INPUTS) {
     return(MODULE_INPUTS)
@@ -27,14 +27,14 @@ module_diets_spp_sw_xml <- function(command, ...) {
 
     for (xml_name in all_xml_names) {
       print(xml_name)
-      data = L203.diets_plant_sw_list[[gsub("\\.xml$", "", xml_name)]]
+      data = tibble::as_tibble(L202.diets_plant_sw_list[[gsub("\\.xml$", "", xml_name)]])
 
       assign(xml_name,
              create_xml(xml_name) %>%
                add_xml_data(data, "L2_SubsectorShrwt") %>%
                add_node_equiv_xml("subsector") %>%
                add_rename_foodsubsec_xml() %>%
-               add_precursors("L203.diets_plant_sw_list"))
+               add_precursors("L202.diets_plant_sw_list"))
     }
 
     # Need this for loop because having issues with lapply(all_xml_names, get)
