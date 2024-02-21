@@ -1,7 +1,7 @@
 ##### Load libraries & set path ------------------------------------------------
 setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/diets_analysis')
 
-.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_no_CP/')
+.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
 library(dplyr)
 
 
@@ -35,6 +35,8 @@ share_weights_csv <- share_weights %>%
   dplyr::mutate(supplysector = 'FoodDemand_NonStaples',
                 subsector_nest1 = 'Protein',           # Later, manually, we need to change this name to "nesting-subsector"
                 subsector_nest2 = 'Plant') %>%         # Later, manually, we need to change this name to "nesting-subsector"
+  dplyr::mutate(X1990 = as.numeric(X1990),
+                X2005 = as.numeric(X2005)) %>%
   tidyr::pivot_longer(cols = 'X1990':'X2050', names_to = 'year', values_to = 'share-weight') %>%
   dplyr::mutate(year = gsub('X','',year)) %>%
   dplyr::select(region ,supplysector, subsector_nest1, subsector_nest2, year, `share-weight`) %>%
@@ -86,14 +88,15 @@ conversion_factor <- merge(plant_percentage_mod %>%
                            share_weights_percentage,
                            by = c('scenario', 'region', 'year')) %>%
   dplyr::filter(year > 2020, scenario != 'REF_IAMCOMPACT+XIN') %>%
-  dplyr::mutate(conv_factor = plant_per_increase / share_weight_increase) %>%
+  dplyr::mutate(conv_factor = share_weight_increase / plant_per_increase) %>%
   dplyr::group_by(scenario, region) %>%
-  dplyr::mutate(std_conv_factor = median(conv_factor)) %>%
+  dplyr::mutate(std_conv_factor = quantile(conv_factor, 0.8)) %>%
   dplyr::ungroup() %>%
   dplyr::select(scenario, region, conv_factor = std_conv_factor) %>%
   dplyr::distinct() %>%
   tibble::as_tibble() %>%
-  add_comments("Source: calibrate_sw_plant.R")
+  add_comments("Source: calibrate_sw_plant.R") %>%
+  select(-scenario)
 
 write.csv(conversion_factor, 'conversion_factor.csv', row.names = F)
 
@@ -118,7 +121,8 @@ write.csv(plant_percentage_csv, 'diets_plant_percentage_REF.csv', row.names = F)
 
 share_weights_csv <- share_weights %>%
   dplyr::mutate(Units = 'Unitless') %>%
-  dplyr::filter(scenario == 'REF_IAMCOMPACT+XIN')
+  dplyr::filter(scenario == 'REF_IAMCOMPACT+XIN') %>%
+  select(-Units)
 write.csv(share_weights_csv, 'diets_plant_sw_REF.csv', row.names = F)
 
 

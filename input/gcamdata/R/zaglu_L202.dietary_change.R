@@ -19,6 +19,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
       FILE = "aglu/diets_scenarios",
       FILE = "aglu/diets_plant_percentage_REF",
       FILE = "aglu/diets_conversion_factor_SPP",
+      FILE = "aglu/diets_multiplier_factor_SPP",
       FILE = "aglu/diets_plant_sw_REF"
     )
 
@@ -104,7 +105,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
         tidyr::pivot_longer(cols = X2015:X2050, names_to = "year", values_to = "value") %>%
         dplyr::mutate(year = as.numeric(gsub("X", "", year)))
 
-      # compute the 2050 share weight: sw = sw_ini + %incr * conv_factor
+      # compute the 2050 share weight: sw = sw_ini + sw_ini * %incr * conv_factor (linked to region) * multiplier_factor (linked to goal)
       diets_plant_sw_tmp <- diets_plant_per_intake_tmp %>%
         # add share-weights ref data
         left_join_error_no_match(diets_plant_sw_REF,
@@ -113,10 +114,15 @@ module_diets_L202.dietary_change <- function(command, ...) {
         # add conversion factor data
         left_join_error_no_match(diets_conversion_factor_SPP,
                                  by = c("region")
+        ) %>%
+        # add multiplier factor data
+        left_join_error_no_match(diets_multiplier_factor_SPP,
+                                 by = c("scenario")
         )
       diets_plant_sw_tmp = data.table(diets_plant_sw_tmp)
       diets_plant_sw_tmp = diets_plant_sw_tmp[, sf := ref_share_weight[year == MODEL_HALF_CENTURY_YEAR]
-                                              + per_incr[year == MODEL_HALF_CENTURY_YEAR] * conv_factor[year == MODEL_HALF_CENTURY_YEAR],
+                                              + ref_share_weight[year == MODEL_HALF_CENTURY_YEAR] * per_incr[year == MODEL_HALF_CENTURY_YEAR]
+                                              * conv_factor[year == MODEL_HALF_CENTURY_YEAR] * multiplier_factor[year == MODEL_HALF_CENTURY_YEAR],
                                                                   by = region]
       diets_plant_sw_tmp = diets_plant_sw_tmp[, si := ref_share_weight[year == MODEL_FINAL_BASE_YEAR], by = region]
 
