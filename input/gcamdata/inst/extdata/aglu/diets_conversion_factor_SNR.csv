@@ -1,0 +1,39 @@
+# File: diets_conversion_factor_SNR.csv
+# Title: SNR scenario conversion factor (food increment / sw increment)
+# Source: calibrate_sw_plant.R
+# Units: Unitless
+# Column types: cn
+# ----------
+region,conv_factor
+Africa_Eastern,0.994805739841803
+Africa_Northern,0.995184064351673
+Africa_Southern,1.00172611637858
+Africa_Western,0.999754772123128
+Argentina,0.995975159043975
+Australia_NZ,0.997274525614982
+Brazil,0.99797755300668
+Canada,0.997922383462823
+Central America and Caribbean,0.999112598479427
+Central Asia,0.990355200389492
+China,0.999360668232138
+Colombia,0.997223696920993
+EU-12,0.998445189536051
+EU-15,0.996546389807505
+Europe_Eastern,0.997703150364684
+Europe_Non_EU,0.993395642919525
+European Free Trade Association,0.997254701493463
+India,0.989991690540845
+Indonesia,0.999986106840031
+Japan,0.99790840981113
+Mexico,0.999176974709536
+Middle East,0.996592392011826
+Pakistan,0.987136715125102
+Russia,0.99669451529402
+South Africa,0.99821447440857
+South America_Northern,0.997282772497855
+South America_Southern,0.998920358534976
+South Asia,0.997709913555901
+South Korea,0.999475803042037
+Southeast Asia,0.999832414372013
+Taiwan,0.999590510180918
+USA,0.996482879985837

@@ -1,0 +1,32 @@
+# File: diets_multiplier_factor_regional_refinment_SNR.csv
+# Title: SNR scenario regional conversion factor (food increment / sw increment). Some regions need extra refinment, so this file adds to the diets_multiplier_factor_SNR.csv
+# Source: calibrate_sw_plant.R
+# Units: Unitless
+# Column types: ccn
+# ----------
+scenario,region,regional_multiplier_factor
+snr_all_10,,10
+snr_all_20,,4.45
+snr_all_30,,2.9
+snr_all_40,,2.6
+snr_all_50,,5
+snr_all_60,Pakistan,2.5
+snr_all_60,India,2.4
+snr_all_60,Europe_Non_EU,2.4
+snr_all_60,Central Asia,2.4
+snr_all_60,Africa_Eastern,2.4
+snr_all_70,Pakistan,3.35
+snr_all_70,India,3.1
+snr_all_70,Central Asia,3.2
+snr_all_80,Pakistan,3.2
+snr_all_80,India,3
+snr_all_90,,1
+snr_plus_10,,1
+snr_plus_20,,1.1
+snr_plus_30,,1.33
+snr_plus_40,,1.56
+snr_plus_50,,1.8
+snr_plus_60,,2.03
+snr_plus_70,,2.26
+snr_plus_80,,2.5
+snr_plus_90,,2.73

@@ -88,3 +88,6 @@ ModelInterface/*
 *figures*
 *.dat
 server2dipc.sh
+diets_analysis/*.csv
+diets_analysis/*.xlsx
+output/REF_IAMCOMPACT+XIN.xml
