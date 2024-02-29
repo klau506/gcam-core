@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --qos=regular
 #SBATCH --time=10:00:00
-#SBATCH --ntasks=2
-#SBATCH --nodes=2
+#SBATCH --ntasks=1
+#SBATCH --nodes=54
 #SBATCH --ntasks-per-node=1
-#SBATCH --array=1-2:1
+#SBATCH --array=1-54:1
 #SBATCH --job-name=GCAM_run
 #SBATCH --cpus-per-task=1
 #SBATCH --mem-per-cpu=10000Mc

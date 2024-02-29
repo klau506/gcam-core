@@ -57,6 +57,6 @@ for element in "${scen_names[@]}"; do
 done
 
 
-# create the GCAM prj
+# 4. Create the GCAM prj
 rownumber=$((rownumber + 1)) # Fix counting from 1
 Rscript /scratch/bc3LC/gcam-core-iamcompact-xin/diets_analysis/prj_creation.R ${rownumber}
