@@ -10,7 +10,7 @@
 rownumber=$1
 rownumber=$((rownumber - 1)) # Fix counting from 0
 dbmapping=db.mapping.csv # USER MODIFICABLE
-configuration_basic=configuration_base_spp_IAMCOMPACT+XIN.xml # USER MODIFICABLE
+configuration_basic=configuration_base_IAMCOMPACT+XIN.xml # USER MODIFICABLE
 
 ### PATHS AND MODULES
 # load modules
@@ -35,9 +35,10 @@ export TBB_LIB=${EBROOTTBB}/lib
 
 
 ### RUN ALL GCAM SCENARIOS TO BE SAVED IN THAT DATABASE
-# 1. Get db name
+# 1. Get db name and scenario type
 db_unique_names=($(tail -n +2 $dbmapping | cut -d ',' -f 1 | sort -u))
 db_name="${db_unique_names[$rownumber]}"
+scen_type="${db_name:0:3}"
 
 # 2. Get scenarios related to that db
 mapfile -t scen_names < <(awk -v pat="$db_name" -F',' '$1 ~ pat {print $2}' $dbmapping)
@@ -49,7 +50,7 @@ for element in "${scen_names[@]}"; do
     # 3.1. arrange the configuration file
     configuration_loop=configuration_$db_name.xml
 
-    sed -e "s/XXXDBXXX/$db_name/g" -e "s/XXXSCENXXX/$element/g" $configuration_basic > $configuration_loop
+    sed -e "s/XXXDBXXX/$db_name/g" -e "s/XXXTYPEXXX/$scen_type/g" -e "s/XXXSCENXXX/$element/g" $configuration_basic > $configuration_loop
 
     # 3.2. run GCAM
     ./gcam.exe -C $configuration_loop
