@@ -40,7 +40,7 @@ rumin_percentage <- food_consumption %>%
 
 rumin_percentage_check <- rumin_percentage %>%
   tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value') %>%
-  filter(scenario %in% c('snr_all_60_x0_2035_k_0.805_v8', 'REF_IAMCOMPACT+XIN'),
+  filter(scenario %in% c('snr_all_10_x0_2035_k_0.805_v25', 'REF_IAMCOMPACT+XIN'),
          year == "X2050")
 
 View(rumin_percentage_check)
@@ -64,7 +64,9 @@ plant_percentage <- food_consumption %>%
 
 
 plant_percentage_check <- plant_percentage %>%
-  tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value')
+  tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value') %>%
+  filter(scenario %in% c('spp_all_40_x0_2035_k_0.805_v13', 'REF_IAMCOMPACT+XIN'),
+         year == "X2050")
 
 View(plant_percentage_check)
 
