@@ -5,11 +5,11 @@
 # Column types: cn
 # ----------
 scenario,multiplier_factor
-snr_all_10,7
-snr_all_20,6
-snr_all_30,5.5
-snr_all_40,5
-snr_all_50,4.5
+snr_all_10,1.117
+snr_all_20,1.25
+snr_all_30,1.4
+snr_all_40,1.65
+snr_all_50,2
 snr_all_60,3.7
 snr_all_70,2.9
 snr_all_80,2.2

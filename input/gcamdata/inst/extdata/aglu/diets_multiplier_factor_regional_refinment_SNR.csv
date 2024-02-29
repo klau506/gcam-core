@@ -5,11 +5,30 @@
 # Column types: ccn
 # ----------
 scenario,region,regional_multiplier_factor
-snr_all_10,,10
-snr_all_20,,4.45
-snr_all_30,,2.9
-snr_all_40,,2.6
-snr_all_50,,5
+snr_all_10,Africa_Eastern,1.117
+snr_all_10,Africa_Northern,1.12
+snr_all_10,Central Asia,1.12
+snr_all_10,Pakistan,1.125
+snr_all_10,India,1.12
+snr_all_20,Africa_Eastern,1.255
+snr_all_20,Africa_Northern,1.245
+snr_all_20,Central Asia,1.26
+snr_all_20,Pakistan,1.265
+snr_all_20,India,1.255
+snr_all_30,Africa_Eastern,1.45
+snr_all_30,Africa_Northern,1.45
+snr_all_30,Central Asia,1.45
+snr_all_30,Pakistan,1.45
+snr_all_30,India,1.435
+snr_all_40,Africa_Eastern,1.65
+snr_all_40,Africa_Northern,1.65
+snr_all_40,Central Asia,1.7
+snr_all_40,Pakistan,1.675
+snr_all_40,India,1.675
+snr_all_50,Africa_Eastern,2
+snr_all_50,Central Asia,2
+snr_all_50,Pakistan,2
+snr_all_50,India,2
 snr_all_60,Pakistan,2.5
 snr_all_60,India,2.4
 snr_all_60,Europe_Non_EU,2.4
