@@ -2,8 +2,8 @@
 # ==============================================================================
 
 # setwd to file location === #####
-setwd('C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core-iamcompact')
-.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
+setwd('C:\\Users\\claudia.rodes\\Documents\\IAM_COMPACT\\gcam-iamcompact-xin')
+# .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
 library(dplyr)
 library(ggplot2)
 

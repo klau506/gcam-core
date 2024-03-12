@@ -32,3 +32,11 @@ year_e <- 2050
 source('diets_analysis/module_queries_extraction.R')
 source('diets_analysis/module_data.R')
 load_queries("queries_ref_2.RData")
+
+### rfasst module
+source('diets_analysis/module_rfasst.R')
+final_db_year <- 2050
+prj <- rgcam::loadProject('diets_analysis/outputs/ref.dat')
+desired_scen = rgcam::listScenarios(prj)
+compute_premature_mortalities(desired_scen, 'queries_ref_2')
+
