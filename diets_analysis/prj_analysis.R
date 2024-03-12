@@ -102,10 +102,13 @@ ggsave(snr_protein, file = file.path(figures_path, paste0('snr_protein_',selecte
 #####################################################################################
 
 
+############## AREA
+
+
 #### ABSOLUTE
 land_use_diffAbs_world = merge(queries_all$land_use_world,
                                queries_ref$land_use_world %>%
-                                 select(landleaf, land_use_type, year, Units, ref_value = value),
+                                 dplyr::select(landleaf, land_use_type, year, Units, ref_value = value),
                                by = c('landleaf','land_use_type','year','Units')) %>%
   # select scenarios to have a matching plot
   dplyr::filter(scenario %in% c('spp_all_90_x0_2045_k_0.805', 'snr_all_10_x0_2045_k_0.805')) %>%
@@ -140,13 +143,13 @@ pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world) +
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_land_use_diffAbs_world, file = file.path(figures_path,paste0('sdg15_land_use_diffAbs_world.png')), width = 500, height = 400, units = 'mm')
+ggsave(pl_land_use_diffAbs_world, file = file.path(figures_path,paste0('sdg15_land_use_diffAbs_world.png')), width = 575, height = 400, units = 'mm')
 
 
 #### PERCENTAGE
 land_use_diffPer_world = merge(queries_all$land_use_world,
                                queries_ref$land_use_world %>%
-                                 select(landleaf, land_use_type, year, Units, ref_value = value),
+                                 dplyr::select(landleaf, land_use_type, year, Units, ref_value = value),
                                by = c('landleaf','land_use_type','year','Units')) %>%
   # select scenarios to have a matching plot
   dplyr::filter(scenario %in% c('spp_all_90_x0_2045_k_0.805', 'snr_all_10_x0_2045_k_0.805')) %>%
@@ -181,7 +184,114 @@ pl_land_use_diffPer_world = ggplot(data = land_use_diffPer_world) +
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_land_use_diffPer_world, file = file.path(figures_path,paste0('sdg15_land_use_diffPer_world.png')), width = 500, height = 400, units = 'mm')
+ggsave(pl_land_use_diffPer_world, file = file.path(figures_path,paste0('sdg15_land_use_diffPer_world.png')), width = 575, height = 400, units = 'mm')
+
+
+
+
+############## BARS
+
+
+#### ABSOLUTE
+
+land_use_diffAbs_world = merge(queries_all$land_use_world %>%
+                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
+                                 dplyr::summarise(value = sum(value)) %>%
+                                 dplyr::ungroup(),
+                               queries_ref$land_use_world %>%
+                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 dplyr::group_by(year, scenario, scen_type, land_use_type) %>%
+                                 dplyr::summarise(ref_value = sum(value)) %>%
+                                 dplyr::ungroup() %>%
+                                 dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                               by = c('land_use_type','year')) %>%
+  # compute Abs difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = value - ref_value) %>%
+  # create scen_group
+  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
+  # compute median by scen
+  dplyr::group_by(land_use_type,year,scen_type,scen_path,scen_group) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::ungroup()
+
+
+pl_land_use_diffAbs_world_bars <- ggplot(data = land_use_diffAbs_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = land_use_type)) +
+  geom_bar(stat = "identity", position = "identity") +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
+  scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                    breaks = land_use_order_palette) +
+  geom_vline(xintercept = 0, linewidth = 1.2) +
+  labs(y = '', x = expression(paste('thous ', km^2, ' difference'))) +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "white",
+                                       colour = 'grey',linewidth = 2),
+        panel.background = element_rect(fill = "white"),
+        legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_land_use_diffAbs_world_bars, file = file.path(figures_path, paste0('sdg13_landType_abs_',selected_year,'.png')), width = 475, height = 500, units = 'mm')
+
+
+
+#### PERCENT
+land_use_diffPer_world = merge(queries_all$land_use_world %>%
+                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
+                                 dplyr::summarise(value = sum(value)) %>%
+                                 dplyr::ungroup(),
+                               queries_ref$land_use_world %>%
+                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 dplyr::group_by(year, scenario, scen_type, land_use_type) %>%
+                                 dplyr::summarise(ref_value = sum(value)) %>%
+                                 dplyr::ungroup() %>%
+                                 dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                               by = c('land_use_type','year')) %>%
+  # compute Per difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = (value - ref_value)/ref_value) %>%
+  # create scen_group
+  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
+  # compute median by scen
+  dplyr::group_by(land_use_type,year,scen_type,scen_path,scen_group) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::ungroup()
+
+
+pl_land_use_diffPer_world_bars <- ggplot(data = land_use_diffPer_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = land_use_type)) +
+  geom_bar(stat = "identity", position = "identity") +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
+  scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                    breaks = land_use_order_palette) +
+  geom_vline(xintercept = 0, linewidth = 1.2) +
+  labs(y = '', x = expression(paste('% difference'))) +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "white",
+                                       colour = 'grey',linewidth = 2),
+        panel.background = element_rect(fill = "white"),
+        legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_land_use_diffPer_world_bars, file = file.path(figures_path, paste0('sdg13_landType_per_',selected_year,'.png')), width = 475, height = 500, units = 'mm')
+
+
 
 
 
@@ -281,7 +391,7 @@ water_irr_rfd_diffAbs_world = merge(queries_all$water_irr_rfd_world %>%
                                       dplyr::group_by(year, scenario, scen_type, water) %>%
                                       dplyr::summarise(ref_value = sum(value)) %>%
                                       dplyr::ungroup() %>%
-                                      select(-scenario) %>%  select(-scen_type),
+                                      dplyr::select(-scenario) %>% dplyr::select(-scen_type),
                                     by = c('water','year')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
@@ -293,12 +403,12 @@ water_irr_rfd_diffAbs_world = merge(queries_all$water_irr_rfd_world %>%
   dplyr::summarise(median_diff = median(diff))
 
 
-pl_water_irr_rfd_diffAbs_world_bars <- ggplot(data = water_irr_rfd_diffAbs_world %>% filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = water)) +
+pl_water_irr_rfd_diffAbs_world_bars <- ggplot(data = water_irr_rfd_diffAbs_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = water)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "free") +
+  facet_grid(scen_group ~ scen_type, scales = "fixed") +
   scale_fill_brewer(palette = 'Paired', name = '') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
-  labs(y = '', x = expression(paste(MtCO[2], ' difference'))) +
+  labs(y = '', x = expression(paste('thous ', km^2))) +
   theme_light() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
@@ -329,7 +439,7 @@ water_irr_rfd_diffPer_world = merge(queries_all$water_irr_rfd_world %>%
                                       dplyr::group_by(year, scenario, scen_type, water) %>%
                                       dplyr::summarise(ref_value = sum(value)) %>%
                                       dplyr::ungroup() %>%
-                                      select(-scenario) %>%  select(-scen_type),
+                                      dplyr::select(-scenario) %>% dplyr::select(-scen_type),
                                     by = c('water','year')) %>%
   # compute Per difference between Reference and runs
   dplyr::rowwise() %>%
@@ -341,12 +451,12 @@ water_irr_rfd_diffPer_world = merge(queries_all$water_irr_rfd_world %>%
   dplyr::summarise(median_diff = median(diff))
 
 
-pl_water_irr_rfd_diffPer_world_bars <- ggplot(data = water_irr_rfd_diffPer_world %>% filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = water)) +
+pl_water_irr_rfd_diffPer_world_bars <- ggplot(data = water_irr_rfd_diffPer_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = water)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "free") +
+  facet_grid(scen_group ~ scen_type, scales = "fixed") +
   scale_fill_brewer(palette = 'Paired', name = '') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
-  labs(y = '', x = expression(paste(MtCO[2], ' difference'))) +
+  labs(y = '', x = expression(paste('% difference'))) +
   theme_light() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
@@ -362,7 +472,7 @@ pl_water_irr_rfd_diffPer_world_bars <- ggplot(data = water_irr_rfd_diffPer_world
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_water_irr_rfd_diffPer_world_bars, file = file.path(figures_path, paste0('sdg6_waterType_abs_',selected_year,'.png')), width = 400, height = 500, units = 'mm')
+ggsave(pl_water_irr_rfd_diffPer_world_bars, file = file.path(figures_path, paste0('sdg6_waterType_per_',selected_year,'.png')), width = 400, height = 500, units = 'mm')
 
 
 
@@ -423,7 +533,7 @@ ghg_by_ghg_diffAbs_world = merge(queries_all$ghg_by_ghg_world %>%
                                       dplyr::group_by(year, scenario, scen_type, group) %>%
                                       dplyr::summarise(ref_value = sum(value)) %>%
                                       dplyr::ungroup() %>%
-                                      select(-scenario) %>%  select(-scen_type),
+                                      dplyr::select(-scenario) %>% dplyr::select(-scen_type),
                                     by = c('group','year')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
@@ -636,6 +746,6 @@ pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
-        title = element_text(size = 40))
+        title = element_text(size = 30))
 ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, paste0('sgd2_food_econ_basket_bill_regional_diff_',selected_year,'.png')),
        width = 400, height = 600, units = 'mm', limitsize = FALSE)
