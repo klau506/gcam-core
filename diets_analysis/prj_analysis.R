@@ -509,3 +509,133 @@ ggsave(pl_ghg_by_ghg_diffPer_world_bars, file = file.path(figures_path, paste0('
 
 
 
+#####################################################################################
+#####################################################################################
+# SDG 2 - FOOD EXPENDITURE
+#####################################################################################
+
+food_subsector <- read.csv('inputs/nutrition/food_subsector.csv')
+
+#### econ. basket bill ---
+
+food_econ_basket_bill_regional = rbind(queries_all$food_consumption_regional,
+                                       queries_ref$food_consumption_regional) %>%
+  dplyr::left_join(food_subsector %>%
+                     dplyr::rename('technology' = 'subsector')) %>%
+  # Pcal to kcal/capita/day
+  dplyr::left_join(rbind(queries_all$pop_all_regions,
+                         queries_ref$pop_all_regions), by = c("year", "scenario", "scen_type", "scen_path", "final_share", "peak_year", "slope", "region")) %>%
+  # convert from Pcal to kcal/day
+  dplyr::mutate(value = (value * 1e12) / (population * 365),
+                Units = "kcal/capita/day") %>%
+  # total staples and nonstaples kcal consumption
+  dplyr::group_by(Units,region,scenario,scen_type,scen_path,final_share,peak_year,slope,year,supplysector) %>%
+  dplyr::summarise(consumption = sum(value)) %>%
+  # compute the expenditure by supplysector
+  dplyr::left_join(rbind(queries_all$food_demand_prices_regional,
+                         queries_ref$food_demand_prices_regional) %>%
+                     dplyr::mutate(price = value * 1e3,
+                                   units_price = '2005$/kcal/day') %>%
+                     dplyr::select(-c(Units,value)) %>%
+                     dplyr::rename('supplysector' = 'input'),
+                   by = c('region','year','supplysector','scenario', "scen_type", "scen_path", "final_share", "peak_year", 'slope')) %>%
+  dplyr::mutate(expenditure = consumption * price,
+                units_expenditure = '2005$/capita/day') %>%
+  # total expenditure (staples + nonstaples)
+  dplyr::group_by(units_expenditure,region,scenario,scen_type,scen_path,final_share,peak_year,slope,year) %>%
+  dplyr::summarise(expenditure = sum(expenditure)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = toupper(scen_type))
+
+
+#### WORLD
+pl_food_econ_basket_bill_world = ggplot(data = food_econ_basket_bill_regional %>%
+                                          dplyr::filter(year == selected_year) %>%
+                                          dplyr::group_by(year,scen_type) %>%
+                                          dplyr::summarise(median_value = median(expenditure),
+                                                           min_value = min(expenditure),
+                                                           max_value = max(expenditure))) +
+  geom_bar(aes(x = scen_type, y = median_value, fill = scen_type), stat = 'identity', alpha = 0.3) +
+  geom_errorbar(aes(x = scen_type, ymin = min_value, ymax = max_value), width=0.3, colour="#757575", alpha=1, linewidth=1.2) +
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  # labs
+  labs(y = '2005$/capita/day', x = '', title = 'Annual World median food basket expenditure') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_food_econ_basket_bill_world, file = file.path(figures_path, paste0('sgd2_food_econ_basket_bill_world_',selected_year,'.png')), width = 400, height = 600, units = 'mm')
+
+#### REGIONAL
+pl_food_econ_basket_bill_regional = ggplot(data = food_econ_basket_bill_regional %>%
+                                             dplyr::filter(year == selected_year) %>%
+                                             dplyr::group_by(year,scen_type, region) %>%
+                                             dplyr::summarise(median_value = median(expenditure),
+                                                              min_value = min(expenditure),
+                                                              max_value = max(expenditure))) +
+  geom_bar(aes(x = scen_type, y = median_value, fill = scen_type), stat = 'identity', alpha = 0.3) +
+  geom_errorbar(aes(x = scen_type, ymin = min_value, ymax = max_value), width=0.3, colour="#757575", alpha=1, linewidth=1.2) +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  # labs
+  labs(y = '2005$/capita/day', x = '', title = 'Annual regional median food basket expenditure (fixed scales)') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_food_econ_basket_bill_regional, file = file.path(figures_path, paste0('sgd2_food_econ_basket_bill_regional_',selected_year,'.png')),
+       width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+
+#### ABSOSOLUTE REGIONAL diff
+food_econ_basket_bill_regional_ref = food_econ_basket_bill_regional %>%
+  dplyr::filter(scenario == 'ref') %>%
+  dplyr::select(units_expenditure, region, year, ref_expenditure = expenditure)
+food_econ_basket_bill_regional_diff = merge(
+  food_econ_basket_bill_regional %>%
+    dplyr::filter(scenario != 'ref'),
+  food_econ_basket_bill_regional_ref,
+  by = c('units_expenditure', 'region', 'year')
+) %>%
+  dplyr::mutate(diff = (ref_expenditure - expenditure)/ref_expenditure) %>%
+  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
+  dplyr::select(region, year, scen_group, scen_type, diff) %>%
+  dplyr::arrange(desc(region))
+
+
+pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_diff %>% dplyr::filter(year == selected_year), aes(x = scen_group, y = region, fill = diff)) +
+  geom_tile() +
+  scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen") +
+  facet_wrap(. ~ scen_type) +
+  # labs
+  labs(y = '', x = 'Scenario type', title = 'Percentual regional difference\nin food basket expenditure') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30, angle = 90, hjust = 1, vjust = 0.25),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, paste0('sgd2_food_econ_basket_bill_regional_diff_',selected_year,'.png')),
+       width = 400, height = 600, units = 'mm', limitsize = FALSE)
