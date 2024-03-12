@@ -74,9 +74,9 @@ module_aglu_ag_an_demand_input_xml <- function(command, ...) {
       add_logit_tables_xml(L203.SubsectorAll_demand_food, "L3_SubsectorLogit") %>%
       add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorShrwtFllt") %>%
       # ----- REF/SPP vs SNR
-      # add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorInterp") %>%
-      add_xml_data(L203.SubsectorAll_demand_food %>%
-                     dplyr::filter(subsector != 'Ruminant'), "L3_SubsectorInterp") %>%
+      add_xml_data(L203.SubsectorAll_demand_food, "L3_SubsectorInterp") %>%
+      # add_xml_data(L203.SubsectorAll_demand_food %>%
+      #                dplyr::filter(subsector != 'Ruminant'), "L3_SubsectorInterp") %>%
 
       add_node_equiv_xml("subsector") %>%
       add_rename_foodsubsec_xml() %>%

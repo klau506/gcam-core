@@ -6,7 +6,7 @@
 #SBATCH --ntasks-per-node=1
 #SBATCH --array=1-18:1
 #SBATCH --job-name=GCAM_run
-#SBATCH --cpus-per-task=8
+#SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=10000Mc
 #SBATCH --output=%x_%a.out
 #SBATCH --error=%x_%a.err

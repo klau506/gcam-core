@@ -1,0 +1,173 @@
+# File: diets_multiplier_factor_regional_refinment_SPP.csv
+# Title: SNR scenario regional conversion factor (food increment / sw increment). Some regions need extra refinment, so this file adds to the diets_multiplier_factor_SNR.csv
+# Source: calibrate_sw_plant.R
+# Units: Unitless
+# Column types: ccn
+# ----------
+scenario,region,regional_multiplier_factor
+spp_all_10,,
+spp_all_20,,
+spp_all_30,,
+spp_all_40,,
+spp_all_50,,
+spp_all_60,,
+spp_all_70,,
+spp_all_80,,
+spp_all_90,,
+spp_plus_10,Africa_Eastern,2.1
+spp_plus_10,Africa_Northern,1.3
+spp_plus_10,Africa_Southern,2.1
+spp_plus_10,Africa_Western,2.4
+spp_plus_10,Canada,1.2
+spp_plus_10,Central America and Caribbean,1.2
+spp_plus_10,Europe_Non_EU,1.2
+spp_plus_10,India,1.5
+spp_plus_10,Indonesia,1.2
+spp_plus_10,Mexico,1.15
+spp_plus_10,Middle East,1.5
+spp_plus_10,South Asia,1.5
+spp_plus_10,Southeast Asia,1.2
+spp_plus_10,USA,1.2
+spp_plus_20,Africa_Eastern,4
+spp_plus_20,Africa_Southern,4
+spp_plus_20,Africa_Western,5
+spp_plus_20,Argentina,1.1
+spp_plus_20,Australia_NZ,1.1
+spp_plus_20,Brazil,1.4
+spp_plus_20,Central America and Caribbean,1.7
+spp_plus_20,Central Asia,1.2
+spp_plus_20,Colombia,1.35
+spp_plus_20,EU-12,1.2
+spp_plus_20,EU-15,1.25
+spp_plus_20,Europe_Eastern,1.2
+spp_plus_20,Europe_Non_EU,1.7
+spp_plus_20,European Free Trade Association,1.2
+spp_plus_20,India,2.8
+spp_plus_20,Indonesia,1.8
+spp_plus_20,Japan,1.1
+spp_plus_20,Middle East,1.7
+spp_plus_20,Pakistan,1.2
+spp_plus_20,Russia,1.2
+spp_plus_20,South Africa,1.2
+spp_plus_20,South America_Northern,1.3
+spp_plus_20,South America_Southern,1.3
+spp_plus_20,South Asia,1.9
+spp_plus_20,South Korea,1.3
+spp_plus_20,Taiwan,1.4
+spp_plus_20,USA,1.4
+spp_plus_30,Africa_Eastern,6
+spp_plus_30,Africa_Northern,1.9
+spp_plus_30,Africa_Southern,6
+spp_plus_30,Africa_Western,17
+spp_plus_30,Argentina,1.4
+spp_plus_30,Australia_NZ,1.5
+spp_plus_30,Brazil,1.6
+spp_plus_30,Central America and Caribbean,2
+spp_plus_30,Central Asia,1.4
+spp_plus_30,Colombia,1.55
+spp_plus_30,EU-12,1.35
+spp_plus_30,EU-15,1.4
+spp_plus_30,Europe_Eastern,1.4
+spp_plus_30,Europe_Non_EU,2.1
+spp_plus_30,European Free Trade Association,1.4
+spp_plus_30,India,3.6
+spp_plus_30,Indonesia,2
+spp_plus_30,Japan,1.4
+spp_plus_30,Middle East,1.95
+spp_plus_30,Pakistan,1.4
+spp_plus_30,Russia,1.35
+spp_plus_30,South Africa,1.4
+spp_plus_30,South America_Northern,1.5
+spp_plus_30,South America_Southern,1.5
+spp_plus_30,South Asia,2.3
+spp_plus_30,South Korea,1.45
+spp_plus_30,Southeast Asia,2
+spp_plus_40,Africa_Eastern,12
+spp_plus_40,Africa_Northern,2.5
+spp_plus_40,Africa_Southern,12
+spp_plus_40,Africa_Western,25
+spp_plus_40,Argentina,1.65
+spp_plus_40,Australia_NZ,1.7
+spp_plus_40,Brazil,2.05
+spp_plus_40,Canada,2.2
+spp_plus_40,Central America and Caribbean,2.6
+spp_plus_40,Central Asia,1.75
+spp_plus_40,Colombia,1.9
+spp_plus_40,EU-12,1.7
+spp_plus_40,EU-15,1.8
+spp_plus_40,Europe_Eastern,1.75
+spp_plus_40,Europe_Non_EU,2.4
+spp_plus_40,European Free Trade Association,1.75
+spp_plus_40,India,5.2
+spp_plus_40,Indonesia,2.6
+spp_plus_40,Japan,1.75
+spp_plus_40,Mexico,2.2
+spp_plus_40,Middle East,2.5
+spp_plus_40,Pakistan,1.8
+spp_plus_40,Russia,1.75
+spp_plus_40,South Africa,1.75
+spp_plus_40,South America_Northern,1.9
+spp_plus_40,South America_Southern,1.9
+spp_plus_40,South Asia,2.9
+spp_plus_40,South Korea,1.8
+spp_plus_50,Africa_Eastern,15
+spp_plus_50,Africa_Northern,3.2
+spp_plus_50,Africa_Southern,15
+spp_plus_50,Africa_Western,30
+spp_plus_50,Argentina,2.1
+spp_plus_50,Australia_NZ,2.2
+spp_plus_50,Brazil,2.8
+spp_plus_50,Canada,2.8
+spp_plus_50,Central America and Caribbean,3.3
+spp_plus_50,Central Asia,2.2
+spp_plus_50,Colombia,2.35
+spp_plus_50,EU-12,2.1
+spp_plus_50,EU-15,2.2
+spp_plus_50,Europe_Eastern,2.2
+spp_plus_50,Europe_Non_EU,3.3
+spp_plus_50,European Free Trade Association,2.2
+spp_plus_50,India,8
+spp_plus_50,Indonesia,3.4
+spp_plus_50,Japan,2.2
+spp_plus_50,Mexico,2.85
+spp_plus_50,Middle East,2.95
+spp_plus_50,Pakistan,2.3
+spp_plus_50,Russia,2.15
+spp_plus_50,South Africa,2.2
+spp_plus_50,South America_Northern,2.4
+spp_plus_50,South America_Southern,2.4
+spp_plus_50,South Asia,3
+spp_plus_50,South Korea,2.3
+spp_plus_50,Southeast Asia,2.8
+spp_plus_60,Africa_Eastern,25
+spp_plus_60,Africa_Northern,4.2
+spp_plus_60,Africa_Southern,25
+spp_plus_60,Africa_Western,30
+spp_plus_60,Argentina,3.4
+spp_plus_60,Australia_NZ,3.5
+spp_plus_60,Canada,3.9
+spp_plus_60,Central America and Caribbean,4.6
+spp_plus_60,Central Asia,3.3
+spp_plus_60,Colombia,3.7
+spp_plus_60,EU-12,3.3
+spp_plus_60,EU-15,3.4
+spp_plus_60,Europe_Eastern,3.4
+spp_plus_60,Europe_Non_EU,4.2
+spp_plus_60,European Free Trade Association,3.4
+spp_plus_60,India,7
+spp_plus_60,Indonesia,4.1
+spp_plus_60,Japan,3.2
+spp_plus_60,Mexico,3.9
+spp_plus_60,Middle East,4.1
+spp_plus_60,Pakistan,3.6
+spp_plus_60,Russia,3.2
+spp_plus_60,South Africa,3.3
+spp_plus_60,South America_Northern,3.6
+spp_plus_60,South America_Southern,3.6
+spp_plus_60,South Asia,4.9
+spp_plus_60,South Korea,3.6
+spp_plus_60,Southeast Asia,3.9
+spp_plus_60,USA,3.7
+spp_plus_70,,2.9
+spp_plus_80,,4.45
+spp_plus_90,,10

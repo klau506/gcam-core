@@ -23,6 +23,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
       FILE = "aglu/diets_conversion_factor_SNR",
       FILE = "aglu/diets_multiplier_factor_SPP",
       FILE = "aglu/diets_multiplier_factor_SNR",
+      FILE = "aglu/diets_multiplier_factor_regional_refinment_SPP",
       FILE = "aglu/diets_multiplier_factor_regional_refinment_SNR",
       FILE = "aglu/diets_plant_sw_REF",
       FILE = "aglu/diets_rumin_sw_REF"
@@ -107,8 +108,8 @@ module_diets_L202.dietary_change <- function(command, ...) {
 
     # Compute annual "new" plant protein intake
     L202.diets_plant_sw_list <- list()
-    diets_scenarios_spp = diets_scenarios %>%
-      dplyr::filter(scen_sec_type == 'spp')
+    diets_scenarios_spp <- diets_scenarios %>%
+      dplyr::filter(scen_sec_type == "spp")
 
     for (i in 1:nrow(diets_scenarios_spp)) {
       # scenario name
@@ -131,7 +132,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
 
       diets_plant_per_intake_tmp <- diets_plant_per_intake_tmp %>%
         dplyr::mutate(value_f = X2050, value_i = X2015) %>%
-        dplyr::mutate(per_incr = if_else(sw_incr_need, value_f/value_i - 1, 0)) %>%
+        dplyr::mutate(per_incr = if_else(sw_incr_need, value_f / value_i - 1, 0)) %>%
         tidyr::pivot_longer(cols = X2015:X2050, names_to = "year", values_to = "value") %>%
         dplyr::mutate(year = as.numeric(gsub("X", "", year)))
 
@@ -139,22 +140,28 @@ module_diets_L202.dietary_change <- function(command, ...) {
       diets_plant_sw_tmp <- diets_plant_per_intake_tmp %>%
         # add share-weights ref data
         left_join_error_no_match(diets_plant_sw_REF,
-                                 by = c("region", "year")
+          by = c("region", "year")
         ) %>%
         # add conversion factor data
         left_join_error_no_match(diets_conversion_factor_SPP,
-                                 by = c("region")
+          by = c("region")
         ) %>%
         # add multiplier factor data
         left_join_error_no_match(diets_multiplier_factor_SPP,
-                                 by = c("scenario")
-        )
-      diets_plant_sw_tmp = data.table(diets_plant_sw_tmp)
-      diets_plant_sw_tmp = diets_plant_sw_tmp[, sf := ref_share_weight[year == MODEL_HALF_CENTURY_YEAR]
+          by = c("scenario")
+        ) %>%
+        # add regional refinment multiplier factor data
+        left_join(diets_multiplier_factor_regional_refinment_SPP,
+          by = c("scenario", "region")
+        ) %>%
+        mutate(multiplier_factor = if_else(!is.na(regional_multiplier_factor), regional_multiplier_factor, multiplier_factor)) %>%
+        distinct()
+      diets_plant_sw_tmp <- data.table(diets_plant_sw_tmp)
+      diets_plant_sw_tmp <- diets_plant_sw_tmp[, sf := ref_share_weight[year == MODEL_HALF_CENTURY_YEAR]
                                               + ref_share_weight[year == MODEL_HALF_CENTURY_YEAR] * per_incr[year == MODEL_HALF_CENTURY_YEAR]
                                               * conv_factor[year == MODEL_HALF_CENTURY_YEAR] * multiplier_factor[year == MODEL_HALF_CENTURY_YEAR],
-                                                                  by = region]
-      diets_plant_sw_tmp = diets_plant_sw_tmp[, si := ref_share_weight[year == MODEL_FINAL_BASE_YEAR], by = region]
+                                              by = region]
+      diets_plant_sw_tmp <- diets_plant_sw_tmp[, si := ref_share_weight[year == MODEL_FINAL_BASE_YEAR], by = region]
 
 
       # recompute the values from 2020 to 2050
@@ -185,9 +192,11 @@ module_diets_L202.dietary_change <- function(command, ...) {
     L202.diets_plant_sw_list %>%
       add_title("Plant protein share weights list (entry by scenario)") %>%
       add_units("Unitless") %>%
-      add_precursors("aglu/diets_plant_percentage_REF", "aglu/diets_scenarios",
-                     "aglu/diets_conversion_factor_SPP", "aglu/diets_plant_sw_REF") ->
-      L202.diets_plant_sw_list
+      add_precursors(
+        "aglu/diets_plant_percentage_REF", "aglu/diets_scenarios",
+        "aglu/diets_conversion_factor_SPP", "aglu/diets_plant_sw_REF"
+      ) ->
+    L202.diets_plant_sw_list
 
     # Save the output to produce later multiple XMLs with a single chunk
     if (!dir.exists("tmp_outputs")) dir.create("tmp_outputs")
@@ -219,8 +228,8 @@ module_diets_L202.dietary_change <- function(command, ...) {
 
     # Compute annual "new" rumin protein intake
     L202.diets_rumin_sw_list <- list()
-    diets_scenarios_snr = diets_scenarios %>%
-      dplyr::filter(scen_sec_type == 'snr')
+    diets_scenarios_snr <- diets_scenarios %>%
+      dplyr::filter(scen_sec_type == "snr")
 
     for (i in 1:nrow(diets_scenarios_snr)) {
       # scenario name
@@ -243,7 +252,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
 
       diets_rumin_per_intake_tmp <- diets_rumin_per_intake_tmp %>%
         dplyr::mutate(value_f = X2050, value_i = X2015) %>%
-        dplyr::mutate(per_incr = if_else(sw_decr_need, value_f/value_i - 1, 0)) %>%
+        dplyr::mutate(per_incr = if_else(sw_decr_need, value_f / value_i - 1, 0)) %>%
         tidyr::pivot_longer(cols = X2015:X2050, names_to = "year", values_to = "value") %>%
         dplyr::mutate(year = as.numeric(gsub("X", "", year)))
 
@@ -251,27 +260,28 @@ module_diets_L202.dietary_change <- function(command, ...) {
       diets_rumin_sw_tmp <- diets_rumin_per_intake_tmp %>%
         # add share-weights ref data
         left_join_error_no_match(diets_rumin_sw_REF,
-                                 by = c("region", "year")
+          by = c("region", "year")
         ) %>%
         # add conversion factor data
         left_join_error_no_match(diets_conversion_factor_SNR,
-                                 by = c("region")
+          by = c("region")
         ) %>%
         # add multiplier factor data
         left_join_error_no_match(diets_multiplier_factor_SNR,
-                                 by = c("scenario")
+          by = c("scenario")
         ) %>%
         # add regional refinment multiplier factor data
         left_join(diets_multiplier_factor_regional_refinment_SNR,
-                                 by = c("scenario", "region")
+          by = c("scenario", "region")
         ) %>%
         mutate(multiplier_factor = if_else(!is.na(regional_multiplier_factor), regional_multiplier_factor, multiplier_factor))
-      diets_rumin_sw_tmp = data.table(diets_rumin_sw_tmp)
-      diets_rumin_sw_tmp = diets_rumin_sw_tmp[, sf := ref_share_weight[year == MODEL_HALF_CENTURY_YEAR]
-                                              + ref_share_weight[year == MODEL_HALF_CENTURY_YEAR] * per_incr[year == MODEL_HALF_CENTURY_YEAR]
-                                              * conv_factor[year == MODEL_HALF_CENTURY_YEAR] * multiplier_factor[year == MODEL_HALF_CENTURY_YEAR],
-                                              by = region]
-      diets_rumin_sw_tmp = diets_rumin_sw_tmp[, si := ref_share_weight[year == MODEL_FINAL_BASE_YEAR], by = region]
+      diets_rumin_sw_tmp <- data.table(diets_rumin_sw_tmp)
+      diets_rumin_sw_tmp <- diets_rumin_sw_tmp[, sf := ref_share_weight[year == MODEL_HALF_CENTURY_YEAR]
+        + ref_share_weight[year == MODEL_HALF_CENTURY_YEAR] * per_incr[year == MODEL_HALF_CENTURY_YEAR]
+          * conv_factor[year == MODEL_HALF_CENTURY_YEAR] * multiplier_factor[year == MODEL_HALF_CENTURY_YEAR],
+      by = region
+      ]
+      diets_rumin_sw_tmp <- diets_rumin_sw_tmp[, si := ref_share_weight[year == MODEL_FINAL_BASE_YEAR], by = region]
 
 
       # recompute the values from 2020 to 2050
@@ -283,9 +293,9 @@ module_diets_L202.dietary_change <- function(command, ...) {
           ) %>%
           mutate(share_weight = ref_share_weight)
         scen_name_complete <- paste(unique(diets_rumin_sw_tmp2$scenario),
-                                    "x0", unique(diets_rumin_sw_tmp2$x0),
-                                    "k", unique(diets_rumin_sw_tmp2$k),
-                                    sep = "_"
+          "x0", unique(diets_rumin_sw_tmp2$x0),
+          "k", unique(diets_rumin_sw_tmp2$k),
+          sep = "_"
         )
         L202.diets_rumin_sw_list_tmp <- logit_function(diets_rumin_sw_tmp2) %>%
           dplyr::mutate(scenario = scen_name_complete) %>%
@@ -303,9 +313,11 @@ module_diets_L202.dietary_change <- function(command, ...) {
     L202.diets_rumin_sw_list %>%
       add_title("Rumin protein share weights list (entry by scenario)") %>%
       add_units("Unitless") %>%
-      add_precursors("aglu/diets_rumin_percentage_REF", "aglu/diets_scenarios",
-                     "aglu/diets_conversion_factor_SNR", "aglu/diets_rumin_sw_REF") ->
-      L202.diets_rumin_sw_list
+      add_precursors(
+        "aglu/diets_rumin_percentage_REF", "aglu/diets_scenarios",
+        "aglu/diets_conversion_factor_SNR", "aglu/diets_rumin_sw_REF"
+      ) ->
+    L202.diets_rumin_sw_list
 
     # Save the output to produce later multiple XMLs with a single chunk
     if (!dir.exists("tmp_outputs")) dir.create("tmp_outputs")
@@ -313,7 +325,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
 
 
 
-    return_data(L202.diets_plant_sw_list,L202.diets_rumin_sw_list)
+    return_data(L202.diets_plant_sw_list, L202.diets_rumin_sw_list)
   } else {
     stop("Unknown command")
   }

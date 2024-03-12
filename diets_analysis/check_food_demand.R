@@ -10,7 +10,7 @@ library(magrittr)
 ##### Load food consumption data ---------------------------------------------------
 outputs_folder <- 'C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/output/diets_calibration_outputs'
 
-csv_files <- list.files(outputs_folder, pattern = "^food_SW_check_snr|^food_REF", full.names = TRUE)
+csv_files <- list.files(outputs_folder, pattern = "^food_SW_", full.names = TRUE)
 # csv_files <- list.files(outputs_folder, pattern = "^food_REF|*multip.factor", full.names = TRUE)
 # csv_files <- list.files(outputs_folder, pattern = "^food_SW_check_spp|^food_REF", full.names = TRUE)
 
@@ -40,7 +40,7 @@ rumin_percentage <- food_consumption %>%
 
 rumin_percentage_check <- rumin_percentage %>%
   tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value') %>%
-  filter(scenario %in% c('snr_all_10_x0_2035_k_0.805_v25', 'REF_IAMCOMPACT+XIN'),
+  filter(scenario %in% c('snr_all_10_x0_2035_k_0.805_v29', 'REF_IAMCOMPACT+XIN'),
          year == "X2050")
 
 View(rumin_percentage_check)
@@ -65,8 +65,10 @@ plant_percentage <- food_consumption %>%
 
 plant_percentage_check <- plant_percentage %>%
   tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value') %>%
-  filter(scenario %in% c('spp_all_40_x0_2035_k_0.805_v13', 'REF_IAMCOMPACT+XIN'),
-         year == "X2050")
+  filter(scenario %in% c('REF_IAMCOMPACT+XIN','spp_plus_60_v6'),
+         year == "X2050") %>%
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
+  mutate(increse = spp_plus_60_v6 - `REF_IAMCOMPACT+XIN` )
 
 View(plant_percentage_check)
 

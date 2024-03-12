@@ -54,7 +54,7 @@ for element in "${scen_names[@]}"; do
 
     # 3.2. run GCAM
     ./gcam.exe -C $configuration_loop
-
+    wait
 done
 
 

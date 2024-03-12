@@ -35,28 +35,33 @@ create_prj <- function(db_name, desired_scen = NULL, prj_name = NULL) {
 
 
   print("---------------------------------------------------------")
-  print('create prj')
-  for (sc in desired_scen) {
-    print(sc)
 
-    # create prj
-    prj <<- rgcam::addScenario(conn, prj_name, sc,
-                               paste0(query_path, queries),
-                               clobber = FALSE, saveProj = FALSE)
+  if (exists(prj_name)) {
+    print('prj already present!')
+  } else {
+    print('create prj')
+    for (sc in desired_scen) {
+      print(sc)
+
+      # create prj
+      prj <<- rgcam::addScenario(conn, prj_name, sc,
+                                 paste0(query_path, queries),
+                                 clobber = FALSE, saveProj = FALSE)
+    }
+
+    # add 'nonCO2' large query
+    if (!"nonCO2 emissions by sector (excluding resource production)" %in% rgcam::listQueries(prj)) {
+      dt_sec <- data_query("nonCO2 emissions by sector (excluding resource production)", db_path, db_name, prj_name, desired_scen)
+      prj_tmp <- rgcam::addQueryTable(
+        project = prj_name, qdata = dt_sec, saveProj = FALSE,
+        queryname = "nonCO2 emissions by sector (excluding resource production)", clobber = FALSE
+      )
+      prj <<- rgcam::mergeProjects(prj_name, list(prj, prj_tmp), clobber = FALSE, saveProj = FALSE)
+      rm(prj_tmp)
+    }
+
+    saveProject(prj, file = prj_name)
   }
-
-  # add 'nonCO2' large query
-  if (!"nonCO2 emissions by sector (excluding resource production)" %in% rgcam::listQueries(prj)) {
-    dt_sec <- data_query("nonCO2 emissions by sector (excluding resource production)", db_path, db_name, prj_name, desired_scen)
-    prj_tmp <- rgcam::addQueryTable(
-      project = prj_name, qdata = dt_sec, saveProj = FALSE,
-      queryname = "nonCO2 emissions by sector (excluding resource production)", clobber = FALSE
-    )
-    prj <<- rgcam::mergeProjects(prj_name, list(prj, prj_tmp), clobber = FALSE, saveProj = FALSE)
-    rm(prj_tmp)
-  }
-
-  saveProject(prj, file = prj_name)
 
 }
 
