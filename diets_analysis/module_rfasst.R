@@ -3,7 +3,9 @@ library(rfasst)
 ### compute pm and o3 premature mortalities
 add_mort_scen = function(scen) {
 
-  pm25.mort = dplyr::bind_rows(m3_get_mort_pm25(prj_name = 'dummy.dat', prj = prj, scen_name=scen, final_db_year=final_db_year, saveOutput=F, map=F)) %>%
+  pm25.mort = dplyr::bind_rows(m3_get_mort_pm25(prj_name = 'dummy2.dat', prj = prj,
+                                                scen_name=scen, final_db_year=final_db_year,
+                                                saveOutput=F, map=F, recompute = T)) %>%
     dplyr::mutate('scenario' = scen) %>%
     # subset to >25
     dplyr::filter(age == '>25') %>%
@@ -17,7 +19,9 @@ add_mort_scen = function(scen) {
     dplyr::summarise('mort' = sum(mort_by_disease)) %>%
     dplyr::ungroup()
 
-  o3.mort = dplyr::bind_rows(m3_get_mort_o3(prj_name = 'dummy.dat', prj = prj, scen_name=scen, final_db_year=final_db_year, saveOutput=F, map=F)) %>%
+  o3.mort = dplyr::bind_rows(m3_get_mort_o3(prj_name = 'dummy.dat', prj = prj,
+                                            scen_name=scen, final_db_year=final_db_year,
+                                            saveOutput=F, map=F, recompute = T)) %>%
     dplyr::mutate('scenario' = scen) %>%
     # reframe
     tidyr::pivot_longer(cols = c('Jerret2009',
@@ -43,6 +47,15 @@ compute_premature_mortalities = function(desired_scen, file_name) {
     print(i)
     mort = dplyr::bind_rows(mort,add_mort_scen(i))
   }
+
+  mort <- mort %>%
+    tidyr::separate(scenario, into = c("scen_type", "scen_path",
+                                       "final_share",
+                                       "peak_year_title", "peak_year",
+                                       "slope_title", "slope"),
+                    sep = "_", remove = FALSE) %>%
+    dplyr::select(-peak_year_title) %>%
+    dplyr::select(-slope_title)
 
   save(mort, file = file.path('diets_analysis','outputs',paste0('mort_',file_name,'.RData')))
 

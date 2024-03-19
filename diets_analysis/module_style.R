@@ -27,6 +27,14 @@ land_use_order_palette =
     'Other Natural')
 
 
+deaths_scenario_palette =
+  c('PM25' = '#6b0ead',
+    'O3' = '#E6AB02')
+deaths_order_palette =
+  c('PM25',
+    'O3')
+
+
 
 # creates palette: "random" or from palette colors for all scenarios, except for reference one, which is black
 create_palette <- function(scenarios, reference = "ref", palette = viridis::viridis(length(scenarios), option = 'D')) {
