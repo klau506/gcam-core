@@ -2,9 +2,9 @@
 #SBATCH --qos=regular
 #SBATCH --time=10:00:00
 #SBATCH --ntasks=1
-#SBATCH --nodes=18
+#SBATCH --nodes=36
 #SBATCH --ntasks-per-node=1
-#SBATCH --array=1-18:1
+#SBATCH --array=1-36:1
 #SBATCH --job-name=GCAM_run
 #SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=10000Mc

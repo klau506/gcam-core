@@ -21,8 +21,8 @@ for (it in sub_prj_names) {
   assign(gsub("\\.dat$", "", it),
          rgcam::loadProject(it))
 }
-prj_gathered <<- rgcam::mergeProjects(prjname = 'gath_all.dat', prjlist = sub_prj_names)
-rgcam::saveProject(prj_gathered, file = 'gath_all.dat')
+prj_gathered <<- rgcam::mergeProjects(prjname = 'gath_all_3.dat', prjlist = sub_prj_names)
+rgcam::saveProject(prj_gathered, file = 'gath_all_3.dat')
 
 ## extract queries and save them in an RData file
 prj <<- prj_gathered
@@ -31,12 +31,12 @@ year_s <- 1990
 year_e <- 2050
 source('diets_analysis/module_queries_extraction.R')
 source('diets_analysis/module_data.R')
-load_queries("queries_ref_2.RData")
+load_queries("queries_all_3.RData")
 
 ### rfasst module
 source('diets_analysis/module_rfasst.R')
 final_db_year <- 2050
-prj <- rgcam::loadProject('diets_analysis/outputs/ref.dat')
-desired_scen = rgcam::listScenarios(prj)
-compute_premature_mortalities(desired_scen, 'queries_ref_2')
+prj <- rgcam::loadProject('diets_analysis/outputs/gath_all_3.dat')
+desired_scen <- rgcam::listScenarios(prj)
+compute_premature_mortalities(desired_scen, 'queries_mort_all_3.RData')
 

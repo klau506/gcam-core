@@ -3,7 +3,7 @@ library(rfasst)
 ### compute pm and o3 premature mortalities
 add_mort_scen = function(scen) {
 
-  pm25.mort = dplyr::bind_rows(m3_get_mort_pm25(prj_name = 'dummy2.dat', prj = prj,
+  pm25.mort = dplyr::bind_rows(m3_get_mort_pm25(prj_name = 'dummy.dat', prj = prj,
                                                 scen_name=scen, final_db_year=final_db_year,
                                                 saveOutput=F, map=F, recompute = T)) %>%
     dplyr::mutate('scenario' = scen) %>%
@@ -19,7 +19,7 @@ add_mort_scen = function(scen) {
     dplyr::summarise('mort' = sum(mort_by_disease)) %>%
     dplyr::ungroup()
 
-  o3.mort = dplyr::bind_rows(m3_get_mort_o3(prj_name = 'dummy.dat', prj = prj,
+  o3.mort = dplyr::bind_rows(m3_get_mort_o3(prj = prj,
                                             scen_name=scen, final_db_year=final_db_year,
                                             saveOutput=F, map=F, recompute = T)) %>%
     dplyr::mutate('scenario' = scen) %>%

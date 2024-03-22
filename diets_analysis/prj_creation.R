@@ -1,9 +1,8 @@
 #### prj_creation.R
 ####
-#### Main script to create a GCAM project given the database number
+#### Main script to create a GCAM project given the database name
 
 #### INPUTS
-# db-scenario mapping file
 # queries file
 
 ## Read the db number
@@ -23,13 +22,8 @@ base_path <<- getwd()
 source(file.path('diets_analysis','module_prj_creation.R'))
 
 ## Extract the db name
-db_num <- as.numeric(args[1])
-db_scen_mapping <- read.csv(file = file.path(base_path, 'exe', 'db.mapping.csv'))
-unique_scen <- which(!duplicated(db_scen_mapping$database))
-db_scen_mapping <- db_scen_mapping %>%
-  dplyr::filter(database == db_scen_mapping$database[unique_scen[db_num]]
-)
-db_name = unique(db_scen_mapping$database)
+db_name <- args[1]
+db_name = paste0('database_basexdb_',db_name)
 print(paste0('Start prj creation for db ', db_name))
 
 ## Create the prj

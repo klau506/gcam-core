@@ -53,11 +53,11 @@ for element in "${scen_names[@]}"; do
     sed -e "s/XXXDBXXX/$db_name/g" -e "s/XXXTYPEXXX/$scen_type/g" -e "s/XXXSCENXXX/$element/g" $configuration_basic > $configuration_loop
 
     # 3.2. run GCAM
-    ./gcam.exe -C $configuration_loop
+#    ./gcam.exe -C $configuration_loop
     wait
 done
 
 
 # 4. Create the GCAM prj
-rownumber=$((rownumber + 1)) # Fix counting from 1
-Rscript /scratch/bc3LC/gcam-core-iamcompact-xin/diets_analysis/prj_creation.R ${rownumber}
+# rownumber=$((rownumber + 1)) # Fix counting from 1
+Rscript /scratch/bc3LC/gcam-core-iamcompact-xin/diets_analysis/prj_creation.R ${db_name}
