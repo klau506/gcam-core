@@ -168,6 +168,96 @@ spp_plus_60,South Asia,4.9
 spp_plus_60,South Korea,3.6
 spp_plus_60,Southeast Asia,3.9
 spp_plus_60,USA,3.7
-spp_plus_70,,2.9
-spp_plus_80,,4.45
-spp_plus_90,,10
+spp_plus_70,Africa_Eastern,40
+spp_plus_70,Africa_Northern,30
+spp_plus_70,Africa_Southern,40
+spp_plus_70,Africa_Western,40
+spp_plus_70,Argentina,3.6
+spp_plus_70,Australia_NZ,4.3
+spp_plus_70,Brazil,6.6
+spp_plus_70,Canada,7.2
+spp_plus_70,Central America and Caribbean,20
+spp_plus_70,Central Asia,4.1
+spp_plus_70,China,5.85
+spp_plus_70,Colombia,5.1
+spp_plus_70,EU-12,3.8
+spp_plus_70,EU-15,4.5
+spp_plus_70,Europe_Eastern,4
+spp_plus_70,Europe_Non_EU,13
+spp_plus_70,European Free Trade Association,4.4
+spp_plus_70,India,25
+spp_plus_70,Indonesia,20
+spp_plus_70,Japan,4.2
+spp_plus_70,Mexico,7.6
+spp_plus_70,Middle East,17
+spp_plus_70,Pakistan,4.9
+spp_plus_70,Russia,3.8
+spp_plus_70,South Africa,4.2
+spp_plus_70,South America_Northern,5.1
+spp_plus_70,South America_Southern,5.3
+spp_plus_70,South Asia,25
+spp_plus_70,South Korea,4.7
+spp_plus_70,Southeast Asia,6.8
+spp_plus_70,Taiwan,5.8
+spp_plus_80,Africa_Eastern,60
+spp_plus_80,Africa_Northern,40
+spp_plus_80,Africa_Southern,40
+spp_plus_80,Africa_Western,40
+spp_plus_80,Argentina,6.4
+spp_plus_80,Australia_NZ,8.3
+spp_plus_80,Brazil,21
+spp_plus_80,Canada,27.5
+spp_plus_80,Central America and Caribbean,40
+spp_plus_80,Central Asia,7.2
+spp_plus_80,China,15
+spp_plus_80,Colombia,11.5
+spp_plus_80,EU-12,6.8
+spp_plus_80,Europe_Eastern,6.8
+spp_plus_80,Europe_Non_EU,40
+spp_plus_80,European Free Trade Association,9.1
+spp_plus_80,India,40
+spp_plus_80,Indonesia,40
+spp_plus_80,Japan,8.1
+spp_plus_80,Mexico,40
+spp_plus_80,Middle East,40
+spp_plus_80,Pakistan,8.9
+spp_plus_80,Russia,6.8
+spp_plus_80,South Africa,7.6
+spp_plus_80,South America_Northern,10.3
+spp_plus_80,South America_Southern,11
+spp_plus_80,South Asia,40
+spp_plus_80,South Korea,8.65
+spp_plus_80,Southeast Asia,22.3
+spp_plus_80,Taiwan,14.3
+spp_plus_80,USA,11.3
+spp_plus_90,Africa_Eastern,60
+spp_plus_90,Africa_Northern,40
+spp_plus_90,Africa_Southern,40
+spp_plus_90,Africa_Western,40
+spp_plus_90,Australia_NZ,40
+spp_plus_90,Brazil,40
+spp_plus_90,Canada,40
+spp_plus_90,Central America and Caribbean,40
+spp_plus_90,Central Asia,21
+spp_plus_90,China,40
+spp_plus_90,Colombia,40
+spp_plus_90,EU-12,17
+spp_plus_90,EU-15,30
+spp_plus_90,Europe_Eastern,17.5
+spp_plus_90,Europe_Non_EU,40
+spp_plus_90,European Free Trade Association,35
+spp_plus_90,India,40
+spp_plus_90,Indonesia,40
+spp_plus_90,Japan,25
+spp_plus_90,Mexico,40
+spp_plus_90,Middle East,40
+spp_plus_90,Pakistan,35
+spp_plus_90,Russia,16
+spp_plus_90,South Africa,25
+spp_plus_90,South America_Northern,40
+spp_plus_90,South America_Southern,40
+spp_plus_90,South Asia,40
+spp_plus_90,South Korea,40
+spp_plus_90,Southeast Asia,40
+spp_plus_90,Taiwan,40
+spp_plus_90,USA,40
