@@ -1879,12 +1879,13 @@ ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, pa
 #####################################################################################
 
 food_subsector <- read.csv('inputs/nutrition/food_subsector.csv')
-data_macronutrient <- read.csv('inputs/nutrition/gcam_macronutrient.csv')
+data_macronutrient <- read.csv('inputs/nutrition/gcam_macronutrient.csv', skip = 5)
 data_micronutrient <- read.csv('inputs/nutrition/USDA_data_final.csv')
 mder <- read.csv(paste0("inputs/nutrition/MDER.csv")) %>%
   rename(mder_units = unit) %>%
   mutate(mder_units = 'kcal/capita/day')
 colnames(mder) = c('variable','mder_units','mder','std','min','max')
+GramProteinFatPerKcal <- read.csv("inputs/nutrition/GramProteinFatPerKcal.csv", skip = 3)
 
 # TODO: check with FAO data
 
@@ -1903,7 +1904,8 @@ dietary_energy_supply <- rbind(queries_all$food_consumption_regional,
             by = c("year", "scenario", "scen_type", "scen_path", "final_share", "peak_year", "slope", "region")) %>%
   # convert from Pcal to kcal/cap/day
   mutate(value = (value * 1e12) / (population * 365),
-         units = "kcal/cap/day")
+         units = "kcal/cap/day") %>%
+  filter(year <= MODEL_HALF_CENTURY_YEAR)
 
 ## share of dietary energy supply from staples ---
 # find consumption of staple and non-staple Pcal
@@ -2008,7 +2010,8 @@ adesa_denominator <- weighted_pop_sex_age %>%
   summarize(denominator_sum = sum(cal_req_x_pop),
             min_denominator_sum = sum(min_cal_req_x_pop),
             max_denominator_sum = sum(max_cal_req_x_pop)) %>%
-  mutate(year = as.numeric(year))
+  mutate(year = as.numeric(year)) %>%
+  filter(year <= MODEL_HALF_CENTURY_YEAR)
 
 # add in regional calorie info, calculate ADESA
 adesa <- left_join(adesa_denominator, dietary_energy_supply) %>%
@@ -2030,8 +2033,7 @@ pl = ggplot(adesa %>%
               dplyr::mutate(mean_adesa = mean(adesa),
                             min_value = min(adesa),
                             max_value = max(adesa)) %>%
-              dplyr::ungroup() %>%
-              dplyr::filter(year <= MODEL_HALF_CENTURY_YEAR)) +
+              dplyr::ungroup()) +
   geom_line(aes(x = year, y = mean_adesa, color = scen_type), linewidth = 2, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
@@ -2112,3 +2114,141 @@ pl = ggplot(adesa %>%
         title = element_text(size = 40))
 ggsave(pl, file = file.path(figures_path, 'sdg3_adesa_reg_fixedS.png'),
        width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+
+########################### MACRONUTRIENTS analysis ###########################
+## Macronutrient by Kcal of food consumption
+macronutrients_basic = rbind(queries_all$food_consumption_regional,
+                             queries_ref$food_consumption_regional) %>%
+  # rename columns
+  rename('GCAM_commodity' = 'technology') %>%
+  rename('consumption' = 'value') %>%
+  # aggregate population data
+  left_join(rbind(queries_all$pop_all_regions,
+                  queries_ref$pop_all_regions),
+            by = c("year", "scenario", "scen_type", "scen_path",
+                   "final_share", "peak_year", "slope", "region"),
+            multiple = "all") %>%
+  # convert from Pcal to kcal/capita/day
+  mutate(consumptionPerCapita = (consumption * 1e12) / (population * 365),
+         Units = "kcal/capita/day") %>%
+  left_join(GramProteinFatPerKcal %>%
+              # match regions' id with regions' name
+              left_join_keep_first_only(regions_key %>% select(-1), by = 'GCAM_region_ID'),
+            by = c('region','GCAM_commodity'), multiple = "all") %>%
+  # compute total Protein and Fat [g/capita/day]
+  mutate(gProteinPerCapita = consumptionPerCapita * gProteinPerKcal,
+         gFatPerCapita = consumptionPerCapita * gFatPerKcal)
+
+## plot
+# WORLD trend
+pl_macronutrients_world = ggplot(data = macronutrients_basic %>%
+                                   mutate(scen_type = toupper(scen_type)) %>%
+                                   group_by(scenario, scen_type, year) %>%
+                                   summarise(gProteinPerCapita = median(gProteinPerCapita),
+                                             gFatPerCapita = median(gFatPerCapita)) %>%
+                                   tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient') %>%
+                                   group_by(scen_type, year, macronutrient) %>%
+                                   mutate(min_value = min(value),
+                                          max_value = max(value),
+                                          median_value = median(value)) %>%
+                                   ungroup() %>%
+                                   mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita")))) +
+  # geom_line(aes(x = year, y = value, group = interaction(macronutrient,scen_type,scenario), color = interaction(macronutrient,scen_type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = interaction(macronutrient,scen_type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(macronutrient,scen_type)), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = macronutrients_scenario_palette, name = 'Scenario', labels = macronutrients_scenario.labs) +
+  scale_fill_manual(values = macronutrients_scenario_palette, name = 'Scenario', labels = macronutrients_scenario.labs) +
+  # text
+  geom_text(aes(x = 2013, y = 155, label = "Protein"), color = "black", size = 13) +
+  geom_text(aes(x = 2013, y = 135, label = "Fat"), color = "black", size = 13) +
+  # labs
+  labs(y = 'g/capita/day', x = '', title = 'World macronutrients intake') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 2), color = guide_legend(nrow = 2))
+ggsave(pl_macronutrients_world, filename = file.path(figures_path, 'sdg3_macronutrients_world.png'),
+       width = 750, height = 450, units = 'mm', limitsize = F)
+
+
+# REGIONAL trend
+pl_macronutrients_regional = ggplot(data = macronutrients_basic %>%
+                                      mutate(scen_type = toupper(scen_type)) %>%
+                                      group_by(scenario, scen_type, year, region) %>%
+                                      summarise(gProteinPerCapita = median(gProteinPerCapita),
+                                                gFatPerCapita = median(gFatPerCapita)) %>%
+                                      tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient') %>%
+                                      group_by(scen_type, year, macronutrient, region) %>%
+                                      mutate(min_value = min(value),
+                                             max_value = max(value),
+                                             median_value = median(value)) %>%
+                                      ungroup() %>%
+                                      mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita")))) +
+  geom_line(aes(x = year, y = value, group = interaction(macronutrient,scen_type,scenario), color = interaction(macronutrient,scen_type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = interaction(macronutrient,scen_type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(macronutrient,scen_type)), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = macronutrients_scenario_palette, name = 'Scenario', labels = macronutrients_scenario.labs) +
+  scale_fill_manual(values = macronutrients_scenario_palette, name = 'Scenario', labels = macronutrients_scenario.labs) +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # labs
+  labs(y = 'g/capita/day', x = '', title = 'Regional macronutrients intake (fixed scale)') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 2), color = guide_legend(nrow = 2))
+ggsave(pl_macronutrients_regional, file = file.path(figures_path, 'sdg3_macronutrients_reg_fixedS.png'),
+       width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+
+pl_macronutrients_regional = ggplot(data = macronutrients_basic %>%
+                                      mutate(scen_type = toupper(scen_type)) %>%
+                                      group_by(scenario, scen_type, year, region) %>%
+                                      summarise(gProteinPerCapita = median(gProteinPerCapita),
+                                                gFatPerCapita = median(gFatPerCapita)) %>%
+                                      tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient') %>%
+                                      group_by(scen_type, year, macronutrient, region) %>%
+                                      mutate(min_value = min(value),
+                                             max_value = max(value),
+                                             median_value = median(value)) %>%
+                                      ungroup() %>%
+                                      mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita")))) +
+  geom_line(aes(x = year, y = value, group = interaction(macronutrient,scen_type,scenario), color = interaction(macronutrient,scen_type)), alpha = 0.3) +  # All runs lines
+  geom_line(aes(x = year, y = median_value, color = interaction(macronutrient,scen_type)), linewidth = 1, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = interaction(macronutrient,scen_type)), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = macronutrients_scenario_palette, name = 'Scenario', labels = macronutrients_scenario.labs) +
+  scale_fill_manual(values = macronutrients_scenario_palette, name = 'Scenario', labels = macronutrients_scenario.labs) +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # labs
+  labs(y = 'g/capita/day', x = '', title = 'Regional macronutrients intake (fixed scale)') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 2), color = guide_legend(nrow = 2))
+ggsave(pl_macronutrients_regional, file = file.path(figures_path, 'sdg3_macronutrients_reg_freeS.png'),
+       width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+

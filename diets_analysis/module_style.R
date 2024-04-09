@@ -34,6 +34,20 @@ deaths_order_palette =
   c('PM25',
     'O3')
 
+macronutrients_scenario_palette = c(
+  'gProteinPerCapita.SNR' = '#500f96',
+  'gFatPerCapita.SNR' = '#1558bd',
+  'gProteinPerCapita.SPP' = '#2ec74f',
+  'gFatPerCapita.SPP' = '#9ac217',
+  'gProteinPerCapita.REF' = '#a61230',
+  'gFatPerCapita.REF' = '#e85fd1'
+)
+macronutrients_scenario.labs <- c('SNR - Protein',"SNR - Fat",
+                                  'SPP - Protein','SPP - Fat',
+                                  'REF - Protein','REF - Fat')
+names(macronutrients_scenario.labs) = c("gProteinPerCapita.SNR", "gFatPerCapita.SNR",
+                                        "gProteinPerCapita.SPP", "gFatPerCapita.SPP",
+                                        'gProteinPerCapita.REF', 'gFatPerCapita.REF')
 
 
 # creates palette: "random" or from palette colors for all scenarios, except for reference one, which is black
