@@ -115,8 +115,16 @@ food_consumption <- rbind(queries_all$food_consumption_regional,
   dplyr::left_join(food_subsector, by = 'technology') %>%
   group_by(Units, region, scen_type, technology, year, beautiful_name) %>%
   summarise(value = median(value)) %>%
-  ungroup() %>%
-  arrange(beautiful_name)
+  ungroup()
+
+food_consumption$beautiful_name <- factor(food_consumption$beautiful_name,
+                                          levels = c(  'Crops|Corn','Crops|Fiber crops','Crops|Other grain crops','Crops|Soy bean','Crops|Wheat',
+                                                       'Crops|Fruits','Crops|Vegetables',
+                                                       'Crops|Oil crops','Crops|Palm oil crops',
+                                                       'Crops|Rice','Crops|Root Tubers','Crops|Specialty crops and species','Crops|Sugar crops',
+                                                       'Crops|Legumes','Crops|Nuts and Seeds',
+                                                       'Livestock products|Beef meat','Livestock products|Dairy','Livestock products|Pork meat','Livestock products|Poultry meat','Livestock products|Sheep and Goat meat',
+                                                       'Seafood|Fish'  ))
 
 # plot
 pl_food_consumption <- ggplot(data = food_consumption %>%

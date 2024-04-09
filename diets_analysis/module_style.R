@@ -88,24 +88,30 @@ names(micronutrients_scenario.labs) = c("calcium", "iron",
 food_scenario_palette = c(
   'Crops|Corn' = '#a63603',
   'Crops|Fiber crops' = '#cc0000',
-  'Crops|Fruits' = '#e6550d',
-  'Crops|Legumes' = '#fd8d3c',
-  'Crops|Nuts and Seeds' = '#fdae6b',
-  'Crops|Oil crops' = '#fdd0a2',
-  'Crops|Other grain crops' = '#ffff99',
-  'Crops|Palm oil crops' = '#ffff00',
-  'Crops|Rice' = '#ffe6ff',
-  'Crops|Root Tubers' = '#ffccff',
-  'Crops|Soy bean' = '#ff99ff',
-  'Crops|Specialty crops and species' = '#d867e0',
-  'Crops|Sugar crops' = '#d730e3',
-  'Crops|Vegetables' = '#880191',
-  'Crops|Wheat' = '#54278f',
+  'Crops|Other grain crops' = '#ff3333',
+  'Crops|Soy bean' = '#ff8080',
+  'Crops|Wheat' = '#ffcccc',
+
+  'Crops|Fruits' = '#fc6b03',
+  'Crops|Vegetables' = '#feb581',
+
+  'Crops|Oil crops' = '#ffff00',
+  'Crops|Palm oil crops' = '#ffff99',
+
+  'Crops|Rice' = '#8e0198',
+  'Crops|Root Tubers' = '#be01cb',
+  'Crops|Specialty crops and species' = '#f24dfe',
+  'Crops|Sugar crops' = '#fab3ff',
+
+  'Crops|Legumes' = '#8000ff',
+  'Crops|Nuts and Seeds' = '#bf80ff',
+
   'Livestock products|Beef meat' = '#006d2c',
   'Livestock products|Dairy' = '#31a354',
   'Livestock products|Pork meat' = '#74c476',
   'Livestock products|Poultry meat' = '#bae4b3',
   'Livestock products|Sheep and Goat meat' = '#edf8e9',
+
   'Seafood|Fish' = '#3ebce6'
 )
 
