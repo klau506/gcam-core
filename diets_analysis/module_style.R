@@ -49,6 +49,41 @@ names(macronutrients_scenario.labs) = c("gProteinPerCapita.SNR", "gFatPerCapita.
                                         "gProteinPerCapita.SPP", "gFatPerCapita.SPP",
                                         'gProteinPerCapita.REF', 'gFatPerCapita.REF')
 
+micronutrients_scenario_palette = c(
+  'calcium' = '#a63603',
+  'iron' = '#e6550d',
+  'magnesium' = '#fd8d3c',
+  'selenium' = '#fdae6b',
+  'sodium' = '#fdd0a2',
+  'zinc' = '#feedde',
+  'folate' = '#006d2c',
+  'niacin' = '#31a354',
+  'riboflavin' = '#74c476',
+  'thiamin' = '#bae4b3',
+  'vitamin a' = '#a5faed',
+  'vitamin b6' = '#52e9f2',
+  'vitamin b12' = '#3ebce6',
+  'vitamin c' = '#1394bf',
+  'vitamin d' = '#002a9c',
+  'vitamin k' = '#7293ed'
+)
+micronutrients_scenario.labs <- c('Calcium',"Iron",
+                                  'Magnesium','Selenium',
+                                  'Sodium','Zinc',
+                                  'Folate', 'Niacin',
+                                  'Riboflavin','Thiamin',
+                                  'Vitamin A', 'Vitamin B6',
+                                  'Vitamin B12', 'Vitamin C',
+                                  'Vitamin D', 'Vitamin K')
+names(micronutrients_scenario.labs) = c("calcium", "iron",
+                                        "magnesium", "selenium",
+                                        'sodium', 'zinc',
+                                        'folate', 'niacin',
+                                        'riboflavin','thiamin',
+                                        'vitamin a', 'vitamin b6',
+                                        'vitamin b12', 'vitamin c',
+                                        'vitamin d', 'vitamin k')
+
 
 # creates palette: "random" or from palette colors for all scenarios, except for reference one, which is black
 create_palette <- function(scenarios, reference = "ref", palette = viridis::viridis(length(scenarios), option = 'D')) {

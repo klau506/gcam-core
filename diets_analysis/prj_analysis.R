@@ -1881,11 +1881,32 @@ ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, pa
 food_subsector <- read.csv('inputs/nutrition/food_subsector.csv')
 data_macronutrient <- read.csv('inputs/nutrition/gcam_macronutrient.csv', skip = 5)
 data_micronutrient <- read.csv('inputs/nutrition/USDA_data_final.csv')
+colnames(data_micronutrient) <- c("Food", "GCAM_commodity", "Calories (kcal)", "Protein (g)",
+                        "Carbohydrate (g)", "Sugars (g)", "Fiber (g)", "Total fat (g)",
+                        "Fatty acids saturated (g)", "Fatty acids monounsaturated (g)",
+                        "Fatty acids polyunsaturated (g)", "Cholesterol (mg)",
+                        "Retinol (mcg)", "Vitamin A (mcg)", "Alpha carotene (mcg)",
+                        "Beta carotene (mcg)", "Cryptoxanthin, beta (mcg)",
+                        "Lycopene (mcg)", "Lutein and zeaxanthin (mcg)", "Thiamin (mg)",
+                        "Riboflavin (mg)", "Niacin (mg)", "Vitamin B6 (mg)",
+                        "Folic acid (mcg)", "Folate (mcg)", "Folate DFE (mcg)", # "Folate food (mcg)" = Folate
+                        "Folate total (mcg)", "Choline (mg)", "Vitamin B12 (mcg)",
+                        "Added vitamin B12 (mcg)", "Vitamin C (mg)",
+                        "Vitamin D (mcg)", "Vitamin E alpha-tocopherol (mg)", # vitamin d2 and d3 = vitamin d
+                        "Added vitamin E (mg)", "Vitamin K (mcg)", "Calcium (mg)", # Vitamin K phylloquinone = Vitamin K
+                        "Phosphorus (mg)", "Magnesium (mg)", "Iron (mg)", "Zinc (mg)",
+                        "Copper (mg)", "Selenium (mcg)", "Potassium (mg)", "Sodium (mg)",
+                        "Caffeine (mg)", "Theobromine (mg)", "Alcohol (g)", "4:0 (g)",
+                        "6:0 (g)", "8:0 (g)", "10:0 (g)", "12:0 (g)", "14:0 (g)",
+                        "16:0 (g)", "18:0 (g)", "16:1 (g)", "18:1 (g)", "20:1 (g)",
+                        "22:1 (g)", "18:2 (g)", "18:3 (g)", "18:4 (g)", "20:4 (g)",
+                        "20:5 n3 (g)", "22:5 n3 (g)", "22:6 n3 (g)", "Water (g)")
 mder <- read.csv(paste0("inputs/nutrition/MDER.csv")) %>%
   rename(mder_units = unit) %>%
   mutate(mder_units = 'kcal/capita/day')
 colnames(mder) = c('variable','mder_units','mder','std','min','max')
 GramProteinFatPerKcal <- read.csv("inputs/nutrition/GramProteinFatPerKcal.csv", skip = 3)
+micronutrients <- read.csv('inputs/nutrition/rni.csv', skip = 3)
 
 # TODO: check with FAO data
 
@@ -2252,3 +2273,208 @@ ggsave(pl_macronutrients_regional, file = file.path(figures_path, 'sdg3_macronut
        width = 2000, height = 2000, units = 'mm', limitsize = F)
 
 
+########################### MICRONUTRIENTS computation ###########################
+
+# # Average over individual food items to get a representative value for each commodity
+# average_data <- data_micronutrient %>%
+#   tidyr::pivot_longer(cols = 3:67, names_to = "Nutrient") %>%
+#   group_by(`GCAM_commodity`, Nutrient) %>%
+#   summarize(average = median(value)) %>%
+#   filter_all(all_vars(!stringr::str_detect(., ":"))) %>%
+#   tidyr::pivot_wider(names_from = Nutrient, values_from = average) %>%
+#   tidyr::pivot_longer(-c('GCAM_commodity','Calories (kcal)'), names_to = 'nutrient', values_to = 'nutrient_value') %>%
+#   mutate(nutrient_value = nutrient_value/`Calories (kcal)`) %>%
+#   mutate(
+#     nutrient_name = stringr::str_split(nutrient, " \\(") %>%
+#       sapply(function(x) x[1]),
+#     nutrient_units = stringr::str_split(nutrient, " \\(") %>%
+#       sapply(function(x) sub("\\)$", "", x[2])),
+#     nutrient_units = paste0(nutrient_units,'/kcal')
+#   ) %>%
+#   select(-c(`Calories (kcal)`,nutrient)) %>%
+#   ungroup()
+#
+#
+# # Total micronutrients consumption
+# micronutrients_consumption <- left_join(rbind(queries_all$food_consumption_regional,
+#                                               queries_ref$food_consumption_regional) %>%
+#                                          # TODO: find data of nutritional values of FiberCrop (introduce it in the average_data)
+#                                          filter(technology != 'FiberCrop') %>%
+#                                          left_join(rbind(queries_all$pop_all_regions,
+#                                                          queries_ref$pop_all_regions),
+#                                                    by = c("year", "scenario", "scen_type", "scen_path",
+#                                                           "final_share", "peak_year", "slope", "region")) %>%
+#                                          # convert from Pcal to kcal/day
+#                                          mutate(value = (value * 1e12) / (population * 365),
+#                                                 Units = "kcal/capita/day") %>%
+#                                          # rename columns
+#                                          rename('GCAM_commodity' = 'technology',
+#                                                 'consumption' = 'value'),
+#                                        average_data,
+#                                        by = 'GCAM_commodity') %>%
+#   mutate('total_micronutrient_intake' = consumption * nutrient_value) %>%
+#   group_by(region,scenario, scen_type, scen_path, final_share, peak_year, slope,year,nutrient_name,nutrient_units) %>%
+#   summarise(total_micronutrient_intake = sum(total_micronutrient_intake, na.rm = TRUE)) %>%
+#   mutate(nutrient_units = stringr::str_replace(nutrient_units, "/kcal", "/capita/day")) %>%
+#   mutate(year = as.numeric(as.character(year))) %>%
+#   ungroup()
+#
+# micronutrients_RNI = merge(micronutrients %>%
+#                              rename('nutrient_name' = 'micronutrient',
+#                                     'units_rni' = 'Units') %>%
+#                              mutate(nutrient_name = tolower(nutrient_name)),
+#                            weighted_pop_sex_age,
+#                            by = 'variable') %>%
+#   mutate(bySocioGroup_rni = as.numeric(mean_requirement * pop_sex_age)) %>%
+#   group_by(nutrient_name,units_rni,year,region) %>%
+#   summarise(byReg_rni = sum(bySocioGroup_rni),
+#             pop = sum(pop_sex_age),
+#             byRegC_rni = byReg_rni/pop) %>%
+#   mutate(units_rni = stringr::str_replace(units_rni, "/day", "/capita/day")) %>%
+#   mutate(year = as.numeric(as.character(year))) %>%
+#   ungroup()
+#
+# micronutrients = merge(micronutrients_RNI %>%
+#                          mutate(nutrient_name = tolower(nutrient_name)),
+#                        micronutrients_consumption %>%
+#                          mutate(nutrient_name = tolower(nutrient_name)),
+#                        by = c('region','year','nutrient_name'))
+#
+# write.csv(micronutrients, file = 'inputs/nutrition/micronutrients_computed.csv', row.names = F)
+assign('micronutrients', read.csv(file = 'inputs/nutrition/micronutrients_computed.csv'))
+
+
+########################### MICRONUTRIENTS plot ###########################
+
+## -- bars (per difference)
+micronutrients_diffPer_regional = micronutrients %>%
+  # compute diff between intake and RNI
+  mutate(diff = 100*(total_micronutrient_intake - byRegC_rni)/byRegC_rni) %>%
+  # compute median by scenario type
+  dplyr::group_by(scen_type,region,year,nutrient_name,nutrient_units) %>%
+  dplyr::summarise(median_value = median(diff),
+                   min_value = min(diff),
+                   max_value = max(diff)) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year)
+micronutrients_diffPer_regional$nutrient_name = factor(micronutrients_diffPer_regional$nutrient_name,
+                                                       levels = c("calcium", "iron", "magnesium", "selenium", 'sodium', 'zinc',
+                                                                  'folate', 'niacin', 'riboflavin','thiamin', 'vitamin a', 'vitamin b6', 'vitamin b12', 'vitamin c', 'vitamin d', 'vitamin k'))
+
+pl_micronutrients_diffPer_regional_bars <- ggplot() +
+  # barchart
+  geom_bar(data = micronutrients_diffPer_regional %>%
+             mutate(scen_type = toupper(scen_type)) %>%
+             filter(scen_type == 'SPP'),
+           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = 'Percentual difference between intake and RNI') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Behavior change scen'))
+ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg_fixedS.png'),
+       width = 1000, height = 1000, units = 'mm', limitsize = F)
+
+pl_micronutrients_diffPer_regional_bars <-  ggplot() +
+  # barchart
+  geom_bar(data = micronutrients_diffPer_regional %>%
+             mutate(scen_type = toupper(scen_type)) %>%
+             filter(scen_type == 'SPP'),
+           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = 'Percentual difference between intake and RNI') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Reference scen'))
+ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg_freeS.png'),
+       width = 1000, height = 1000, units = 'mm', limitsize = F)
+
+
+## total diff world
+micronutrients_diffPer_world = micronutrients %>%
+  # compute diff between intake and RNI
+  mutate(diff = 100*(total_micronutrient_intake - byRegC_rni)/byRegC_rni) %>%
+  # compute median by scenario type
+  dplyr::group_by(scen_type,year,nutrient_name,nutrient_units) %>%
+  dplyr::summarise(median_value = median(diff),
+                   min_value = min(diff),
+                   max_value = max(diff)) %>%
+  # filter desired year
+  dplyr::filter(year == selected_year)
+micronutrients_diffPer_world$nutrient_name = factor(micronutrients_diffPer_world$nutrient_name,
+                                                    levels = c("calcium", "iron", "magnesium", "selenium", 'sodium', 'zinc',
+                                                               'folate', 'niacin', 'riboflavin','thiamin', 'vitamin a', 'vitamin b6', 'vitamin b12', 'vitamin c', 'vitamin d', 'vitamin k'))
+
+
+pl_micronutrients_diffPer_world <- ggplot() +
+  # barchart
+  geom_bar(data = micronutrients_diffPer_world %>%
+             mutate(scen_type = toupper(scen_type)) %>%
+             filter(scen_type == 'SPP'),
+           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
+  facet_wrap(. ~ scen_type) +
+  # horizontal line at y = 0
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = 'Percentage') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "transparent",
+                                       colour = 'white',linewidth = 0),
+        panel.background = element_rect(fill = "transparent"),
+        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 40, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3)) +
+  # title
+  labs(title = paste('Percentual difference between intake\nby scenario and Ref in', selected_year))
+ggsave(pl_micronutrients_diffPer_world, file = file.path(figures_path, 'sdg3_micronutrients_world.png'),
+       width = 1000, height = 1000, units = 'mm', limitsize = F)
