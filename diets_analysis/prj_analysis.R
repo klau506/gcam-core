@@ -38,7 +38,7 @@ selected_year <- 2050
 # PROTEIN PERCENTAGE
 #####################################################################################
 
-##### PLANT
+##### PLANT  ===============================================================================
 plant_percentage <- rbind(queries_all$food_consumption_regional,
                           queries_ref$food_consumption_regional) %>%
   dplyr::filter(nestingSector1 == 'Protein') %>%
@@ -69,7 +69,7 @@ spp_protein <- ggplot(data = plot_data,
 ggsave(spp_protein, file = file.path(figures_path, paste0('spp_protein_',selected_year,'.png')), width = 400, height = 600, units = 'mm')
 
 
-##### RUMINANT
+##### RUMINANT ===============================================================================
 rumin_percentage <- rbind(queries_all$food_consumption_regional,
                           queries_ref$food_consumption_regional) %>%
   dplyr::filter(nestingSector2 == 'Animal') %>%
@@ -299,8 +299,7 @@ ggsave(pl_land_use_diffPer_world_bars, file = file.path(figures_path, paste0('sd
 
 
 
-#### ===============================================================================
-# HEATMAPS
+#### HEATMAPS ===============================================================================
 
 
 #### ABSOLUTE WITH LAND TYPE
@@ -574,8 +573,7 @@ ggsave(pl_water_irr_rfd_diffPer_world_bars, file = file.path(figures_path, paste
 
 
 
-##### ==============================================================================
-# MAPS
+##### MAPS ==============================================================================
 
 
 #### ABSOLUTE
@@ -714,8 +712,7 @@ ggsave(pl_ag_water_consumption_regional_diffPer_map, file = file.path(figures_pa
 
 
 
-#### ===============================================================================
-# HEATMAPS
+#### HEATMAPS ===============================================================================
 
 
 #### ABSOLUTE
@@ -1002,8 +999,7 @@ ggsave(pl_ghg_by_ghg_diffPer_world_bars, file = file.path(figures_path, paste0('
 
 
 
-##### ==============================================================================
-# MAPS
+##### MAPS ==============================================================================
 
 
 #### ABSOLUTE
@@ -1146,8 +1142,7 @@ ggsave(pl_ghg_world_regional_diffPer_map, file = file.path(figures_path, paste0(
 
 
 
-#### ===============================================================================
-# HEATMAPS
+#### HEATMAPS ===============================================================================
 
 
 #### ABSOLUTE
@@ -1447,8 +1442,7 @@ ggsave(pl_deathsType_diffPer_world_bars, file = file.path(figures_path, paste0('
 
 
 
-##### ==============================================================================
-# MAPS
+##### MAPS ==============================================================================
 
 
 #### ABSOLUTE
@@ -1591,8 +1585,7 @@ ggsave(pl_deaths_world_regional_diffPer_map, file = file.path(figures_path, past
 
 
 
-#### ===============================================================================
-# HEATMAPS
+#### HEATMAPS ===============================================================================
 
 
 #### ABSOLUTE
