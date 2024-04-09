@@ -14,12 +14,15 @@
 # library(tidyr)
 # library(rgcam)
 
-# setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/diets_analysis')
-setwd('C:\\Users\\claudia.rodes\\Documents\\IAM_COMPACT\\gcam-iamcompact-xin\\diets_analysis')
+setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/diets_analysis')
+# setwd('C:\\Users\\claudia.rodes\\Documents\\IAM_COMPACT\\gcam-iamcompact-xin\\diets_analysis')
 
-# .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
+.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_no_CP/')
 library(dplyr)
 library(magrittr)
+library(ggplot2)
+
+source('module_style.R')
 
 ##### Load food consumption data ---------------------------------------------------
 assign('queries_all', get(load('outputs/queries_all_2.RData')))
@@ -302,17 +305,17 @@ ggsave(pl_land_use_diffPer_world_bars, file = file.path(figures_path, paste0('sd
 
 #### ABSOLUTE WITH LAND TYPE
 landType_regional_diffAbs <- merge(queries_all$land_use_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
-                                    dplyr::summarise(value = sum(value)) %>%
-                                    dplyr::ungroup(),
-                                  queries_ref$land_use_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, land_use_type) %>%
-                                    dplyr::summarise(ref_value = sum(value)) %>%
-                                    dplyr::ungroup() %>%
-                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                  by = c('region','year','land_use_type')) %>%
+                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
+                                     dplyr::summarise(value = sum(value)) %>%
+                                     dplyr::ungroup(),
+                                   queries_ref$land_use_regional %>%
+                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     dplyr::group_by(region, year, scenario, scen_type, land_use_type) %>%
+                                     dplyr::summarise(ref_value = sum(value)) %>%
+                                     dplyr::ungroup() %>%
+                                     dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                   by = c('region','year','land_use_type')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = value - ref_value) %>%
@@ -323,8 +326,8 @@ landType_regional_diffAbs <- merge(queries_all$land_use_regional %>%
   dplyr::summarise(median_diff = median(diff))
 
 pl_landType_regional_diffAbs_heatmap <- ggplot(landType_regional_diffAbs %>%
-                                                dplyr::filter(year == selected_year),
-                                              aes(x = scen_group, y = region, fill = median_diff)) +
+                                                 dplyr::filter(year == selected_year),
+                                               aes(x = scen_group, y = region, fill = median_diff)) +
   geom_tile() +
   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
                        name = expression(paste('thous ', km^2, " difference")), ) +
@@ -348,17 +351,17 @@ ggsave(pl_landType_regional_diffAbs_heatmap, file = file.path(figures_path, past
 
 #### PERCENT WITH LAND TYPE
 landType_regional_diffPer <- merge(queries_all$land_use_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
-                                    dplyr::summarise(value = sum(value)) %>%
-                                    dplyr::ungroup(),
-                                  queries_ref$land_use_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, land_use_type) %>%
-                                    dplyr::summarise(ref_value = sum(value)) %>%
-                                    dplyr::ungroup() %>%
-                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                  by = c('region','year','land_use_type')) %>%
+                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
+                                     dplyr::summarise(value = sum(value)) %>%
+                                     dplyr::ungroup(),
+                                   queries_ref$land_use_regional %>%
+                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     dplyr::group_by(region, year, scenario, scen_type, land_use_type) %>%
+                                     dplyr::summarise(ref_value = sum(value)) %>%
+                                     dplyr::ungroup() %>%
+                                     dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                   by = c('region','year','land_use_type')) %>%
   # compute Per difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ifelse(ref_value == 0, 0, 100*(value - ref_value)/ref_value)) %>%
@@ -577,17 +580,17 @@ ggsave(pl_water_irr_rfd_diffPer_world_bars, file = file.path(figures_path, paste
 
 #### ABSOLUTE
 ag_water_consumption_regional_diffAbs <- merge(queries_all$water_irr_rfd_regional %>%
-                                           dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                           dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
-                                           dplyr::summarise(value = sum(value)) %>%
-                                           dplyr::ungroup(),
-                                         queries_ref$water_irr_rfd_regional %>%
-                                           dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                           dplyr::group_by(region, year, scenario, scen_type) %>%
-                                           dplyr::summarise(ref_value = sum(value)) %>%
-                                           dplyr::ungroup() %>%
-                                           dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                         by = c('region','year')) %>%
+                                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                                 dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
+                                                 dplyr::summarise(value = sum(value)) %>%
+                                                 dplyr::ungroup(),
+                                               queries_ref$water_irr_rfd_regional %>%
+                                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                                 dplyr::group_by(region, year, scenario, scen_type) %>%
+                                                 dplyr::summarise(ref_value = sum(value)) %>%
+                                                 dplyr::ungroup() %>%
+                                                 dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                               by = c('region','year')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ref_value - value) %>%
@@ -611,10 +614,10 @@ ag_water_consumption_regional_diffAbs_map <- ag_water_consumption_regional_diffA
   dplyr::select(-scen_to_subset)
 
 ag_water_consumption_regional_diffAbs_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                        dplyr::mutate('adm0_a3' = dplyr::if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                        dplyr::mutate('adm0_a3' = dplyr::if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                        dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                                        ag_water_consumption_regional_diffAbs_map, by = 'adm0_a3')
+                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                                    dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                                  ag_water_consumption_regional_diffAbs_map, by = 'adm0_a3')
 
 # plot
 pl_ag_water_consumption_regional_diffAbs_map <- ggplot() +
@@ -645,17 +648,17 @@ ggsave(pl_ag_water_consumption_regional_diffAbs_map, file = file.path(figures_pa
 
 #### PERCENT
 ag_water_consumption_regional_diffPer <- merge(queries_all$water_irr_rfd_regional %>%
-                                           dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                           dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
-                                           dplyr::summarise(value = sum(value)) %>%
-                                           dplyr::ungroup(),
-                                         queries_ref$water_irr_rfd_regional %>%
-                                           dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                           dplyr::group_by(region, year, scenario, scen_type) %>%
-                                           dplyr::summarise(ref_value = sum(value)) %>%
-                                           dplyr::ungroup() %>%
-                                           dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                         by = c('region','year')) %>%
+                                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                                 dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
+                                                 dplyr::summarise(value = sum(value)) %>%
+                                                 dplyr::ungroup(),
+                                               queries_ref$water_irr_rfd_regional %>%
+                                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                                 dplyr::group_by(region, year, scenario, scen_type) %>%
+                                                 dplyr::summarise(ref_value = sum(value)) %>%
+                                                 dplyr::ungroup() %>%
+                                                 dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                               by = c('region','year')) %>%
   # compute Per difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = 100*(ref_value - value)/ref_value) %>%
@@ -679,10 +682,10 @@ ag_water_consumption_regional_diffPer_map <- ag_water_consumption_regional_diffP
   dplyr::select(-scen_to_subset)
 
 ag_water_consumption_regional_diffPer_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                        dplyr::mutate('adm0_a3' = dplyr::if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                        dplyr::mutate('adm0_a3' = dplyr::if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                        dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
-                                        ag_water_consumption_regional_diffPer_map, by = 'adm0_a3')
+                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                                    dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                                  ag_water_consumption_regional_diffPer_map, by = 'adm0_a3')
 
 # plot
 pl_ag_water_consumption_regional_diffPer_map <- ggplot() +
@@ -718,7 +721,7 @@ ggsave(pl_ag_water_consumption_regional_diffPer_map, file = file.path(figures_pa
 #### ABSOLUTE
 pl_ag_water_consumption_regional_diffAbs_heatmap <- ggplot(ag_water_consumption_regional_diffAbs %>%
                                                              dplyr::filter(year == selected_year),
-                                                 aes(x = scen_group, y = region, fill = median_diff)) +
+                                                           aes(x = scen_group, y = region, fill = median_diff)) +
   geom_tile() +
   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
                        name = expression(paste(km^3, " difference")), ) +
@@ -744,7 +747,7 @@ ggsave(pl_ag_water_consumption_regional_diffAbs_heatmap, file = file.path(figure
 #### PERCENT
 pl_ag_water_consumption_regional_diffPer_heatmap <- ggplot(ag_water_consumption_regional_diffPer %>%
                                                              dplyr::filter(year == selected_year),
-                                                 aes(x = scen_group, y = region, fill = median_diff)) +
+                                                           aes(x = scen_group, y = region, fill = median_diff)) +
   geom_tile() +
   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
                        name = '% difference') +
@@ -868,12 +871,12 @@ ggsave(pl_ag_waterType_consumption_regional_diffPer_heatmap, file = file.path(fi
 
 pl_ghg_emissions_world <- ggplot(data = rbind(queries_all$ghg_world,
                                               queries_ref$ghg_world) %>%
-                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                       dplyr::group_by(year, scen_type) %>%
-                                       dplyr::mutate(median_value = median(value)) %>%
-                                       dplyr::mutate(min_value = min(value)) %>%
-                                       dplyr::mutate(max_value = max(value)) %>%
-                                       dplyr::ungroup()) +
+                                   dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                   dplyr::group_by(year, scen_type) %>%
+                                   dplyr::mutate(median_value = median(value)) %>%
+                                   dplyr::mutate(min_value = min(value)) %>%
+                                   dplyr::mutate(max_value = max(value)) %>%
+                                   dplyr::ungroup()) +
   geom_line(aes(x = year, y = value, group = scenario, color = scen_type), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = scen_type), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
@@ -904,17 +907,17 @@ ggsave(pl_ghg_emissions_world, file = file.path(figures_path,'sdg13_ghg_emission
 
 #### ABSOLUTE - REGIONAL
 ghg_by_ghg_diffAbs_world = merge(queries_all$ghg_by_ghg_world %>%
-                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                      dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
-                                      dplyr::summarise(value = sum(value)) %>%
-                                      dplyr::ungroup(),
-                                    queries_ref$ghg_by_ghg_world %>%
-                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                      dplyr::group_by(year, scenario, scen_type, group) %>%
-                                      dplyr::summarise(ref_value = sum(value)) %>%
-                                      dplyr::ungroup() %>%
-                                      dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                    by = c('group','year')) %>%
+                                   dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                   dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
+                                   dplyr::summarise(value = sum(value)) %>%
+                                   dplyr::ungroup(),
+                                 queries_ref$ghg_by_ghg_world %>%
+                                   dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                   dplyr::group_by(year, scenario, scen_type, group) %>%
+                                   dplyr::summarise(ref_value = sum(value)) %>%
+                                   dplyr::ungroup() %>%
+                                   dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                 by = c('group','year')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ref_value - value) %>%
@@ -1039,9 +1042,9 @@ ghg_world_regional_diffAbs_map <- ghg_world_regional_diffAbs %>%
   dplyr::select(-scen_to_subset)
 
 ghg_world_regional_diffAbs_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
-                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
-                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
-                                                    dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
+                                         dplyr::mutate('adm0_a3' = dplyr::if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
+                                         dplyr::mutate('adm0_a3' = dplyr::if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
+                                         dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
                                        ghg_world_regional_diffAbs_map, by = 'adm0_a3')
 
 # plot
@@ -1201,17 +1204,17 @@ ggsave(pl_ghg_world_regional_diffPer_heatmap, file = file.path(figures_path, pas
 
 #### ABSOLUTE WITH GHG TYPE
 ghgType_regional_diffAbs <- merge(queries_all$ghg_by_ghg_regional %>%
-                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                 dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
-                                 dplyr::summarise(value = sum(value)) %>%
-                                 dplyr::ungroup(),
-                               queries_ref$ghg_by_ghg_regional %>%
-                                 dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                 dplyr::group_by(region, year, scenario, scen_type, group) %>%
-                                 dplyr::summarise(ref_value = sum(value)) %>%
-                                 dplyr::ungroup() %>%
-                                 dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                               by = c('region','year','group')) %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
+                                    dplyr::summarise(value = sum(value)) %>%
+                                    dplyr::ungroup(),
+                                  queries_ref$ghg_by_ghg_regional %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, group) %>%
+                                    dplyr::summarise(ref_value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                  by = c('region','year','group')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ref_value - value) %>%
@@ -1247,17 +1250,17 @@ ggsave(pl_ghgType_regional_diffAbs_heatmap, file = file.path(figures_path, paste
 
 #### PERCENT WITH GHG TYPE
 ghgType_regional_diffPer <- merge(queries_all$ghg_by_ghg_regional %>%
-                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                     dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
-                                     dplyr::summarise(value = sum(value)) %>%
-                                     dplyr::ungroup(),
-                                   queries_ref$ghg_by_ghg_regional %>%
-                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                     dplyr::group_by(region, year, scenario, scen_type, group) %>%
-                                     dplyr::summarise(ref_value = sum(value)) %>%
-                                     dplyr::ungroup() %>%
-                                     dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                   by = c('region','year','group')) %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
+                                    dplyr::summarise(value = sum(value)) %>%
+                                    dplyr::ungroup(),
+                                  queries_ref$ghg_by_ghg_regional %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, group) %>%
+                                    dplyr::summarise(ref_value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                  by = c('region','year','group')) %>%
   # compute Per difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = 100*(ref_value - value)/ref_value) %>%
@@ -1450,18 +1453,18 @@ ggsave(pl_deathsType_diffPer_world_bars, file = file.path(figures_path, paste0('
 
 #### ABSOLUTE
 deaths_world_regional_diffAbs <- merge(mort_queries_all %>%
-                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                      dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
-                                      dplyr::group_by(year, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
-                                      dplyr::summarise(value = sum(mort)) %>%
-                                      dplyr::ungroup(),
-                                    mort_queries_ref %>%
-                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                      dplyr::group_by(year, region, scenario, scen_type) %>%
-                                      dplyr::summarise(ref_value = sum(mort)) %>%
-                                      dplyr::ungroup() %>%
-                                      dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                    by = c('region', 'year')) %>%
+                                         dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
+                                         dplyr::group_by(year, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
+                                         dplyr::summarise(value = sum(mort)) %>%
+                                         dplyr::ungroup(),
+                                       mort_queries_ref %>%
+                                         dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::group_by(year, region, scenario, scen_type) %>%
+                                         dplyr::summarise(ref_value = sum(mort)) %>%
+                                         dplyr::ungroup() %>%
+                                         dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                       by = c('region', 'year')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ref_value - value) %>%
@@ -1869,3 +1872,243 @@ pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_
         title = element_text(size = 30))
 ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, paste0('sgd2_food_econ_basket_bill_regional_diff_',selected_year,'.png')),
        width = 400, height = 600, units = 'mm', limitsize = FALSE)
+
+
+#####################################################################################
+# SDG 3 - NUTRITIONAL VALUES
+#####################################################################################
+
+food_subsector <- read.csv('inputs/nutrition/food_subsector.csv')
+data_macronutrient <- read.csv('inputs/nutrition/gcam_macronutrient.csv')
+data_micronutrient <- read.csv('inputs/nutrition/USDA_data_final.csv')
+mder <- read.csv(paste0("inputs/nutrition/MDER.csv")) %>%
+  rename(mder_units = unit) %>%
+  mutate(mder_units = 'kcal/capita/day')
+colnames(mder) = c('variable','mder_units','mder','std','min','max')
+
+# TODO: check with FAO data
+
+####################### ADESA computation ###########################
+#### dietary energy supply (DES) ---
+# units: kcal/cap/day
+# by region
+# get total consumption in calories
+dietary_energy_supply <- rbind(queries_all$food_consumption_regional,
+                               queries_ref$food_consumption_regional) %>%
+  group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, year) %>%
+  # aggregate staple and non-staple calories
+  summarize(value = sum(value)) %>%
+  left_join(rbind(queries_all$pop_all_regions,
+                  queries_ref$pop_all_regions),
+            by = c("year", "scenario", "scen_type", "scen_path", "final_share", "peak_year", "slope", "region")) %>%
+  # convert from Pcal to kcal/cap/day
+  mutate(value = (value * 1e12) / (population * 365),
+         units = "kcal/cap/day")
+
+## share of dietary energy supply from staples ---
+# find consumption of staple and non-staple Pcal
+staples_vs_nonstaples_Pcal <- rbind(queries_all$food_consumption_regional,
+                                    queries_ref$food_consumption_regional) %>%
+  select(-nestingSector1) %>% select(-nestingSector2) %>% select(-nestingSector3) %>%
+  rename(subsector = technology) %>%
+  left_join_error_no_match(food_subsector, by = 'subsector') %>%
+  group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, year, supplysector) %>%
+  summarise(value = sum(value)) %>%
+  mutate(Units = 'Pcal') %>%
+  ungroup()
+
+## SSP2 population data ---
+ssp_data <- read.csv(paste0("inputs/nutrition/SSP2_population_by_demographic.csv"), skip = 1)
+iso_gcam_regions <- read.csv(paste0("inputs/mappings/iso_GCAM_regID.csv"), skip = 6)
+id_gcam_regions <- read.csv(paste0("inputs/mappings/gcam_id_to_region.csv"))
+colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
+country_gcam_regions <- read.csv(paste0("inputs/mappings/country_to_gcam_id.csv"))
+regions_key <- dplyr::left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
+  dplyr::select(-1)
+
+ssp_data_clean <- iso_gcam_regions %>%
+  select(-region_GCAM3, -GCAM_region_ID) %>%
+  left_join(ssp_data %>%
+              filter(SCENARIO == 'SSP2_v9_130115'),
+            by = "iso", multiple = 'all') %>%
+  select(-MODEL, -REGION) %>%
+  rename(scenario = SCENARIO,
+         variable = VARIABLE,
+         unit = UNIT)
+# Remove X from year columns
+colnames(ssp_data_clean) <- gsub("X", "", colnames(ssp_data_clean))
+# Pivot longer
+ssp_data_long <- ssp_data_clean %>%
+  tidyr::pivot_longer(cols = 6:24, names_to = "year", values_to = "value") %>%
+  mutate(value = value * 1e6,
+         unit = "total population") %>%
+  mutate(year = as.integer(year))
+# Isolate reference (total) population
+reference_pop <- ssp_data_long %>%
+  filter(variable == "Population") %>%
+  rename(total_pop = value) %>%
+  select(iso, year, total_pop)
+# Join and calculate demographic shares of population
+ssp_data_final <- ssp_data_long %>%
+  # Remove total male and total female pop, we want by age/sex
+  filter(!variable %in% c("Population|Male", "Population|Female", "Population", NA)) %>%
+  left_join(reference_pop, by = c("iso", "year")) %>%
+  mutate(demo_share = value / total_pop) %>%
+  rename(sub_pop = value)  %>%
+  rename(pop_units = unit)
+
+# Get population by sex and age
+# Population weighting
+total_regional_pop <- ssp_data_final %>%
+  select(-scenario,-iso) %>%
+  # get GCAM regions instead of country names
+  left_join(regions_key, by = "country_name") %>%
+  # get total regional population
+  group_by(year, GCAM_region_ID, country_name, region) %>%
+  # isolate total population by country
+  distinct(total_pop) %>%
+  group_by(year, GCAM_region_ID, region) %>%
+  # sum for total regional population
+  mutate(total_regional_pop = sum(total_pop)) %>%
+  ungroup()
+
+weighted_pop <- ssp_data_final %>%
+  select(-scenario,-iso) %>%
+  # get GCAM regions instead of country names
+  left_join(regions_key, by = "country_name") %>%
+  # get total regional population
+  left_join(total_regional_pop) %>%
+  # weight each country by its population over total regional pop
+  group_by(country_name, year) %>%
+  mutate(weight = total_pop / total_regional_pop) %>%
+  # get GCAM population
+  left_join(rbind(queries_all$pop_all_regions,
+                  queries_ref$pop_all_regions),
+            by = c("region", "year"), relationship = "many-to-many") %>%
+  # compute GCAM population by sex and age for each country
+  mutate(weighted_demographics = demo_share * weight * population)
+
+weighted_pop_sex_age <- weighted_pop %>%
+  select(-pop_units, -sub_pop, -total_pop, -demo_share, -weight) %>%
+  group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, variable, year, region) %>%
+  # sum the weighted averages for each country into GCAM regions
+  summarize(pop_sex_age = sum(weighted_demographics))
+
+# join with MDER data, calculate caloric requirements by sex and age
+adesa_denominator <- weighted_pop_sex_age %>%
+  left_join(mder, by = "variable") %>%
+  select(-std) %>%
+  group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, variable, year, region) %>%
+  # compute a range because of differing physical activity levels
+  summarize(cal_req_x_pop = mder * pop_sex_age,
+            min_cal_req_x_pop = min * pop_sex_age,
+            max_cal_req_x_pop = max * pop_sex_age) %>%
+  # aggregate caloric requirements to get total regional values
+  group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, year) %>%
+  summarize(denominator_sum = sum(cal_req_x_pop),
+            min_denominator_sum = sum(min_cal_req_x_pop),
+            max_denominator_sum = sum(max_cal_req_x_pop)) %>%
+  mutate(year = as.numeric(year))
+
+# add in regional calorie info, calculate ADESA
+adesa <- left_join(adesa_denominator, dietary_energy_supply) %>%
+  group_by(year, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
+  reframe(adesa = (value / denominator_sum) * population * 100, # convert to unitless and percentage
+          min_adesa = (value / min_denominator_sum) * population * 100,
+          max_adesa = (value / max_denominator_sum) * population * 100,
+          .groups = "keep")
+
+
+########################### ADESA plot ###########################
+
+pl = ggplot(adesa %>%
+              dplyr::mutate(scen_type = toupper(scen_type)) %>%
+              dplyr::group_by(scen_type, scenario, year) %>%
+              dplyr::mutate(adesa = mean(adesa)) %>%
+              dplyr::ungroup() %>%
+              dplyr::group_by(scen_type, year) %>%
+              dplyr::mutate(mean_adesa = mean(adesa),
+                            min_value = min(adesa),
+                            max_value = max(adesa)) %>%
+              dplyr::ungroup() %>%
+              dplyr::filter(year <= MODEL_HALF_CENTURY_YEAR)) +
+  geom_line(aes(x = year, y = mean_adesa, color = scen_type), linewidth = 2, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  labs(y = 'ADESA value', x = '') +
+  ggtitle('ADESA regional values') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl, filename = file.path(figures_path, 'sdg3_adesa_world.png'),
+       width = 750, height = 450, units = 'mm', limitsize = F)
+
+# check for ADESA trends and get rid of the scenarios with a down-going ADESA
+pl = ggplot(adesa %>%
+              dplyr::mutate(scen_type = toupper(scen_type)) %>%
+              dplyr::group_by(scen_type, scenario, year) %>%
+              dplyr::mutate(adesa = mean(adesa)) %>%
+              dplyr::ungroup() %>%
+              dplyr::group_by(scen_type, year) %>%
+              dplyr::mutate(mean_adesa = mean(adesa),
+                            min_value = min(adesa),
+                            max_value = max(adesa)) %>%
+              dplyr::ungroup()) +
+  geom_line(aes(x = year, y = mean_adesa, color = scen_type), linewidth = 2, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  labs(y = 'ADESA value', x = '') +
+  ggtitle('ADESA regional values') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl, file = file.path(figures_path, 'sdg3_adesa_reg_freeS.png'),
+       width = 2000, height = 2000, units = 'mm', limitsize = F)
+pl = ggplot(adesa %>%
+              dplyr::mutate(scen_type = toupper(scen_type)) %>%
+              dplyr::group_by(scen_type, scenario, year) %>%
+              dplyr::mutate(adesa = mean(adesa)) %>%
+              dplyr::ungroup() %>%
+              dplyr::group_by(scen_type, year) %>%
+              dplyr::mutate(mean_adesa = mean(adesa),
+                            min_value = min(adesa),
+                            max_value = max(adesa)) %>%
+              dplyr::ungroup()) +
+  geom_line(aes(x = year, y = mean_adesa, color = scen_type), linewidth = 2, alpha = 1) +  # Median line
+  geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  labs(y = 'ADESA value', x = '') +
+  ggtitle('ADESA regional values') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl, file = file.path(figures_path, 'sdg3_adesa_reg_fixedS.png'),
+       width = 2000, height = 2000, units = 'mm', limitsize = F)
