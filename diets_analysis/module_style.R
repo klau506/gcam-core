@@ -85,6 +85,31 @@ names(micronutrients_scenario.labs) = c("calcium", "iron",
                                         'vitamin d', 'vitamin k')
 
 
+food_scenario_palette = c(
+  'Crops|Corn' = '#a63603',
+  'Crops|Fiber crops' = '#cc0000',
+  'Crops|Fruits' = '#e6550d',
+  'Crops|Legumes' = '#fd8d3c',
+  'Crops|Nuts and Seeds' = '#fdae6b',
+  'Crops|Oil crops' = '#fdd0a2',
+  'Crops|Other grain crops' = '#ffff99',
+  'Crops|Palm oil crops' = '#ffff00',
+  'Crops|Rice' = '#ffe6ff',
+  'Crops|Root Tubers' = '#ffccff',
+  'Crops|Soy bean' = '#ff99ff',
+  'Crops|Specialty crops and species' = '#d867e0',
+  'Crops|Sugar crops' = '#d730e3',
+  'Crops|Vegetables' = '#880191',
+  'Crops|Wheat' = '#54278f',
+  'Livestock products|Beef meat' = '#006d2c',
+  'Livestock products|Dairy' = '#31a354',
+  'Livestock products|Pork meat' = '#74c476',
+  'Livestock products|Poultry meat' = '#bae4b3',
+  'Livestock products|Sheep and Goat meat' = '#edf8e9',
+  'Seafood|Fish' = '#3ebce6'
+)
+
+
 # creates palette: "random" or from palette colors for all scenarios, except for reference one, which is black
 create_palette <- function(scenarios, reference = "ref", palette = viridis::viridis(length(scenarios), option = 'D')) {
   #  RColorBrewer::brewer.pal(length(scenarios), "Paired")

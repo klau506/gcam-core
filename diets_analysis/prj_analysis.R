@@ -103,6 +103,84 @@ ggsave(snr_protein, file = file.path(figures_path, paste0('snr_protein_',selecte
 
 #####################################################################################
 #####################################################################################
+# DIET COMPOSITION
+#####################################################################################
+
+food_subsector <- read.csv('inputs/nutrition/food_subsector.csv', skip = 3) %>%
+  rename(technology = subsector) %>%
+  mutate(beautiful_name = paste0(category, '|', beautiful_name))
+
+food_consumption <- rbind(queries_all$food_consumption_regional,
+                          queries_ref$food_consumption_regional) %>%
+  dplyr::left_join(food_subsector, by = 'technology') %>%
+  group_by(Units, region, scen_type, technology, year, beautiful_name) %>%
+  summarise(value = median(value)) %>%
+  ungroup() %>%
+  arrange(beautiful_name)
+
+# plot
+pl_food_consumption <- ggplot(data = food_consumption %>%
+                                filter(year == 2050) %>%
+                                mutate(scen_type = toupper(scen_type)),
+                           aes(x = scen_type, y = value, group = beautiful_name, color = beautiful_name, fill = beautiful_name)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_color_manual(values = food_scenario_palette, name = 'Calorie Source') +
+  scale_fill_manual(values = food_scenario_palette, name = 'Calorie Source') +
+  # facet
+  facet_wrap(. ~ region, scales = 'free') +
+  # style
+  labs(y = 'Pcal', x = 'Scenario Type') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "white",
+                                       colour = 'grey',linewidth = 2),
+        panel.background = element_rect(fill = "white"),
+        legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_food_consumption, file = file.path(figures_path, paste0('sdg0_diet_composition_freeS_',selected_year,'.png')),
+       width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+pl_food_consumption <- ggplot(data = food_consumption %>%
+                                filter(year == 2050) %>%
+                                mutate(scen_type = toupper(scen_type)),
+                           aes(x = scen_type, y = value, group = beautiful_name, color = beautiful_name, fill = beautiful_name)) +
+  geom_bar(stat = "identity", position = "stack") +
+  scale_color_manual(values = food_scenario_palette, name = 'Calorie Source') +
+  scale_fill_manual(values = food_scenario_palette, name = 'Calorie Source') +
+  # facet
+  facet_wrap(. ~ region, scales = 'fixed') +
+  # style
+  labs(y = 'Pcal', x = 'Scenario Type') +
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "white",
+                                       colour = 'grey',linewidth = 2),
+        panel.background = element_rect(fill = "white"),
+        legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_food_consumption, file = file.path(figures_path, paste0('sdg0_diet_composition_fixedS_',selected_year,'.png')),
+       width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
+
+
+
+#####################################################################################
+#####################################################################################
 # SDG15 - LAND USE management
 #####################################################################################
 
@@ -1739,7 +1817,7 @@ ggsave(pl_ghgType_regional_diffPer_heatmap, file = file.path(figures_path, paste
 # SDG 2 - FOOD EXPENDITURE
 #####################################################################################
 
-food_subsector <- read.csv('inputs/nutrition/food_subsector.csv')
+food_subsector <- read.csv('inputs/nutrition/food_subsector.csv', skip = 3)
 
 #### econ. basket bill ---
 
@@ -1871,7 +1949,7 @@ ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, pa
 # SDG 3 - NUTRITIONAL VALUES
 #####################################################################################
 
-food_subsector <- read.csv('inputs/nutrition/food_subsector.csv')
+food_subsector <- read.csv('inputs/nutrition/food_subsector.csv', skip = 3)
 data_macronutrient <- read.csv('inputs/nutrition/gcam_macronutrient.csv', skip = 5)
 data_micronutrient <- read.csv('inputs/nutrition/USDA_data_final.csv')
 colnames(data_micronutrient) <- c("Food", "GCAM_commodity", "Calories (kcal)", "Protein (g)",
