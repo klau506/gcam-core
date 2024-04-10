@@ -350,6 +350,16 @@ load_queries = function(queries_name) {
       update_query(., 'nonco2_luc')
 
 
+    ###### ==== Climate variables ====
+    global_mean_temperature <<- getQuery(prj,"global mean temperature") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'global_mean_temperature')
+
+    net_terrestrial_C_uptake <<- getQuery(prj,"net terrestrial C uptake") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'net_terrestrial_C_uptake')
+
+
     ###### ==== GHG emissions ====
     ghg_by_ghg_world <<- bind_rows(luc,co2_emiss,nonco2) %>%
       left_join(GWP, by = c("Units", "ghg")) %>%

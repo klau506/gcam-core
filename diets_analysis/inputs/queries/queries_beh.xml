@@ -3,18 +3,42 @@
 
    <aQuery>
       <all-regions />
-            <emissionsQueryBuilder title="nonCO2 emissions by region">
-                <axis1 name="GHG">GHG</axis1>
-                <axis2 name="Year">emissions</axis2>
-                <xPath buildList="true" dataName="emissions" group="false" sumAll="false">*[@type = 'sector' (:collapse:) or @type = 'resource' (:collapse:)](: / *[@type = 'subresource' (: collapse :)] :)//
-            *[@type = 'GHG' and @name != 'CO2' and @name != 'CO2_FUG']/emissions/node()</xPath>
-				<labelRewriteList append-values="false">
-                    <level name="GHG">
-                        <rewrite from="CO2_FUG" to="CO2"/>
-                    </level>
-                </labelRewriteList>
-                <comments/>
-            </emissionsQueryBuilder>
+        <ClimateQuery title="global mean temperature">
+            <axis1 name="temperature">none</axis1>
+            <axis2 name="Year">global-mean-surface-temperature[@year]</axis2>
+            <xPath buildList="true" dataName="global-mean-temperature" group="false" sumAll="false">climate-model/global-mean-surface-temperature/text()</xPath>
+            <comments>Returns global mean surface temp anomaly relative to the 1850-1900 mean.
+Also available is global mean air temperature; in both climate model native or relative to 1850-1900 mean.
+A user can adjust the query to search for any of:
+  * global-mean-surface-temperature
+  * global-mean-air-temperature
+  * global-mean-surface-temperature-native
+  * global-mean-air-temperature-native</comments>
+        </ClimateQuery>
+   </aQuery>
+   <aQuery>
+      <all-regions />
+        <ClimateQuery title="net terrestrial C uptake">
+            <axis1 name="net-terrestrial-uptake">none</axis1>
+            <axis2 name="Year">net-terrestrial-uptake[@year]</axis2>
+            <xPath buildList="true" dataName="net-terrestrial-uptake" group="false" sumAll="false">climate-model/net-terrestrial-uptake/text()</xPath>
+            <comments/>
+        </ClimateQuery>
+   </aQuery>
+   <aQuery>
+      <all-regions />
+         <emissionsQueryBuilder title="nonCO2 emissions by region">
+               <axis1 name="GHG">GHG</axis1>
+               <axis2 name="Year">emissions</axis2>
+               <xPath buildList="true" dataName="emissions" group="false" sumAll="false">*[@type = 'sector' (:collapse:) or @type = 'resource' (:collapse:)](: / *[@type = 'subresource' (: collapse :)] :)//
+         *[@type = 'GHG' and @name != 'CO2' and @name != 'CO2_FUG']/emissions/node()</xPath>
+         <labelRewriteList append-values="false">
+                  <level name="GHG">
+                     <rewrite from="CO2_FUG" to="CO2"/>
+                  </level>
+               </labelRewriteList>
+               <comments/>
+         </emissionsQueryBuilder>
    </aQuery>
    <aQuery>
       <all-regions />

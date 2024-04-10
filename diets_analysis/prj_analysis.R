@@ -650,9 +650,60 @@ ggsave(pl_landType_regional_diffPer_heatmap, file = file.path(figures_path, past
 
 #####################################################################################
 #####################################################################################
-# SDG6 - WATER consumption
+# SDG6 - WATER management
 #####################################################################################
+############## INDICATOR 1: % of avoided water scarcity ================================
+# compute the Water Indicator (Water Scarcity Index) -- TODO: update with my queries and compute diff between scen & ref
 
+# Get Water Supply Data
+water_supply = rgcam::getQuery(prj, "Basin level available runoff") %>%
+  select(-region) %>%
+  bind_rows(
+    rgcam::getQuery(prj, "resource supply curves") %>%
+      filter(stringr::str_detect(subresource, "groundwater")) %>%
+      mutate(subresource = "groundwater") %>%
+      group_by(scenario, year, resource, subresource, Units) %>%
+      summarize(value = sum(value)) %>%
+      ungroup() %>%
+      rename(basin = resource)) %>%
+  rename(value_sup = value)
+
+# Get Water Withdrawal Data
+water_withdrawal = rgcam::getQuery(prj, "Water Withdrawals by Basin (Runoff)") %>%
+  select(-region) %>%
+  rename(basin = "runoff water") %>%
+  bind_rows(
+    rgcam::getQuery(prj, "Water Withdrawals by Basin (Groundwater)") %>%
+      filter(stringr::str_detect(subresource, "groundwater")) %>%
+      mutate(subresource = "groundwater") %>%
+      group_by(scenario, year, groundwater, subresource, Units) %>%
+      summarize(value = sum(value)) %>%
+      ungroup() %>%
+      rename(basin = groundwater)) %>%
+  rename(value_wd = value)
+
+# Extract values of baseline
+water_withdrawal_2015 = water_withdrawal %>% filter(year == 2015) %>% rename(value_wd_2015 = value_wd)
+water_supply_2015 = water_supply %>% filter(year == 2015) %>% rename(value_sup_2015 = value_sup)
+
+# Compute the Weighted Water Scarcity Index (Weighted per Basin both by Supply & by Withdrawal)
+water_scarcity_index = water_supply %>%
+  left_join(water_withdrawal) %>%
+  mutate(index = value_wd / value_sup)
+water_scarcity_index = merge(water_scarcity_index, water_withdrawal_2015, by = c("basin", "scenario", "subresource"))
+water_scarcity_index = merge(water_scarcity_index, water_supply_2015, by = c("basin", "scenario", "subresource"))
+water_scarcity_index = water_scarcity_index %>%
+  mutate(weighted_sup = index * value_sup_2015,
+         weighted_wd = index * value_wd_2015) %>%
+  select(-year, -year.y) %>%
+  rename(year = year.x) %>%
+  group_by(scenario, year, resource = if_else(subresource == "runoff", "runoff", "groundwater")) %>%
+  summarize(index_sup = sum(weighted_sup) / sum(value_sup_2015),
+            index_wd = sum(weighted_wd) / sum(value_wd_2015)) %>%
+  ungroup()
+
+
+############## WATER consumption ===============================================
 
 pl_water_consumption_world <- ggplot(data = rbind(queries_all$water_consumption_world,
                                                   queries_ref$water_consumption_world) %>%
@@ -826,7 +877,7 @@ ggsave(pl_water_irr_rfd_diffPer_world_bars, file = file.path(figures_path, paste
 
 
 
-##### MAPS ==============================================================================
+##### WATER consumption MAPS ==============================================================================
 
 
 #### ABSOLUTE
@@ -965,7 +1016,7 @@ ggsave(pl_ag_water_consumption_regional_diffPer_map, file = file.path(figures_pa
 
 
 
-#### HEATMAPS ===============================================================================
+##### WATER consumption HEATMAPS ===============================================================================
 
 
 #### ABSOLUTE
@@ -1116,9 +1167,33 @@ ggsave(pl_ag_waterType_consumption_regional_diffPer_heatmap, file = file.path(fi
 #####################################################################################
 # SDG13 - EMISSIONS
 #####################################################################################
+############## INDICATOR 1: % of avoided GHG by type ===========================
+# compute the GHG Indicator (Percent of avoided GHG by type: CH4, CO2, F-Gas, LUC CO2, N2O)
+ghg_indicator_avEmiss = merge(queries_all$ghg_by_ghg_world %>%
+                                dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                dplyr::group_by(group, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
+                                dplyr::summarise(value = sum(value)) %>%
+                                dplyr::ungroup(),
+                              queries_ref$ghg_by_ghg_world %>%
+                                dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                dplyr::group_by(group, year, scenario, scen_type) %>%
+                                dplyr::summarise(ref_value = sum(value)) %>%
+                                dplyr::ungroup() %>%
+                                dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                              by = c('year','group'))
+
+# aggregate Global Value with Weighted Average
+ghg_indicator_global_avEmiss = ghg_indicator_avEmiss %>%
+  dplyr::group_by(group, scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+  # compute Per difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = (ref_value - value) / ref_value) %>%
+  # compute median by scen
+  dplyr::group_by(year,group,scen_type,scen_path) %>%
+  dplyr::summarise(median_diff = median(diff))
 
 
-
+##### GHG emissions TREND ======================================================
 pl_ghg_emissions_world <- ggplot(data = rbind(queries_all$ghg_world,
                                               queries_ref$ghg_world) %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
@@ -1178,7 +1253,9 @@ ghg_by_ghg_diffAbs_world = merge(queries_all$ghg_by_ghg_world %>%
   dplyr::summarise(median_diff = median(diff))
 
 
-pl_ghg_by_ghg_diffAbs_world_bars <- ggplot(data = ghg_by_ghg_diffAbs_world %>% filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = group)) +
+pl_ghg_by_ghg_diffAbs_world_bars <- ggplot(data = ghg_by_ghg_diffAbs_world %>%
+                                             filter(year == selected_year),
+                                           aes(x = median_diff, y = scen_path, fill = group)) +
   geom_bar(stat = "identity", position = "identity") +
   facet_grid(scen_group ~ scen_type, scales = "fixed") +
   scale_fill_brewer(palette = 'Paired', name = '') +
@@ -1252,7 +1329,7 @@ ggsave(pl_ghg_by_ghg_diffPer_world_bars, file = file.path(figures_path, paste0('
 
 
 
-##### MAPS ==============================================================================
+##### GHG emissions MAPS ==============================================================================
 
 
 #### ABSOLUTE
@@ -1395,7 +1472,7 @@ ggsave(pl_ghg_world_regional_diffPer_map, file = file.path(figures_path, paste0(
 
 
 
-#### HEATMAPS ===============================================================================
+#### GHG emissions HEATMAPS ===============================================================================
 
 
 #### ABSOLUTE
@@ -2724,3 +2801,5 @@ pl_micronutrients_diffPer_world <- ggplot() +
   labs(title = paste('Percentual difference between intake\nby scenario and Ref in', selected_year))
 ggsave(pl_micronutrients_diffPer_world, file = file.path(figures_path, 'sdg3_micronutrients_world.png'),
        width = 1000, height = 1000, units = 'mm', limitsize = F)
+
+
