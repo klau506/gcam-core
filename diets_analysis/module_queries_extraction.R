@@ -294,6 +294,28 @@ load_queries = function(queries_name) {
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'water_irr_rfd_regional')
 
+    resource_supply_curves_world <<- rgcam::getQuery(prj, "resource supply curves") %>%
+      group_by(region, Units, scenario, year, resource, subresource, grade) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'resource_supply_curves_world')
+
+    resource_supply_curves_regional <<- rgcam::getQuery(prj, "resource supply curves") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'resource_supply_curves_regional')
+
+    basin_level_available_runoff_world <<- rgcam::getQuery(prj, "Basin level available runoff") %>%
+      group_by(region, Units, scenario, year, subresource, Basin) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'basin_level_available_runoff_world')
+
+    basin_level_available_runoff_regional <<- rgcam::getQuery(prj, "Basin level available runoff") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'basin_level_available_runoff_regional')
+
 
     ###### ==== emissions ====
     GWP <<- readr::read_csv(file.path("diets_analysis","inputs","mappings/GWP_AR5.csv"))
@@ -413,6 +435,17 @@ load_queries = function(queries_name) {
       ungroup() %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'land_crop_regional')
+
+    detailed_land_allocation_world <<- getQuery(prj,"detailed land allocation") %>%
+      group_by(Units, scenario, year, landleaf) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'detailed_land_allocation_world')
+
+    detailed_land_allocation_regional <<- getQuery(prj,"detailed land allocation") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'detailed_land_allocation_regional')
 
 
     carbon_stock_world <<- getQuery(prj,"vegetative carbon stock by region") %>%

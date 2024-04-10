@@ -111,6 +111,15 @@
          <comments />
       </supplyDemandQuery>
    </aQuery>
+   <aQuery>
+      <all-regions />
+      <query title="detailed land allocation">
+         <axis1 name="LandLeaf">LandLeaf[@name]</axis1>
+         <axis2 name="Year">land-allocation[@year]</axis2>
+         <xPath buildList="true" dataName="LandLeaf" group="false" sumAll="false">/LandNode[@name='root' or @type='LandNode' (:collapse:)]//land-allocation/text()</xPath>
+         <comments />
+      </query>
+   </aQuery>
 
 
    <aQuery>
@@ -423,6 +432,24 @@
                     <comments/>
                 </supplyDemandQuery>
    </aQuery>
+   <aQuery>
+      <all-regions />
+      <supplyDemandQuery title="resource supply curves">
+         <axis1 name="grade">grade</axis1>
+         <axis2 name="Year">available</axis2>
+         <xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='resource']//grade/available/node()</xPath>
+         <comments />
+      </supplyDemandQuery>
+   </aQuery>
+   <aQuery>
+      <all-regions />
+      <resourceQuery title="Basin level available runoff">
+         <axis1 name="Basin">resource[@name]</axis1>
+         <axis2 name="Year">max-annual-subresource[@year]</axis2>
+         <xPath buildList="true" dataName="input" group="false" sumAll="false">*[@type = 'resource' and contains(@name, 'water withdrawals')]/*[@type = 'subresource' and contains(@name, 'runoff')]/max-annual-subresource/node()</xPath>
+         <comments />
+      </resourceQuery>
+   </aQuery>
 
 
    <aQuery>
@@ -527,7 +554,7 @@
                 <axis1 name="water">water[@name]</axis1>
                 <axis2 name="Year">land-allocation[@year]</axis2>
                 <xPath buildList="true" dataName="LandLeaf" group="false" sumAll="false"><![CDATA[
-                     
+
             declare function local:nest-land-category($leaf as node(), $level as xs:string, $child as node()*) as node() {
                 let $attrMatch := $leaf/@*[name()=$level],
                     $attrValue := if(exists($attrMatch)) then string($attrMatch) else "NA"
@@ -536,14 +563,14 @@
                     $child
                 }
             };
-            declare function local:run-nest-land-categories($scenarios as xs:string*, $regions as xs:string*, $collection as xs:string) as node()* { 	
+            declare function local:run-nest-land-categories($scenarios as xs:string*, $regions as xs:string*, $collection as xs:string) as node()* {
                 let $regionsG := if(not($regions[1] = 'Global'))
                                  then $regions
                                  else distinct-values(collection($collection)/scenario/world/*[@type='region']/@name)
                 return
-                    for $scenario in $scenarios, 	    
-                        $region in $regionsG 	
-                    let $scenario_split := tokenize($scenario, ' '), 	    
+                    for $scenario in $scenarios,
+                        $region in $regionsG
+                    let $scenario_split := tokenize($scenario, ' '),
                         $currTree := collection($collection)/scenario[@name = $scenario_split[1] and @date = $scenario_split[2]]/world/*[@type='region' and @name=$region],
                         $landLeaves := $currTree//LandNode[@name='root' or @type='LandNode' (:collapse:)]//LandLeaf,
                         $ret := document {
@@ -568,8 +595,8 @@
                     return $ret//text()
             };
             local:run-nest-land-categories((:scenarios:), (:regions:), (:collection:))
-            
-            
+
+
                 ]]></xPath>
                 <comments/>
             </query>
@@ -630,7 +657,7 @@
                 <supplyDemandQuery title="refined liquids production by tech">
                     <axis1 name="technology">technology</axis1>
                     <axis2 name="Year">physical-output[@vintage]</axis2>
-                    <xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='sector' and 
+                    <xPath buildList="true" dataName="output" group="false" sumAll="false">*[@type='sector' and
                (@name='oil refining' or @name='biomass liquids' or @name='gas to liquids' or @name='coal to liquids')]/*[@type='subsector']/
                *[@type='technology']/output-primary[@type='output' (:collapse:)]/physical-output/node()</xPath>
                     <comments/>

@@ -130,7 +130,7 @@ food_consumption$beautiful_name <- factor(food_consumption$beautiful_name,
 pl_food_consumption <- ggplot(data = food_consumption %>%
                                 filter(year == 2050) %>%
                                 mutate(scen_type = toupper(scen_type)),
-                           aes(x = scen_type, y = value, group = beautiful_name, color = beautiful_name, fill = beautiful_name)) +
+                              aes(x = scen_type, y = value, group = beautiful_name, color = beautiful_name, fill = beautiful_name)) +
   geom_bar(stat = "identity", position = "stack") +
   scale_color_manual(values = food_scenario_palette, name = 'Calorie Source') +
   scale_fill_manual(values = food_scenario_palette, name = 'Calorie Source') +
@@ -159,7 +159,7 @@ ggsave(pl_food_consumption, file = file.path(figures_path, paste0('sdg0_diet_com
 pl_food_consumption <- ggplot(data = food_consumption %>%
                                 filter(year == 2050) %>%
                                 mutate(scen_type = toupper(scen_type)),
-                           aes(x = scen_type, y = value, group = beautiful_name, color = beautiful_name, fill = beautiful_name)) +
+                              aes(x = scen_type, y = value, group = beautiful_name, color = beautiful_name, fill = beautiful_name)) +
   geom_bar(stat = "identity", position = "stack") +
   scale_color_manual(values = food_scenario_palette, name = 'Calorie Source') +
   scale_fill_manual(values = food_scenario_palette, name = 'Calorie Source') +
@@ -275,8 +275,91 @@ ggsave(p, file = file.path(figures_path,paste0('sdg0_kcal_cap_day_by_pop.png')),
 # SDG15 - LAND USE management
 #####################################################################################
 
+############## INDICATOR 1: % of re-/aff-forestation ================================
+# compute the Land Indicator (Percent of Re/Afforestation)
+land_indicator_forestLand = merge(queries_all$land_use_regional %>%
+                                    dplyr::mutate(value = value * 100) %>% # convert Thous km2 to Mha
+                                    dplyr::mutate(forest = ifelse(land_use_type == 'Forest', 'Forest', 'NoForest')) %>%
+                                    dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year, forest) %>%
+                                    dplyr::summarize(value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+                                    dplyr::summarize(percent_forest = 100 * sum(value[forest == "Forest"]) / sum(value[forest %in% c("NoForest", "Forest")]),
+                                                     total_land = sum(value[forest %in% c("NoForest", "Forest")])) %>%
+                                    dplyr::ungroup(),
+                                  queries_ref$land_use_regional %>%
+                                    dplyr::mutate(value = value * 100) %>% # convert Thous km2 to Mha
+                                    dplyr::mutate(forest = ifelse(land_use_type == 'Forest', 'Forest', 'NoForest')) %>%
+                                    dplyr::group_by(region, scenario, year, forest) %>%
+                                    dplyr::summarize(value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::group_by(region, scenario, year) %>%
+                                    dplyr::summarize(percent_forest_ref = 100 * sum(value[forest == "Forest"]) / sum(value[forest %in% c("NoForest", "Forest")]),
+                                                     total_land_ref = sum(value[forest %in% c("NoForest", "Forest")])) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::select(-scenario),
+                                  by = c('year','region'))
 
-############## AREA
+# aggregate Global Value with Weighted Average
+land_indicator_global_forestLand = land_indicator_forestLand %>%
+  dplyr::mutate(weight = percent_forest * total_land,
+                weight_ref = percent_forest_ref * total_land_ref) %>%
+  dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+  dplyr::summarize(percent_forest = sum(weight) / sum(total_land),
+                   percent_forest_ref = sum(weight_ref) / sum(total_land_ref)) %>%
+  dplyr::ungroup() %>%
+  # compute Abs difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = percent_forest - percent_forest_ref) %>%
+  # compute median by scen
+  dplyr::group_by(year,scen_type, scen_path) %>%
+  dplyr::summarise(median_diff = median(diff))
+
+
+############## INDICATOR 2: % of unmanaged land =====================================
+# compute the Land Indicator (Percent of Unmanaged Land)
+land_indicator_managementLand = merge(queries_all$detailed_land_allocation_regional %>%
+                                    dplyr::mutate(value = value * 0.1) %>% # convert km2 to Mha
+                                    dplyr::mutate(management = ifelse(grepl("ProtectedUnmanagedForest|UnmanagedForest|Shrubland|ProtectedShrubland|Grassland|ProtectedGrassland|UnmanagedPasture|ProtectedUnmanagedPasture|Tundra|RockIceDesert", landleaf),
+                                                                  'Unmanaged', 'Managed')) %>%
+                                    dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year, management) %>%
+                                    dplyr::summarize(value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+                                    dplyr::summarize(percent_management = 100 * sum(value[management == "Unmanaged"]) / sum(value[management %in% c("Unmanaged", "Managed")]),
+                                                     total_land = sum(value[management %in% c("Unmanaged", "Managed")])) %>%
+                                    dplyr::ungroup(),
+                                  queries_ref$detailed_land_allocation_regional %>%
+                                    dplyr::mutate(value = value * 0.1) %>% # convert km2 to Mha
+                                    dplyr::mutate(management = ifelse(grepl("ProtectedUnmanagedForest|UnmanagedForest|Shrubland|ProtectedShrubland|Grassland|ProtectedGrassland|UnmanagedPasture|ProtectedUnmanagedPasture|Tundra|RockIceDesert", landleaf),
+                                                                      'Unmanaged', 'Managed')) %>%
+                                    dplyr::group_by(region, scenario, year, management) %>%
+                                    dplyr::summarize(value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::group_by(region, scenario, year) %>%
+                                    dplyr::summarize(percent_management = 100 * sum(value[management == "Unmanaged"]) / sum(value[management %in% c("Unmanaged", "Managed")]),
+                                                     total_land = sum(value[management %in% c("Unmanaged", "Managed")])) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::select(-scenario),
+                                  by = c('year','region'))
+
+# aggregate Global Value with Weighted Average
+land_indicator_global_managementLand = land_indicator_managementLand %>%
+  dplyr::mutate(weight = percent_management * total_land,
+                weight_ref = percent_management_ref * total_land_ref) %>%
+  dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+  dplyr::summarize(percent_management = sum(weight) / sum(total_land),
+                   percent_management_ref = sum(weight_ref) / sum(total_land_ref)) %>%
+  dplyr::ungroup() %>%
+  # compute Abs difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = percent_management - percent_management_ref) %>%
+  # compute median by scen
+  dplyr::group_by(year, scen_type, scen_path) %>%
+  dplyr::summarise(median_diff = median(diff))
+
+
+############## AREA ===============================================================================
 
 
 #### ABSOLUTE
@@ -364,7 +447,7 @@ ggsave(pl_land_use_diffPer_world, file = file.path(figures_path,paste0('sdg15_la
 
 
 
-############## BARS
+############## BARS ===============================================================================
 
 
 #### ABSOLUTE
@@ -2045,25 +2128,25 @@ food_subsector <- read.csv('inputs/nutrition/food_subsector.csv', skip = 3)
 data_macronutrient <- read.csv('inputs/nutrition/gcam_macronutrient.csv', skip = 5)
 data_micronutrient <- read.csv('inputs/nutrition/USDA_data_final.csv')
 colnames(data_micronutrient) <- c("Food", "GCAM_commodity", "Calories (kcal)", "Protein (g)",
-                        "Carbohydrate (g)", "Sugars (g)", "Fiber (g)", "Total fat (g)",
-                        "Fatty acids saturated (g)", "Fatty acids monounsaturated (g)",
-                        "Fatty acids polyunsaturated (g)", "Cholesterol (mg)",
-                        "Retinol (mcg)", "Vitamin A (mcg)", "Alpha carotene (mcg)",
-                        "Beta carotene (mcg)", "Cryptoxanthin, beta (mcg)",
-                        "Lycopene (mcg)", "Lutein and zeaxanthin (mcg)", "Thiamin (mg)",
-                        "Riboflavin (mg)", "Niacin (mg)", "Vitamin B6 (mg)",
-                        "Folic acid (mcg)", "Folate (mcg)", "Folate DFE (mcg)", # "Folate food (mcg)" = Folate
-                        "Folate total (mcg)", "Choline (mg)", "Vitamin B12 (mcg)",
-                        "Added vitamin B12 (mcg)", "Vitamin C (mg)",
-                        "Vitamin D (mcg)", "Vitamin E alpha-tocopherol (mg)", # vitamin d2 and d3 = vitamin d
-                        "Added vitamin E (mg)", "Vitamin K (mcg)", "Calcium (mg)", # Vitamin K phylloquinone = Vitamin K
-                        "Phosphorus (mg)", "Magnesium (mg)", "Iron (mg)", "Zinc (mg)",
-                        "Copper (mg)", "Selenium (mcg)", "Potassium (mg)", "Sodium (mg)",
-                        "Caffeine (mg)", "Theobromine (mg)", "Alcohol (g)", "4:0 (g)",
-                        "6:0 (g)", "8:0 (g)", "10:0 (g)", "12:0 (g)", "14:0 (g)",
-                        "16:0 (g)", "18:0 (g)", "16:1 (g)", "18:1 (g)", "20:1 (g)",
-                        "22:1 (g)", "18:2 (g)", "18:3 (g)", "18:4 (g)", "20:4 (g)",
-                        "20:5 n3 (g)", "22:5 n3 (g)", "22:6 n3 (g)", "Water (g)")
+                                  "Carbohydrate (g)", "Sugars (g)", "Fiber (g)", "Total fat (g)",
+                                  "Fatty acids saturated (g)", "Fatty acids monounsaturated (g)",
+                                  "Fatty acids polyunsaturated (g)", "Cholesterol (mg)",
+                                  "Retinol (mcg)", "Vitamin A (mcg)", "Alpha carotene (mcg)",
+                                  "Beta carotene (mcg)", "Cryptoxanthin, beta (mcg)",
+                                  "Lycopene (mcg)", "Lutein and zeaxanthin (mcg)", "Thiamin (mg)",
+                                  "Riboflavin (mg)", "Niacin (mg)", "Vitamin B6 (mg)",
+                                  "Folic acid (mcg)", "Folate (mcg)", "Folate DFE (mcg)", # "Folate food (mcg)" = Folate
+                                  "Folate total (mcg)", "Choline (mg)", "Vitamin B12 (mcg)",
+                                  "Added vitamin B12 (mcg)", "Vitamin C (mg)",
+                                  "Vitamin D (mcg)", "Vitamin E alpha-tocopherol (mg)", # vitamin d2 and d3 = vitamin d
+                                  "Added vitamin E (mg)", "Vitamin K (mcg)", "Calcium (mg)", # Vitamin K phylloquinone = Vitamin K
+                                  "Phosphorus (mg)", "Magnesium (mg)", "Iron (mg)", "Zinc (mg)",
+                                  "Copper (mg)", "Selenium (mcg)", "Potassium (mg)", "Sodium (mg)",
+                                  "Caffeine (mg)", "Theobromine (mg)", "Alcohol (g)", "4:0 (g)",
+                                  "6:0 (g)", "8:0 (g)", "10:0 (g)", "12:0 (g)", "14:0 (g)",
+                                  "16:0 (g)", "18:0 (g)", "16:1 (g)", "18:1 (g)", "20:1 (g)",
+                                  "22:1 (g)", "18:2 (g)", "18:3 (g)", "18:4 (g)", "20:4 (g)",
+                                  "20:5 n3 (g)", "22:5 n3 (g)", "22:6 n3 (g)", "Water (g)")
 mder <- read.csv(paste0("inputs/nutrition/MDER.csv")) %>%
   rename(mder_units = unit) %>%
   mutate(mder_units = 'kcal/capita/day')
