@@ -126,7 +126,7 @@ food_consumption$beautiful_name <- factor(food_consumption$beautiful_name,
                                                        'Livestock products|Beef meat','Livestock products|Dairy','Livestock products|Pork meat','Livestock products|Poultry meat','Livestock products|Sheep and Goat meat',
                                                        'Seafood|Fish'  ))
 
-# plot
+####### BY REGION
 pl_food_consumption <- ggplot(data = food_consumption %>%
                                 filter(year == 2050) %>%
                                 mutate(scen_type = toupper(scen_type)),
@@ -186,6 +186,89 @@ ggsave(pl_food_consumption, file = file.path(figures_path, paste0('sdg0_diet_com
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
 
 
+####### BY REGION & PER CAPITA
+food_consumption_percap <- food_consumption %>%
+  # convert from Pcal to kcal/day
+  dplyr::left_join(rbind(queries_all$pop_all_regions,
+                         queries_ref$pop_all_regions) %>%
+                     select(scen_type, region, year, population) %>%
+                     unique(), by = c("year", "scen_type", "region")) %>%
+  dplyr::mutate(value = (value * 1e12) / (population * 365),
+                Units = "kcal/capita/day") %>%
+  # convert population to million population
+  dplyr::mutate(population = population / 1e6)
+
+food_consumption_percap_toplot <- food_consumption_percap
+food_consumption_percap_toplot$region <- factor(food_consumption_percap_toplot$region)
+food_consumption_percap_toplot <- food_consumption_percap_toplot %>%
+  # complete cases
+  select(-technology) %>% unique() %>%
+  complete(beautiful_name, nesting(year, scen_type, region, Units, population), fill = list(value = 0)) %>%
+  # column to order
+  group_by(region, year, scen_type) %>%
+  mutate(to_order = sum(value)) %>%
+  ungroup() %>%
+  arrange(to_order)
+
+# order dataset by beautiful name & region's order (given by the total kcal/cap consumption)
+custom_order = c(  'Crops|Corn','Crops|Fiber crops','Crops|Other grain crops','Crops|Soy bean','Crops|Wheat',
+                   'Crops|Fruits','Crops|Vegetables',
+                   'Crops|Oil crops','Crops|Palm oil crops',
+                   'Crops|Rice','Crops|Root Tubers','Crops|Specialty crops and species','Crops|Sugar crops',
+                   'Crops|Legumes','Crops|Nuts and Seeds',
+                   'Livestock products|Beef meat','Livestock products|Dairy','Livestock products|Pork meat','Livestock products|Poultry meat','Livestock products|Sheep and Goat meat',
+                   'Seafood|Fish'  )
+food_consumption_percap_toplot <- food_consumption_percap_toplot[order(-food_consumption_percap_toplot$to_order,
+                                                                       match(food_consumption_percap_toplot$beautiful_name, custom_order)), ]
+
+food_consumption_percap_toplot <- food_consumption_percap_toplot %>%
+  # compute rectangles positions
+  filter(year == selected_year, scen_type == 'ref') %>%
+  mutate(ymax = ave(value, region, FUN=cumsum)) %>%
+  mutate(ymin = ymax - value) %>%
+  mutate(right = ave(population, beautiful_name, FUN=cumsum)) %>%
+  mutate(left = right - population) %>%
+  mutate(mean = left + (right - left) / 2)
+
+p <- ggplot(data = food_consumption_percap_toplot, aes(ymin = 0)) +
+  geom_rect(data = food_consumption_percap_toplot,
+            aes(xmin=left, xmax = right, ymax = ymax, ymin = ymin, fill = beautiful_name),
+            color="white") +
+  # region names
+  ggrepel::geom_label_repel(data = food_consumption_percap_toplot %>%
+                              filter(beautiful_name == 'Crops|Wheat'),
+                            aes(x = mean, y = to_order, label = region),
+                            size = 7,
+                            direction = "y",
+                            max.overlaps = 15,
+                            nudge_y = 10) +
+  # colors
+  scale_color_manual(values = food_scenario_palette, name = 'Calorie Source') +
+  scale_fill_manual(values = food_scenario_palette, name = 'Calorie Source') +
+  # labels
+  labs(x = "Populationn (million)", y = "kcal per capita per day") +
+  # theme
+  theme_light() +
+  theme(panel.grid.major.y = element_line(color = 'grey20'),
+        panel.grid.major.x = element_blank(),
+        panel.border = element_blank(),
+        plot.background = element_rect(fill = "white",
+                                       colour = 'grey',linewidth = 2),
+        panel.background = element_rect(fill = "white"),
+        legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.text = element_text(size = 20, color = 'black'),
+        strip.background =element_rect(fill="transparent"),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40, angle = 90),
+        title = element_text(size = 40)) +
+  guides(color = guide_legend(ncol = 3),
+         fill = guide_legend(ncol = 3))
+ggsave(p, file = file.path(figures_path,paste0('sdg0_kcal_cap_day_by_pop.png')),
+       width = 1000, height = 700, units = 'mm', limitsize = F)
+
+
 
 #####################################################################################
 #####################################################################################
@@ -234,7 +317,8 @@ pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world) +
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_land_use_diffAbs_world, file = file.path(figures_path,paste0('sdg15_land_use_diffAbs_world.png')), width = 575, height = 400, units = 'mm')
+ggsave(pl_land_use_diffAbs_world, file = file.path(figures_path,paste0('sdg15_land_use_diffAbs_world.png')),
+       width = 575, height = 400, units = 'mm')
 
 
 #### PERCENTAGE
