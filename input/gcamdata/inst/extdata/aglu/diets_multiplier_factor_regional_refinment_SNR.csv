@@ -40,12 +40,158 @@ snr_all_70,Central Asia,3.2
 snr_all_80,Pakistan,3.2
 snr_all_80,India,3
 snr_all_90,,1
-snr_plus_10,,1
-snr_plus_20,,1.1
-snr_plus_30,,1.33
-snr_plus_40,,1.56
-snr_plus_50,,1.8
-snr_plus_60,,2.03
-snr_plus_70,,2.26
-snr_plus_80,,2.5
-snr_plus_90,,2.73
+snr_plus_10,Africa_Eastern,2.5
+snr_plus_10,Africa_Northern,2.2
+snr_plus_10,Africa_Southern,1.5
+snr_plus_10,Africa_Western,1.5
+snr_plus_10,Argentina,2
+snr_plus_10,Australia_NZ,1.9
+snr_plus_10,Brazil,1.7
+snr_plus_10,Canada,1.6
+snr_plus_10,Central America and Caribbean,1.5
+snr_plus_10,Central Asia,3.5
+snr_plus_10,Colombia,1.85
+snr_plus_10,EU-12,1.5
+snr_plus_10,EU-15,1.75
+snr_plus_10,Europe_Eastern,1.65
+snr_plus_10,Europe_Non_EU,2.15
+snr_plus_10,European Free Trade Association,1.65
+snr_plus_10,India,4.25
+snr_plus_10,Indonesia,1.19
+snr_plus_10,Japan,1.3
+snr_plus_10,Mexico,1.4
+snr_plus_10,Middle East,1.8
+snr_plus_10,Pakistan,4.5
+snr_plus_10,Russia,1.8
+snr_plus_10,South Africa,1.62
+snr_plus_10,South America_Northern,1.63
+snr_plus_10,South America_Southern,1.5
+snr_plus_10,South Asia,1.85
+snr_plus_10,South Korea,1.18
+snr_plus_10,USA,1.85
+snr_plus_20,Africa_Eastern,2.2
+snr_plus_20,Africa_Northern,1.8
+snr_plus_20,Africa_Southern,1.35
+snr_plus_20,Africa_Western,1.35
+snr_plus_20,Argentina,1.7
+snr_plus_20,Australia_NZ,1.65
+snr_plus_20,Brazil,1.5
+snr_plus_20,Canada,1.4
+snr_plus_20,Central America and Caribbean,1.33
+snr_plus_20,Central Asia,2.62
+snr_plus_20,China,3
+snr_plus_20,Colombia,1.55
+snr_plus_20,EU-12,1.33
+snr_plus_20,EU-15,1.5
+snr_plus_20,Europe_Eastern,1.45
+snr_plus_20,Europe_Non_EU,2.1
+snr_plus_20,European Free Trade Association,1.5
+snr_plus_20,India,2.9
+snr_plus_20,Indonesia,1.68
+snr_plus_20,Japan,1.15
+snr_plus_20,Mexico,1.22
+snr_plus_20,Middle East,1.55
+snr_plus_20,Pakistan,3.2
+snr_plus_20,Russia,1.45
+snr_plus_20,South Africa,1.45
+snr_plus_20,South America_Northern,1.5
+snr_plus_20,South America_Southern,1.34
+snr_plus_20,South Korea,1
+snr_plus_20,Southeast Asia,3.3
+snr_plus_20,Taiwan,2.8
+snr_plus_30,Africa_Eastern,1.8
+snr_plus_30,Africa_Northern,1.55
+snr_plus_30,Africa_Southern,1.2
+snr_plus_30,Africa_Western,1.2
+snr_plus_30,Argentina,1.475
+snr_plus_30,Australia_NZ,1.43
+snr_plus_30,Brazil,1.3
+snr_plus_30,Canada,1.2
+snr_plus_30,Central America and Caribbean,1.2
+snr_plus_30,Central Asia,2.1
+snr_plus_30,China,3
+snr_plus_30,Colombia,1.35
+snr_plus_30,EU-12,1.15
+snr_plus_30,EU-15,1.3
+snr_plus_30,Europe_Eastern,1.25
+snr_plus_30,Europe_Non_EU,1.77
+snr_plus_30,European Free Trade Association,1.3
+snr_plus_30,India,2.25
+snr_plus_30,Indonesia,2.8
+snr_plus_30,Japan,1.35
+snr_plus_30,Mexico,1.1
+snr_plus_30,Middle East,1.35
+snr_plus_30,Pakistan,2.45
+snr_plus_30,Russia,1.25
+snr_plus_30,South Africa,1.25
+snr_plus_30,South America_Northern,1.25
+snr_plus_30,South America_Southern,1.2
+snr_plus_30,South Asia,1.4
+snr_plus_30,South Korea,2.0
+snr_plus_30,Southeast Asia,2.5
+snr_plus_30,Taiwan,2.5
+snr_plus_30,USA,1.375
+snr_plus_40,Africa_Eastern,1.56
+snr_plus_40,Africa_Northern,1.31
+snr_plus_40,Africa_Southern,1.07
+snr_plus_40,Africa_Western,1.07
+snr_plus_40,Argentina,1.31
+snr_plus_40,Australia_NZ,1.25
+snr_plus_40,Brazil,1.14
+snr_plus_40,Canada,1.08
+snr_plus_40,Central America and Caribbean,1.04
+snr_plus_40,Central Asia,1.72
+snr_plus_40,China,3
+snr_plus_40,Colombia,1.19
+snr_plus_40,EU-12,1.03
+snr_plus_40,EU-15,1.12
+snr_plus_40,Europe_Eastern,1.11
+snr_plus_40,Europe_Non_EU,1.51
+snr_plus_40,European Free Trade Association,1.15
+snr_plus_40,India,1.85
+snr_plus_40,Indonesia,3
+snr_plus_40,Japan,3
+snr_plus_40,Mexico,3
+snr_plus_40,Middle East,1.2
+snr_plus_40,Pakistan,1.98
+snr_plus_40,Russia,1.12
+snr_plus_40,South Africa,1.1
+snr_plus_40,South America_Northern,1.13
+snr_plus_40,South America_Southern,1.01
+snr_plus_40,South Asia,1.22
+snr_plus_40,South Korea,3
+snr_plus_40,Southeast Asia,3
+snr_plus_40,Taiwan,3
+snr_plus_40,USA,1.2
+snr_plus_50,Africa_Eastern,1.36
+snr_plus_50,Africa_Northern,1.16
+snr_plus_50,Argentina,1.105
+snr_plus_50,Australia_NZ,1.095
+snr_plus_50,Brazil,1.033
+snr_plus_50,Central Asia,1.48
+snr_plus_50,Colombia,1.035
+snr_plus_50,EU-15,1.045
+snr_plus_50,Europe_Non_EU,1.31
+snr_plus_50,European Free Trade Association,1.02
+snr_plus_50,India,1.557
+snr_plus_50,Middle East,1.06
+snr_plus_50,Pakistan,1.65
+snr_plus_50,South America_Northern,1.044
+snr_plus_50,South Asia,1.101
+snr_plus_50,USA,1.07
+snr_plus_60,Africa_Eastern,1.2
+snr_plus_60,Africa_Northern,1.04
+snr_plus_60,Argentina,1.02
+snr_plus_60,Central Asia,1.287
+snr_plus_60,Europe_Non_EU,1.166
+snr_plus_60,India,1.355
+snr_plus_60,Pakistan,1.424
+snr_plus_70,Africa_Eastern,1.07
+snr_plus_70,Central Asia,1.14
+snr_plus_70,Europe_Non_EU,1.04
+snr_plus_70,India,1.195
+snr_plus_70,Pakistan,1.245
+snr_plus_80,Central Asia,1.027
+snr_plus_80,India,1.068
+snr_plus_80,Pakistan,1.112
+snr_plus_90,,1
