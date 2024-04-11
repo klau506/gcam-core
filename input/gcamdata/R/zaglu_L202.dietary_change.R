@@ -7,7 +7,7 @@
 #' @param command API command to execute
 #' @param ... other optional parameters, depending on command
 #' @return Depends on \code{command}: either a vector of required inputs, a vector of output names, or (if
-#'   \code{command} is "MAKE") all the generated outputs: \code{L202.diets_plant_sw_list}, \code{L202.diets_rumin_sw_list} (diets level2).
+#'   \code{command} is "MAKE") all the generated outputs: \code{L202.diets_plant_sw_list}, \code{L202.diets_rumin_sw_list}, \code{L202.diets_plant_rumin_sw_list} (diets level2).
 #' @details This chunk specifies the new plant or ruminant percentual protein intake for the dietary shift scenarios
 #' @importFrom assertthat assert_that
 #' @importFrom dplyr bind_rows filter if_else group_by lag left_join mutate select summarise
@@ -34,7 +34,8 @@ module_diets_L202.dietary_change <- function(command, ...) {
   } else if (command == driver.DECLARE_OUTPUTS) {
     return(c(
       "L202.diets_plant_sw_list",
-      "L202.diets_rumin_sw_list"
+      "L202.diets_rumin_sw_list",
+      "L202.diets_plant_rumin_sw_list"
     ))
   } else if (command == driver.MAKE) {
     all_data <- list(...)[[1]]
@@ -156,7 +157,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
         ) %>%
         mutate(multiplier_factor = if_else(!is.na(regional_multiplier_factor), regional_multiplier_factor, multiplier_factor)) %>%
         distinct()
-      diets_plant_sw_tmp <- data.table(diets_plant_sw_tmp)
+      diets_plant_sw_tmp <- data.table(unique(diets_plant_sw_tmp))
       diets_plant_sw_tmp <- diets_plant_sw_tmp[, sf := ref_share_weight[year == MODEL_HALF_CENTURY_YEAR]
                                               + ref_share_weight[year == MODEL_HALF_CENTURY_YEAR] * per_incr[year == MODEL_HALF_CENTURY_YEAR]
                                               * conv_factor[year == MODEL_HALF_CENTURY_YEAR] * multiplier_factor[year == MODEL_HALF_CENTURY_YEAR],
@@ -246,7 +247,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
 
       if ("plus" == diets_scenarios_snr[i, ]$scen_reg_type) {
         diets_rumin_per_intake_tmp <- diets_rumin_per_intake_tmp %>%
-          dplyr::mutate(X2050_new = X2050 + diets_scenarios_snr[i, ]$scen_goal / 100) %>%
+          dplyr::mutate(X2050_new = X2050 - diets_scenarios_snr[i, ]$scen_goal / 100) %>%
           check_no_lower_0_and_no_increaseing()
       }
 
@@ -275,7 +276,7 @@ module_diets_L202.dietary_change <- function(command, ...) {
           by = c("scenario", "region")
         ) %>%
         mutate(multiplier_factor = if_else(!is.na(regional_multiplier_factor), regional_multiplier_factor, multiplier_factor))
-      diets_rumin_sw_tmp <- data.table(diets_rumin_sw_tmp)
+      diets_rumin_sw_tmp <- data.table(unique(diets_rumin_sw_tmp))
       diets_rumin_sw_tmp <- diets_rumin_sw_tmp[, sf := ref_share_weight[year == MODEL_HALF_CENTURY_YEAR]
         + ref_share_weight[year == MODEL_HALF_CENTURY_YEAR] * per_incr[year == MODEL_HALF_CENTURY_YEAR]
           * conv_factor[year == MODEL_HALF_CENTURY_YEAR] * multiplier_factor[year == MODEL_HALF_CENTURY_YEAR],
@@ -325,7 +326,37 @@ module_diets_L202.dietary_change <- function(command, ...) {
 
 
 
-    return_data(L202.diets_plant_sw_list, L202.diets_rumin_sw_list)
+    ############################################################################
+    ############################################################################
+    ##### PLANT & RUMINANT - SPPNR SCENARIO
+
+
+    # Compute annual "new" rumin protein intake
+    L202.diets_plant_rumin_sw_list <- list()
+
+    for (n in names(L202.diets_plant_sw_list)) {
+      L202.diets_plant_rumin_sw_list[[gsub('spp','sppnr',n)]]$plant <- L202.diets_plant_sw_list[[n]]
+      L202.diets_plant_rumin_sw_list[[gsub('spp','sppnr',n)]]$rumin <- L202.diets_rumin_sw_list[[gsub('spp','snr',n)]]
+    }
+
+    L202.diets_plant_rumin_sw_list %>%
+      add_title("Plant and rumin protein share weights list (entry by scenario)") %>%
+      add_units("Unitless") %>%
+      add_precursors(
+        "aglu/diets_rumin_percentage_REF", "aglu/diets_scenarios",
+        "aglu/diets_conversion_factor_SNR", "aglu/diets_rumin_sw_REF",
+        "aglu/diets_plant_percentage_REF",
+        "aglu/diets_conversion_factor_SPP", "aglu/diets_plant_sw_REF"
+      ) ->
+      L202.diets_plant_rumin_sw_list
+
+    # Save the output to produce later multiple XMLs with a single chunk
+    if (!dir.exists("tmp_outputs")) dir.create("tmp_outputs")
+    save(L202.diets_plant_rumin_sw_list, file = file.path("tmp_outputs", "L202.diets_plant_rumin_sw_list.RData"))
+
+
+
+    return_data(L202.diets_plant_sw_list, L202.diets_rumin_sw_list, L202.diets_plant_rumin_sw_list)
   } else {
     stop("Unknown command")
   }
