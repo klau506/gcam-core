@@ -278,6 +278,7 @@ ggsave(p, file = file.path(figures_path,paste0('sdg0_kcal_cap_day_by_pop.png')),
 ############## INDICATOR 1: % of re-/aff-forestation ================================
 # compute the Land Indicator (Percent of Re/Afforestation)
 land_indicator_forestLand = merge(queries_all$land_use_regional %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                     dplyr::mutate(value = value * 100) %>% # convert Thous km2 to Mha
                                     dplyr::mutate(forest = ifelse(land_use_type == 'Forest', 'Forest', 'NoForest')) %>%
                                     dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year, forest) %>%
@@ -288,6 +289,7 @@ land_indicator_forestLand = merge(queries_all$land_use_regional %>%
                                                      total_land = sum(value[forest %in% c("NoForest", "Forest")])) %>%
                                     dplyr::ungroup(),
                                   queries_ref$land_use_regional %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                     dplyr::mutate(value = value * 100) %>% # convert Thous km2 to Mha
                                     dplyr::mutate(forest = ifelse(land_use_type == 'Forest', 'Forest', 'NoForest')) %>%
                                     dplyr::group_by(region, scenario, year, forest) %>%
@@ -312,8 +314,9 @@ land_indicator_global_forestLand = land_indicator_forestLand %>%
   dplyr::rowwise() %>%
   dplyr::mutate(diff = percent_forest - percent_forest_ref) %>%
   # compute median by scen
-  dplyr::group_by(year,scen_type, scen_path) %>%
-  dplyr::summarise(median_diff = median(diff))
+  dplyr::group_by(year, scen_type, scen_path, final_share) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::mutate(group = 'Re-/Afforestation area')
 
 
 ############## INDICATOR 2: % of unmanaged land =====================================
@@ -1189,8 +1192,9 @@ ghg_indicator_global_avEmiss = ghg_indicator_avEmiss %>%
   dplyr::rowwise() %>%
   dplyr::mutate(diff = (ref_value - value) / ref_value) %>%
   # compute median by scen
-  dplyr::group_by(year,group,scen_type,scen_path) %>%
-  dplyr::summarise(median_diff = median(diff))
+  dplyr::group_by(year,group,scen_type,scen_path,final_share) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::mutate(group = paste0(group, ' avoided emissions'))
 
 
 ##### GHG emissions TREND ======================================================
@@ -2801,5 +2805,52 @@ pl_micronutrients_diffPer_world <- ggplot() +
   labs(title = paste('Percentual difference between intake\nby scenario and Ref in', selected_year))
 ggsave(pl_micronutrients_diffPer_world, file = file.path(figures_path, 'sdg3_micronutrients_world.png'),
        width = 1000, height = 1000, units = 'mm', limitsize = F)
+
+
+#####################################################################################
+# SDG TOTAL
+#####################################################################################
+
+# gather all indicators
+sdg_total <- rbind(
+  land_indicator_global_forestLand,
+  ghg_indicator_global_avEmiss
+)
+sdg_total$scen_type <- factor(sdg_total$scen_type, levels = rev(c('SPP', 'SNR', 'SPPNR')))
+
+pl <- ggplot(data = sdg_total,
+             aes(x = median_diff,
+                 y = group,
+                 group = interaction(scen_type,scen_path),
+                 color = final_share,
+                 shape = scen_type)) +
+  geom_point(position = position_dodge(width = 0.5),
+             size = 5) +
+  # vertical line at 0
+  geom_vline(xintercept = 0, color = 'black')+
+  # color scales
+  scale_color_manual(values = c(RColorBrewer::brewer.pal(9,"Blues"))) +
+  scale_fill_manual(values = c(RColorBrewer::brewer.pal(9,"Blues"))) +
+  scale_shape_manual(values = c('SPP' = 15, 'SNR' = 17, 'SPPNR' = 19)) +
+  guides(shape = guide_legend(title = "Scenario Type", reverse = TRUE),
+         color = guide_legend(title = "Final Share")) +
+  # facet
+  facet_wrap(. ~ scen_path, scales = 'fixed') +
+  # labs
+  labs(y = '', x = 'Percentage') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 35),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=25),
+        axis.text.y = element_text(size=25),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 30))
+ggsave(pl, file = file.path(figures_path, paste0('sdgT_indicators_',selected_year,'.png')),
+       width = 500, height = 600, units = 'mm', limitsize = FALSE)
+
 
 
