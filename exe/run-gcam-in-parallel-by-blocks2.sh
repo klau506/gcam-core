@@ -1,11 +1,11 @@
 #!/bin/bash
 #SBATCH --qos=regular
-#SBATCH --time=10:00:00
+#SBATCH --time=15:00:00
 #SBATCH --ntasks=1
-#SBATCH --nodes=6
+#SBATCH --nodes=4
 #SBATCH --ntasks-per-node=1
-#SBATCH --array=1-6:1
-#SBATCH --job-name=GCAM_run
+#SBATCH --array=1-4:1
+#SBATCH --job-name=GCAM_run2
 #SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=10000Mc
 #SBATCH --output=%x_%a.out
@@ -18,4 +18,4 @@ echo "==========================================================================
 echo "================================================================================"
 
 # run GCAM
-./run-gcam-spec-db.sh ${SLURM_ARRAY_TASK_ID}
+./run-gcam-spec-db2.sh ${SLURM_ARRAY_TASK_ID}

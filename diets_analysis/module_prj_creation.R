@@ -17,11 +17,11 @@ create_prj <- function(db_name, desired_scen = NULL, prj_name = NULL) {
 
   # prj name checks and/or definition
   if (!is.null(prj_name)) {
-    assert_that(substr(prj_name, nchar(prj_name) - 3, nchar(prj_name)) == ".dat", msg = 'In `load_prj` function: The specified project name does not contain the extension (.dat)')
+    assert_that(substr(prj_name, nchar(prj_name) - 3, nchar(prj_name)) == ".dat",
+                msg = 'In `load_prj` function: The specified project name does not contain the extension (.dat)')
   } else {
     prj_name = paste0(db_name, '.dat')
   }
-  db_name <- paste0('database_basexdb_',db_name)
 
 
   # scenarios checks and/or definition
@@ -40,14 +40,37 @@ create_prj <- function(db_name, desired_scen = NULL, prj_name = NULL) {
     print('prj already present!')
   } else {
     print('create prj')
-    for (sc in desired_scen) {
-      print(sc)
 
-      # create prj
-      prj <<- rgcam::addScenario(conn, prj_name, sc,
-                                 paste0(query_path, queries),
-                                 clobber = FALSE, saveProj = FALSE)
+    # initialize the project
+    prj <- NULL
+
+    # read the query file and list all queries' titles
+    xml <- xml2::read_xml(file.path(base_path, 'diets_analysis', 'inputs', 'queries', 'queries_beh.xml'))
+    query_titles <- xml_text(xml_find_all(xml, "//*[@title]/@title"))
+
+    # extract the data by query
+    for (q in query_titles) {
+      dt_sec <- scenario_query(q, db_path, db_name, prj_name, desired_scen)
+      prj_tmp <- rgcam::addQueryTable(
+        project = prj_name, qdata = dt_sec, saveProj = FALSE,
+        queryname = q, clobber = FALSE
+      )
+      if (!is.null(prj)) {
+        prj <- rgcam::mergeProjects(prj_name, list(prj, prj_tmp), clobber = FALSE, saveProj = FALSE)
+      } else {
+        prj <- prj_tmp
+      }
+      rm(prj_tmp,dt_sec)
     }
+
+    # for (sc in desired_scen) {
+    #   print(sc)
+    #
+    #   # create prj
+    #   prj <- rgcam::addScenario(conn, prj_name, sc,
+    #                              paste0(query_path, queries),
+    #                              clobber = FALSE, saveProj = FALSE)
+    # }
 
     # add 'nonCO2' large query
     if (!"nonCO2 emissions by sector (excluding resource production)" %in% rgcam::listQueries(prj)) {
@@ -56,11 +79,13 @@ create_prj <- function(db_name, desired_scen = NULL, prj_name = NULL) {
         project = prj_name, qdata = dt_sec, saveProj = FALSE,
         queryname = "nonCO2 emissions by sector (excluding resource production)", clobber = FALSE
       )
-      prj <<- rgcam::mergeProjects(prj_name, list(prj, prj_tmp), clobber = FALSE, saveProj = FALSE)
+      prj <- rgcam::mergeProjects(prj_name, list(prj, prj_tmp), clobber = FALSE, saveProj = TRUE)
       rm(prj_tmp)
+    } else {
+      saveProject(prj, file = prj_name)
     }
 
-    saveProject(prj, file = prj_name)
+    print(rgcam::listQueries(prj, anyscen = F))
   }
 
 }
@@ -119,6 +144,52 @@ data_query = function(type, db_path, db_name, prj_name, scenarios) {
         emiss_list = c()
       }
     }
+  }
+  # Rename columns
+  new_colnames <- sub(".*\\.(.*)", "\\1", names(dt))
+  names(dt) <- new_colnames
+
+  return(dt)
+}
+
+
+
+
+#' scenario_query
+#'
+#' Aux. function to load heavy queries split by scenario
+#' @param type query name
+#' @param db_path database path
+#' @param db_name database name
+#' @param prj_name project name
+#' @param scenarios scenarios to be considered
+#' @return dataframe with the specified query information
+scenario_query = function(type, db_path, db_name, prj_name, scenarios) {
+  dt = data.frame()
+  xml <- xml2::read_xml(file.path(base_path, 'diets_analysis', 'inputs', 'queries', 'queries_beh.xml'))
+  qq <- xml2::xml_find_first(xml, paste0("//*[@title='", type, "']"))
+
+  for (sc in scenarios) {
+    prj_tmp = rgcam::addSingleQuery(
+      conn = rgcam::localDBConn(db_path,
+                                db_name,migabble = FALSE),
+      proj = prj_name,
+      qn = type,
+      query = qq,
+      scenario = sc,
+      regions = NULL,
+      clobber = TRUE,
+      transformations = NULL,
+      saveProj = FALSE,
+      warn.empty = FALSE
+    )
+
+    tmp = data.frame(prj_tmp[[sc]][type])
+    if (nrow(tmp) > 0) {
+      dt = dplyr::bind_rows(dt,tmp)
+    }
+    rm(prj_tmp)
+
   }
   # Rename columns
   new_colnames <- sub(".*\\.(.*)", "\\1", names(dt))

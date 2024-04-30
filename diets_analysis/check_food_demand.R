@@ -2,7 +2,7 @@
 setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/diets_analysis')
 if(!dir.exists('figures')) dir.create('figures')
 
-.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
+# .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
 library(dplyr)
 library(magrittr)
 
@@ -10,9 +10,9 @@ library(magrittr)
 ##### Load food consumption data ---------------------------------------------------
 outputs_folder <- 'C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/output/diets_calibration_outputs'
 
-csv_files <- list.files(outputs_folder, pattern = "^food_SW_", full.names = TRUE)
-# csv_files <- list.files(outputs_folder, pattern = "^food_REF|*multip.factor", full.names = TRUE)
-# csv_files <- list.files(outputs_folder, pattern = "^food_SW_check_spp|^food_REF", full.names = TRUE)
+# csv_files <- list.files(outputs_folder, pattern = "^food_SW_", full.names = TRUE)
+csv_files <- list.files(outputs_folder, pattern = "^food_SW_ref|food_SW_calib_snr_plus", full.names = TRUE)
+# csv_files <- list.files(outputs_folder, full.names = TRUE)
 
 data_list <- lapply(csv_files, function(file) read.csv(file, skip = 1))
 food_consumption <- do.call(rbind, data_list)
@@ -40,10 +40,19 @@ rumin_percentage <- food_consumption %>%
 
 rumin_percentage_check <- rumin_percentage %>%
   tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value') %>%
-  filter(scenario %in% c('snr_all_10_x0_2035_k_0.805_v29', 'REF_IAMCOMPACT+XIN'),
-         year == "X2050")
-
+  filter(scenario %in% c('snr_plus_70_v38', 'REF_IAMCOMPACT+XIN'),
+         year == "X2050") %>%
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
+  dplyr::mutate(decrease = `REF_IAMCOMPACT+XIN` - snr_plus_70_v38)
 View(rumin_percentage_check)
+
+rumin_percentage_check2 <- rumin_percentage %>%
+  tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value') %>%
+  filter(scenario %in% c('snr_plus_80_v29', 'REF_IAMCOMPACT+XIN'),
+         year == "X2050") %>%
+  tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
+  dplyr::mutate(decrease = `REF_IAMCOMPACT+XIN` - snr_plus_80_v29)
+View(rumin_percentage_check2)
 
 
 
@@ -65,11 +74,10 @@ plant_percentage <- food_consumption %>%
 
 plant_percentage_check <- plant_percentage %>%
   tidyr::pivot_longer(cols = X1990:X2050, names_to = 'year', values_to = 'value') %>%
-  filter(scenario %in% c('REF_IAMCOMPACT+XIN','spp_plus_60_v6'),
+  filter(scenario %in% c('sppnr_plus_70_v1', 'REF_IAMCOMPACT+XIN'),
          year == "X2050") %>%
   tidyr::pivot_wider(names_from = 'scenario', values_from = 'value') %>%
-  mutate(increse = spp_plus_60_v6 - `REF_IAMCOMPACT+XIN` )
-
+  mutate(increse = sppnr_plus_70_v1 - `REF_IAMCOMPACT+XIN` )
 View(plant_percentage_check)
 
 

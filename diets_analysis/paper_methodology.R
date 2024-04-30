@@ -6,6 +6,7 @@ setwd('C:\\Users\\claudia.rodes\\Documents\\IAM_COMPACT\\gcam-iamcompact-xin')
 # setwd('C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core-iamcompact')
 # .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
 .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_no_CP/')
+# .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1/')
 library(dplyr)
 library(ggplot2)
 
