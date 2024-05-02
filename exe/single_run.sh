@@ -2,8 +2,9 @@
 #SBATCH --qos=regular
 #SBATCH --time=10:00:00
 #SBATCH --ntasks=1
-#SBATCH --nodes=1
+#SBATCH --nodes=6
 #SBATCH --ntasks-per-node=1
+#SBATCH --array=1-6:1
 #SBATCH --job-name=RUN
 #SBATCH --cpus-per-task=16
 #SBATCH --mem-per-cpu=10000Mc
@@ -39,4 +40,4 @@ export TBB_INCLUDE=${EBROOTTBB}/include
 export TBB_LIB=${EBROOTTBB}/lib  
 
 ### RUN
-Rscript /scratch/bc3lc/gcam-core-iamcompact-xin/diets_analysis/prj_gathering.R
+Rscript /scratch/bc3lc/gcam-core-iamcompact-xin/diets_analysis/prj_gathering.R ${SLURM_ARRAY_TASK_ID}

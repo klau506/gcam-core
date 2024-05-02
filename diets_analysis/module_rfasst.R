@@ -1,12 +1,13 @@
 library(rfasst)
 
-### compute pm and o3 premature mortalities
-add_mort_scen = function(scen) {
+compute_premature_mortalities = function(desired_scen, file_name) {
 
-  pm25.mort = dplyr::bind_rows(m3_get_mort_pm25(prj_name = 'dummy.dat', prj = prj,
-                                                scen_name=scen, final_db_year=final_db_year,
-                                                saveOutput=F, map=F, recompute = T)) %>%
-    dplyr::mutate('scenario' = scen) %>%
+  pm25.mort = dplyr::bind_rows(m3_get_mort_pm25(prj_name = 'dummy.dat',
+                                                prj = prj,
+                                                scen_name=desired_scen,
+                                                final_db_year=2050,
+                                                saveOutput=F,
+                                                map=F)) %>%
     # subset to >25
     dplyr::filter(age == '>25') %>%
     # reframe
@@ -19,10 +20,12 @@ add_mort_scen = function(scen) {
     dplyr::summarise('mort' = sum(mort_by_disease)) %>%
     dplyr::ungroup()
 
-  o3.mort = dplyr::bind_rows(m3_get_mort_o3(prj = prj,
-                                            scen_name=scen, final_db_year=final_db_year,
-                                            saveOutput=F, map=F, recompute = T)) %>%
-    dplyr::mutate('scenario' = scen) %>%
+  o3.mort = dplyr::bind_rows(m3_get_mort_o3(prj_name = 'dummy.dat',
+                                            prj = prj,
+                                            scen_name=desired_scen,
+                                            final_db_year=2050,
+                                            saveOutput=F,
+                                            map=F)) %>%
     # reframe
     tidyr::pivot_longer(cols = c('Jerret2009',
                                  'GBD2016'),
@@ -35,18 +38,6 @@ add_mort_scen = function(scen) {
   mort = dplyr::bind_rows(pm25.mort %>% dplyr::mutate('pollutant' = 'pm25'),
                           o3.mort %>% dplyr::mutate('pollutant' = 'o3'))
 
-  return(mort)
-}
-
-
-
-compute_premature_mortalities = function(desired_scen, file_name) {
-
-  mort = add_mort_scen(desired_scen[1])
-  for (i in unique(desired_scen)[2:length(desired_scen)]) {
-    print(i)
-    mort = dplyr::bind_rows(mort,add_mort_scen(i))
-  }
 
   mort <- mort %>%
     tidyr::separate(scenario, into = c("scen_type", "scen_path",
@@ -59,7 +50,7 @@ compute_premature_mortalities = function(desired_scen, file_name) {
 
   save(mort, file = file.path('diets_analysis','outputs',paste0('mort_',file_name,'.RData')))
 
-  return(mort)
+  # return(mort)
 }
 
 

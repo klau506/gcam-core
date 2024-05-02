@@ -15,9 +15,9 @@ update_query = function(data, data_name) {
     dplyr::select(-peak_year_title) %>%
     dplyr::select(-slope_title)
 
-  if (exists(as.character(data_name))) {
-    data = rbind(data, get(data_name))
-  }
+  # if (exists(as.character(data_name))) {
+  #   data = rbind(data, get(data_name))
+  # }
 
   if (exists('list_queries')) {
     list_queries <<- c(list_queries, data_name)
@@ -79,32 +79,40 @@ load_queries = function(queries_name) {
                   select(-input) %>%
                   group_by(scenario, region, Units, year) %>%
                   summarize(Total = sum(value))) %>%
-      select(-c('gcam-consumer', 'nodeinput')) %>%
+      select(-nodeinput) %>%
       update_query(., 'staples_nonstaples_regional')
 
 
-    food_consumption_world <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
-      group_by(Units, scenario, subsector...4, subsector...5, subsector...6, technology, year) %>%
+    tmp <- rgcam::getQuery(prj, "food consumption by type (specific)")
+    colnames(tmp) <- c('Units', 'scenario', 'region',
+                                          'subsector...4', 'subsector...5', 'subsector...6',
+                                          'technology', 'year', 'value')
+    food_consumption_world <<- tmp %>%
+      group_by(Units, scenario, `subsector...4`, `subsector...5`, `subsector...6`, technology, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      rename(nestingSector1 = subsector...4) %>%
+      rename(nestingSector1 = `subsector...4`) %>%
       tidyr::separate(nestingSector1, into = c("nestingSector1", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      rename(nestingSector2 = subsector...5) %>%
+      rename(nestingSector2 = `subsector...5`) %>%
       tidyr::separate(nestingSector2, into = c("nestingSector2", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      rename(nestingSector3 = subsector...6) %>%
+      rename(nestingSector3 = `subsector...6`) %>%
       tidyr::separate(nestingSector3, into = c("nestingSector3", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'food_consumption_world')
 
-    food_consumption_regional <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
-      group_by(Units, region, scenario, subsector...4, subsector...5, subsector...6, technology, year) %>%
+    tmp <- rgcam::getQuery(prj, "food consumption by type (specific)")
+    colnames(tmp) <- c('Units', 'scenario', 'region',
+                                          'subsector...4', 'subsector...5', 'subsector...6',
+                                          'technology', 'year', 'value')
+    food_consumption_regional <<- tmp %>%
+      group_by(Units, region, scenario, `subsector...4`, `subsector...5`, `subsector...6`, technology, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
-      rename(nestingSector1 = subsector...4) %>%
+      rename(nestingSector1 = `subsector...4`) %>%
       tidyr::separate(nestingSector1, into = c("nestingSector1", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      rename(nestingSector2 = subsector...5) %>%
+      rename(nestingSector2 = `subsector...5`) %>%
       tidyr::separate(nestingSector2, into = c("nestingSector2", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
-      rename(nestingSector3 = subsector...6) %>%
+      rename(nestingSector3 = `subsector...6`) %>%
       tidyr::separate(nestingSector3, into = c("nestingSector3", "rest"), sep = ",", extra = "merge") %>% select(-rest) %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'food_consumption_regional')
@@ -294,19 +302,19 @@ load_queries = function(queries_name) {
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'water_irr_rfd_regional')
 
-    resource_supply_curves_world <<- rgcam::getQuery(prj, "resource supply curves") %>%
-      group_by(region, Units, scenario, year, resource, subresource, grade) %>%
-      summarise(value = sum(value)) %>%
-      ungroup() %>%
-      filter(year >= year_s, year <= year_e) %>%
-      update_query(., 'resource_supply_curves_world')
+    # resource_supply_curves_world <<- rgcam::getQuery(prj, "resource supply curves") %>%
+    #   group_by(region, Units, scenario, year, resource, subresource, grade) %>%
+    #   summarise(value = sum(value)) %>%
+    #   ungroup() %>%
+    #   filter(year >= year_s, year <= year_e) %>%
+    #   update_query(., 'resource_supply_curves_world')
 
     resource_supply_curves_regional <<- rgcam::getQuery(prj, "resource supply curves") %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'resource_supply_curves_regional')
 
     basin_level_available_runoff_world <<- rgcam::getQuery(prj, "Basin level available runoff") %>%
-      group_by(region, Units, scenario, year, subresource, Basin) %>%
+      group_by(region, Units, scenario, year, subresource, basin) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
       filter(year >= year_s, year <= year_e) %>%
@@ -337,7 +345,10 @@ load_queries = function(queries_name) {
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'luc')
 
-    nonco2 <<- getQuery(prj,"nonCO2 emissions by region") %>%
+    nonco2 <<- getQuery(prj,"nonCO2 emissions by sector (excluding resource production)") %>%
+      group_by(Units, scenario, region, year, ghg) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'nonco2')
 
@@ -408,11 +419,13 @@ load_queries = function(queries_name) {
       summarise(value = sum(value)) %>%
       ungroup() %>%
       filter(year >= year_s, year <= year_e) %>%
-      mutate(land_use_type = ifelse(landleaf %in% c("UnmanagedHardwood_Forest", "UnmanagedSoftwood_Forest", 'Softwood_Forest', 'Hardwood_Forest', 'ProtectedUnmanagedHardwood_Forest', 'ProtectedUnmanagedSoftwood_Forest'), 'Forest',
-                                    ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
-                                           ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
-                                                  ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
-                                                         'Other Natural'))))) %>%
+      # mutate(land_use_type = ifelse(landleaf %in% c("UnmanagedHardwood_Forest", "UnmanagedSoftwood_Forest",
+      #                                               'Softwood_Forest', 'ProtectedUnmanagedHardwood_Forest',
+      #                                               'Hardwood_Forest', 'ProtectedUnmanagedSoftwood_Forest'), 'Forest',
+      #                               ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
+      #                                      ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
+      #                                             ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
+      #                                                    'Other Natural'))))) %>%
       update_query(., 'land_use_world')
 
     land_use_regional <<- getQuery(prj,"aggregated land allocation") %>%
@@ -421,11 +434,11 @@ load_queries = function(queries_name) {
       summarise(value = sum(value)) %>%
       ungroup() %>%
       filter(year >= year_s, year <= year_e) %>%
-      mutate(land_use_type = ifelse(landleaf %in% c("UnmanagedHardwood_Forest", "UnmanagedSoftwood_Forest", 'Softwood_Forest', 'Hardwood_Forest', 'ProtectedUnmanagedHardwood_Forest', 'ProtectedUnmanagedSoftwood_Forest'), 'Forest',
-                                    ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
-                                           ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
-                                                  ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
-                                                         'Other Natural'))))) %>%
+      # mutate(land_use_type = ifelse(landleaf %in% c("UnmanagedHardwood_Forest", "UnmanagedSoftwood_Forest", 'Softwood_Forest', 'Hardwood_Forest', 'ProtectedUnmanagedHardwood_Forest', 'ProtectedUnmanagedSoftwood_Forest'), 'Forest',
+      #                               ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
+      #                                      ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
+      #                                             ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
+      #                                                    'Other Natural'))))) %>%
       update_query(., 'land_use_regional')
 
     land_crop_world <<- getQuery(prj,"land allocation by crop") %>%
@@ -446,29 +459,29 @@ load_queries = function(queries_name) {
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'land_crop_regional')
 
-    detailed_land_allocation_world <<- getQuery(prj,"detailed land allocation") %>%
-      group_by(Units, scenario, year, landleaf) %>%
-      summarise(value = sum(value)) %>%
-      ungroup() %>%
-      filter(year >= year_s, year <= year_e) %>%
-      update_query(., 'detailed_land_allocation_world')
+    # detailed_land_allocation_world <<- getQuery(prj,"detailed land allocation") %>%
+    #   group_by(Units, scenario, year, landleaf) %>%
+    #   summarise(value = sum(value)) %>%
+    #   ungroup() %>%
+    #   filter(year >= year_s, year <= year_e) %>%
+    #   update_query(., 'detailed_land_allocation_world')
 
     detailed_land_allocation_regional <<- getQuery(prj,"detailed land allocation") %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'detailed_land_allocation_regional')
 
 
-    carbon_stock_world <<- getQuery(prj,"vegetative carbon stock by region") %>%
-      group_by(Units, scenario, year, landleaf) %>%
-      summarise(value = sum(value)) %>%
-      ungroup() %>%
-      filter(year >= year_s, year <= year_e) %>%
-      update_query(., 'carbon_stock_world')
+    # carbon_stock_world <<- getQuery(prj,"vegetative carbon stock by region") %>%
+    #   group_by(Units, scenario, year, landleaf) %>%
+    #   summarise(value = sum(value)) %>%
+    #   ungroup() %>%
+    #   filter(year >= year_s, year <= year_e) %>%
+    #   update_query(., 'carbon_stock_world')
 
     carbon_stock_regional <<- getQuery(prj,"vegetative carbon stock by region") %>%
-      group_by(Units, scenario, year, region, landleaf) %>%
-      summarise(value = sum(value)) %>%
-      ungroup() %>%
+      # group_by(Units, scenario, year, region, landleaf) %>%
+      # summarise(value = sum(value)) %>%
+      # ungroup() %>%
       filter(year >= year_s, year <= year_e) %>%
       update_query(., 'carbon_stock_regional')
 
@@ -499,7 +512,11 @@ load_queries = function(queries_name) {
 
 
     ###### ===== rumin percentage ======
-    rumin_percentage <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
+    tmp <- rgcam::getQuery(prj, "food consumption by type (specific)")
+    colnames(tmp) <- c('Units', 'scenario', 'region',
+                                    'subsector...4', 'subsector...5', 'subsector...6',
+                                    'technology', 'year', 'value')
+    rumin_percentage <<- tmp %>%
       group_by(Units, region, scenario, subsector...4, subsector...5, subsector...6, technology, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
@@ -528,7 +545,11 @@ load_queries = function(queries_name) {
       update_query(., 'rumin_percentage')
 
     ###### ===== plant percentage ======
-    plant_percentage <<- rgcam::getQuery(prj, "food consumption by type (specific)") %>%
+    tmp <- rgcam::getQuery(prj, "food consumption by type (specific)")
+    colnames(tmp) <- c('Units', 'scenario', 'region',
+                                    'subsector...4', 'subsector...5', 'subsector...6',
+                                    'technology', 'year', 'value')
+    plant_percentage <<- tmp %>%
       group_by(Units, region, scenario, subsector...4, subsector...5, subsector...6, technology, year) %>%
       summarise(value = sum(value)) %>%
       ungroup() %>%
@@ -564,5 +585,5 @@ load_queries = function(queries_name) {
     }
     save(dt, file = file.path("diets_analysis","outputs",queries_name))
 
-    return(dt)
+    # return(dt)
 }
