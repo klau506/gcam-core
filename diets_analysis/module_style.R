@@ -116,11 +116,21 @@ food_scenario_palette = c(
 )
 
 
-# creates palette: "random" or from palette colors for all scenarios, except for reference one, which is black
-create_palette <- function(scenarios, reference = "ref", palette = viridis::viridis(length(scenarios), option = 'D')) {
+# creates color palette: "random" or from palette colors for all scenarios, except for reference one, which is black
+create_color_palette <- function(scenarios, reference = "ref", palette = viridis::viridis(length(scenarios), option = 'D'), ref_color = 'black') {
   #  RColorBrewer::brewer.pal(length(scenarios), "Paired")
   palette <- setNames(palette, scenarios)
-  palette[[reference]] <- "black"
+  palette[[reference]] <- ref_color
   return(palette)
 }
 
+# remove ",depth" pattern in columns where it's present
+remove_depth <- function(data) {
+  data <- data %>%
+    rowwise() %>%
+    mutate(`subsector...4` = stringr::str_split(subsector...4, ',depth')[[1]][1]) %>%
+    mutate(`subsector...5` = stringr::str_split(subsector...5, ',depth')[[1]][1]) %>%
+    mutate(`subsector...6` = stringr::str_split(subsector...6, ',depth')[[1]][1])
+
+  return(data)
+}

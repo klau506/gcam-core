@@ -14,21 +14,53 @@
 # library(tidyr)
 # library(rgcam)
 
-setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/diets_analysis')
-# setwd('C:\\Users\\claudia.rodes\\Documents\\IAM_COMPACT\\gcam-iamcompact-xin\\diets_analysis')
+# External server
+# setwd('C:/GCAM/GCAM_7.0_Claudia/gcam-core-iamcompact/diets_analysis')
+# .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_no_CP/')
 
-.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_no_CP/')
+# Local computer
+setwd('C:\\Users\\claudia.rodes\\Documents\\IAM_COMPACT\\gcam-iamcompact-xin\\diets_analysis')
+.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1/')
+
 library(dplyr)
 library(magrittr)
 library(ggplot2)
+library(purrr)
 
 source('module_style.R')
+source('module_data.R')
 
-##### Load food consumption data ---------------------------------------------------
-assign('queries_all', get(load('outputs/queries_all_2.RData')))
-assign('queries_ref', get(load('outputs/queries_ref_2.RData')))
-assign('mort_queries_all', get(load('outputs/mort_queries_all_2.RData')))
-assign('mort_queries_ref', get(load('outputs/mort_queries_ref_2.RData')))
+##### Load food consumption & mortality data ---------------------------------------------------
+# queries_all_list <- list.files('output', pattern = "queries_all_gath")
+# for (file in queries_all_list[2:(length(queries_all_list)-1)]) {
+#   print(file)
+#   assign(stringr::str_split(file,'.dat.RData')[[1]][1], get(load(file.path('output',file))))
+#
+#   # Loop through the list and save each dataset as RData
+#   names_list <- names(get(stringr::str_split(file,'.dat.RData')[[1]][1]))
+#   for (name in names_list) {
+#     print(name)
+#     data <- get(stringr::str_split(file,'.dat.RData')[[1]][1])[[name]]
+#     save(data, file = paste0('output/datasets/', name, "_all_",gsub(".*gath_all_(.*)\\.dat\\.RData", "\\1", file),".RData"))
+#   }
+#
+#   rm(list=ls(pattern="^queries_all_gath_"))
+#   gc()
+# }
+
+load_data <- function(dataset_name) {
+  datasets_list <- list.files('output/datasets', pattern = dataset_name)
+  data <- get(load(file.path('output/datasets',datasets_list[1])))
+  for (file in datasets_list[2:length(datasets_list)]) data <- bind_rows(data, get(load(file.path('output/datasets',file))))
+  return(data)
+}
+
+
+# queries_mort_list <- list.files('output', pattern = "queries_mort_gath")
+# queries_mort <- get(load(file.path('output',queries_mort_list[1])))
+# for (file in queries_mort_list[2:length(queries_mort_list)]) queries_mort <- bind_rows(queries_mort, get(load(file.path('output',file))))
+# save(queries_mort, file = 'output/queries_mort1.RData')
+assign('queries_mort', get(load('output/queries_mort1.RData')))
 
 figures_path <- 'figures'
 selected_year <- 2050
@@ -39,8 +71,7 @@ selected_year <- 2050
 #####################################################################################
 
 ##### PLANT  ===============================================================================
-plant_percentage <- rbind(queries_all$food_consumption_regional,
-                          queries_ref$food_consumption_regional) %>%
+plant_percentage <- load_data('food_consumption_regional') %>%
   dplyr::filter(nestingSector1 == 'Protein') %>%
   dplyr::mutate(is_plant = ifelse(nestingSector2 == 'Plant',TRUE,FALSE)) %>%
   # compute the total and plant Pcal by region
@@ -56,22 +87,80 @@ plant_percentage <- rbind(queries_all$food_consumption_regional,
 
 
 # plot
-plot_data <- plant_percentage %>% dplyr::filter(scen_type %in% c('spp', 'ref'))
-palette <- create_palette(unique(plot_data$scenario))
+plot_data <- plant_percentage %>% dplyr::filter(scen_type %in% c('spp', 'ref')) %>%
+  dplyr::mutate(final_share = ifelse(is.na(final_share), 'ref', final_share)) %>%
+  dplyr::mutate(scen_path = ifelse(is.na(scen_path), 'ref', scen_path)) %>%
+  dplyr::mutate(peak_year = ifelse(is.na(peak_year), 'ref', peak_year))
+palette_color <- create_color_palette(scenarios = unique(plot_data$final_share), ref_color = 'black')
+palette_linetype <- c('2025' = 'dotted', '2035' = 'dashed', '2045' = 'longdash', 'ref' = 'solid')
 
-spp_protein <- ggplot(data = plot_data,
-                      aes(x = year, y = value, group = scenario, color = scenario)) +
+spp_protein_all <- ggplot(data = plot_data %>%
+                            dplyr::filter(scen_path %in% c('all', 'ref')) %>%
+                            dplyr::mutate(value = 100*value), # transform to percentage
+                          aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
   geom_line() +
-  scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
-  scale_color_manual(values = palette) +
-  facet_wrap(. ~ region, nrow = 8)
+  # ref line
+  geom_line(data = plot_data %>%
+              dplyr::filter(scen_path %in% c('ref')) %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Final Share') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  facet_wrap(. ~ region, nrow = 8) +
+  labs(x = '', y = 'Plant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
 
-ggsave(spp_protein, file = file.path(figures_path, paste0('spp_protein_',selected_year,'.png')), width = 400, height = 600, units = 'mm')
+ggsave(spp_protein_all, file = file.path(figures_path, paste0('spp_protein_all_',selected_year,'.png')),
+       width = 600, height = 800, units = 'mm')
+
+spp_protein_plus <- ggplot(data = plot_data %>%
+                            dplyr::filter(scen_path %in% c('plus', 'ref')) %>%
+                            dplyr::mutate(value = 100*value), # transform to percentage
+                          aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
+  geom_line() +
+  # ref line
+  geom_line(data = plot_data %>%
+              dplyr::filter(scen_path %in% c('ref')) %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Share Increase') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  facet_wrap(. ~ region, nrow = 8) +
+  labs(x = '', y = 'Plant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
+
+ggsave(spp_protein_plus, file = file.path(figures_path, paste0('spp_protein_plus_',selected_year,'.png')),
+       width = 600, height = 800, units = 'mm')
 
 
 ##### RUMINANT ===============================================================================
-rumin_percentage <- rbind(queries_all$food_consumption_regional,
-                          queries_ref$food_consumption_regional) %>%
+rumin_percentage <- load_data('food_consumption_regional') %>%
   dplyr::filter(nestingSector2 == 'Animal') %>%
   dplyr::mutate(is_rumin = ifelse(nestingSector3 == 'Ruminant',TRUE,FALSE)) %>%
   # compute the total and plant Pcal by region
@@ -80,23 +169,84 @@ rumin_percentage <- rbind(queries_all$food_consumption_regional,
   dplyr::ungroup() %>%
   # compute the plant % (plant/total food consumption)
   tidyr::pivot_wider(names_from = 'is_rumin', values_from = 'value') %>%
+  dplyr::mutate(`TRUE` = ifelse(is.na(`TRUE`), 0, `TRUE`)) %>%
+  dplyr::mutate(`FALSE` = ifelse(is.na(`FALSE`), 0, `FALSE`)) %>%
   dplyr::mutate(value = `TRUE` / (`TRUE` + `FALSE`)) %>%
   dplyr::mutate(Units = 'Percentage') %>%
   select(-`TRUE`) %>%
   select(-`FALSE`)
 
 # plot
-plot_data <- rumin_percentage %>% dplyr::filter(scen_type %in% c('snr', 'ref'))
-palette <- create_palette(unique(plot_data$scenario))
+plot_data <- rumin_percentage %>% dplyr::filter(scen_type %in% c('snr', 'ref')) %>%
+  dplyr::mutate(final_share = ifelse(is.na(final_share), 'ref', final_share)) %>%
+  dplyr::mutate(scen_path = ifelse(is.na(scen_path), 'ref', scen_path)) %>%
+  dplyr::mutate(peak_year = ifelse(is.na(peak_year), 'ref', peak_year))
+palette_color <- create_color_palette(scenarios = unique(plot_data$final_share), ref_color = 'black')
+palette_linetype <- c('2025' = 'dotted', '2035' = 'dashed', '2045' = 'longdash', 'ref' = 'solid')
 
-snr_protein <- ggplot(data = plot_data,
-                      aes(x = year, y = value, group = scenario, color = scenario)) +
+snr_protein_all <- ggplot(data = plot_data %>%
+                            dplyr::filter(scen_path %in% c('all', 'ref')) %>%
+                            dplyr::mutate(value = 100*value), # transform to percentage
+                          aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
   geom_line() +
-  scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
-  scale_color_manual(values = palette) +
-  facet_wrap(. ~ region, nrow = 8)
+  # ref line
+  geom_line(data = plot_data %>%
+              dplyr::filter(scen_path %in% c('ref')) %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Final Share') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  facet_wrap(. ~ region, nrow = 8) +
+  labs(x = '', y = 'Free-Ruminant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
 
-ggsave(snr_protein, file = file.path(figures_path, paste0('snr_protein_',selected_year,'.png')), width = 400, height = 600, units = 'mm')
+ggsave(snr_protein_all, file = file.path(figures_path, paste0('snr_protein_all_',selected_year,'.png')),
+       width = 600, height = 800, units = 'mm')
+
+snr_protein_plus <- ggplot(data = plot_data %>%
+                             dplyr::filter(scen_path %in% c('plus', 'ref')) %>%
+                             dplyr::mutate(value = 100*value), # transform to percentage
+                           aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
+  geom_line() +
+  # ref line
+  geom_line(data = plot_data %>%
+              dplyr::filter(scen_path %in% c('ref')) %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Share Decrease') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  facet_wrap(. ~ region, nrow = 8) +
+  labs(x = '', y = 'Free-Ruminant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
+
+ggsave(snr_protein_plus, file = file.path(figures_path, paste0('snr_protein_plus_',selected_year,'.png')),
+       width = 600, height = 800, units = 'mm')
 
 
 
@@ -110,8 +260,7 @@ food_subsector <- read.csv('inputs/nutrition/food_subsector.csv', skip = 3) %>%
   rename(technology = subsector) %>%
   mutate(beautiful_name = paste0(category, '|', beautiful_name))
 
-food_consumption <- rbind(queries_all$food_consumption_regional,
-                          queries_ref$food_consumption_regional) %>%
+food_consumption <- load_data('food_consumption_regional') %>%
   dplyr::left_join(food_subsector, by = 'technology') %>%
   group_by(Units, region, scen_type, technology, year, beautiful_name) %>%
   summarise(value = median(value)) %>%
@@ -137,7 +286,7 @@ pl_food_consumption <- ggplot(data = food_consumption %>%
   # facet
   facet_wrap(. ~ region, scales = 'free') +
   # style
-  labs(y = 'Pcal', x = 'Scenario Type') +
+  labs(y = 'Pcal', x = '') +
   theme_light() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
@@ -146,7 +295,7 @@ pl_food_consumption <- ggplot(data = food_consumption %>%
                                        colour = 'grey',linewidth = 2),
         panel.background = element_rect(fill = "white"),
         legend.position = 'bottom', legend.direction = 'horizontal',
-        strip.text = element_text(size = 20, color = 'black'),
+        strip.text = element_text(size = 23, color = 'black'),
         strip.background =element_rect(fill="transparent"),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
@@ -166,7 +315,7 @@ pl_food_consumption <- ggplot(data = food_consumption %>%
   # facet
   facet_wrap(. ~ region, scales = 'fixed') +
   # style
-  labs(y = 'Pcal', x = 'Scenario Type') +
+  labs(y = 'Pcal', x = '') +
   theme_light() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
@@ -175,7 +324,7 @@ pl_food_consumption <- ggplot(data = food_consumption %>%
                                        colour = 'grey',linewidth = 2),
         panel.background = element_rect(fill = "white"),
         legend.position = 'bottom', legend.direction = 'horizontal',
-        strip.text = element_text(size = 20, color = 'black'),
+        strip.text = element_text(size = 23, color = 'black'),
         strip.background =element_rect(fill="transparent"),
         axis.text.x = element_text(size=30),
         axis.text.y = element_text(size=30),
@@ -189,8 +338,7 @@ ggsave(pl_food_consumption, file = file.path(figures_path, paste0('sdg0_diet_com
 ####### BY REGION & PER CAPITA
 food_consumption_percap <- food_consumption %>%
   # convert from Pcal to kcal/day
-  dplyr::left_join(rbind(queries_all$pop_all_regions,
-                         queries_ref$pop_all_regions) %>%
+  dplyr::left_join(load_data('pop_all_regions') %>%
                      select(scen_type, region, year, population) %>%
                      unique(), by = c("year", "scen_type", "region")) %>%
   dplyr::mutate(value = (value * 1e12) / (population * 365),
@@ -221,52 +369,54 @@ custom_order = c(  'Crops|Corn','Crops|Fiber crops','Crops|Other grain crops','C
 food_consumption_percap_toplot <- food_consumption_percap_toplot[order(-food_consumption_percap_toplot$to_order,
                                                                        match(food_consumption_percap_toplot$beautiful_name, custom_order)), ]
 
-food_consumption_percap_toplot <- food_consumption_percap_toplot %>%
-  # compute rectangles positions
-  filter(year == selected_year, scen_type == 'ref') %>%
-  mutate(ymax = ave(value, region, FUN=cumsum)) %>%
-  mutate(ymin = ymax - value) %>%
-  mutate(right = ave(population, beautiful_name, FUN=cumsum)) %>%
-  mutate(left = right - population) %>%
-  mutate(mean = left + (right - left) / 2)
+for(st in unique(food_consumption_percap_toplot$scen_type)) {
+  food_consumption_percap_toplot_byscentype <- food_consumption_percap_toplot %>%
+    # compute rectangles positions
+    filter(year == selected_year, scen_type == 'ref') %>%
+    mutate(ymax = ave(value, region, FUN=cumsum)) %>%
+    mutate(ymin = ymax - value) %>%
+    mutate(right = ave(population, beautiful_name, FUN=cumsum)) %>%
+    mutate(left = right - population) %>%
+    mutate(mean = left + (right - left) / 2)
 
-p <- ggplot(data = food_consumption_percap_toplot, aes(ymin = 0)) +
-  geom_rect(data = food_consumption_percap_toplot,
-            aes(xmin=left, xmax = right, ymax = ymax, ymin = ymin, fill = beautiful_name),
-            color="white") +
-  # region names
-  ggrepel::geom_label_repel(data = food_consumption_percap_toplot %>%
-                              filter(beautiful_name == 'Crops|Wheat'),
-                            aes(x = mean, y = to_order, label = region),
-                            size = 7,
-                            direction = "y",
-                            max.overlaps = 15,
-                            nudge_y = 10) +
-  # colors
-  scale_color_manual(values = food_scenario_palette, name = 'Calorie Source') +
-  scale_fill_manual(values = food_scenario_palette, name = 'Calorie Source') +
-  # labels
-  labs(x = "Populationn (million)", y = "kcal per capita per day") +
-  # theme
-  theme_light() +
-  theme(panel.grid.major.y = element_line(color = 'grey20'),
-        panel.grid.major.x = element_blank(),
-        panel.border = element_blank(),
-        plot.background = element_rect(fill = "white",
-                                       colour = 'grey',linewidth = 2),
-        panel.background = element_rect(fill = "white"),
-        legend.position = 'bottom', legend.direction = 'horizontal',
-        strip.text = element_text(size = 20, color = 'black'),
-        strip.background =element_rect(fill="transparent"),
-        axis.text.x = element_text(size=30),
-        axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 35),
-        legend.title = element_text(size = 40, angle = 90),
-        title = element_text(size = 40)) +
-  guides(color = guide_legend(ncol = 3),
-         fill = guide_legend(ncol = 3))
-ggsave(p, file = file.path(figures_path,paste0('sdg0_kcal_cap_day_by_pop.png')),
-       width = 1000, height = 700, units = 'mm', limitsize = F)
+  p <- ggplot(data = food_consumption_percap_toplot_byscentype, aes(ymin = 0)) +
+    geom_rect(data = food_consumption_percap_toplot_byscentype,
+              aes(xmin=left, xmax = right, ymax = ymax, ymin = ymin, fill = beautiful_name),
+              color="white") +
+    # region names
+    ggrepel::geom_label_repel(data = food_consumption_percap_toplot_byscentype %>%
+                                filter(beautiful_name == 'Crops|Wheat'),
+                              aes(x = mean, y = to_order, label = region),
+                              size = 7,
+                              direction = "y",
+                              max.overlaps = 15,
+                              nudge_y = 10) +
+    # colors
+    scale_color_manual(values = food_scenario_palette, name = 'Calorie Source') +
+    scale_fill_manual(values = food_scenario_palette, name = 'Calorie Source') +
+    # labels
+    labs(x = "Populationn (million)", y = "kcal per capita per day") +
+    # theme
+    theme_light() +
+    theme(panel.grid.major.y = element_line(color = 'grey20'),
+          panel.grid.major.x = element_blank(),
+          panel.border = element_blank(),
+          plot.background = element_rect(fill = "white",
+                                         colour = 'grey',linewidth = 2),
+          panel.background = element_rect(fill = "white"),
+          legend.position = 'bottom', legend.direction = 'horizontal',
+          strip.text = element_text(size = 20, color = 'black'),
+          strip.background =element_rect(fill="transparent"),
+          axis.text.x = element_text(size=30),
+          axis.text.y = element_text(size=30),
+          legend.text = element_text(size = 35),
+          legend.title = element_text(size = 40, angle = 90),
+          title = element_text(size = 40)) +
+    guides(color = guide_legend(ncol = 3),
+           fill = guide_legend(ncol = 3))
+  ggsave(p, file = file.path(figures_path,paste0('sdg0_kcal_cap_day_by_pop_',st,'.png')),
+         width = 1000, height = 700, units = 'mm', limitsize = F)
+}
 
 
 
@@ -366,22 +516,22 @@ land_indicator_global_managementLand = land_indicator_managementLand %>%
 
 
 #### ABSOLUTE
-land_use_diffAbs_world = merge(queries_all$land_use_world,
-                               queries_ref$land_use_world %>%
-                                 dplyr::select(landleaf, land_use_type, year, Units, ref_value = value),
-                               by = c('landleaf','land_use_type','year','Units')) %>%
+land_use_diffAbs_world = load_data('land_use_world') %>%
+  aggregate_land_use_type() %>%
   # select scenarios to have a matching plot
-  dplyr::filter(scenario %in% c('spp_all_90_x0_2045_k_0.805', 'snr_all_10_x0_2045_k_0.805')) %>%
+  dplyr::filter(scenario %in% c('spp_all_50_x0_2035_k_0.805', 'snr_all_50_x0_2035_k_0.805',
+                                'sppnr_all_50_x0_2035_k_0.805', 'ref')) %>%
   # compute median by land_use_type
   dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
-  dplyr::summarise(value = sum(value),
-                   ref_value = sum(ref_value)) %>%
+  dplyr::summarise(value = sum(value)) %>%
   dplyr::ungroup() %>%
   # compute difference between Reference and runs
-  dplyr::rowwise() %>%
-  dplyr::mutate(diff = value - ref_value) %>%
-  dplyr::select(-value) %>% dplyr::select(-ref_value) %>%
-  dplyr::mutate(scen_type = toupper(scen_type))
+  dplyr::group_by(Units, land_use_type, year) %>%
+  dplyr::mutate(diff = value - value[scenario == "ref"]) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(-value) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::filter(scenario != 'ref')
 
 
 pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world) +
@@ -408,22 +558,25 @@ ggsave(pl_land_use_diffAbs_world, file = file.path(figures_path,paste0('sdg15_la
 
 
 #### PERCENTAGE
-land_use_diffPer_world = merge(queries_all$land_use_world,
-                               queries_ref$land_use_world %>%
-                                 dplyr::select(landleaf, land_use_type, year, Units, ref_value = value),
-                               by = c('landleaf','land_use_type','year','Units')) %>%
+land_use_diffPer_world = load_data('land_use_world') %>%
+  aggregate_land_use_type() %>%
   # select scenarios to have a matching plot
-  dplyr::filter(scenario %in% c('spp_all_90_x0_2045_k_0.805', 'snr_all_10_x0_2045_k_0.805')) %>%
+  dplyr::filter(scenario %in% c('spp_all_50_x0_2035_k_0.805', 'snr_all_50_x0_2035_k_0.805',
+                                'sppnr_all_50_x0_2035_k_0.805', 'ref')) %>%
   # compute median by land_use_type
   dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
-  dplyr::summarise(value = sum(value),
-                   ref_value = sum(ref_value)) %>%
+  dplyr::summarise(value = sum(value)) %>%
   dplyr::ungroup() %>%
   # compute difference between Reference and runs
+  dplyr::group_by(Units, land_use_type, year) %>%
+  dplyr::mutate(ref = value[scenario == "ref"]) %>%
+  dplyr::ungroup() %>%
   dplyr::rowwise() %>%
-  dplyr::mutate(diff = ifelse(ref_value != 0, 100*(value - ref_value)/ref_value, 0)) %>%
-  dplyr::select(-value) %>% dplyr::select(-ref_value) %>%
-  dplyr::mutate(scen_type = toupper(scen_type))
+  dplyr::mutate(diff = ifelse(ref != 0, 100*(value - ref)/ref, 0)) %>%
+  dplyr::ungroup() %>%
+  dplyr::select(-value) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::filter(scenario != 'ref')
 
 
 pl_land_use_diffPer_world = ggplot(data = land_use_diffPer_world) +
@@ -433,7 +586,7 @@ pl_land_use_diffPer_world = ggplot(data = land_use_diffPer_world) +
   scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
                     breaks = land_use_order_palette) +
   # labs
-  labs(y = expression(paste('Change in thous. ', km^2, ' compared to Reference')), x = '') +
+  labs(y = expression(paste('Percentual change of thous. ', km^2, ' compared to Reference')), x = '') +
   # theme
   theme_light() +
   theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
@@ -455,13 +608,17 @@ ggsave(pl_land_use_diffPer_world, file = file.path(figures_path,paste0('sdg15_la
 
 #### ABSOLUTE
 
-land_use_diffAbs_world = merge(queries_all$land_use_world %>%
+land_use_diffAbs_world = merge(load_data('land_use_world') %>%
+                                 dplyr::filter(scen_type != 'ref') %>%
                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 aggregate_land_use_type() %>%
                                  dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
                                  dplyr::summarise(value = sum(value)) %>%
                                  dplyr::ungroup(),
-                               queries_ref$land_use_world %>%
+                               load_data('land_use_world') %>%
+                                 dplyr::filter(scen_type == 'ref') %>%
                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 aggregate_land_use_type() %>%
                                  dplyr::group_by(year, scenario, scen_type, land_use_type) %>%
                                  dplyr::summarise(ref_value = sum(value)) %>%
                                  dplyr::ungroup() %>%
@@ -478,7 +635,9 @@ land_use_diffAbs_world = merge(queries_all$land_use_world %>%
   dplyr::ungroup()
 
 
-pl_land_use_diffAbs_world_bars <- ggplot(data = land_use_diffAbs_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = land_use_type)) +
+pl_land_use_diffAbs_world_bars <- ggplot(data = land_use_diffAbs_world %>%
+                                           dplyr::filter(year == selected_year),
+                                         aes(x = median_diff, y = scen_path, fill = land_use_type)) +
   geom_bar(stat = "identity", position = "identity") +
   facet_grid(scen_group ~ scen_type, scales = "free") +
   scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
@@ -486,16 +645,16 @@ pl_land_use_diffAbs_world_bars <- ggplot(data = land_use_diffAbs_world %>% dplyr
   geom_vline(xintercept = 0, linewidth = 1.2) +
   labs(y = '', x = expression(paste('thous ', km^2, ' difference'))) +
   theme_light() +
-  theme(panel.grid.major.y = element_line(color = 'grey20'),
-        panel.grid.major.x = element_blank(),
+  theme(panel.grid.major = element_line(color = 'grey20'),
         panel.border = element_blank(),
         plot.background = element_rect(fill = "white",
                                        colour = 'grey',linewidth = 2),
         panel.background = element_rect(fill = "white"),
         legend.position = 'bottom', legend.direction = 'horizontal',
         strip.text = element_text(size = 20, color = 'black'),
+        strip.text.y = element_text(angle = 0),
         strip.background =element_rect(fill="transparent"),
-        axis.text.x = element_text(size=30),
+        axis.text.x = element_text(size=30, angle = 45, hjust = 1, vjust = 0.75),
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
@@ -505,13 +664,17 @@ ggsave(pl_land_use_diffAbs_world_bars, file = file.path(figures_path, paste0('sd
 
 
 #### PERCENT
-land_use_diffPer_world = merge(queries_all$land_use_world %>%
+land_use_diffPer_world = merge(load_data('land_use_world') %>%
+                                 dplyr::filter(scen_type != 'ref') %>%
                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 aggregate_land_use_type() %>%
                                  dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
                                  dplyr::summarise(value = sum(value)) %>%
                                  dplyr::ungroup(),
-                               queries_ref$land_use_world %>%
+                               load_data('land_use_world') %>%
+                                 dplyr::filter(scen_type == 'ref') %>%
                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                 aggregate_land_use_type() %>%
                                  dplyr::group_by(year, scenario, scen_type, land_use_type) %>%
                                  dplyr::summarise(ref_value = sum(value)) %>%
                                  dplyr::ungroup() %>%
@@ -528,7 +691,9 @@ land_use_diffPer_world = merge(queries_all$land_use_world %>%
   dplyr::ungroup()
 
 
-pl_land_use_diffPer_world_bars <- ggplot(data = land_use_diffPer_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = land_use_type)) +
+pl_land_use_diffPer_world_bars <- ggplot(data = land_use_diffPer_world %>%
+                                           dplyr::filter(year == selected_year),
+                                         aes(x = median_diff, y = scen_path, fill = land_use_type)) +
   geom_bar(stat = "identity", position = "identity") +
   facet_grid(scen_group ~ scen_type, scales = "free") +
   scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
@@ -536,16 +701,16 @@ pl_land_use_diffPer_world_bars <- ggplot(data = land_use_diffPer_world %>% dplyr
   geom_vline(xintercept = 0, linewidth = 1.2) +
   labs(y = '', x = expression(paste('% difference'))) +
   theme_light() +
-  theme(panel.grid.major.y = element_line(color = 'grey20'),
-        panel.grid.major.x = element_blank(),
+  theme(panel.grid.major = element_line(color = 'grey20'),
         panel.border = element_blank(),
         plot.background = element_rect(fill = "white",
                                        colour = 'grey',linewidth = 2),
         panel.background = element_rect(fill = "white"),
         legend.position = 'bottom', legend.direction = 'horizontal',
         strip.text = element_text(size = 20, color = 'black'),
+        strip.text.y = element_text(angle = 0),
         strip.background =element_rect(fill="transparent"),
-        axis.text.x = element_text(size=30),
+        axis.text.x = element_text(size=30, angle = 45, hjust = 1, vjust = 0.75),
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
@@ -559,13 +724,17 @@ ggsave(pl_land_use_diffPer_world_bars, file = file.path(figures_path, paste0('sd
 
 
 #### ABSOLUTE WITH LAND TYPE
-landType_regional_diffAbs <- merge(queries_all$land_use_regional %>%
+landType_regional_diffAbs <- merge(load_data('land_use_regional') %>%
+                                     dplyr::filter(scen_type != 'ref') %>%
                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     aggregate_land_use_type() %>%
                                      dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
                                      dplyr::summarise(value = sum(value)) %>%
                                      dplyr::ungroup(),
-                                   queries_ref$land_use_regional %>%
+                                   load_data('land_use_regional') %>%
+                                     dplyr::filter(scen_type == 'ref') %>%
                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     aggregate_land_use_type() %>%
                                      dplyr::group_by(region, year, scenario, scen_type, land_use_type) %>%
                                      dplyr::summarise(ref_value = sum(value)) %>%
                                      dplyr::ungroup() %>%
@@ -605,13 +774,17 @@ ggsave(pl_landType_regional_diffAbs_heatmap, file = file.path(figures_path, past
 
 
 #### PERCENT WITH LAND TYPE
-landType_regional_diffPer <- merge(queries_all$land_use_regional %>%
+landType_regional_diffPer <- merge(load_data('land_use_regional') %>%
+                                     dplyr::filter(scen_type != 'ref') %>%
                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     aggregate_land_use_type() %>%
                                      dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, land_use_type) %>%
                                      dplyr::summarise(value = sum(value)) %>%
                                      dplyr::ungroup(),
-                                   queries_ref$land_use_regional %>%
+                                   load_data('land_use_regional') %>%
+                                     dplyr::filter(scen_type == 'ref') %>%
                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                     aggregate_land_use_type() %>%
                                      dplyr::group_by(region, year, scenario, scen_type, land_use_type) %>%
                                      dplyr::summarise(ref_value = sum(value)) %>%
                                      dplyr::ungroup() %>%
@@ -708,8 +881,7 @@ water_scarcity_index = water_scarcity_index %>%
 
 ############## WATER consumption ===============================================
 
-pl_water_consumption_world <- ggplot(data = rbind(queries_all$water_consumption_world,
-                                                  queries_ref$water_consumption_world) %>%
+pl_water_consumption_world <- ggplot(data = load_data('water_consumption_world') %>%
                                        dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                        dplyr::group_by(year, scen_type) %>%
                                        mutate(median_value = median(value)) %>%
@@ -719,7 +891,8 @@ pl_water_consumption_world <- ggplot(data = rbind(queries_all$water_consumption_
   geom_line(aes(x = year, y = median_value, color = scen_type), linewidth = 1, alpha = 1) +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
 
-  geom_line(data = queries_ref$water_consumption_world %>%
+  geom_line(data = load_data('water_consumption_world') %>%
+              dplyr::filter(scenario == 'ref') %>%
               dplyr::mutate(scen_type = toupper(scen_type)), aes(x = year, y = value, color = scen_type), linewidth = 1, alpha = 1) +  # Median line REF
 
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
@@ -743,8 +916,7 @@ pl_water_consumption_world <- ggplot(data = rbind(queries_all$water_consumption_
 ggsave(pl_water_consumption_world, file = file.path(figures_path,'sdg6_annual_water_consumption_line.png'), width = 500, height = 400, units = 'mm')
 
 
-ag_water_consumption_world <- rbind(queries_all$water_irr_rfd_world,
-                                    queries_ref$water_irr_rfd_world) %>%
+ag_water_consumption_world <- load_data('water_irr_rfd_world') %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
   dplyr::group_by(year, scenario, scen_type) %>%
   dplyr::summarise(value = sum(value)) %>%
@@ -785,12 +957,14 @@ ggsave(pl_water_consumption_agriculture_world, file = file.path(figures_path,'sd
 
 #### ABSOLUTE
 
-water_irr_rfd_diffAbs_world = merge(queries_all$water_irr_rfd_world %>%
+water_irr_rfd_diffAbs_world = merge(load_data('water_irr_rfd_world') %>%
+                                      dplyr::filter(scenario != 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
                                       dplyr::summarise(value = sum(value)) %>%
                                       dplyr::ungroup(),
-                                    queries_ref$water_irr_rfd_world %>%
+                                    load_data('water_irr_rfd_world') %>%
+                                      dplyr::filter(scenario == 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(year, scenario, scen_type, water) %>%
                                       dplyr::summarise(ref_value = sum(value)) %>%
@@ -807,9 +981,11 @@ water_irr_rfd_diffAbs_world = merge(queries_all$water_irr_rfd_world %>%
   dplyr::summarise(median_diff = median(diff))
 
 
-pl_water_irr_rfd_diffAbs_world_bars <- ggplot(data = water_irr_rfd_diffAbs_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = water)) +
+pl_water_irr_rfd_diffAbs_world_bars <- ggplot(data = water_irr_rfd_diffAbs_world %>%
+                                                dplyr::filter(year == selected_year),
+                                              aes(x = median_diff, y = scen_path, fill = water)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "fixed") +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
   scale_fill_brewer(palette = 'Paired', name = '') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
   labs(y = '', x = expression(paste('thous ', km^2))) +
@@ -833,12 +1009,14 @@ ggsave(pl_water_irr_rfd_diffAbs_world_bars, file = file.path(figures_path, paste
 
 
 #### PERCENT
-water_irr_rfd_diffPer_world = merge(queries_all$water_irr_rfd_world %>%
+water_irr_rfd_diffPer_world = merge(load_data('water_irr_rfd_world') %>%
+                                      dplyr::filter(scenario != 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
                                       dplyr::summarise(value = sum(value)) %>%
                                       dplyr::ungroup(),
-                                    queries_ref$water_irr_rfd_world %>%
+                                    load_data('water_irr_rfd_world') %>%
+                                      dplyr::filter(scenario == 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(year, scenario, scen_type, water) %>%
                                       dplyr::summarise(ref_value = sum(value)) %>%
@@ -852,12 +1030,14 @@ water_irr_rfd_diffPer_world = merge(queries_all$water_irr_rfd_world %>%
   dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
   # compute median by scen
   dplyr::group_by(water,year,scen_type,scen_path,scen_group) %>%
-  dplyr::summarise(median_diff = median(diff))
+  dplyr::summarise(median_diff = median(diff)) %>%
+  ungroup()
 
-
-pl_water_irr_rfd_diffPer_world_bars <- ggplot(data = water_irr_rfd_diffPer_world %>% dplyr::filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = water)) +
+pl_water_irr_rfd_diffPer_world_bars <- ggplot(data = water_irr_rfd_diffPer_world %>%
+                                                dplyr::filter(year == selected_year),
+                                              aes(x = median_diff, y = scen_path, fill = water)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "fixed") +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
   scale_fill_brewer(palette = 'Paired', name = '') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
   labs(y = '', x = expression(paste('% difference'))) +
@@ -884,12 +1064,14 @@ ggsave(pl_water_irr_rfd_diffPer_world_bars, file = file.path(figures_path, paste
 
 
 #### ABSOLUTE
-ag_water_consumption_regional_diffAbs <- merge(queries_all$water_irr_rfd_regional %>%
+ag_water_consumption_regional_diffAbs <- merge(load_data('water_irr_rfd_regional') %>%
+                                                 dplyr::filter(scenario != 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                                  dplyr::summarise(value = sum(value)) %>%
                                                  dplyr::ungroup(),
-                                               queries_ref$water_irr_rfd_regional %>%
+                                               load_data('water_irr_rfd_regional') %>%
+                                                 dplyr::filter(scenario == 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type) %>%
                                                  dplyr::summarise(ref_value = sum(value)) %>%
@@ -915,7 +1097,8 @@ ag_water_consumption_regional_diffAbs_map <- ag_water_consumption_regional_diffA
   dplyr::rename('adm0_a3' = 'ISO 3') %>%
   # subset scen
   dplyr::mutate(scen_to_subset = paste0(scen_type, '_', scen_group)) %>%
-  dplyr::filter(scen_to_subset %in% c('SPP_all_90', 'SNR_all_10')) %>%
+  dplyr::filter(scen_to_subset %in% c('SPP_all_50', 'SNR_all_50', 'SPPNR_all_50',
+                                      'SPP_plus_50', 'SNR_plus_50', 'SPPNR_plus_50')) %>%
   dplyr::select(-scen_to_subset)
 
 ag_water_consumption_regional_diffAbs_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
@@ -928,7 +1111,7 @@ ag_water_consumption_regional_diffAbs_map = merge(rnaturalearth::ne_countries(sc
 pl_ag_water_consumption_regional_diffAbs_map <- ggplot() +
   # color map by regions
   geom_sf(data = ag_water_consumption_regional_diffAbs_map, aes(fill = median_diff)) +
-  facet_wrap(. ~ scen_type, scales = 'fixed') +
+  facet_grid(scen_path ~ scen_type, scales = 'fixed') +
   scale_fill_gradient2(low = "darkred", high = "darkgreen",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Annual Water flows difference (",km^3,")","\n"))) +
@@ -952,12 +1135,14 @@ ggsave(pl_ag_water_consumption_regional_diffAbs_map, file = file.path(figures_pa
 
 
 #### PERCENT
-ag_water_consumption_regional_diffPer <- merge(queries_all$water_irr_rfd_regional %>%
+ag_water_consumption_regional_diffPer <- merge(load_data('water_irr_rfd_regional') %>%
+                                                 dplyr::filter(scenario != 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                                  dplyr::summarise(value = sum(value)) %>%
                                                  dplyr::ungroup(),
-                                               queries_ref$water_irr_rfd_regional %>%
+                                               load_data('water_irr_rfd_regional') %>%
+                                                 dplyr::filter(scenario == 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type) %>%
                                                  dplyr::summarise(ref_value = sum(value)) %>%
@@ -983,7 +1168,8 @@ ag_water_consumption_regional_diffPer_map <- ag_water_consumption_regional_diffP
   dplyr::rename('adm0_a3' = 'ISO 3') %>%
   # subset scen
   dplyr::mutate(scen_to_subset = paste0(scen_type, '_', scen_group)) %>%
-  dplyr::filter(scen_to_subset %in% c('SPP_all_90', 'SNR_all_10')) %>%
+  dplyr::filter(scen_to_subset %in% c('SPP_all_50', 'SNR_all_50', 'SPPNR_all_50',
+                                      'SPP_plus_50', 'SNR_plus_50', 'SPPNR_plus_50')) %>%
   dplyr::select(-scen_to_subset)
 
 ag_water_consumption_regional_diffPer_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
@@ -996,7 +1182,7 @@ ag_water_consumption_regional_diffPer_map = merge(rnaturalearth::ne_countries(sc
 pl_ag_water_consumption_regional_diffPer_map <- ggplot() +
   # color map by regions
   geom_sf(data = ag_water_consumption_regional_diffPer_map, aes(fill = median_diff)) +
-  facet_wrap(. ~ scen_type, scales = 'fixed') +
+  facet_grid(scen_path ~ scen_type, scales = 'fixed') +
   scale_fill_gradient2(low = "darkred", high = "darkgreen",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Annual Water flows % difference","\n"))) +
@@ -1075,12 +1261,14 @@ ggsave(pl_ag_water_consumption_regional_diffPer_heatmap, file = file.path(figure
 
 
 #### ABSOLUTE WITH WATER TYPE
-ag_waterType_consumption_regional_diffAbs <- merge(queries_all$water_irr_rfd_regional %>%
+ag_waterType_consumption_regional_diffAbs <- merge(load_data('water_irr_rfd_regional') %>%
+                                                     dplyr::filter(scenario != 'ref') %>%
                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                      dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
                                                      dplyr::summarise(value = sum(value)) %>%
                                                      dplyr::ungroup(),
-                                                   queries_ref$water_irr_rfd_regional %>%
+                                                   load_data('water_irr_rfd_regional') %>%
+                                                     dplyr::filter(scenario == 'ref') %>%
                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                      dplyr::group_by(region, year, scenario, scen_type, water) %>%
                                                      dplyr::summarise(ref_value = sum(value)) %>%
@@ -1121,12 +1309,14 @@ ggsave(pl_ag_waterType_consumption_regional_diffAbs_heatmap, file = file.path(fi
 
 
 #### PERCENT WITH WATER TYPE
-ag_waterType_consumption_regional_diffPer <- merge(queries_all$water_irr_rfd_regional %>%
+ag_waterType_consumption_regional_diffPer <- merge(load_data('water_irr_rfd_regional') %>%
+                                                     dplyr::filter(scenario != 'ref') %>%
                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                      dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
                                                      dplyr::summarise(value = sum(value)) %>%
                                                      dplyr::ungroup(),
-                                                   queries_ref$water_irr_rfd_regional %>%
+                                                   load_data('water_irr_rfd_regional') %>%
+                                                     dplyr::filter(scenario == 'ref') %>%
                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                      dplyr::group_by(region, year, scenario, scen_type, water) %>%
                                                      dplyr::summarise(ref_value = sum(value)) %>%
@@ -1198,9 +1388,11 @@ ghg_indicator_global_avEmiss = ghg_indicator_avEmiss %>%
 
 
 ##### GHG emissions TREND ======================================================
-pl_ghg_emissions_world <- ggplot(data = rbind(queries_all$ghg_world,
-                                              queries_ref$ghg_world) %>%
+pl_ghg_emissions_world <- ggplot(data = load_data('ghg_world') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                   dplyr::group_by(year, scenario) %>%
+                                   dplyr::mutate(value = sum(value)) %>%
+                                   dplyr::ungroup() %>%
                                    dplyr::group_by(year, scen_type) %>%
                                    dplyr::mutate(median_value = median(value)) %>%
                                    dplyr::mutate(min_value = min(value)) %>%
@@ -1226,21 +1418,23 @@ pl_ghg_emissions_world <- ggplot(data = rbind(queries_all$ghg_world,
         axis.title = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
-        title = element_text(size = 40)) +
+        title = element_text(size = 40))
   # title
-  labs(title = 'Annual World GHG emissions')
+  # labs(title = 'Annual World GHG emissions')
 ggsave(pl_ghg_emissions_world, file = file.path(figures_path,'sdg13_ghg_emissions_line.png'), width = 500, height = 400, units = 'mm')
 
 
 
 
 #### ABSOLUTE - REGIONAL
-ghg_by_ghg_diffAbs_world = merge(queries_all$ghg_by_ghg_world %>%
+ghg_by_ghg_diffAbs_world = merge(load_data('ghg_by_ghg_world') %>%
+                                   dplyr::filter(scenario != 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
                                    dplyr::summarise(value = sum(value)) %>%
                                    dplyr::ungroup(),
-                                 queries_ref$ghg_by_ghg_world %>%
+                                 load_data('ghg_by_ghg_world') %>%
+                                   dplyr::filter(scenario == 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::group_by(year, scenario, scen_type, group) %>%
                                    dplyr::summarise(ref_value = sum(value)) %>%
@@ -1261,7 +1455,7 @@ pl_ghg_by_ghg_diffAbs_world_bars <- ggplot(data = ghg_by_ghg_diffAbs_world %>%
                                              filter(year == selected_year),
                                            aes(x = median_diff, y = scen_path, fill = group)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "fixed") +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
   scale_fill_brewer(palette = 'Paired', name = '') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
   labs(y = '', x = expression(paste(MtCO[2], ' difference'))) +
@@ -1285,12 +1479,14 @@ ggsave(pl_ghg_by_ghg_diffAbs_world_bars, file = file.path(figures_path, paste0('
 
 
 #### PERCENT
-ghg_by_ghg_diffPer_world = merge(queries_all$ghg_by_ghg_world %>%
+ghg_by_ghg_diffPer_world = merge(load_data('ghg_by_ghg_world') %>%
+                                   dplyr::filter(scenario != 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
                                    dplyr::summarise(value = sum(value)) %>%
                                    dplyr::ungroup(),
-                                 queries_ref$ghg_by_ghg_world %>%
+                                 load_data('ghg_by_ghg_world') %>%
+                                   dplyr::filter(scenario == 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::group_by(year, scenario, scen_type, group) %>%
                                    dplyr::summarise(ref_value = sum(value)) %>%
@@ -1307,9 +1503,11 @@ ghg_by_ghg_diffPer_world = merge(queries_all$ghg_by_ghg_world %>%
   dplyr::summarise(median_diff = median(diff))
 
 
-pl_ghg_by_ghg_diffPer_world_bars <- ggplot(data = ghg_by_ghg_diffPer_world %>% filter(year == selected_year), aes(x = median_diff, y = scen_path, fill = group)) +
+pl_ghg_by_ghg_diffPer_world_bars <- ggplot(data = ghg_by_ghg_diffPer_world %>%
+                                             filter(year == selected_year),
+                                           aes(x = median_diff, y = scen_path, fill = group)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "fixed") +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
   scale_fill_brewer(palette = 'Paired', name = '') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
   labs(y = '', x = expression(paste('% difference'))) +
@@ -1337,12 +1535,14 @@ ggsave(pl_ghg_by_ghg_diffPer_world_bars, file = file.path(figures_path, paste0('
 
 
 #### ABSOLUTE
-ghg_world_regional_diffAbs <- merge(queries_all$ghg_regional %>%
+ghg_world_regional_diffAbs <- merge(load_data('ghg_regional') %>%
+                                      dplyr::filter(scenario != 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                       dplyr::summarise(value = sum(value)) %>%
                                       dplyr::ungroup(),
-                                    queries_ref$ghg_regional %>%
+                                    load_data('ghg_regional') %>%
+                                      dplyr::filter(scenario == 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(region, year, scenario, scen_type) %>%
                                       dplyr::summarise(ref_value = sum(value)) %>%
@@ -1368,7 +1568,8 @@ ghg_world_regional_diffAbs_map <- ghg_world_regional_diffAbs %>%
   dplyr::rename('adm0_a3' = 'ISO 3') %>%
   # subset scen
   dplyr::mutate(scen_to_subset = paste0(scen_type, '_', scen_group)) %>%
-  dplyr::filter(scen_to_subset %in% c('SPP_all_90', 'SNR_all_10')) %>%
+  dplyr::filter(scen_to_subset %in% c('SPP_all_50', 'SNR_all_50', 'SPPNR_all_50',
+                                      'SPP_plus_50', 'SNR_plus_50', 'SPPNR_plus_50')) %>%
   dplyr::select(-scen_to_subset)
 
 ghg_world_regional_diffAbs_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
@@ -1381,7 +1582,7 @@ ghg_world_regional_diffAbs_map = merge(rnaturalearth::ne_countries(scale = "smal
 pl_ghg_world_regional_diffAbs_map <- ggplot() +
   # color map by regions
   geom_sf(data = ag_water_consumption_regional_diffAbs_map, aes(fill = median_diff)) +
-  facet_wrap(. ~ scen_type, scales = 'fixed') +
+  facet_grid(scen_path ~ scen_type, scales = 'fixed') +
   scale_fill_gradient2(low = "darkred", high = "darkgreen",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste(MtCO[2], " difference","\n"))) +
@@ -1407,12 +1608,14 @@ ggsave(pl_ghg_world_regional_diffAbs_map, file = file.path(figures_path, paste0(
 
 
 #### PERCENT
-ghg_world_regional_diffPer <- merge(queries_all$ghg_regional %>%
+ghg_world_regional_diffPer <- merge(load_data('ghg_regional') %>%
+                                      dplyr::filter(scenario != 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                       dplyr::summarise(value = sum(value)) %>%
                                       dplyr::ungroup(),
-                                    queries_ref$ghg_regional %>%
+                                    load_data('ghg_regional') %>%
+                                      dplyr::filter(scenario == 'ref') %>%
                                       dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                       dplyr::group_by(region, year, scenario, scen_type) %>%
                                       dplyr::summarise(ref_value = sum(value)) %>%
@@ -1438,7 +1641,8 @@ ghg_world_regional_diffPer_map <- ghg_world_regional_diffPer %>%
   dplyr::rename('adm0_a3' = 'ISO 3') %>%
   # subset scen
   dplyr::mutate(scen_to_subset = paste0(scen_type, '_', scen_group)) %>%
-  dplyr::filter(scen_to_subset %in% c('SPP_all_90', 'SNR_all_10')) %>%
+  dplyr::filter(scen_to_subset %in% c('SPP_all_50', 'SNR_all_50', 'SPPNR_all_50',
+                                      'SPP_plus_50', 'SNR_plus_50', 'SPPNR_plus_50')) %>%
   dplyr::select(-scen_to_subset)
 
 ghg_world_regional_diffPer_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
@@ -1451,7 +1655,7 @@ ghg_world_regional_diffPer_map = merge(rnaturalearth::ne_countries(scale = "smal
 pl_ghg_world_regional_diffPer_map <- ggplot() +
   # color map by regions
   geom_sf(data = ghg_world_regional_diffPer_map, aes(fill = median_diff)) +
-  facet_wrap(. ~ scen_type, scales = 'fixed') +
+  facet_grid(scen_path ~ scen_type, scales = 'fixed') +
   scale_fill_gradient2(low = "darkred", high = "darkgreen",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("% difference","\n"))) +
@@ -1532,12 +1736,14 @@ ggsave(pl_ghg_world_regional_diffPer_heatmap, file = file.path(figures_path, pas
 
 
 #### ABSOLUTE WITH GHG TYPE
-ghgType_regional_diffAbs <- merge(queries_all$ghg_by_ghg_regional %>%
+ghgType_regional_diffAbs <- merge(load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario != 'ref') %>%
                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                     dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
                                     dplyr::summarise(value = sum(value)) %>%
                                     dplyr::ungroup(),
-                                  queries_ref$ghg_by_ghg_regional %>%
+                                  load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario == 'ref') %>%
                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                     dplyr::group_by(region, year, scenario, scen_type, group) %>%
                                     dplyr::summarise(ref_value = sum(value)) %>%
@@ -1578,12 +1784,14 @@ ggsave(pl_ghgType_regional_diffAbs_heatmap, file = file.path(figures_path, paste
 
 
 #### PERCENT WITH GHG TYPE
-ghgType_regional_diffPer <- merge(queries_all$ghg_by_ghg_regional %>%
+ghgType_regional_diffPer <- merge(load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario != 'ref') %>%
                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                     dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
                                     dplyr::summarise(value = sum(value)) %>%
                                     dplyr::ungroup(),
-                                  queries_ref$ghg_by_ghg_regional %>%
+                                  load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario == 'ref') %>%
                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                     dplyr::group_by(region, year, scenario, scen_type, group) %>%
                                     dplyr::summarise(ref_value = sum(value)) %>%
@@ -1630,8 +1838,7 @@ ggsave(pl_ghgType_regional_diffPer_heatmap, file = file.path(figures_path, paste
 
 
 
-pl_deaths_world <- ggplot(data = rbind(mort_queries_all,
-                                       mort_queries_ref) %>%
+pl_deaths_world <- ggplot(data = queries_mort %>%
                             dplyr::mutate(scen_type = toupper(scen_type)) %>%
                             # subset one pm25 and one o3 method
                             dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
@@ -1672,16 +1879,19 @@ ggsave(pl_deaths_world, file = file.path(figures_path,'sdg3_deaths_line.png'), w
 
 
 #### ABSOLUTE - REGIONAL
-deathsType_diffAbs_world = merge(mort_queries_all %>%
+deathsType_diffAbs_world = merge(queries_mort %>%
+                                   dplyr::filter(scenario != 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::mutate(pollutant = toupper(pollutant)) %>%
                                    dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                    dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, pollutant) %>%
                                    dplyr::summarise(value = sum(mort)) %>%
                                    dplyr::ungroup(),
-                                 mort_queries_ref %>%
+                                 queries_mort %>%
+                                   dplyr::filter(scenario == 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                   dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                    dplyr::group_by(year, scenario, scen_type, pollutant) %>%
                                    dplyr::summarise(ref_value = sum(mort)) %>%
                                    dplyr::ungroup() %>%
@@ -1694,16 +1904,18 @@ deathsType_diffAbs_world = merge(mort_queries_all %>%
   dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
   # compute median by scen
   dplyr::group_by(pollutant,year,scen_type,scen_path,scen_group) %>%
-  dplyr::summarise(median_diff = median(diff))
+  dplyr::summarise(median_diff = median(diff)) %>%
+  # units: from deaths to thousand (1e3) deaths
+  dplyr::mutate(median_diff = median_diff / 1e3)
 
 
 pl_deathsType_diffAbs_world_bars <- ggplot(data = deathsType_diffAbs_world %>% filter(year == selected_year),
                                            aes(x = median_diff, y = scen_path, fill = pollutant)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "fixed") +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
   scale_fill_manual(values = deaths_scenario_palette, name = 'Scenario') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
-  labs(y = '', x = expression(paste('Avoided premature deaths\n'))) +
+  labs(y = '', x = expression(paste('Thous. avoided premature deaths'))) +
   theme_light() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
@@ -1724,16 +1936,19 @@ ggsave(pl_deathsType_diffAbs_world_bars, file = file.path(figures_path, paste0('
 
 
 #### PERCENT
-deathsType_diffPer_world = merge(mort_queries_all %>%
+deathsType_diffPer_world = merge(queries_mort %>%
+                                   dplyr::filter(scenario != 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::mutate(pollutant = toupper(pollutant)) %>%
                                    dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                    dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, pollutant) %>%
                                    dplyr::summarise(value = sum(mort)) %>%
                                    dplyr::ungroup(),
-                                 mort_queries_ref %>%
+                                 queries_mort %>%
+                                   dplyr::filter(scenario == 'ref') %>%
                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                    dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                   dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                    dplyr::group_by(year, scenario, scen_type, pollutant) %>%
                                    dplyr::summarise(ref_value = sum(mort)) %>%
                                    dplyr::ungroup() %>%
@@ -1752,8 +1967,8 @@ deathsType_diffPer_world = merge(mort_queries_all %>%
 pl_deathsType_diffPer_world_bars <- ggplot(data = deathsType_diffPer_world %>% filter(year == selected_year),
                                            aes(x = median_diff, y = scen_path, fill = pollutant)) +
   geom_bar(stat = "identity", position = "identity") +
-  facet_grid(scen_group ~ scen_type, scales = "fixed") +
-  scale_fill_brewer(palette = 'Paired', name = '') +
+  facet_grid(scen_group ~ scen_type, scales = "free") +
+  # scale_fill_brewer(palette = 'Paired', name = '') +
   geom_vline(xintercept = 0, linewidth = 1.2) +
   labs(y = '', x = expression(paste('% avoided premature deaths'))) +
   theme_light() +
@@ -1780,19 +1995,24 @@ ggsave(pl_deathsType_diffPer_world_bars, file = file.path(figures_path, paste0('
 
 
 #### ABSOLUTE
-deaths_world_regional_diffAbs <- merge(mort_queries_all %>%
+deaths_world_regional_diffAbs <- merge(queries_mort %>%
+                                         dplyr::filter(scenario != 'ref') %>%
                                          dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::mutate(pollutant = toupper(pollutant)) %>%
                                          dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                          dplyr::group_by(year, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                          dplyr::summarise(value = sum(mort)) %>%
                                          dplyr::ungroup(),
-                                       mort_queries_ref %>%
+                                       queries_mort %>%
+                                         dplyr::filter(scenario == 'ref') %>%
                                          dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                         dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                          dplyr::group_by(year, region, scenario, scen_type) %>%
                                          dplyr::summarise(ref_value = sum(mort)) %>%
                                          dplyr::ungroup() %>%
                                          dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                       by = c('region', 'year')) %>%
+                                       by = c('region','year')) %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ref_value - value) %>%
@@ -1813,7 +2033,8 @@ deaths_world_regional_diffAbs_map <- deaths_world_regional_diffAbs %>%
   dplyr::rename('adm0_a3' = 'ISO3') %>%
   # subset scen
   dplyr::mutate(scen_to_subset = paste0(scen_type, '_', scen_group)) %>%
-  dplyr::filter(scen_to_subset %in% c('SPP_all_90', 'SNR_all_10')) %>%
+  dplyr::filter(scen_to_subset %in% c('SPP_all_50', 'SNR_all_50', 'SPPNR_all_50',
+                                      'SPP_plus_50', 'SNR_plus_50', 'SPPNR_plus_50')) %>%
   dplyr::select(-scen_to_subset)
 
 deaths_world_regional_diffAbs_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
@@ -1826,7 +2047,7 @@ deaths_world_regional_diffAbs_map = merge(rnaturalearth::ne_countries(scale = "s
 pl_deaths_world_regional_diffAbs_map <- ggplot() +
   # color map by regions
   geom_sf(data = deaths_world_regional_diffAbs_map, aes(fill = median_diff)) +
-  facet_wrap(. ~ scen_type, scales = 'fixed') +
+  facet_grid(scen_path ~ scen_type) +
   scale_fill_gradient2(low = "darkred", high = "darkgreen",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided premature deaths","\n"))) +
@@ -1850,19 +2071,24 @@ ggsave(pl_deaths_world_regional_diffAbs_map, file = file.path(figures_path, past
 
 
 #### PERCENT
-deaths_world_regional_diffPer <- merge(mort_queries_all %>%
+deaths_world_regional_diffPer <- merge(queries_mort %>%
+                                         dplyr::filter(scenario != 'ref') %>%
                                          dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::mutate(pollutant = toupper(pollutant)) %>%
                                          dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                          dplyr::group_by(year, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                          dplyr::summarise(value = sum(mort)) %>%
                                          dplyr::ungroup(),
-                                       mort_queries_ref %>%
+                                       queries_mort %>%
+                                         dplyr::filter(scenario == 'ref') %>%
                                          dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                         dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
                                          dplyr::group_by(year, region, scenario, scen_type) %>%
                                          dplyr::summarise(ref_value = sum(mort)) %>%
                                          dplyr::ungroup() %>%
                                          dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                       by = c('region', 'year')) %>%
+                                       by = c('region','year')) %>%
   # compute Per difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ifelse(ref_value == 0, 0, 100*(ref_value - value)/ref_value)) %>%
@@ -1883,7 +2109,8 @@ deaths_world_regional_diffPer_map <- deaths_world_regional_diffPer %>%
   dplyr::rename('adm0_a3' = 'ISO3') %>%
   # subset scen
   dplyr::mutate(scen_to_subset = paste0(scen_type, '_', scen_group)) %>%
-  dplyr::filter(scen_to_subset %in% c('SPP_all_90', 'SNR_all_10')) %>%
+  dplyr::filter(scen_to_subset %in% c('SPP_all_50', 'SNR_all_50', 'SPPNR_all_50',
+                                      'SPP_plus_50', 'SNR_plus_50', 'SPPNR_plus_50')) %>%
   dplyr::select(-scen_to_subset)
 
 deaths_world_regional_diffPer_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
@@ -1896,7 +2123,7 @@ deaths_world_regional_diffPer_map = merge(rnaturalearth::ne_countries(scale = "s
 pl_deaths_world_regional_diffPer_map <- ggplot() +
   # color map by regions
   geom_sf(data = deaths_world_regional_diffPer_map, aes(fill = median_diff)) +
-  facet_wrap(. ~ scen_type, scales = 'fixed') +
+  facet_grid(scen_path ~ scen_type) +
   scale_fill_gradient2(low = "darkred", high = "darkgreen",
                        mid = '#f7f7f7', midpoint = 0,
                        name = expression(paste("Avoided premature deaths","\n"))) +
@@ -1923,13 +2150,43 @@ ggsave(pl_deaths_world_regional_diffPer_map, file = file.path(figures_path, past
 
 
 #### ABSOLUTE
-pl_ghg_world_regional_diffAbs_heatmap <- ggplot(ghg_world_regional_diffAbs %>%
+deathsType_diffAbs_regional = merge(queries_mort %>%
+                                   dplyr::filter(scenario != 'ref') %>%
+                                   dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                   dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                   dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
+                                   dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, pollutant, region) %>%
+                                   dplyr::summarise(value = sum(mort)) %>%
+                                   dplyr::ungroup(),
+                                 queries_mort %>%
+                                   dplyr::filter(scenario == 'ref') %>%
+                                   dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                   dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                   dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
+                                   dplyr::group_by(year, scenario, scen_type, pollutant, region) %>%
+                                   dplyr::summarise(ref_value = sum(mort)) %>%
+                                   dplyr::ungroup() %>%
+                                   dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                 by = c('pollutant','year','region')) %>%
+  # compute Abs difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = ref_value - value) %>%
+  # create scen_group
+  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
+  # compute median by scen
+  dplyr::group_by(pollutant,year,scen_type,scen_path,scen_group,region) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  # units: from deaths to thousand (1e3) deaths
+  dplyr::mutate(median_diff = median_diff / 1e3)
+
+
+pl_deaths_world_regional_diffAbs_heatmap <- ggplot(deathsType_diffAbs_regional %>%
                                                   dplyr::filter(year == selected_year),
                                                 aes(x = scen_group, y = region, fill = median_diff)) +
   geom_tile() +
   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
-                       name = expression(paste(MtCO[2], " difference")), ) +
-  facet_wrap(. ~ scen_type) +
+                       name = expression(paste("Premature deaths\ndifference")), ) +
+  facet_grid(pollutant ~ scen_type) +
   # labs
   labs(y = '', x = 'Scenario type') +
   # theme
@@ -1943,19 +2200,47 @@ pl_ghg_world_regional_diffAbs_heatmap <- ggplot(ghg_world_regional_diffAbs %>%
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 30))
-ggsave(pl_ghg_world_regional_diffAbs_heatmap, file = file.path(figures_path, paste0('sdg13_ghg_abs_heatmap_',selected_year,'.png')),
+ggsave(pl_deaths_world_regional_diffAbs_heatmap, file = file.path(figures_path, paste0('sdg3_deaths_abs_heatmap_',selected_year,'.png')),
        width = 400, height = 600, units = 'mm', limitsize = FALSE)
 
 
 
 #### PERCENT
-pl_ghg_world_regional_diffPer_heatmap <- ggplot(ghg_world_regional_diffAbs %>%
+
+deathsType_diffPer_regional <- merge(queries_mort %>%
+                                         dplyr::filter(scenario != 'ref') %>%
+                                         dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                         dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
+                                         dplyr::group_by(year, pollutant, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
+                                         dplyr::summarise(value = sum(mort)) %>%
+                                         dplyr::ungroup(),
+                                       queries_mort %>%
+                                         dplyr::filter(scenario == 'ref') %>%
+                                         dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                         dplyr::mutate(pollutant = toupper(pollutant)) %>%
+                                         dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
+                                         dplyr::group_by(year, pollutant, region, scenario, scen_type) %>%
+                                         dplyr::summarise(ref_value = sum(mort)) %>%
+                                         dplyr::ungroup() %>%
+                                         dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                       by = c('region','year','pollutant')) %>%
+  # compute Per difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = ifelse(ref_value == 0, 0, 100*(ref_value - value)/ref_value)) %>%
+  # create scen_group
+  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
+  # compute median by scen
+  dplyr::group_by(region,year,scen_type,scen_path,scen_group,pollutant) %>%
+  dplyr::summarise(median_diff = median(diff))
+
+pl_deaths_world_regional_diffPer_heatmap <- ggplot(deathsType_diffPer_regional %>%
                                                   dplyr::filter(year == selected_year),
                                                 aes(x = scen_group, y = region, fill = median_diff)) +
   geom_tile() +
   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
                        name = '% difference') +
-  facet_wrap(. ~ scen_type) +
+  facet_grid(pollutant ~ scen_type) +
   # labs
   labs(y = '', x = 'Scenario type') + # , title = 'Percentual regional difference\nin water consumption'
   # theme
@@ -1969,104 +2254,8 @@ pl_ghg_world_regional_diffPer_heatmap <- ggplot(ghg_world_regional_diffAbs %>%
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 30))
-ggsave(pl_ghg_world_regional_diffPer_heatmap, file = file.path(figures_path, paste0('sdg13_ghg_per_heatmap_',selected_year,'.png')),
+ggsave(pl_deaths_world_regional_diffPer_heatmap, file = file.path(figures_path, paste0('sdg3_deaths_per_heatmap_',selected_year,'.png')),
        width = 400, height = 600, units = 'mm', limitsize = FALSE)
-
-
-
-#### ABSOLUTE WITH GHG TYPE
-ghgType_regional_diffAbs <- merge(queries_all$ghg_by_ghg_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
-                                    dplyr::summarise(value = sum(value)) %>%
-                                    dplyr::ungroup(),
-                                  queries_ref$ghg_by_ghg_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, group) %>%
-                                    dplyr::summarise(ref_value = sum(value)) %>%
-                                    dplyr::ungroup() %>%
-                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                  by = c('region','year','group')) %>%
-  # compute Abs difference between Reference and runs
-  dplyr::rowwise() %>%
-  dplyr::mutate(diff = ref_value - value) %>%
-  # create scen_group
-  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
-  # compute median by scen
-  dplyr::group_by(region,year,scen_type,scen_path,scen_group,group) %>%
-  dplyr::summarise(median_diff = median(diff))
-
-pl_ghgType_regional_diffAbs_heatmap <- ggplot(ghgType_regional_diffAbs %>%
-                                                dplyr::filter(year == selected_year),
-                                              aes(x = scen_group, y = region, fill = median_diff)) +
-  geom_tile() +
-  scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
-                       name = expression(paste(MtCO[2], " difference")), ) +
-  facet_grid(scen_type ~ group) +
-  # labs
-  labs(y = '', x = 'Scenario type') + #, title = 'Absolute regional difference\nin water consumption'
-  # theme
-  theme_light() +
-  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
-        strip.background = element_blank(),
-        strip.text = element_text(color = 'black', size = 35),
-        strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=25, angle = 90, hjust = 1, vjust = 0.25),
-        axis.text.y = element_text(size=25),
-        legend.text = element_text(size = 35),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 30))
-ggsave(pl_ghgType_regional_diffAbs_heatmap, file = file.path(figures_path, paste0('sdg13_ghgType_abs_heatmap_',selected_year,'.png')),
-       width = 750, height = 600, units = 'mm', limitsize = FALSE)
-
-
-#### PERCENT WITH GHG TYPE
-ghgType_regional_diffPer <- merge(queries_all$ghg_by_ghg_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
-                                    dplyr::summarise(value = sum(value)) %>%
-                                    dplyr::ungroup(),
-                                  queries_ref$ghg_by_ghg_regional %>%
-                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                    dplyr::group_by(region, year, scenario, scen_type, group) %>%
-                                    dplyr::summarise(ref_value = sum(value)) %>%
-                                    dplyr::ungroup() %>%
-                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                  by = c('region','year','group')) %>%
-  # compute Per difference between Reference and runs
-  dplyr::rowwise() %>%
-  dplyr::mutate(diff = 100*(ref_value - value)/ref_value) %>%
-  # create scen_group
-  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
-  # compute median by scen
-  dplyr::group_by(region,year,scen_type,scen_path,scen_group,group) %>%
-  dplyr::summarise(median_diff = median(diff))
-
-pl_ghgType_regional_diffPer_heatmap <- ggplot(ghgType_regional_diffPer %>%
-                                                dplyr::filter(year == selected_year),
-                                              aes(x = scen_group, y = region, fill = median_diff)) +
-  geom_tile() +
-  scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
-                       name = expression(paste("% difference")), ) +
-  facet_grid(scen_type ~ group) +
-  # labs
-  labs(y = '', x = 'Scenario type') + #, title = 'Perolute regional difference\nin water consumption'
-  # theme
-  theme_light() +
-  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
-        strip.background = element_blank(),
-        strip.text = element_text(color = 'black', size = 35),
-        strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=25, angle = 90, hjust = 1, vjust = 0.25),
-        axis.text.y = element_text(size=25),
-        legend.text = element_text(size = 35),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 30))
-ggsave(pl_ghgType_regional_diffPer_heatmap, file = file.path(figures_path, paste0('sdg13_ghgType_per_heatmap_',selected_year,'.png')),
-       width = 750, height = 600, units = 'mm', limitsize = FALSE)
-
-
-
 
 #####################################################################################
 #####################################################################################
@@ -2077,13 +2266,12 @@ food_subsector <- read.csv('inputs/nutrition/food_subsector.csv', skip = 3)
 
 #### econ. basket bill ---
 
-food_econ_basket_bill_regional = rbind(queries_all$food_consumption_regional,
-                                       queries_ref$food_consumption_regional) %>%
+food_econ_basket_bill_regional = load_data('food_consumption_regional') %>%
   dplyr::left_join(food_subsector %>%
                      dplyr::rename('technology' = 'subsector')) %>%
   # Pcal to kcal/capita/day
-  dplyr::left_join(rbind(queries_all$pop_all_regions,
-                         queries_ref$pop_all_regions), by = c("year", "scenario", "scen_type", "scen_path", "final_share", "peak_year", "slope", "region")) %>%
+  dplyr::left_join(load_data('pop_all_regions'),
+                   by = c("year", "scenario", "scen_type", "scen_path", "final_share", "peak_year", "slope", "region")) %>%
   # convert from Pcal to kcal/day
   dplyr::mutate(value = (value * 1e12) / (population * 365),
                 Units = "kcal/capita/day") %>%
@@ -2091,8 +2279,7 @@ food_econ_basket_bill_regional = rbind(queries_all$food_consumption_regional,
   dplyr::group_by(Units,region,scenario,scen_type,scen_path,final_share,peak_year,slope,year,supplysector) %>%
   dplyr::summarise(consumption = sum(value)) %>%
   # compute the expenditure by supplysector
-  dplyr::left_join(rbind(queries_all$food_demand_prices_regional,
-                         queries_ref$food_demand_prices_regional) %>%
+  dplyr::left_join(load_data('food_demand_prices_regional') %>%
                      dplyr::mutate(price = value * 1e3,
                                    units_price = '2005$/kcal/day') %>%
                      dplyr::select(-c(Units,value)) %>%
@@ -2179,7 +2366,9 @@ food_econ_basket_bill_regional_diff = merge(
   dplyr::arrange(desc(region))
 
 
-pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_diff %>% dplyr::filter(year == selected_year), aes(x = scen_group, y = region, fill = diff)) +
+pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_diff %>%
+                                                   dplyr::filter(year == selected_year),
+                                                 aes(x = scen_group, y = region, fill = diff)) +
   geom_tile() +
   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
                        name = '% difference') +
@@ -2198,7 +2387,7 @@ pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_
         legend.title = element_text(size = 40),
         title = element_text(size = 30))
 ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, paste0('sgd2_food_econ_basket_bill_regional_diff_',selected_year,'.png')),
-       width = 400, height = 600, units = 'mm', limitsize = FALSE)
+       width = 600, height = 600, units = 'mm', limitsize = FALSE)
 
 
 #####################################################################################
@@ -2234,6 +2423,7 @@ mder <- read.csv(paste0("inputs/nutrition/MDER.csv")) %>%
 colnames(mder) = c('variable','mder_units','mder','std','min','max')
 GramProteinFatPerKcal <- read.csv("inputs/nutrition/GramProteinFatPerKcal.csv", skip = 3)
 micronutrients <- read.csv('inputs/nutrition/rni.csv', skip = 3)
+weighted_pop_sex_age <- get(load('inputs/nutrition/weighted_pop_sex_age.RData'))
 
 # TODO: check with FAO data
 
@@ -2242,13 +2432,11 @@ micronutrients <- read.csv('inputs/nutrition/rni.csv', skip = 3)
 # units: kcal/cap/day
 # by region
 # get total consumption in calories
-dietary_energy_supply <- rbind(queries_all$food_consumption_regional,
-                               queries_ref$food_consumption_regional) %>%
+dietary_energy_supply <- load_data('food_consumption_regional') %>%
   group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, year) %>%
   # aggregate staple and non-staple calories
   summarize(value = sum(value)) %>%
-  left_join(rbind(queries_all$pop_all_regions,
-                  queries_ref$pop_all_regions),
+  left_join(load_data('pop_all_regions'),
             by = c("year", "scenario", "scen_type", "scen_path", "final_share", "peak_year", "slope", "region")) %>%
   # convert from Pcal to kcal/cap/day
   mutate(value = (value * 1e12) / (population * 365),
@@ -2257,8 +2445,7 @@ dietary_energy_supply <- rbind(queries_all$food_consumption_regional,
 
 ## share of dietary energy supply from staples ---
 # find consumption of staple and non-staple Pcal
-staples_vs_nonstaples_Pcal <- rbind(queries_all$food_consumption_regional,
-                                    queries_ref$food_consumption_regional) %>%
+staples_vs_nonstaples_Pcal <- load_data('food_consumption_regional') %>%
   select(-nestingSector1) %>% select(-nestingSector2) %>% select(-nestingSector3) %>%
   rename(subsector = technology) %>%
   left_join_error_no_match(food_subsector, by = 'subsector') %>%
@@ -2332,8 +2519,7 @@ weighted_pop <- ssp_data_final %>%
   group_by(country_name, year) %>%
   mutate(weight = total_pop / total_regional_pop) %>%
   # get GCAM population
-  left_join(rbind(queries_all$pop_all_regions,
-                  queries_ref$pop_all_regions),
+  left_join(load_data('pop_all_regions'),
             by = c("region", "year"), relationship = "many-to-many") %>%
   # compute GCAM population by sex and age for each country
   mutate(weighted_demographics = demo_share * weight * population)
@@ -2343,6 +2529,7 @@ weighted_pop_sex_age <- weighted_pop %>%
   group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, variable, year, region) %>%
   # sum the weighted averages for each country into GCAM regions
   summarize(pop_sex_age = sum(weighted_demographics))
+# save(weighted_pop_sex_age, file = file.path('inputs','nutrition','weighted_pop_sex_age.RData'))
 
 # join with MDER data, calculate caloric requirements by sex and age
 adesa_denominator <- weighted_pop_sex_age %>%
@@ -2404,10 +2591,10 @@ ggsave(pl, filename = file.path(figures_path, 'sdg3_adesa_world.png'),
 # check for ADESA trends and get rid of the scenarios with a down-going ADESA
 pl = ggplot(adesa %>%
               dplyr::mutate(scen_type = toupper(scen_type)) %>%
-              dplyr::group_by(scen_type, scenario, year) %>%
+              dplyr::group_by(scen_type, scenario, year, region) %>%
               dplyr::mutate(adesa = mean(adesa)) %>%
               dplyr::ungroup() %>%
-              dplyr::group_by(scen_type, year) %>%
+              dplyr::group_by(scen_type, year, region) %>%
               dplyr::mutate(mean_adesa = mean(adesa),
                             min_value = min(adesa),
                             max_value = max(adesa)) %>%
@@ -2434,10 +2621,10 @@ ggsave(pl, file = file.path(figures_path, 'sdg3_adesa_reg_freeS.png'),
        width = 2000, height = 2000, units = 'mm', limitsize = F)
 pl = ggplot(adesa %>%
               dplyr::mutate(scen_type = toupper(scen_type)) %>%
-              dplyr::group_by(scen_type, scenario, year) %>%
+              dplyr::group_by(scen_type, scenario, year, region) %>%
               dplyr::mutate(adesa = mean(adesa)) %>%
               dplyr::ungroup() %>%
-              dplyr::group_by(scen_type, year) %>%
+              dplyr::group_by(scen_type, year, region) %>%
               dplyr::mutate(mean_adesa = mean(adesa),
                             min_value = min(adesa),
                             max_value = max(adesa)) %>%
@@ -2466,14 +2653,12 @@ ggsave(pl, file = file.path(figures_path, 'sdg3_adesa_reg_fixedS.png'),
 
 ########################### MACRONUTRIENTS analysis ###########################
 ## Macronutrient by Kcal of food consumption
-macronutrients_basic = rbind(queries_all$food_consumption_regional,
-                             queries_ref$food_consumption_regional) %>%
+macronutrients_basic = load_data('food_consumption_regional') %>%
   # rename columns
   rename('GCAM_commodity' = 'technology') %>%
   rename('consumption' = 'value') %>%
   # aggregate population data
-  left_join(rbind(queries_all$pop_all_regions,
-                  queries_ref$pop_all_regions),
+  left_join(load_data('pop_all_regions'),
             by = c("year", "scenario", "scen_type", "scen_path",
                    "final_share", "peak_year", "slope", "region"),
             multiple = "all") %>%
@@ -2623,12 +2808,10 @@ ggsave(pl_macronutrients_regional, file = file.path(figures_path, 'sdg3_macronut
 #
 #
 # # Total micronutrients consumption
-# micronutrients_consumption <- left_join(rbind(queries_all$food_consumption_regional,
-#                                               queries_ref$food_consumption_regional) %>%
+# micronutrients_consumption <- left_join(load_data('food_consumption_regional') %>%
 #                                          # TODO: find data of nutritional values of FiberCrop (introduce it in the average_data)
 #                                          filter(technology != 'FiberCrop') %>%
-#                                          left_join(rbind(queries_all$pop_all_regions,
-#                                                          queries_ref$pop_all_regions),
+#                                          left_join(load_data('pop_all_regions'),
 #                                                    by = c("year", "scenario", "scen_type", "scen_path",
 #                                                           "final_share", "peak_year", "slope", "region")) %>%
 #                                          # convert from Pcal to kcal/day
@@ -2705,20 +2888,20 @@ pl_micronutrients_diffPer_regional_bars <- ggplot() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
         panel.border = element_blank(),
-        plot.background = element_rect(fill = "transparent",
+        plot.background = element_rect(fill = "white",
                                        colour = 'white',linewidth = 0),
-        panel.background = element_rect(fill = "transparent"),
+        panel.background = element_rect(fill = "white"),
         legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.text = element_text(size = 20, color = 'black'),
-        strip.background =element_rect(fill="transparent"),
+        strip.background =element_rect(fill="white"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
-  guides(fill = guide_legend(nrow = 3)) +
-  # title
-  labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Behavior change scen'))
+  guides(fill = guide_legend(nrow = 3))
+  # # title
+  # labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Behavior change scen'))
 ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg_fixedS.png'),
        width = 1000, height = 1000, units = 'mm', limitsize = F)
 
@@ -2739,20 +2922,20 @@ pl_micronutrients_diffPer_regional_bars <-  ggplot() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
         panel.border = element_blank(),
-        plot.background = element_rect(fill = "transparent",
+        plot.background = element_rect(fill = "white",
                                        colour = 'white',linewidth = 0),
-        panel.background = element_rect(fill = "transparent"),
+        panel.background = element_rect(fill = "white"),
         legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.text = element_text(size = 20, color = 'black'),
-        strip.background =element_rect(fill="transparent"),
+        strip.background =element_rect(fill="white"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
-  guides(fill = guide_legend(nrow = 3)) +
-  # title
-  labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Reference scen'))
+  guides(fill = guide_legend(nrow = 3))
+  # # title
+  # labs(title = paste('Percentual difference between intake and RNI in', selected_year, 'with Reference scen'))
 ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg_freeS.png'),
        width = 1000, height = 1000, units = 'mm', limitsize = F)
 
@@ -2789,20 +2972,20 @@ pl_micronutrients_diffPer_world <- ggplot() +
   theme(panel.grid.major.y = element_line(color = 'grey20'),
         panel.grid.major.x = element_blank(),
         panel.border = element_blank(),
-        plot.background = element_rect(fill = "transparent",
+        plot.background = element_rect(fill = "white",
                                        colour = 'white',linewidth = 0),
-        panel.background = element_rect(fill = "transparent"),
+        panel.background = element_rect(fill = "white"),
         legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
         strip.text = element_text(size = 40, color = 'black'),
-        strip.background =element_rect(fill="transparent"),
+        strip.background =element_rect(fill="white"),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
-  guides(fill = guide_legend(nrow = 3)) +
-  # title
-  labs(title = paste('Percentual difference between intake\nby scenario and Ref in', selected_year))
+  guides(fill = guide_legend(nrow = 3))
+  # # title
+  # labs(title = paste('Percentual difference between intake\nby scenario and Ref in', selected_year))
 ggsave(pl_micronutrients_diffPer_world, file = file.path(figures_path, 'sdg3_micronutrients_world.png'),
        width = 1000, height = 1000, units = 'mm', limitsize = F)
 
