@@ -92,3 +92,4 @@ diets_analysis/*.csv
 diets_analysis/*.xlsx
 output/REF_IAMCOMPACT+XIN.xml
 output/snr_all_50_x0_2035_k_0.805_v10.xml
+diets_analysis/inputs/nutrition/micronutrients_computed.csv
