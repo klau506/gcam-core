@@ -325,6 +325,30 @@ load_queries = function(queries_name) {
       update_query(., 'basin_level_available_runoff_regional')
 
 
+    water_withdrawals_basin_runoff_world <<- rgcam::getQuery(prj, "Water Withdrawals by Basin (Runoff)") %>%
+      group_by(region, Units, scenario, year, subresource, water) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_withdrawals_basin_runoff_world')
+
+    water_withdrawals_basin_runoff_regional <<- rgcam::getQuery(prj, "Water Withdrawals by Basin (Runoff)") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_withdrawals_basin_runoff_regional')
+
+
+    water_withdrawals_basin_groundwater_world <<- rgcam::getQuery(prj, "Water Withdrawals by Basin (Groundwater)") %>%
+      group_by(region, Units, scenario, year, subresource, groundwater) %>%
+      summarise(value = sum(value)) %>%
+      ungroup() %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_withdrawals_basin_groundwater_world')
+
+    water_withdrawals_basin_groundwater_regional <<- rgcam::getQuery(prj, "Water Withdrawals by Basin (Groundwater)") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'water_withdrawals_basin_groundwater_regional')
+
+
     ###### ==== emissions ====
     GWP <<- readr::read_csv(file.path("diets_analysis","inputs","mappings/GWP_AR5.csv"))
 
@@ -583,6 +607,10 @@ load_queries = function(queries_name) {
     for (q in list_queries) {
       dt[[q]] = get(q)
     }
+    # if (file.exists(file.path("diets_analysis","outputs",queries_name))) {
+    #   tmp <- get(load(file = file.path("diets_analysis","outputs",queries_name)))
+    #   dt <- append(dt, tmp)
+    # }
     save(dt, file = file.path("diets_analysis","outputs",queries_name))
 
     # return(dt)
