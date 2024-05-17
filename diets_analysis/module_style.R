@@ -49,6 +49,13 @@ names(macronutrients_scenario.labs) = c("gProteinPerCapita.SNR", "gFatPerCapita.
                                         "gProteinPerCapita.SPP", "gFatPerCapita.SPP",
                                         'gProteinPerCapita.REF', 'gFatPerCapita.REF')
 
+macronutrients_palette = c(
+  'gProteinPerCapita' = '#500f96',
+  'gFatPerCapita' = '#a61230'
+)
+macronutrients.labs <- c('Protein',"Fat")
+names(macronutrients.labs) = c("gProteinPerCapita", "gFatPerCapita")
+
 micronutrients_scenario_palette = c(
   'calcium' = '#a63603',
   'iron' = '#e6550d',
