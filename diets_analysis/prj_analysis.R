@@ -518,7 +518,7 @@ FIG_LANDWATER_land_indicator_global_forestLand_map <- ggplot() +
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 30))
 ggsave(FIG_LANDWATER_land_indicator_global_forestLand_map,
-       file = file.path(figures_path, paste0('FIG_LANDWATER_land_indicator_global_forestLand_map',year_fig,'.png')),
+       file = file.path(figures_path, paste0('FIG_LANDWATER_sdg15_land_indicator_global_forestLand_map',year_fig,'.png')),
        width = 500, height = 300, units = 'mm')
 
 
@@ -755,20 +755,17 @@ ggsave(pl_land_indicator_global_managementLand_map,
 #### ABSOLUTE
 land_use_diffAbs_world = load_data('land_use_world') %>%
   aggregate_land_use_type() %>%
-  # select scenarios to have a matching plot
-  dplyr::filter(scenario %in% c('spp_all_50_x0_2035_k_0.805', 'snr_all_50_x0_2035_k_0.805',
-                                'sppnr_all_50_x0_2035_k_0.805', 'ref')) %>%
-  # compute median by land_use_type
+  # compute total area by land_use_type
   dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
   dplyr::summarise(value = sum(value)) %>%
   dplyr::ungroup() %>%
   # compute difference between Reference and runs
-  dplyr::group_by(Units, land_use_type, year) %>%
-  dplyr::mutate(diff = value - value[scenario == "ref"]) %>%
+  dplyr::group_by(scen_type, Units, land_use_type, year) %>%
+  dplyr::summarise(value = median(value)) %>%
   dplyr::ungroup() %>%
-  dplyr::select(-value) %>%
+  dplyr::mutate(diff = value - value[scen_type == "ref"]) %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
-  dplyr::filter(scenario != 'ref')
+  dplyr::filter(scen_type != 'REF')
 
 
 pl_land_use_diffAbs_world = ggplot(data = land_use_diffAbs_world) +
@@ -797,24 +794,23 @@ ggsave(pl_land_use_diffAbs_world, file = file.path(figures_path,paste0('sdg15_la
 #### PERCENTAGE
 land_use_diffPer_world = load_data('land_use_world') %>%
   aggregate_land_use_type() %>%
-  # select scenarios to have a matching plot
-  dplyr::filter(scenario %in% c('spp_all_50_x0_2035_k_0.805', 'snr_all_50_x0_2035_k_0.805',
-                                'sppnr_all_50_x0_2035_k_0.805', 'ref')) %>%
-  # compute median by land_use_type
+  # compute total area by land_use_type
   dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
   dplyr::summarise(value = sum(value)) %>%
   dplyr::ungroup() %>%
   # compute difference between Reference and runs
+  dplyr::group_by(scen_type, Units, land_use_type, year) %>%
+  dplyr::summarise(value = median(value)) %>%
+  dplyr::ungroup() %>%
   dplyr::group_by(Units, land_use_type, year) %>%
-  dplyr::mutate(ref = value[scenario == "ref"]) %>%
+  dplyr::mutate(ref = value[scen_type == "ref"]) %>%
   dplyr::ungroup() %>%
   dplyr::rowwise() %>%
   dplyr::mutate(diff = ifelse(ref != 0, 100*(value - ref)/ref, 0)) %>%
   dplyr::ungroup() %>%
   dplyr::select(-value) %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
-  dplyr::filter(scenario != 'ref')
-
+  dplyr::filter(scen_type != 'REF')
 
 pl_land_use_diffPer_world = ggplot(data = land_use_diffPer_world) +
   geom_area(aes(x = year, y = diff, fill = land_use_type), alpha = 1) +  # Median area
@@ -896,7 +892,7 @@ pl_land_use_diffAbs_world_bars <- ggplot(data = land_use_diffAbs_world %>%
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_land_use_diffAbs_world_bars, file = file.path(figures_path, paste0('sdg13_landType_abs_',year_fig,'.png')), width = 475, height = 500, units = 'mm')
+ggsave(pl_land_use_diffAbs_world_bars, file = file.path(figures_path, paste0('sdg15_landType_abs_',year_fig,'.png')), width = 475, height = 500, units = 'mm')
 
 
 
@@ -952,7 +948,7 @@ pl_land_use_diffPer_world_bars <- ggplot(data = land_use_diffPer_world %>%
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-ggsave(pl_land_use_diffPer_world_bars, file = file.path(figures_path, paste0('sdg13_landType_per_',year_fig,'.png')), width = 475, height = 500, units = 'mm')
+ggsave(pl_land_use_diffPer_world_bars, file = file.path(figures_path, paste0('sdg15_landType_per_',year_fig,'.png')), width = 475, height = 500, units = 'mm')
 
 
 
