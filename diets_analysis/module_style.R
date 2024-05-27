@@ -17,13 +17,13 @@ land_use_scenario_palette =
   c('Cropland' = 'chocolate4',
     'Pasture' = '#E6AB02',
     'Forest' = 'darkgreen',
-    'Shrubs & Grass' = '#66A61E',
+    'Shrub & Grass' = '#66A61E',
     'Other Natural' = '#b1e378')
 land_use_order_palette =
   c('Cropland',
     'Pasture',
     'Forest',
-    'Shrubs & Grass',
+    'Shrub & Grass',
     'Other Natural')
 
 
@@ -121,6 +121,18 @@ food_scenario_palette = c(
 
   'Seafood|Fish' = '#3ebce6'
 )
+
+
+
+ghg_emiss = c(
+  'CH4' = '#3ebce6',
+  'CO2' = '#002a9c',
+  'F-Gas' = '#74c476',
+  'LUC CO2' = '#31a354',
+  'N2O' = '#A00CC8'
+)
+ghg_emiss.labs <- c('CH4', "CO2", "F-Gas", 'LUC CO2', 'N2O')
+names(ghg_emiss.labs) = c('CH4', "CO2", "F-Gas", 'LUC CO2', 'N2O')
 
 
 # creates color palette: "random" or from palette colors for all scenarios, except for reference one, which is black
