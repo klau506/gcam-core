@@ -3251,7 +3251,7 @@ pl_food_econ_basket_bill_world = ggplot(data = food_econ_basket_bill_regional %>
                                           dplyr::summarise(median_value = median(expenditure),
                                                            min_value = min(expenditure),
                                                            max_value = max(expenditure))) +
-  geom_bar(aes(x = scen_type, y = median_value, fill = scen_type), stat = 'identity', alpha = 0.3) +
+  geom_bar(aes(x = scen_type, y = median_value, fill = scen_type), stat = 'identity', alpha = 1) +
   geom_errorbar(aes(x = scen_type, ymin = min_value, ymax = max_value), width=0.3, colour="#757575", alpha=1, linewidth=1.2) +
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
   scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
@@ -3277,7 +3277,7 @@ pl_food_econ_basket_bill_regional = ggplot(data = food_econ_basket_bill_regional
                                              dplyr::summarise(median_value = median(expenditure),
                                                               min_value = min(expenditure),
                                                               max_value = max(expenditure))) +
-  geom_bar(aes(x = scen_type, y = median_value, fill = scen_type), stat = 'identity', alpha = 0.3) +
+  geom_bar(aes(x = scen_type, y = median_value, fill = scen_type), stat = 'identity', alpha = 0.75) +
   geom_errorbar(aes(x = scen_type, ymin = min_value, ymax = max_value), width=0.3, colour="#757575", alpha=1, linewidth=1.2) +
   # facet
   facet_wrap(. ~ region, scales = 'fixed') +
@@ -3300,6 +3300,68 @@ ggsave(pl_food_econ_basket_bill_regional, file = file.path(figures_path, paste0(
        width = 1000, height = 1000, units = 'mm', limitsize = FALSE)
 
 
+#### PERCENT REGIONAL diff
+food_econ_basket_bill_regional_ref = food_econ_basket_bill_regional %>%
+  dplyr::filter(scenario == 'ref') %>%
+  dplyr::select(units_expenditure, region, year, ref_expenditure = expenditure)
+food_econ_basket_bill_regional_diff = merge(
+  food_econ_basket_bill_regional %>%
+    dplyr::filter(scenario != 'ref'),
+  food_econ_basket_bill_regional_ref,
+  by = c('units_expenditure', 'region', 'year')
+) %>%
+  dplyr::mutate(diff = 100*(expenditure - ref_expenditure)/ref_expenditure) %>%
+  dplyr::group_by(region, year, scen_type) %>%
+  dplyr::summarise(median_diff = median(diff),
+                   min_diff = min(diff),
+                   max_diff = max(diff)) %>%
+  dplyr::ungroup() %>%
+  dplyr::arrange(desc(region)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
+
+
+pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_diff %>%
+                                                   dplyr::filter(year == year_fig)) +
+  geom_bar(aes(x = region, y = median_diff, fill = scen_type), stat = 'identity', alpha = 0.75) +
+  geom_errorbar(aes(x = region, ymin = min_diff, ymax = max_diff), width=0.3, colour="#757575", alpha=1, linewidth=1.2) +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                    labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
+                    name = 'Scenario') +
+  facet_wrap(. ~ scen_type) +
+  # labs
+  labs(y = 'Change in daily expenditure per capita compared to Reference [%]', x = '') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=27.5, angle = 90, hjust = 1, vjust = 0.25),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 30))
+ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, paste0('sgd2_food_econ_basket_bill_regional_diff_',year_fig,'.png')),
+       width = 950, height = 500, units = 'mm', limitsize = FALSE)
+ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, 'paper', paste0('sgd2_food_econ_basket_bill_regional_diff_',year_fig,'.pdf')),
+       width = 950, height = 500, units = 'mm', limitsize = FALSE)
+
+dataa <- merge(
+  food_econ_basket_bill_regional %>%
+    dplyr::filter(scenario != 'ref'),
+  food_econ_basket_bill_regional %>%
+    dplyr::filter(scenario == 'ref') %>%
+    dplyr::select(units_expenditure, region, year, ref_expenditure = expenditure),
+  by = c('units_expenditure', 'region', 'year')
+) %>%
+  dplyr::mutate(diff = 100*(expenditure - ref_expenditure)/ref_expenditure) %>%
+  dplyr::group_by(year, scen_type) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::ungroup()
+
+
+#### HEATMAPS =======================================================
 #### PERCENT REGIONAL diff
 food_econ_basket_bill_regional_ref = food_econ_basket_bill_regional %>%
   dplyr::filter(scenario == 'ref') %>%
