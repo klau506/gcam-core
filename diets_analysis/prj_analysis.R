@@ -3555,46 +3555,50 @@ weighted_pop_sex_age <- weighted_pop %>%
   summarize(pop_sex_age = sum(weighted_demographics))
 # save(weighted_pop_sex_age, file = file.path('inputs','nutrition','weighted_pop_sex_age.RData'))
 
-# join with MDER data, calculate caloric requirements by sex and age
-adesa_denominator <- weighted_pop_sex_age %>%
-  left_join(mder, by = "variable") %>%
-  select(-std) %>%
-  group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, variable, year, region) %>%
-  # compute a range because of differing physical activity levels
-  summarize(cal_req_x_pop = mder * pop_sex_age,
-            min_cal_req_x_pop = min * pop_sex_age,
-            max_cal_req_x_pop = max * pop_sex_age) %>%
-  # aggregate caloric requirements to get total regional values
-  group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, year) %>%
-  summarize(denominator_sum = sum(cal_req_x_pop),
-            min_denominator_sum = sum(min_cal_req_x_pop),
-            max_denominator_sum = sum(max_cal_req_x_pop)) %>%
-  mutate(year = as.numeric(year)) %>%
-  filter(year <= MODEL_HALF_CENTURY_YEAR)
+# # join with MDER data, calculate caloric requirements by sex and age
+# adesa_denominator <- weighted_pop_sex_age %>%
+#   left_join(mder, by = "variable") %>%
+#   select(-std) %>%
+#   group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, variable, year, region) %>%
+#   # compute a range because of differing physical activity levels
+#   summarize(cal_req_x_pop = mder * pop_sex_age,
+#             min_cal_req_x_pop = min * pop_sex_age,
+#             max_cal_req_x_pop = max * pop_sex_age) %>%
+#   # aggregate caloric requirements to get total regional values
+#   group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, year) %>%
+#   summarize(denominator_sum = sum(cal_req_x_pop),
+#             min_denominator_sum = sum(min_cal_req_x_pop),
+#             max_denominator_sum = sum(max_cal_req_x_pop)) %>%
+#   mutate(year = as.numeric(year)) %>%
+#   filter(year <= MODEL_HALF_CENTURY_YEAR)
+#
+# # add in regional calorie info, calculate ADESA
+# adesa <- left_join(adesa_denominator, dietary_energy_supply) %>%
+#   group_by(year, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
+#   reframe(adesa = (value / denominator_sum) * population * 100, # convert to unitless and percentage
+#           min_adesa = (value / min_denominator_sum) * population * 100,
+#           max_adesa = (value / max_denominator_sum) * population * 100,
+#           .groups = "keep") %>%
+#   ungroup()
+# save(adesa, file = file.path('output','datasets','adesa.RData'))
+#
+# adesa_world <- adesa %>%
+#   left_join(population_weights, by = 'region') %>%
+#   rowwise() %>%
+#   mutate(adesa = weight * adesa,
+#          min_adesa = weight * min_adesa,
+#          max_adesa = weight * max_adesa) %>%
+#   group_by(year,scenario,scen_type,scen_path,final_share,peak_year,slope) %>%
+#   summarise(adesa = sum(adesa),
+#             min_adesa = sum(min_adesa),
+#             max_adesa = sum(max_adesa)) %>%
+#   ungroup()
+# save(adesa_world, file = file.path('output','datasets','adesa_world.RData'))
 
-# add in regional calorie info, calculate ADESA
-adesa <- left_join(adesa_denominator, dietary_energy_supply) %>%
-  group_by(year, region, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
-  reframe(adesa = (value / denominator_sum) * population * 100, # convert to unitless and percentage
-          min_adesa = (value / min_denominator_sum) * population * 100,
-          max_adesa = (value / max_denominator_sum) * population * 100,
-          .groups = "keep") %>%
-  ungroup()
+load(file.path('output','datasets','adesa.RData'))
+load(file.path('output','datasets','adesa_world.RData'))
 
-adesa_world <- adesa %>%
-  left_join(population_weights, by = 'region') %>%
-  rowwise() %>%
-  mutate(adesa = weight * adesa,
-         min_adesa = weight * min_adesa,
-         max_adesa = weight * max_adesa) %>%
-  group_by(year,scenario,scen_type,scen_path,final_share,peak_year,slope) %>%
-  summarise(adesa = sum(adesa),
-            min_adesa = sum(min_adesa),
-            max_adesa = sum(max_adesa)) %>%
-  ungroup()
-
-
-########################### ADESA plot ###########################
+########################### ADESA plots ###########################
 
 pl = ggplot(adesa_world %>%
               dplyr::mutate(scen_type = toupper(scen_type)) %>%
@@ -3677,6 +3681,116 @@ ggsave(pl, file = file.path(figures_path, 'sdg3_adesa_reg_fixedS.png'),
        width = 2000, height = 2000, units = 'mm', limitsize = F)
 
 
+#### ADESA LOLIPOP PLOT =======================================
+
+adesa_to_plot <- adesa %>%
+  dplyr::filter(year == year_fig) %>%
+  dplyr::group_by(region,scen_type,year) %>%
+  dplyr::summarise(adesa = median(adesa)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR'))) %>%
+  dplyr::group_by(region, year) %>%
+  dplyr::mutate(min_value = min(adesa),
+                max_value = max(adesa)) %>%
+  dplyr::ungroup()
+
+adesa_to_plot_h <- adesa_to_plot %>%
+  dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America\nand Caribbean',
+                                ifelse(region == 'European Free Trade Association', 'European Free Trade\nAssociation',
+                                       ifelse(region == 'South America_Northern', 'South America\nNorthern',
+                                              ifelse(region == 'South America_Southern', 'South America\nSouthern', region))))) %>%
+  dplyr::mutate(region = factor(region, levels = rev(sort(unique(region)))))
+pl_adesa_lolipop <- ggplot() +
+  geom_segment(data = adesa_to_plot_h %>%
+                 select(region, min_value, max_value) %>%
+                 unique(),
+               aes(x = region, xend = region, y = min_value, yend = max_value), color="black") +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'SPP'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'SNR'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'SPPNR'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'REF'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 8, alpha = 0.95, shape = 23) +
+  geom_hline(yintercept = 100, linetype = 'dashed', color = 'red') +
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                     labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
+                     name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                    labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
+                    name = 'Scenario') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=27.5),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        plot.background = element_rect(fill = "white", color = NA),
+        axis.title = element_text(size = 35)) +
+  labs(x = '', y = 'ADESA') +
+  guides(shape = 'none', color = 'none') +
+  coord_flip()
+ggsave(pl_adesa_lolipop, filename = file.path(figures_path, 'pl_adesa_lolipop.png'),
+       width = 450, height = 650, units = 'mm', limitsize = F)
+
+
+adesa_to_plot_h <- adesa_to_plot %>%
+  dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America\nand Caribbean',
+                                ifelse(region == 'European Free Trade Association', 'European Free Trade\nAssociation',
+                                       ifelse(region == 'South America_Northern', 'South America\nNorthern',
+                                              ifelse(region == 'South America_Southern', 'South America\nSouthern', region)))))
+pl_adesa_lolipop_h <- ggplot() +
+  geom_segment(data = adesa_to_plot_h %>%
+                 select(region, min_value, max_value) %>%
+                 unique(),
+               aes(x = region, xend = region, y = min_value, yend = max_value), color="black") +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'SPP'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'SNR'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'SPPNR'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = adesa_to_plot_h %>%
+               dplyr::filter(scen_type == 'REF'),
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 8, alpha = 0.95, shape = 23) +
+  geom_hline(yintercept = 100, linetype = 'dashed', color = 'red') +
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                     labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
+                     name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                    labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
+                    name = 'Scenario') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=27.5, angle = 90, hjust = 1, vjust = 0.25),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        plot.background = element_rect(fill = "white", color = NA),
+        axis.title = element_text(size = 35)) +
+  labs(x = '', y = 'ADESA') +
+  guides(shape = 'none', color = 'none')
+ggsave(pl_adesa_lolipop_h, filename = file.path(figures_path, 'pl_adesa_lolipop_h.png'),
+       width = 750, height = 550, units = 'mm', limitsize = F)
+
+
 ########################### MACRONUTRIENTS analysis ###########################
 ### compute % of macronutrients in the total energy intake
 ## Macronutrient by Kcal of food consumption
@@ -3696,7 +3810,7 @@ macronutrients_en_basic = load_data('food_consumption_regional') %>%
               # match regions' id with regions' name
               left_join_keep_first_only(regions_key %>% select(-1), by = 'GCAM_region_ID'),
             by = c('region','GCAM_commodity'), multiple = "all") %>%
-  # compute total Protein and Fat [g/capita/day]
+  # compute total Protein and Fat [kcal/capita/day]
   mutate(kcalProteinPerCapita = consumptionPerCapita * gProteinPerKcal * Kcalperg,
          kcalFatPerCapita = consumptionPerCapita * gFatPerKcal * Kcalperg) %>%
   # aggregate food commodities
@@ -3842,9 +3956,11 @@ macronutrient_diff_global <- merge(
   dplyr::ungroup()
 
 
+
+
+
 # FIG - macronutrients 2050
 data_fig1 <- macronutrients_basic_world %>%
-  filter(year == year_fig) %>%
   mutate(scen_type = toupper(scen_type)) %>%
   tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient')
 data_fig2 <- merge(data_fig1 %>% filter(scenario == 'ref') %>%
@@ -3858,9 +3974,12 @@ data_fig2 <- merge(data_fig1 %>% filter(scenario == 'ref') %>%
             max_value = max(diff),
             median_value = median(diff)) %>%
   ungroup() %>%
-  mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita")))
+  mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita"))) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR')))
 
-FIG_NUTRITION_macronutrients_world = ggplot(data = data_fig2) +
+
+FIG_NUTRITION_macronutrients_world = ggplot(data = data_fig2 %>%
+                                              dplyr::filter(year == year_fig)) +
   geom_bar(aes(fill=macronutrient, y=median_value, x=0, group = interaction(macronutrient, scen_type)),
            position="dodge", stat="identity") +
   geom_errorbar(aes(x=0, y=median_value, ymin = min_value, ymax = max_value, group = interaction(macronutrient, scen_type)),
@@ -3889,6 +4008,29 @@ ggsave(FIG_NUTRITION_macronutrients_world, filename = file.path(figures_path, 'F
 # percentual diff with ref (median, min, max) of the macronutrients intake of the World. The values were computed by g/capita/day
 # by region and aggregated using the population-weight to have a "standard" intake
 
+## FIG - macronutrients across time
+FIG_NUTRITION_macronutrients_time_world = ggplot(data = data_fig2 %>%
+                                     dplyr::filter(year >= year_s, year <= year_f)) +
+  geom_area(aes(x = year, y = median_value, fill = macronutrient), alpha = 1) +  # Median area
+  geom_hline(aes(yintercept = 0)) +
+  facet_wrap(. ~ scen_type) +
+  scale_fill_manual(values = macronutrients_palette, name = 'Macronutrient',
+                    labels = macronutrients.labs) +
+  # labs
+  labs(y = expression(paste('Percentual per capita intake change compared to Reference')), x = '') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(FIG_NUTRITION_macronutrients_time_world, file = file.path(figures_path,paste0('FIG_NUTRITION_macronutrients_time_world.png')),
+       width = 575, height = 400, units = 'mm')
 
 # WORLD trend
 pl_macronutrients_world = ggplot(data = macronutrients_basic_world %>%
@@ -4168,14 +4310,16 @@ micronutrients_diffPer_world = micronutrients %>%
                    min_value = min(diff),
                    max_value = max(diff)) %>%
   # filter desired year
-  dplyr::filter(year == year_fig)
+  dplyr::filter(year == year_fig) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR')))
+
 micronutrients_diffPer_world$nutrient_name = factor(micronutrients_diffPer_world$nutrient_name,
                                                     levels = c("calcium", "iron", "magnesium", "selenium", 'sodium', 'zinc',
                                                                'folate', 'niacin', 'riboflavin','thiamin', 'vitamin a', 'vitamin b6', 'vitamin b12', 'vitamin c', 'vitamin d', 'vitamin k'))
 
 
-FIG_NUTRITION_micronutrients_diffPer_world <- ggplot(data = micronutrients_diffPer_world %>%
-                                                       mutate(scen_type = toupper(scen_type))) +
+FIG_NUTRITION_micronutrients_diffPer_world <- ggplot(data = micronutrients_diffPer_world) +
   # barchart
   geom_bar(aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
            stat = "identity", color = NA, width = 0.5) +
@@ -4185,7 +4329,7 @@ FIG_NUTRITION_micronutrients_diffPer_world <- ggplot(data = micronutrients_diffP
   scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
   facet_grid(. ~ scen_type) +
   # labs
-  labs(y = '% difference', x = '') +
+  labs(y = '% difference with RNI', x = '') +
   # theme
   theme_light() +
   theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
@@ -4201,6 +4345,68 @@ ggsave(FIG_NUTRITION_micronutrients_diffPer_world, file = file.path(figures_path
        width = 1000, height = 500, units = 'mm', limitsize = F)
 # percentual difference (median, min, max) between micronutrients intake and RNI of the World. The values were computed by X/capita/day
 # by region and aggregated using the population-weight to have a "standard" intake
+
+
+FIG_NUTRITION_micronutrients_diffPer_clean_world <- ggplot(data = micronutrients_diffPer_world %>%
+                                                             dplyr::filter(scen_type != 'REF') %>%
+                                                             dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))) +
+  # barchart
+  geom_bar(aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.5) +
+  geom_errorbar(aes(x=as.factor(nutrient_name), y=median_value, ymin = min_value, ymax = max_value,
+                    group = interaction(nutrient_name, scen_type)),
+                position = position_dodge(width = 0.25), width = 0.3, color = '#636363') +
+  # REF values
+  geom_point(data = rbind(micronutrients_diffPer_world %>%
+                            dplyr::filter(scen_type == 'REF') %>%
+                            dplyr::mutate(scen_type = 'SPP'),
+                          micronutrients_diffPer_world %>%
+                            dplyr::filter(scen_type == 'REF') %>%
+                            dplyr::mutate(scen_type = 'SNR'),
+                          micronutrients_diffPer_world %>%
+                            dplyr::filter(scen_type == 'REF') %>%
+                            dplyr::mutate(scen_type = 'SPPNR')) %>%
+               dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))),
+             aes(x = as.factor(nutrient_name), y = median_value),
+             shape = 18, size = 9) +
+  geom_hline(yintercept = 0, color = 'black') +
+  scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
+  facet_grid(. ~ scen_type) +
+  # labs
+  labs(y = '% difference with RNI', x = '') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        axis.text.x = element_blank(),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40)) +
+  guides(fill = guide_legend(nrow = 3), shape = "none")
+ggsave(FIG_NUTRITION_micronutrients_diffPer_clean_world, file = file.path(figures_path, 'FIG_NUTRITION_micronutrients_diffPer_clean_world.png'),
+       width = 1000, height = 500, units = 'mm', limitsize = F)
+
+
+
+
+#####################################################################################
+# FIG - NUTRITION: MICRO, MACRO & ADESA
+#####################################################################################
+#####################################################################################
+pl = cowplot::ggdraw() +
+  cowplot::draw_plot(FIG_NUTRITION_macronutrients_time_world + labs(y = '') +
+                       theme(legend.key.size = unit(1, "cm")), x = 0.01, y = 0.75, width = 0.95, height = 0.25) +
+  cowplot::draw_plot(FIG_NUTRITION_micronutrients_diffPer_clean_world + labs(y = '') +
+                       theme(legend.key.size = unit(1, "cm")), x = 0.01, y = 0.50, width = 0.95, height = 0.25) +
+  cowplot::draw_plot(pl_adesa_lolipop_h, x = 0.01, y = -0.01, width = 0.95, height = 0.5) +
+  cowplot::draw_plot_label(label = c("a", "b", "c"), size = 35,
+                           x = c(0, 0, 0), y = c(0.99, 0.77, 0.50))
+ggsave(file=file.path(figures_path, 'paper', paste0('FIG_NUTRITION_',year_fig,'.pdf')), plot = pl, width = 800, height = 700, unit = 'mm')
+
+
+
 
 #####################################################################################
 # SDG TOTAL
