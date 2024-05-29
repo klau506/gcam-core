@@ -15,7 +15,7 @@ fig_folder = 'diets_analysis/figures/methodology'
 if (!dir.exists(fig_folder)) dir.create(fig_folder)
 
 # load dataset
-load('outputs/queries_ref.RData')
+load('diets_analysis/outputs/queries_ref_2.RData')
 
 # load style
 source('diets_analysis/module_style.R')
@@ -38,7 +38,7 @@ order_facets = function(data, col_scen_type = 'scen_type') {
 }
 
 
-example_data = read.csv(file.path(getwd(), 'exe', 'db.mapping.csv')) %>%
+example_data = read.csv(file.path(getwd(), 'exe', 'db.mapping.complete.csv')) %>%
   select(scenario) %>%
   tidyr::separate(scenario, into = c("protein_type", "scenario_pathway", "final_share", "peak_year_title", "peak_year", "slope_title", "slope"), sep = "_", remove = FALSE) %>%
   filter(protein_type != 'ref') %>%
@@ -102,7 +102,7 @@ text_data = bind_cols(result) %>%
   mutate(across(1:5, as.character)) %>%
   tidyr::pivot_longer(cols = 1:5, names_to = 'type', values_to = 'pairs') %>%
   distinct() %>%
-  separate(pairs, into = c("text", "value"), sep = " - ") %>%
+  tidyr::separate(pairs, into = c("text", "value"), sep = " - ") %>%
   mutate(value = as.numeric(value))
   # mutate(text = ifelse(text == '1d205', '1.205',
   #                      ifelse(text == '0d805', '1.805',
@@ -119,17 +119,17 @@ pl = ggplot() +
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = curve_factor,
-             lineend = "round", size = 0.55, alpha = 0.5) +
+             lineend = "round", linewidth = 0.55, alpha = 0.5) +
   geom_curve(data = reshaped_data %>% filter(protein_type == 'spp') %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = -curve_factor,
-             lineend = "round", size = 0.55, alpha = 0.5) +
+             lineend = "round", linewidth = 0.55, alpha = 0.5) +
   geom_curve(data = reshaped_data %>% filter(protein_type == 'sppnr') %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = 0,
-             lineend = "round", size = 0.55, alpha = 0.5) +
+             lineend = "round", linewidth = 0.55, alpha = 0.5) +
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr) +
   # # text
   geom_point(data = text_data, aes(x = type, y = value),
@@ -152,6 +152,7 @@ pl = ggplot() +
         title = element_text(size = 40)) +
   scale_y_reverse()
 ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.png'), width = 500, height = 333, units = 'mm')
+ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width = 500, height = 333, units = 'mm')
 # png(file.path(figures_path,dir_name,"/",'fig1_SI_overview_scen_runs.png'), width = 3401.575, height = 2267.717, res = 150)
 # print(pl)
 # dev.off()

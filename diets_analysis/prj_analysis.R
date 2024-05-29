@@ -61,7 +61,7 @@ load_data <- function(dataset_name) {
 # # queries_mort <- get(load(file.path('output',queries_mort_list[1])))
 # # for (file in queries_mort_list[2:length(queries_mort_list)]) queries_mort <- bind_rows(queries_mort, get(load(file.path('output',file))))
 # # save(queries_mort, file = 'output/queries_mort1.RData')
-# assign('queries_mort', get(load('output/queries_mort1.RData')))
+assign('queries_mort', get(load('output/queries_mort1.RData')))
 
 figures_path <- 'figures'
 year_fig <- 2050
@@ -91,20 +91,20 @@ plant_percentage <- load_data('food_consumption_regional') %>%
 
 # plot
 plot_data <- plant_percentage %>% dplyr::filter(scen_type %in% c('spp', 'ref')) %>%
-  dplyr::mutate(final_share = ifelse(is.na(final_share), 'ref', final_share)) %>%
-  dplyr::mutate(scen_path = ifelse(is.na(scen_path), 'ref', scen_path)) %>%
-  dplyr::mutate(peak_year = ifelse(is.na(peak_year), 'ref', peak_year))
+  dplyr::mutate(final_share = ifelse(is.na(final_share), 'REF', final_share)) %>%
+  dplyr::mutate(scen_path = ifelse(is.na(scen_path), 'REF', scen_path)) %>%
+  dplyr::mutate(peak_year = ifelse(is.na(peak_year), 'REF', peak_year))
 palette_color <- create_color_palette(scenarios = unique(plot_data$final_share), ref_color = 'black')
-palette_linetype <- c('2025' = 'dotted', '2035' = 'dashed', '2045' = 'longdash', 'ref' = 'solid')
+palette_linetype <- c('2025' = 'dotted', '2035' = 'dashed', '2045' = 'longdash', 'REF' = 'solid')
 
 spp_protein_all <- ggplot(data = plot_data %>%
-                            dplyr::filter(scen_path %in% c('all', 'ref')) %>%
+                            dplyr::filter(scen_path %in% c('all', 'REF')) %>%
                             dplyr::mutate(value = 100*value), # transform to percentage
                           aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
   geom_line() +
   # ref line
   geom_line(data = plot_data %>%
-              dplyr::filter(scen_path %in% c('ref')) %>%
+              dplyr::filter(scen_path %in% c('REF')) %>%
               dplyr::mutate(value = 100*value), # transform to percentage
             aes(x = year, y = value, group = scenario, color = final_share),
             linewidth = 1.5) +
@@ -125,18 +125,17 @@ spp_protein_all <- ggplot(data = plot_data %>%
         axis.title = element_text(size = 25),
         legend.text = element_text(size = 25),
         legend.title = element_text(size = 30))
-
 ggsave(spp_protein_all, file = file.path(figures_path, paste0('spp_protein_all_',year_fig,'.png')),
        width = 600, height = 800, units = 'mm')
 
 spp_protein_plus <- ggplot(data = plot_data %>%
-                             dplyr::filter(scen_path %in% c('plus', 'ref')) %>%
+                             dplyr::filter(scen_path %in% c('plus', 'REF')) %>%
                              dplyr::mutate(value = 100*value), # transform to percentage
                            aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
   geom_line() +
   # ref line
   geom_line(data = plot_data %>%
-              dplyr::filter(scen_path %in% c('ref')) %>%
+              dplyr::filter(scen_path %in% c('REF')) %>%
               dplyr::mutate(value = 100*value), # transform to percentage
             aes(x = year, y = value, group = scenario, color = final_share),
             linewidth = 1.5) +
@@ -157,9 +156,153 @@ spp_protein_plus <- ggplot(data = plot_data %>%
         axis.title = element_text(size = 25),
         legend.text = element_text(size = 25),
         legend.title = element_text(size = 30))
-
 ggsave(spp_protein_plus, file = file.path(figures_path, paste0('spp_protein_plus_',year_fig,'.png')),
        width = 600, height = 800, units = 'mm')
+
+
+## SINGLE REGION - PAKISTAN
+spp_protein_all_pakistan <- ggplot(data = plot_data %>%
+                            dplyr::filter(scen_path %in% c('all', 'REF'), region == 'Pakistan') %>%
+                            dplyr::mutate(value = 100*value), # transform to percentage
+                          aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
+  geom_line() +
+  # ref line
+  geom_line(data = plot_data %>%
+              dplyr::filter(scen_path %in% c('REF'), region == 'Pakistan') %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Final Share') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  labs(x = '', y = 'Plant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
+ggsave(spp_protein_all_pakistan, file = file.path(figures_path, paste0('spp_protein_all_pakistan_',year_fig,'.png')),
+       width = 500, height = 350, units = 'mm')
+spp_protein_plus_pakistan <- ggplot(data = plot_data %>%
+                            dplyr::filter(scen_path %in% c('plus', 'REF'), region == 'Pakistan') %>%
+                            dplyr::mutate(value = 100*value), # transform to percentage
+                          aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
+  geom_line() +
+  # ref line
+  geom_line(data = plot_data %>%
+              dplyr::filter(scen_path %in% c('REF'), region == 'Pakistan') %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Final Share') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  labs(x = '', y = 'Plant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
+ggsave(spp_protein_plus_pakistan, file = file.path(figures_path, paste0('spp_protein_plus_pakistan_',year_fig,'.png')),
+       width = 500, height = 350, units = 'mm')
+
+
+
+## WORLD
+plant_percentage_w <- load_data('food_consumption_world') %>%
+  dplyr::filter(nestingSector1 == 'Protein') %>%
+  dplyr::mutate(is_plant = ifelse(nestingSector2 == 'Plant',TRUE,FALSE)) %>%
+  # compute the total and plant Pcal
+  dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, is_plant, year, Units) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup() %>%
+  # compute the plant % (plant/total food consumption)
+  tidyr::pivot_wider(names_from = 'is_plant', values_from = 'value') %>%
+  dplyr::mutate(value = `TRUE` / (`TRUE` + `FALSE`)) %>%
+  dplyr::mutate(Units = 'Percentage') %>%
+  select(-`TRUE`) %>%
+  select(-`FALSE`)
+plot_data_w <- plant_percentage_w %>% dplyr::filter(scen_type %in% c('spp', 'ref')) %>%
+  dplyr::mutate(final_share = ifelse(is.na(final_share), 'REF', final_share)) %>%
+  dplyr::mutate(scen_path = ifelse(is.na(scen_path), 'REF', scen_path)) %>%
+  dplyr::mutate(peak_year = ifelse(is.na(peak_year), 'REF', peak_year))
+palette_color <- create_color_palette(scenarios = unique(plot_data_w$final_share), ref_color = 'black')
+palette_linetype <- c('2025' = 'dotted', '2035' = 'dashed', '2045' = 'longdash', 'REF' = 'solid')
+
+spp_protein_all_world <- ggplot(data = plot_data_w %>%
+                            dplyr::filter(scen_path %in% c('all', 'REF')) %>%
+                            dplyr::mutate(value = 100*value), # transform to percentage
+                          aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
+  geom_line() +
+  # ref line
+  geom_line(data = plot_data_w %>%
+              dplyr::filter(scen_path %in% c('REF')) %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Final Share') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  labs(x = '', y = 'Plant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
+ggsave(spp_protein_all_world, file = file.path(figures_path, paste0('spp_protein_all_world_',year_fig,'.png')),
+       width = 500, height = 350, units = 'mm')
+
+
+spp_protein_plus_world <- ggplot(data = plot_data_w %>%
+                            dplyr::filter(scen_path %in% c('plus', 'REF')) %>%
+                            dplyr::mutate(value = 100*value), # transform to percentage
+                          aes(x = year, y = value, group = scenario, color = final_share, linetype = peak_year)) +
+  geom_line() +
+  # ref line
+  geom_line(data = plot_data_w %>%
+              dplyr::filter(scen_path %in% c('REF')) %>%
+              dplyr::mutate(value = 100*value), # transform to percentage
+            aes(x = year, y = value, group = scenario, color = final_share),
+            linewidth = 1.5) +
+  # palettes
+  scale_y_continuous(breaks = seq(0, 100, by = 10)) +  # scale_y_continuous(breaks = seq(0.1, 1, by = 0.1)) +
+  scale_color_manual(values = palette_color, name = 'Final Share') +
+  scale_linetype_manual(values = palette_linetype, name = 'Peak Year') +
+  labs(x = '', y = 'Plant Protein Consumption [%]') +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 27.5),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=20),
+        axis.text.y = element_text(size=20),
+        axis.title = element_text(size = 25),
+        legend.text = element_text(size = 25),
+        legend.title = element_text(size = 30))
+ggsave(spp_protein_plus_world, file = file.path(figures_path, paste0('spp_protein_plus_world_',year_fig,'.png')),
+       width = 500, height = 350, units = 'mm')
 
 
 ##### RUMINANT ===============================================================================
@@ -250,8 +393,6 @@ snr_protein_plus <- ggplot(data = plot_data %>%
 
 ggsave(snr_protein_plus, file = file.path(figures_path, paste0('snr_protein_plus_',year_fig,'.png')),
        width = 600, height = 800, units = 'mm')
-
-
 
 
 #####################################################################################
@@ -473,7 +614,9 @@ land_indicator_global_forestLand <- land_indicator_forestLand %>%
   dplyr::mutate(diff = 100*(percent_forest - percent_forest_ref)/percent_forest_ref) %>%
   # compute median by scen
   dplyr::group_by(year, region, scen_type) %>%
-  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::summarise(median_diff = median(diff),
+                   min_diff = min(diff),
+                   max_diff = max(diff)) %>%
   dplyr::mutate(group = 'Re-/Afforestation area') %>%
   dplyr::ungroup() %>%
   dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
@@ -588,6 +731,71 @@ ggsave(pl_land_indicator_global_forestLand_map,
        width = 500, height = 300, units = 'mm')
 
 
+
+## PRINT VALUES & CHECK PASTURE REDUCTION IN AFRICA EASTERN & BRAZIL
+check <- load_data('land_use_regional') %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(value = value * 100) %>%
+  group_by(Units, scen_type, year, region, landleaf) %>%
+  summarise(median_value = median(value),
+            min_value = min(value),
+            max_value = max(value)) %>%
+  ungroup()
+View(check %>% filter(scen_type %in% c('REF','SPPNR')))
+
+# check decrease in pasture grazed
+check_pasture_g <- load_data('land_use_regional') %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(value = value * 100) %>%
+  dplyr::mutate(pasture_g = ifelse(landleaf == "pasture (grazed)", 'pasture_g', 'other'))
+
+check_pasture_gg <- merge(check_pasture_g %>%
+                            dplyr::filter(scenario != 'ref'),
+                          check_pasture_g %>%
+                            dplyr::filter(scenario == 'ref') %>%
+                            dplyr::select(Units, year, region, landleaf, value_ref = value, pasture_g),
+                          by = c('Units', 'year', 'region', 'landleaf', 'pasture_g')) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by(Units, scenario, scen_type, year, region, pasture_g) %>%
+  dplyr::summarise(value = sum(value),
+                   value_ref = sum(value_ref)) %>%
+  dplyr::ungroup() %>%
+  # statistics
+  dplyr::mutate(diff = 100 * (value - value_ref)/value_ref) %>%
+  dplyr::group_by(Units, scen_type, year, region, pasture_g) %>%
+  summarise(median_value = median(diff),
+            min_value = min(diff),
+            max_value = max(diff)) %>%
+  ungroup()
+print(check_pasture_gg %>%
+        dplyr::filter(year == year_f,
+                      region %in% c('Africa_Eastern'),
+                      scen_type == 'SPPNR'))
+
+## check ruminant and livestock reduction
+check_rumin <- load_data('food_consumption_regional') %>%
+  dplyr::filter(nestingSector2 == 'Animal') %>%
+  dplyr::group_by(scenario, scen_type, nestingSector3, region, year, Units) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup()
+  # compute the % by nesting subsector
+check_ruminn <- merge(check_rumin %>%
+                        dplyr::filter(scenario != 'ref'),
+                      check_rumin %>%
+                        dplyr::filter(scenario == 'ref') %>%
+                        select(value_ref = value, nestingSector3, region, year, Units),
+                      by = c('nestingSector3', 'region', 'year', 'Units')) %>%
+  dplyr::mutate(diff = 100 * (value - value_ref) / value_ref) %>%
+  # statistics
+  dplyr::group_by(nestingSector3, region, year, Units, scen_type) %>%
+  summarise(median_value = median(diff),
+            min_value = min(diff),
+            max_value = max(diff)) %>%
+  ungroup()
+print(check_ruminn %>%
+        dplyr::filter(year == year_f,
+                      region %in% c('Africa_Eastern'),
+                      scen_type == 'sppnr'))
 
 ############## INDICATOR 2: % of unmanaged land =====================================
 # compute the Land Indicator (Percent of Unmanaged Land)
@@ -2107,7 +2315,9 @@ ghg_world_regional_diffPer <- merge(load_data('ghg_regional') %>%
   dplyr::mutate(diff = 100*(ref_value - value)/ref_value) %>%
   # compute median by scen
   dplyr::group_by(region,year,scen_type) %>%
-  dplyr::summarise(median_diff = median(diff))
+  dplyr::summarise(median_diff = median(diff),
+                   min_diff = min(diff),
+                   max_diff = max(diff))
 
 ghg_world_regional_diffPer_map <- ghg_world_regional_diffPer %>%
   # filter desired year
@@ -2155,6 +2365,59 @@ FIG_EMISSHEALTH_sdg13_av_ghg_aggPer_map <- ggplot() +
 ggsave(FIG_EMISSHEALTH_sdg13_av_ghg_aggPer_map,
        file = file.path(figures_path, paste0('FIG_EMISSHEALTH_sdg13_av_ghg_aggPer_map_',year_fig,'.png')),
        width = 500, height = 300, units = 'mm')
+
+
+### CHECK RUMINANT AND CH4 REDUCTION IN BRAZIL & AFRICA EASTERN
+## check livestock reduction
+check_livestock <- load_data('food_consumption_regional') %>%
+  dplyr::filter(nestingSector1 == 'Protein') %>%
+  dplyr::group_by(scenario, scen_type, nestingSector2, region, year, Units) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup()
+# compute the % by nesting subsector
+check_livestockk <- merge(check_livestock %>%
+                            dplyr::filter(scenario != 'ref'),
+                          check_livestock %>%
+                            dplyr::filter(scenario == 'ref') %>%
+                            select(value_ref = value, nestingSector2, region, year, Units),
+                          by = c('nestingSector2', 'region', 'year', 'Units')) %>%
+  dplyr::mutate(diff = 100 * (value - value_ref) / value_ref) %>%
+  # statistics
+  dplyr::group_by(nestingSector2, region, year, Units, scen_type) %>%
+  summarise(median_value = median(diff),
+            min_value = min(diff),
+            max_value = max(diff)) %>%
+  ungroup()
+print(check_livestockk %>%
+        dplyr::filter(year == year_f,
+                      region %in% c('Brazil','Africa_Eastern'),
+                      scen_type == 'sppnr'))
+## check ruminant reduction
+check_rumin <- load_data('food_consumption_regional') %>%
+  dplyr::filter(nestingSector1 == 'Protein') %>%
+  dplyr::group_by(scenario, scen_type, nestingSector3, region, year, Units) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup()
+# compute the % by nesting subsector
+check_ruminn <- merge(check_rumin %>%
+                        dplyr::filter(scenario != 'ref'),
+                      check_rumin %>%
+                        dplyr::filter(scenario == 'ref') %>%
+                        select(value_ref = value, nestingSector3, region, year, Units),
+                      by = c('nestingSector3', 'region', 'year', 'Units')) %>%
+  dplyr::mutate(diff = 100 * (value - value_ref) / value_ref) %>%
+  # statistics
+  dplyr::group_by(nestingSector3, region, year, Units, scen_type) %>%
+  summarise(median_value = median(diff),
+            min_value = min(diff),
+            max_value = max(diff)) %>%
+  ungroup()
+print(check_ruminn %>%
+        dplyr::filter(year == year_f,
+                      region %in% c('Brazil','Africa_Eastern'),
+                      scen_type == 'sppnr'))
+
+
 
 ############## INDICATOR 3: MtCO2 of avoided GHG (global) ===========================
 # compute the GHG Indicator (Absolute of avoided GHG)
@@ -2704,7 +2967,7 @@ pl_ghg_by_ghg_emiss_diffAbs_world_bars = ggplot(data = ghgType_world_diffAbs %>%
   geom_area(aes(x = year, y = median_diff, fill = group), alpha = 1) +  # Median area
   facet_grid(. ~ scen_type, scales = "free") +
   scale_fill_manual(values = ghg_emiss, name = 'GHG') +
-  # geom_vline(xintercept = 0, linewidth = 1.2) +
+  geom_hline(yintercept = 0, linewidth = 1.2) +
   labs(x = '', y = expression(paste('Change in Mt ', CO[2], ' compared to Reference'))) +
   # theme
   theme_light() +
@@ -2768,6 +3031,107 @@ pl_ghg_by_ghg_emiss_diffPer_world_bars = ggplot(data = ghgType_world_diffPer %>%
 ggsave(pl_ghg_by_ghg_emiss_diffPer_world_bars,
        file = file.path(figures_path, paste0('sdg13_ghg_by_ghg_emiss_per_',year_fig,'.png')),
        width = 575, height = 400, units = 'mm')
+
+
+#### GHG by ghg regional diff BARS =====================================================
+
+# Abs
+ghgType_regional_diffAbs <- merge(load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario != 'ref') %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
+                                    dplyr::summarise(value = sum(value)) %>%
+                                    dplyr::ungroup(),
+                                  load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario == 'ref') %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, group) %>%
+                                    dplyr::summarise(ref_value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                  by = c('region','year','group')) %>%
+  # compute Abs difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = value - ref_value) %>%
+  # compute median by scen
+  dplyr::group_by(group,region,year,scen_type) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
+
+
+pl_ghg_by_ghg_emiss_diffAbs_regional_bars = ggplot(data = ghgType_regional_diffAbs %>%
+                                       dplyr::filter(year >= year_s, year <= year_f)) +
+  geom_area(aes(x = year, y = median_diff, fill = group), alpha = 1) +  # Median area
+  facet_grid(region ~ scen_type) +
+  scale_fill_manual(values = ghg_emiss, name = 'GHG') +
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = expression(paste('Change in Mt ', CO[2], ' compared to Reference'))) +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_ghg_by_ghg_emiss_diffAbs_regional_bars,
+       file = file.path(figures_path, paste0('sdg13_ghg_by_ghg_emiss_abs_regional_',year_fig,'.png')),
+       width = 1000, height = 1500, units = 'mm', limitsize = FALSE)
+ggsave(pl_ghg_by_ghg_emiss_diffAbs_regional_bars,
+       file = file.path(figures_path, paste0('sdg13_ghg_by_ghg_emiss_abs_regional_',year_fig,'.pdf')),
+       width = 1000, height = 1500, units = 'mm', limitsize = FALSE)
+
+
+# Per
+ghgType_regional_diffPer <- merge(load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario != 'ref') %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, group) %>%
+                                    dplyr::summarise(value = sum(value)) %>%
+                                    dplyr::ungroup(),
+                                  load_data('ghg_by_ghg_regional') %>%
+                                    dplyr::filter(scenario == 'ref') %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    dplyr::group_by(region, year, scenario, scen_type, group) %>%
+                                    dplyr::summarise(ref_value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+                                  by = c('region','year','group')) %>%
+  # compute Abs difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = 100 * (value - ref_value) / ref_value) %>%
+  # compute median by scen
+  dplyr::group_by(group,region,year,scen_type) %>%
+  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
+
+
+pl_ghg_by_ghg_emiss_diffPer_regional_bars = ggplot(data = ghgType_regional_diffPer %>%
+                                                     dplyr::filter(year >= year_s, year <= year_f)) +
+  geom_area(aes(x = year, y = median_diff, fill = group), alpha = 1) +  # Median area
+  facet_grid(region ~ scen_type) +
+  scale_fill_manual(values = ghg_emiss, name = 'GHG') +
+  geom_hline(yintercept = 0, linewidth = 1.2) +
+  labs(x = '', y = expression(paste('% difference'))) +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=30),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        title = element_text(size = 40))
+ggsave(pl_ghg_by_ghg_emiss_diffPer_regional_bars,
+       file = file.path(figures_path, paste0('sdg13_ghg_by_ghg_emiss_per_regional_',year_fig,'.png')),
+       width = 1000, height = 1500, units = 'mm', limitsize = FALSE)
 
 #####################################################################################
 # SDG3 - HEALTH
@@ -3360,6 +3724,33 @@ dataa <- merge(
   dplyr::summarise(median_diff = median(diff)) %>%
   dplyr::ungroup()
 
+## CHECK STAPLES VS NON-STAPLES PROPORTIONS
+check <- load_data('food_consumption_regional') %>%
+  dplyr::left_join(food_subsector %>%
+                     dplyr::rename('technology' = 'subsector')) %>%
+  # Pcal to kcal/capita/day
+  dplyr::left_join(load_data('pop_all_regions'),
+                   by = c("year", "scenario", "scen_type", "scen_path", "final_share", "peak_year", "slope", "region")) %>%
+  # convert from Pcal to kcal/day
+  dplyr::mutate(value = (value * 1e12) / (population * 365),
+                Units = "kcal/capita/day") %>%
+  # total staples and nonstaples kcal consumption
+  dplyr::group_by(Units,region,scenario,scen_type,scen_path,final_share,peak_year,slope,year,supplysector) %>%
+  dplyr::summarise(consumption = sum(value)) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by(Units,region,scenario,scen_type,scen_path,final_share,peak_year,slope,year) %>%
+  dplyr::mutate(total_consumption = sum(consumption)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(per_consumption = consumption/total_consumption) %>%
+  # statistics
+  dplyr::group_by(Units,region,scen_type,year,supplysector) %>%
+  dplyr::summarise(median_consumption = median(per_consumption)) %>%
+  dplyr::ungroup()
+
+View(check %>% filter(year == 2050, supplysector == 'FoodDemand_NonStaples',
+                      scen_type %in% c('ref','snr')))
+
+
 
 #### HEATMAPS =======================================================
 #### PERCENT REGIONAL diff
@@ -3702,6 +4093,7 @@ adesa_to_plot_h <- adesa_to_plot %>%
                                               ifelse(region == 'South America_Southern', 'South America\nSouthern', region))))) %>%
   dplyr::mutate(region = factor(region, levels = rev(sort(unique(region)))))
 pl_adesa_lolipop <- ggplot() +
+  geom_hline(yintercept = 100, linetype = 'dashed', color = 'red') +
   geom_segment(data = adesa_to_plot_h %>%
                  select(region, min_value, max_value) %>%
                  unique(),
@@ -3717,8 +4109,7 @@ pl_adesa_lolipop <- ggplot() +
              aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
   geom_point(data = adesa_to_plot_h %>%
                dplyr::filter(scen_type == 'REF'),
-             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 8, alpha = 0.95, shape = 23) +
-  geom_hline(yintercept = 100, linetype = 'dashed', color = 'red') +
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 11, alpha = 0.95, shape = 4, stroke = 2) +
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
                      labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
                      name = 'Scenario') +
@@ -3738,7 +4129,7 @@ pl_adesa_lolipop <- ggplot() +
         plot.background = element_rect(fill = "white", color = NA),
         axis.title = element_text(size = 35)) +
   labs(x = '', y = 'ADESA') +
-  guides(shape = 'none', color = 'none') +
+  guides(shape = 'none') +
   coord_flip()
 ggsave(pl_adesa_lolipop, filename = file.path(figures_path, 'pl_adesa_lolipop.png'),
        width = 450, height = 650, units = 'mm', limitsize = F)
@@ -3750,23 +4141,23 @@ adesa_to_plot_h <- adesa_to_plot %>%
                                        ifelse(region == 'South America_Northern', 'South America\nNorthern',
                                               ifelse(region == 'South America_Southern', 'South America\nSouthern', region)))))
 pl_adesa_lolipop_h <- ggplot() +
+  geom_hline(yintercept = 100, linetype = 'dashed', color = 'red') +
   geom_segment(data = adesa_to_plot_h %>%
                  select(region, min_value, max_value) %>%
                  unique(),
                aes(x = region, xend = region, y = min_value, yend = max_value), color="black") +
   geom_point(data = adesa_to_plot_h %>%
                dplyr::filter(scen_type == 'SPP'),
-             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.85, shape = 21) +
   geom_point(data = adesa_to_plot_h %>%
                dplyr::filter(scen_type == 'SNR'),
-             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.85, shape = 21) +
   geom_point(data = adesa_to_plot_h %>%
                dplyr::filter(scen_type == 'SPPNR'),
-             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 9, alpha = 0.85, shape = 21) +
   geom_point(data = adesa_to_plot_h %>%
                dplyr::filter(scen_type == 'REF'),
-             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 8, alpha = 0.95, shape = 23) +
-  geom_hline(yintercept = 100, linetype = 'dashed', color = 'red') +
+             aes(x = region, y = adesa, color = scen_type, fill = scen_type), size = 11, alpha = 0.85, shape = 4, stroke = 2) +
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
                      labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
                      name = 'Scenario') +
@@ -3786,7 +4177,7 @@ pl_adesa_lolipop_h <- ggplot() +
         plot.background = element_rect(fill = "white", color = NA),
         axis.title = element_text(size = 35)) +
   labs(x = '', y = 'ADESA') +
-  guides(shape = 'none', color = 'none')
+  guides(shape = 'none')
 ggsave(pl_adesa_lolipop_h, filename = file.path(figures_path, 'pl_adesa_lolipop_h.png'),
        width = 750, height = 550, units = 'mm', limitsize = F)
 
@@ -3904,24 +4295,81 @@ macronutrients_basic_world <- macronutrients_basic %>%
             gFatPerCapita = median(gFatPerCapita, na.rm = T)) %>%
   ungroup()
 
+macronutrients_en_basic_world <- macronutrients_en_basic %>%
+  left_join(population_weights, by = 'region') %>%
+  mutate(perProteinPerCapita = weight * perProteinPerCapita,
+         perFatPerCapita = weight * perFatPerCapita) %>%
+  group_by(Units, scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+  summarise(perProteinPerCapita = median(perProteinPerCapita, na.rm = T), # remove Taiwan
+            perFatPerCapita = median(perFatPerCapita, na.rm = T)) %>%
+  ungroup()
+
+### CHECK gProteinPerCapita & gFatPerCapita
+check <- load_data('food_consumption_regional') %>%
+  # rename columns
+  rename('GCAM_commodity' = 'technology') %>%
+  rename('consumption' = 'value') %>%
+  # aggregate population data
+  left_join(load_data('pop_all_regions'),
+            by = c("year", "scenario", "scen_type", "scen_path",
+                   "final_share", "peak_year", "slope", "region"),
+            multiple = "all") %>%
+  # convert from Pcal to kcal/capita/day
+  mutate(consumptionPerCapita = (consumption * 1e12) / (population * 365),
+         Units = "kcal/capita/day") %>%
+  left_join(GramProteinFatPerKcal %>%
+              # match regions' id with regions' name
+              left_join_keep_first_only(regions_key %>% select(-1), by = 'GCAM_region_ID'),
+            by = c('region','GCAM_commodity'), multiple = "all") %>%
+  # compute total Protein and Fat [kcal/capita/day]
+  mutate(kcalProteinPerCapita = consumptionPerCapita * gProteinPerKcal * Kcalperg,
+         kcalFatPerCapita = consumptionPerCapita * gFatPerKcal * Kcalperg) %>%
+  # aggregate food commodities
+  group_by(Units, region, scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+  mutate(total_consumptionPerCapita = sum(consumptionPerCapita)) %>%
+  ungroup() %>%
+  # compute % of protein and fat intake with respect to the kcal (energy) consumption
+  rowwise() %>%
+  mutate(perProteinPerCapita = kcalProteinPerCapita / total_consumptionPerCapita,
+         perFatPerCapita = kcalFatPerCapita / total_consumptionPerCapita) %>%
+  ungroup() %>%
+  select(Units, region, scenario, scen_type, year,
+         perProteinPerCapita, perFatPerCapita, GCAM_commodity) %>%
+  # statistics
+  group_by(Units, region, scen_type, year, GCAM_commodity) %>%
+  summarise(perProteinPerCapita = median(perProteinPerCapita),
+            perFatPerCapita = median(perFatPerCapita)) %>%
+  ungroup()
+
+# BRAZIL - gFat
+check_brazil <- check %>% filter(region == 'Brazil', scen_type %in% c('ref','spp'), year == 2050)
+View(check_brazil)
+View(macronutrients_en_basic %>% filter(region == 'Brazil', scen_type %in% c('ref','spp'), year == 2050) %>%
+       # statistics
+       group_by(Units, region, scen_type, year) %>%
+       summarise(perProteinPerCapita = median(perProteinPerCapita),
+                 perFatPerCapita = median(perFatPerCapita)) %>%
+       ungroup())
+
+########################### MACRONUTRIENTS plots ###########################
 
 
 ## plot
 # WORLD diff vs REF - ONGOING / TODO
-macronutrient_diff <- merge(macronutrients_basic %>%
+macronutrient_diff <- merge(macronutrients_en_basic %>%
                               dplyr::filter(scenario != 'ref') %>%
                               dplyr::mutate(scen_type = toupper(scen_type)) %>%
                               dplyr::group_by(region, scenario, scen_type, scen_path, final_share,
                                               peak_year, slope, year) %>%
-                              dplyr::summarize(gProteinPerCapita = sum(gProteinPerCapita),
-                                               gFatPerCapita = sum(gFatPerCapita)) %>%
+                              dplyr::summarize(perProteinPerCapita = sum(perProteinPerCapita),
+                                               perFatPerCapita = sum(perFatPerCapita)) %>%
                               dplyr::ungroup(),
-                            macronutrients_basic %>%
+                            macronutrients_en_basic %>%
                               dplyr::filter(scenario == 'ref') %>%
                               dplyr::mutate(scen_type = toupper(scen_type)) %>%
                               dplyr::group_by(region, scenario, year) %>%
-                              dplyr::summarize(gProteinPerCapita_ref = sum(gProteinPerCapita),
-                                               gFatPerCapita_ref = sum(gFatPerCapita)) %>%
+                              dplyr::summarize(perProteinPerCapita_ref = sum(perProteinPerCapita),
+                                               perFatPerCapita_ref = sum(perFatPerCapita)) %>%
                               dplyr::ungroup() %>%
                               dplyr::select(-scenario),
                             by = c('year','region'))
@@ -3929,15 +4377,15 @@ macronutrient_diff <- merge(macronutrients_basic %>%
 macronutrient_diff_regional <- macronutrient_diff %>%
   # compute Per difference between Reference and runs
   dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
-  dplyr::summarise(diff_gProteinPerCapita = 100 * (gProteinPerCapita - gProteinPerCapita_ref) / gProteinPerCapita_ref,
-                   diff_gFatPerCapita = 100 * (gFatPerCapita - gFatPerCapita_ref) / gFatPerCapita_ref) %>%
+  dplyr::summarise(diff_perProteinPerCapita = 100 * (perProteinPerCapita - perProteinPerCapita_ref) / perProteinPerCapita_ref,
+                   diff_perFatPerCapita = 100 * (perFatPerCapita - perFatPerCapita_ref) / perFatPerCapita_ref) %>%
   dplyr::ungroup() %>%
   # create scen_group
   dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
   # compute median by scen
   dplyr::group_by(year, region, scen_type, scen_path, scen_group, final_share) %>%
-  dplyr::mutate(median_diff_diff_gProteinPerCapita = median(diff_gProteinPerCapita),
-                median_diff_diff_gFatPerCapita = median(diff_gFatPerCapita)) %>%
+  dplyr::mutate(median_diff_diff_perProteinPerCapita = median(diff_perProteinPerCapita),
+                median_diff_diff_perFatPerCapita = median(diff_perFatPerCapita)) %>%
   dplyr::mutate(group = 'Macronutrients intake') %>%
   dplyr::ungroup()
 
@@ -3946,11 +4394,11 @@ macronutrient_diff_global <- merge(
   macronutrient_diff_regional,
   population_weights,
   by = c('region')) %>%
-  dplyr::mutate(diff_gProteinPerCapita = weight * diff_gProteinPerCapita,
-                diff_gFatPerCapita = weight * diff_gFatPerCapita) %>%
+  dplyr::mutate(diff_perProteinPerCapita = weight * diff_perProteinPerCapita,
+                diff_perFatPerCapita = weight * diff_perFatPerCapita) %>%
   dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, year, scen_group) %>%
-  dplyr::summarise(diff_gProteinPerCapita = sum(diff_gProteinPerCapita),
-                   diff_gFatPerCapita = sum(diff_gFatPerCapita)) %>%
+  dplyr::summarise(diff_perProteinPerCapita = sum(diff_perProteinPerCapita),
+                   diff_perFatPerCapita = sum(diff_perFatPerCapita)) %>%
   dplyr::ungroup() %>%
   dplyr::mutate(group = 'Macronutrients intake') %>%
   dplyr::ungroup()
@@ -3958,11 +4406,10 @@ macronutrient_diff_global <- merge(
 
 
 
-
 # FIG - macronutrients 2050
-data_fig1 <- macronutrients_basic_world %>%
+data_fig1 <- macronutrients_en_basic_world %>%
   mutate(scen_type = toupper(scen_type)) %>%
-  tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient')
+  tidyr::pivot_longer(cols = perProteinPerCapita:perFatPerCapita, names_to = 'macronutrient')
 data_fig2 <- merge(data_fig1 %>% filter(scenario == 'ref') %>%
                      select(Units, year, macronutrient, value_ref = value),
                    data_fig1 %>% filter(scenario != 'ref'),
@@ -3974,7 +4421,7 @@ data_fig2 <- merge(data_fig1 %>% filter(scenario == 'ref') %>%
             max_value = max(diff),
             median_value = median(diff)) %>%
   ungroup() %>%
-  mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita"))) %>%
+  mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita"))) %>%
   dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR')))
 
 
@@ -4011,8 +4458,8 @@ ggsave(FIG_NUTRITION_macronutrients_world, filename = file.path(figures_path, 'F
 ## FIG - macronutrients across time
 FIG_NUTRITION_macronutrients_time_world = ggplot(data = data_fig2 %>%
                                      dplyr::filter(year >= year_s, year <= year_f)) +
-  geom_area(aes(x = year, y = median_value, fill = macronutrient), alpha = 1) +  # Median area
   geom_hline(aes(yintercept = 0)) +
+  geom_area(aes(x = year, y = median_value, fill = macronutrient), alpha = 1) +  # Median area
   facet_wrap(. ~ scen_type) +
   scale_fill_manual(values = macronutrients_palette, name = 'Macronutrient',
                     labels = macronutrients.labs) +
@@ -4030,19 +4477,19 @@ FIG_NUTRITION_macronutrients_time_world = ggplot(data = data_fig2 %>%
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(FIG_NUTRITION_macronutrients_time_world, file = file.path(figures_path,paste0('FIG_NUTRITION_macronutrients_time_world.png')),
-       width = 575, height = 400, units = 'mm')
+       width = 575, height = 450, units = 'mm')
 
 # WORLD trend
-pl_macronutrients_world = ggplot(data = macronutrients_basic_world %>%
+pl_macronutrients_world = ggplot(data = macronutrients_en_basic_world %>%
                                    filter(year >= year_s, year <= year_f) %>%
                                    mutate(scen_type = toupper(scen_type)) %>%
-                                   tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient') %>%
+                                   tidyr::pivot_longer(cols = perProteinPerCapita:perFatPerCapita, names_to = 'macronutrient') %>%
                                    group_by(scen_type, year, macronutrient) %>%
                                    summarise(min_value = min(value),
                                              max_value = max(value),
                                              median_value = median(value)) %>%
                                    ungroup() %>%
-                                   mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita")))) +
+                                   mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita")))) +
   geom_bar(aes(fill=scen_type, y=median_value, x=year, group = interaction(macronutrient, scen_type)),
            position="dodge", stat="identity") +
   geom_errorbar(aes(x=year, y=median_value, ymin = min_value, ymax = max_value, group = interaction(macronutrient, scen_type)),
@@ -4069,17 +4516,17 @@ ggsave(pl_macronutrients_world, filename = file.path(figures_path, 'sdg3_macronu
 
 
 # REGIONAL trend
-pl_macronutrientsFat_regional = ggplot(data = macronutrients_basic %>%
+pl_macronutrientsFat_regional = ggplot(data = macronutrients_en_basic %>%
                                          filter(year >= year_s, year <= year_f) %>%
                                          mutate(scen_type = toupper(scen_type)) %>%
-                                         tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient') %>%
-                                         filter(macronutrient == 'gFatPerCapita') %>%
+                                         tidyr::pivot_longer(cols = perProteinPerCapita:perFatPerCapita, names_to = 'macronutrient') %>%
+                                         filter(macronutrient == 'perFatPerCapita') %>%
                                          group_by(region, scen_type, year, macronutrient) %>%
                                          mutate(min_value = min(value),
                                                 max_value = max(value),
                                                 median_value = median(value)) %>%
                                          ungroup() %>%
-                                         mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita")))) +
+                                         mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita")))) +
   geom_bar(aes(fill=scen_type, y=median_value, x=year, group = interaction(macronutrient, scen_type, region)),
            position="dodge", stat="identity") +
   geom_errorbar(aes(x=year, y=median_value, ymin = min_value, ymax = max_value, group = interaction(macronutrient, scen_type, region)),
@@ -4103,17 +4550,17 @@ pl_macronutrientsFat_regional = ggplot(data = macronutrients_basic %>%
   guides(fill = guide_legend(nrow = 1))
 ggsave(pl_macronutrientsFat_regional, file = file.path(figures_path, 'sdg3_macronutrientsFat_reg.png'),
        width = 2000, height = 1000, units = 'mm', limitsize = F)
-pl_macronutrientsProtein_regional = ggplot(data = macronutrients_basic %>%
+pl_macronutrientsProtein_regional = ggplot(data = macronutrients_en_basic %>%
                                              filter(year >= year_s, year <= year_f) %>%
                                              mutate(scen_type = toupper(scen_type)) %>%
-                                             tidyr::pivot_longer(cols = gProteinPerCapita:gFatPerCapita, names_to = 'macronutrient') %>%
-                                             filter(macronutrient == 'gProteinPerCapita') %>%
+                                             tidyr::pivot_longer(cols = perProteinPerCapita:perFatPerCapita, names_to = 'macronutrient') %>%
+                                             filter(macronutrient == 'perProteinPerCapita') %>%
                                              group_by(region, scen_type, year, macronutrient) %>%
                                              mutate(min_value = min(value),
                                                     max_value = max(value),
                                                     median_value = median(value)) %>%
                                              ungroup() %>%
-                                             mutate(macronutrient = factor(macronutrient, levels = c("gProteinPerCapita","gFatPerCapita")))) +
+                                             mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita")))) +
   geom_bar(aes(fill=scen_type, y=median_value, x=year, group = interaction(macronutrient, scen_type, region)),
            position="dodge", stat="identity") +
   geom_errorbar(aes(x=year, y=median_value, ymin = min_value, ymax = max_value, group = interaction(macronutrient, scen_type, region)),
@@ -4137,6 +4584,77 @@ pl_macronutrientsProtein_regional = ggplot(data = macronutrients_basic %>%
   guides(fill = guide_legend(nrow = 1))
 ggsave(pl_macronutrientsProtein_regional, file = file.path(figures_path, 'sdg3_macronutrientsProtein_reg.png'),
        width = 2000, height = 1000, units = 'mm', limitsize = F)
+
+## REGIONAL lolipop
+data_fig1_reg <- macronutrients_en_basic %>%
+  select(-'kcalProteinPerCapita') %>% select(-'kcalFatPerCapita') %>%
+  mutate(scen_type = toupper(scen_type)) %>%
+  tidyr::pivot_longer(cols = perProteinPerCapita:perFatPerCapita, names_to = 'macronutrient')
+data_fig2_reg <- merge(data_fig1_reg %>% filter(scenario == 'ref') %>%
+                     select(region, Units, year, macronutrient, value_ref = value),
+                   data_fig1_reg %>% filter(scenario != 'ref'),
+                   by = c('region', 'Units','year','macronutrient')) %>%
+  rowwise() %>%
+  mutate(diff = 100 * (value - value_ref)/value_ref) %>%
+  group_by(region, scen_type, year, macronutrient) %>%
+  summarise(min_value = min(diff),
+            max_value = max(diff),
+            median_value = median(diff)) %>%
+  ungroup() %>%
+  mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita"))) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR')))
+data_fig2_reg_to_plot <- data_fig2_reg %>%
+  dplyr::filter(year == year_fig) %>%
+  dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America\nand Caribbean',
+                                ifelse(region == 'European Free Trade Association', 'European Free Trade\nAssociation',
+                                       ifelse(region == 'South America_Northern', 'South America Northern',
+                                              ifelse(region == 'South America_Southern', 'South America Southern', region))))) %>%
+  dplyr::mutate(region = factor(region, levels = rev(sort(unique(region)))))
+
+pl_macronutrients_regional_lolipop <- ggplot() +
+  geom_hline(yintercept = 0, linetype = 'dashed', color = 'red') +
+  geom_segment(data = data_fig2_reg_to_plot %>%
+                 group_by(region, macronutrient, year) %>%
+                 summarise(min_value = min(median_value),
+                           max_value = max(median_value)) %>%
+                 ungroup(),
+               aes(x = region, xend = region, y = min_value, yend = max_value), color="black") +
+  geom_point(data = data_fig2_reg_to_plot %>%
+               dplyr::filter(scen_type == 'SPP'),
+             aes(x = region, y = median_value, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = data_fig2_reg_to_plot %>%
+               dplyr::filter(scen_type == 'SNR'),
+             aes(x = region, y = median_value, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  geom_point(data = data_fig2_reg_to_plot %>%
+               dplyr::filter(scen_type == 'SPPNR'),
+             aes(x = region, y = median_value, color = scen_type, fill = scen_type), size = 9, alpha = 0.95, shape = 21) +
+  scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                     labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
+                     name = 'Scenario') +
+  scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                    labels = scen_palette_refVsSppVsSnrVsSppnr.labs,
+                    name = 'Scenario') +
+  facet_grid(. ~ macronutrient) +
+  # theme
+  theme_light() +
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(angle = 0),
+        axis.text.x = element_text(size=27.5),
+        axis.text.y = element_text(size=30),
+        legend.text = element_text(size = 35),
+        legend.title = element_text(size = 40),
+        plot.background = element_rect(fill = "white", color = NA),
+        axis.title = element_text(size = 35)) +
+  labs(x = '', y = 'Percentual difference with Reference') +
+  guides(shape = 'none', color = 'none') +
+  coord_flip()
+ggsave(pl_macronutrients_regional_lolipop, filename = file.path(figures_path, 'sdg3_macronutrients_regional_lolipop.png'),
+       width = 450, height = 650, units = 'mm', limitsize = F)
+ggsave(pl_macronutrients_regional_lolipop, filename = file.path(figures_path, 'sdg3_macronutrients_regional_lolipop.pdf'),
+       width = 450, height = 650, units = 'mm', limitsize = F)
+
 
 
 ########################### MICRONUTRIENTS computation ###########################
@@ -4214,84 +4732,126 @@ assign('micronutrients', read.csv(file = 'inputs/nutrition/micronutrients_comput
 micronutrients_diffPer_regional = micronutrients %>%
   # compute diff between intake and RNI
   mutate(diff = 100*(total_micronutrient_intake - byRegC_rni)/byRegC_rni) %>%
+  dplyr::select(scenario,scen_type,scen_path,final_share,peak_year,
+                  slope,year,nutrient_name,nutrient_units,region,diff) %>%
+  dplyr::distinct() %>%
   # compute median by scenario type
-  dplyr::group_by(scen_type,region,year,nutrient_name,nutrient_units) %>%
+  dplyr::group_by(region,scen_type,year,nutrient_name,nutrient_units) %>%
   dplyr::summarise(median_value = median(diff),
                    min_value = min(diff),
                    max_value = max(diff)) %>%
   # filter desired year
-  dplyr::filter(year == year_fig)
+  dplyr::filter(year == year_fig) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR'))) %>%
+  dplyr::ungroup() %>%
+  cut_region_names()
+
 micronutrients_diffPer_regional$nutrient_name = factor(micronutrients_diffPer_regional$nutrient_name,
                                                        levels = c("calcium", "iron", "magnesium", "selenium", 'sodium', 'zinc',
-                                                                  'folate', 'niacin', 'riboflavin','thiamin', 'vitamin a', 'vitamin b6', 'vitamin b12', 'vitamin c', 'vitamin d', 'vitamin k'))
+                                                               'folate', 'niacin', 'riboflavin','thiamin', 'vitamin a', 'vitamin b6', 'vitamin b12', 'vitamin c', 'vitamin d', 'vitamin k'))
 
-pl_micronutrients_diffPer_regional_bars <- ggplot() +
+pl_micronutrients_diffPer_regional_bars <- ggplot(data = micronutrients_diffPer_regional %>%
+                                                    dplyr::filter(scen_type != 'REF') %>%
+                                                    dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))) +
   # barchart
-  geom_bar(data = micronutrients_diffPer_regional %>%
-             mutate(scen_type = toupper(scen_type)) %>%
-             filter(scen_type == 'SPP'),
-           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
-           stat = "identity", color = NA, width = 0.5) +
+  geom_bar(aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+           stat = "identity", color = NA, width = 0.7) +
+  geom_errorbar(aes(x=as.factor(nutrient_name), y=median_value, ymin = min_value, ymax = max_value,
+                    group = interaction(nutrient_name, scen_type)),
+                position = position_dodge(width = 0.25), width = 0.3, color = '#636363') +
+  # REF values
+  geom_point(data = rbind(micronutrients_diffPer_regional %>%
+                            dplyr::filter(scen_type == 'REF') %>%
+                            dplyr::mutate(scen_type = 'SPP'),
+                          micronutrients_diffPer_regional %>%
+                            dplyr::filter(scen_type == 'REF') %>%
+                            dplyr::mutate(scen_type = 'SNR'),
+                          micronutrients_diffPer_regional %>%
+                            dplyr::filter(scen_type == 'REF') %>%
+                            dplyr::mutate(scen_type = 'SPPNR')) %>%
+               dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))),
+             aes(x = as.factor(nutrient_name), y = median_value),
+             shape = 18, size = 8) +
+  geom_hline(yintercept = 0, color = 'black') +
   scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
-  # facet
-  facet_wrap(. ~ region, scales = 'fixed') +
-  # horizontal line at y = 0
-  geom_hline(yintercept = 0, linewidth = 1.2) +
-  labs(x = '', y = 'Percentual difference between intake and RNI') +
+  facet_grid(region ~ scen_type) +
+  # labs
+  labs(y = '% difference with RNI', x = '') +
+  # theme
   theme_light() +
-  theme(panel.grid.major.y = element_line(color = 'grey20'),
-        panel.grid.major.x = element_blank(),
-        panel.border = element_blank(),
-        plot.background = element_rect(fill = "white",
-                                       colour = 'white',linewidth = 0),
-        panel.background = element_rect(fill = "white"),
-        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
-        strip.text = element_text(size = 20, color = 'black'),
-        strip.background =element_rect(fill="white"),
+  theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+        strip.background = element_blank(),
+        strip.text = element_text(color = 'black', size = 40),
+        strip.text.y = element_text(color = 'black', size = 40, angle = 0, hjust = 0, vjust = 0.25),
         axis.text.x = element_blank(),
         axis.text.y = element_text(size=30),
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
-        title = element_text(size = 40)) +
-  guides(fill = guide_legend(nrow = 3))
-# # title
-# labs(title = paste('Percentual difference between intake and RNI in', year_fig, 'with Behavior change scen'))
-ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg_fixedS.png'),
-       width = 1000, height = 1000, units = 'mm', limitsize = F)
+        title = element_text(size = 40),
+        panel.spacing.x = unit(1, "cm")) +
+  guides(fill = guide_legend(nrow = 2), shape = "none")
+ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg.png'),
+       width = 1000, height = 1500, units = 'mm', limitsize = F)
+ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg.pdf'),
+       width = 1000, height = 1500, units = 'mm', limitsize = F)
 
-pl_micronutrients_diffPer_regional_bars <-  ggplot() +
-  # barchart
-  geom_bar(data = micronutrients_diffPer_regional %>%
-             mutate(scen_type = toupper(scen_type)) %>%
-             filter(scen_type == 'SPP'),
-           aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
-           stat = "identity", color = NA, width = 0.5) +
-  scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
-  # facet
-  facet_wrap(. ~ region, scales = 'fixed') +
-  # horizontal line at y = 0
-  geom_hline(yintercept = 0, linewidth = 1.2) +
-  labs(x = '', y = 'Percentual difference between intake and RNI') +
-  theme_light() +
-  theme(panel.grid.major.y = element_line(color = 'grey20'),
-        panel.grid.major.x = element_blank(),
-        panel.border = element_blank(),
-        plot.background = element_rect(fill = "white",
-                                       colour = 'white',linewidth = 0),
-        panel.background = element_rect(fill = "white"),
-        legend.key.size = unit(2,'cm'), legend.position = 'bottom', legend.direction = 'horizontal',
-        strip.text = element_text(size = 20, color = 'black'),
-        strip.background =element_rect(fill="white"),
-        axis.text.x = element_blank(),
-        axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 35),
-        legend.title = element_text(size = 40),
-        title = element_text(size = 40)) +
-  guides(fill = guide_legend(nrow = 3))
-# # title
-# labs(title = paste('Percentual difference between intake and RNI in', year_fig, 'with Reference scen'))
-ggsave(pl_micronutrients_diffPer_regional_bars, file = file.path(figures_path, 'sdg3_micronutrients_reg_freeS.png'),
-       width = 1000, height = 1000, units = 'mm', limitsize = F)
+# divided by regions
+for (n in c(1,2)) {
+  if (n == 1) {
+    micronutrients_diffPer_regional_subset <- micronutrients_diffPer_regional %>%
+      dplyr::filter(region %in% unique(region)[1:length(unique(region))/2])
+  } else {
+    micronutrients_diffPer_regional_subset <- micronutrients_diffPer_regional %>%
+      dplyr::filter(region %in% unique(region)[(length(unique(region))/2 + 1) : length(unique(region))])
+  }
+  pl_micronutrients_diffPer_regional_bars_subset <- ggplot(data = micronutrients_diffPer_regional_subset %>%
+                                                      dplyr::filter(scen_type != 'REF') %>%
+                                                      dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))) +
+    geom_hline(yintercept = 0, color = 'black') +
+    # barchart
+    geom_bar(aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
+             stat = "identity", color = NA, width = 0.7) +
+    geom_errorbar(aes(x=as.factor(nutrient_name), y=median_value, ymin = min_value, ymax = max_value,
+                      group = interaction(nutrient_name, scen_type)),
+                  position = position_dodge(width = 0.25), width = 0.3, color = '#636363') +
+    # REF values
+    geom_point(data = rbind(micronutrients_diffPer_regional_subset %>%
+                              dplyr::filter(scen_type == 'REF') %>%
+                              dplyr::mutate(scen_type = 'SPP'),
+                            micronutrients_diffPer_regional_subset %>%
+                              dplyr::filter(scen_type == 'REF') %>%
+                              dplyr::mutate(scen_type = 'SNR'),
+                            micronutrients_diffPer_regional_subset %>%
+                              dplyr::filter(scen_type == 'REF') %>%
+                              dplyr::mutate(scen_type = 'SPPNR')) %>%
+                 dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))),
+               aes(x = as.factor(nutrient_name), y = median_value),
+               shape = 18, size = 8) +
+    scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
+    facet_grid(region ~ scen_type) +
+    # labs
+    labs(y = '% difference with RNI', x = '') +
+    # theme
+    theme_light() +
+    theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+          strip.background = element_blank(),
+          strip.text = element_text(color = 'black', size = 40),
+          strip.text.y = element_text(color = 'black', size = 40, angle = 0, hjust = 0, vjust = 0.25),
+          axis.text.x = element_blank(),
+          axis.text.y = element_text(size=30),
+          legend.text = element_text(size = 35),
+          legend.title = element_text(size = 40),
+          title = element_text(size = 40),
+          panel.spacing.x = unit(1, "cm")) +
+    guides(fill = guide_legend(nrow = 2), shape = "none")
+  if (n == 1) {
+    pl_micronutrients_diffPer_regional_bars_subset <- pl_micronutrients_diffPer_regional_bars_subset + theme(legend.position = 'none')
+  }
+  ggsave(pl_micronutrients_diffPer_regional_bars_subset, file = file.path(figures_path, paste0('sdg3_micronutrients_reg_subset',n,'.pdf')),
+         width = 1000, height = 1500, units = 'mm', limitsize = F)
+}
+
 
 
 ## total diff world
@@ -4350,6 +4910,7 @@ ggsave(FIG_NUTRITION_micronutrients_diffPer_world, file = file.path(figures_path
 FIG_NUTRITION_micronutrients_diffPer_clean_world <- ggplot(data = micronutrients_diffPer_world %>%
                                                              dplyr::filter(scen_type != 'REF') %>%
                                                              dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))) +
+  geom_hline(yintercept = 0, color = 'black') +
   # barchart
   geom_bar(aes(x = as.factor(nutrient_name), y = median_value, fill = as.factor(nutrient_name)),
            stat = "identity", color = NA, width = 0.5) +
@@ -4369,7 +4930,6 @@ FIG_NUTRITION_micronutrients_diffPer_clean_world <- ggplot(data = micronutrients
                dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))),
              aes(x = as.factor(nutrient_name), y = median_value),
              shape = 18, size = 9) +
-  geom_hline(yintercept = 0, color = 'black') +
   scale_fill_manual(values = micronutrients_scenario_palette, name = 'Minerals & Vitamins', labels = micronutrients_scenario.labs) +
   facet_grid(. ~ scen_type) +
   # labs
@@ -4384,7 +4944,7 @@ FIG_NUTRITION_micronutrients_diffPer_clean_world <- ggplot(data = micronutrients
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
-  guides(fill = guide_legend(nrow = 3), shape = "none")
+  guides(fill = guide_legend(nrow = 2), shape = "none")
 ggsave(FIG_NUTRITION_micronutrients_diffPer_clean_world, file = file.path(figures_path, 'FIG_NUTRITION_micronutrients_diffPer_clean_world.png'),
        width = 1000, height = 500, units = 'mm', limitsize = F)
 

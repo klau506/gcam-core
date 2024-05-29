@@ -51,10 +51,12 @@ names(macronutrients_scenario.labs) = c("gProteinPerCapita.SNR", "gFatPerCapita.
 
 macronutrients_palette = c(
   'gProteinPerCapita' = '#500f96',
-  'gFatPerCapita' = '#a61230'
+  'gFatPerCapita' = '#a61230',
+  'perProteinPerCapita' = '#500f96',
+  'perFatPerCapita' = '#a61230'
 )
-macronutrients.labs <- c('Protein',"Fat")
-names(macronutrients.labs) = c("gProteinPerCapita", "gFatPerCapita")
+macronutrients.labs <- c('Protein',"Fat",'Protein',"Fat")
+names(macronutrients.labs) = c("gProteinPerCapita", "gFatPerCapita", "perProteinPerCapita", "perFatPerCapita")
 
 micronutrients_scenario_palette = c(
   'calcium' = '#a63603',
@@ -125,11 +127,11 @@ food_scenario_palette = c(
 
 
 ghg_emiss = c(
-  'CH4' = '#3ebce6',
-  'CO2' = '#002a9c',
-  'F-Gas' = '#74c476',
-  'LUC CO2' = '#31a354',
-  'N2O' = '#A00CC8'
+  'CH4' = '#CD4631',
+  'CO2' = '#81ADC8',
+  'F-Gas' = '#F8F2DC',
+  'LUC CO2' = '#C0DE7E',
+  'N2O' = '#9E6240'
 )
 ghg_emiss.labs <- c('CH4', "CO2", "F-Gas", 'LUC CO2', 'N2O')
 names(ghg_emiss.labs) = c('CH4', "CO2", "F-Gas", 'LUC CO2', 'N2O')
@@ -150,6 +152,16 @@ remove_depth <- function(data) {
     mutate(`subsector...4` = stringr::str_split(subsector...4, ',depth')[[1]][1]) %>%
     mutate(`subsector...5` = stringr::str_split(subsector...5, ',depth')[[1]][1]) %>%
     mutate(`subsector...6` = stringr::str_split(subsector...6, ',depth')[[1]][1])
+
+  return(data)
+}
+
+cut_region_names <- function(data) {
+  data <- data %>%
+    dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America\nand Caribbean',
+                                  ifelse(region == 'European Free Trade Association', 'European Free Trade\nAssociation',
+                                         ifelse(region == 'South America_Northern', 'South America\nNorthern',
+                                                ifelse(region == 'South America_Southern', 'South America\nSouthern', region)))))
 
   return(data)
 }
