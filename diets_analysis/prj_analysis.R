@@ -29,6 +29,7 @@ library(purrr)
 
 source('module_style.R')
 source('module_data.R')
+source('module_prj_analysis_SI.R')
 
 ##### Load food consumption & mortality data ---------------------------------------------------
 # queries_all_list <- list.files('output', pattern = "queries_all_gath")
@@ -65,7 +66,7 @@ assign('queries_mort', get(load('output/queries_mort1.RData')))
 
 figures_path <- 'figures'
 year_fig <- 2050
-year_s <- 2015
+year_s <- 2005
 year_f <- 2050
 
 #####################################################################################
@@ -1595,6 +1596,7 @@ pl_water_consumption_world <- ggplot(data = load_data('water_consumption_world')
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_consumption_world, file = file.path(figures_path,'sdg6_annual_water_consumption_line.png'), width = 500, height = 400, units = 'mm')
+ggsave(pl_water_consumption_world, file = file.path(figures_path,'sdg6_annual_water_consumption_line.pdf'), width = 500, height = 400, units = 'mm')
 
 
 ag_water_consumption_world_irr_rfd <- load_data('water_irr_rfd_world') %>%
@@ -1640,6 +1642,7 @@ pl_water_consumption_agriculture_world_irr_rfd <- ggplot(data = ag_water_consump
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
 ggsave(pl_water_consumption_agriculture_world_irr_rfd, file = file.path(figures_path,'sdg6_annual_water_agriculture_consumption_line_irr_rfd.png'), width = 500, height = 400, units = 'mm')
+ggsave(pl_water_consumption_agriculture_world_irr_rfd, file = file.path(figures_path,'sdg6_annual_water_agriculture_consumption_line_irr_rfd.pdf'), width = 500, height = 400, units = 'mm')
 
 
 
@@ -2491,21 +2494,25 @@ ggsave(FIG_EMISSHEALTH_sdg13_av_ghg_aggAbs_map,
 
 
 ##### GHG emissions TREND ======================================================
-pl_ghg_emissions_world <- ggplot(data = load_data('ghg_world') %>%
-                                   dplyr::filter(year >= year_s, year <= year_f) %>%
-                                   dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                   dplyr::group_by(year, scenario) %>%
-                                   dplyr::mutate(value = sum(value)) %>%
-                                   dplyr::ungroup() %>%
-                                   dplyr::group_by(year, scen_type) %>%
-                                   dplyr::mutate(median_value = median(value)) %>%
-                                   dplyr::mutate(min_value = min(value)) %>%
-                                   dplyr::mutate(max_value = max(value)) %>%
-                                   dplyr::ungroup() %>%
-                                   dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))) +
+dataa <- load_data('ghg_world') %>%
+  dplyr::filter(year >= year_s, year <= year_f) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::group_by(year, scenario) %>%
+  dplyr::mutate(value = sum(value)) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by(year, scen_type) %>%
+  dplyr::mutate(median_value = median(value)) %>%
+  dplyr::mutate(min_value = min(value)) %>%
+  dplyr::mutate(max_value = max(value)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF','SPP','SNR','SPPNR')))
+
+pl_ghg_emissions_world <- ggplot(data = dataa) +
   geom_line(aes(x = year, y = value, group = scenario, color = scen_type), alpha = 0.3) +  # All runs lines
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
   geom_line(aes(x = year, y = median_value, color = scen_type), linewidth = 1.75, alpha = 1) +  # Median line
+  geom_line(data = dataa %>% filter(scen_type == 'REF'),
+            aes(x = year, y = median_value, color = scen_type), linewidth = 1.75, alpha = 1) +  # Median line
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
   scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
   # labs
@@ -2524,9 +2531,8 @@ pl_ghg_emissions_world <- ggplot(data = load_data('ghg_world') %>%
         legend.text = element_text(size = 35),
         legend.title = element_text(size = 40),
         title = element_text(size = 40))
-# title
-# labs(title = 'Annual World GHG emissions')
 ggsave(pl_ghg_emissions_world, file = file.path(figures_path,'sdg13_ghg_emissions_line.png'), width = 500, height = 400, units = 'mm')
+ggsave(pl_ghg_emissions_world, file = file.path(figures_path,'sdg13_ghg_emissions_line.pdf'), width = 500, height = 400, units = 'mm')
 
 
 
@@ -4350,6 +4356,19 @@ View(macronutrients_en_basic %>% filter(region == 'Brazil', scen_type %in% c('re
        summarise(perProteinPerCapita = median(perProteinPerCapita),
                  perFatPerCapita = median(perFatPerCapita)) %>%
        ungroup())
+
+
+########################### MACRONUTRIENTS SI plots ###########################
+macronutrients_en_basic_si <- macronutrients_en_basic %>%
+  select(-'kcalFatPerCapita') %>% select(-'kcalProteinPerCapita') %>% select(-'consumptionPerCapita') %>%
+  tidyr::pivot_longer(cols = c('perProteinPerCapita','perFatPerCapita'),
+                     names_to = 'macronutrient', values_to = 'value') %>%
+  mutate(scen_path = ifelse(scen_type %in% c('REF','ref'), 'REF', scen_path)) %>%
+  mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita")))
+
+prob_distrib_macronutrients(as.data.table(macronutrients_en_basic_si), year_fig)
+
+
 
 ########################### MACRONUTRIENTS plots ###########################
 

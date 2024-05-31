@@ -12,6 +12,14 @@ scen_palette_refVsSppVsSnrVsSppnr = c(
 scen_palette_refVsSppVsSnrVsSppnr.labs <- c('SPP', "SNR", "SPPNR", 'REF')
 names(scen_palette_refVsSppVsSnrVsSppnr.labs) = c("SPP", "SNR", "SPPNR", 'REF')
 
+scen_path_palette_refVsSppVsSnrVsSppnr = c(
+  'all' = 'solid',
+  'plus' = 'dotted',
+  'REF' = 'longdash'
+)
+scen_path_palette_refVsSppVsSnrVsSppnr.labs <- c('all','plus','REF')
+names(scen_path_palette_refVsSppVsSnrVsSppnr.labs) = c('all','plus','REF')
+
 
 land_use_scenario_palette =
   c('Cropland' = 'chocolate4',
@@ -159,7 +167,7 @@ remove_depth <- function(data) {
 cut_region_names <- function(data) {
   data <- data %>%
     dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America\nand Caribbean',
-                                  ifelse(region == 'European Free Trade Association', 'European Free Trade\nAssociation',
+                                  ifelse(region == 'European Free Trade Association', 'EFTA',
                                          ifelse(region == 'South America_Northern', 'South America\nNorthern',
                                                 ifelse(region == 'South America_Southern', 'South America\nSouthern', region)))))
 
