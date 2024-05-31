@@ -4,21 +4,28 @@
 # PALETTES & LABELS
 
 scen_palette_refVsSppVsSnrVsSppnr = c(
-  'SPP' = '#32a0a8',
-  'SNR' = '#500f96',
-  'SPPNR' = '#198a22',
-  'REF' = '#7d0c1a'
+  'SPP' = '#BD08A2',
+  'SNR' = '#F6AA1C',
+  'SPPNR' = '#0C9425',
+  'REF' = '#000000'
 )
 scen_palette_refVsSppVsSnrVsSppnr.labs <- c('SPP', "SNR", "SPPNR", 'REF')
 names(scen_palette_refVsSppVsSnrVsSppnr.labs) = c("SPP", "SNR", "SPPNR", 'REF')
 
-scen_path_palette_refVsSppVsSnrVsSppnr = c(
+scen_path_palette_refVsSppVsSnrVsSppnr3 = c(
   'all' = 'solid',
-  'plus' = 'dotted',
-  'REF' = 'longdash'
+  'plus' = 'dashed',
+  'REF' = 'dotted'
 )
-scen_path_palette_refVsSppVsSnrVsSppnr.labs <- c('all','plus','REF')
-names(scen_path_palette_refVsSppVsSnrVsSppnr.labs) = c('all','plus','REF')
+scen_path_palette_refVsSppVsSnrVsSppnr3.labs <- c('all','plus','REF')
+names(scen_path_palette_refVsSppVsSnrVsSppnr3.labs) = c('all','plus','REF')
+
+scen_path_palette_refVsSppVsSnrVsSppnr2 = c(
+  'all' = 'solid',
+  'plus' = 'dashed'
+)
+scen_path_palette_refVsSppVsSnrVsSppnr2.labs <- c('all','plus')
+names(scen_path_palette_refVsSppVsSnrVsSppnr2.labs) = c('all','plus')
 
 
 land_use_scenario_palette =

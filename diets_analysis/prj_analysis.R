@@ -4360,14 +4360,15 @@ View(macronutrients_en_basic %>% filter(region == 'Brazil', scen_type %in% c('re
 
 ########################### MACRONUTRIENTS SI plots ###########################
 macronutrients_en_basic_si <- macronutrients_en_basic %>%
-  select(-'kcalFatPerCapita') %>% select(-'kcalProteinPerCapita') %>% select(-'consumptionPerCapita') %>%
+  dplyr::select(-'kcalFatPerCapita') %>% select(-'kcalProteinPerCapita') %>% select(-'consumptionPerCapita') %>%
   tidyr::pivot_longer(cols = c('perProteinPerCapita','perFatPerCapita'),
                      names_to = 'macronutrient', values_to = 'value') %>%
-  mutate(scen_path = ifelse(scen_type %in% c('REF','ref'), 'REF', scen_path)) %>%
-  mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita")))
+  dplyr::mutate(scen_path = ifelse(scen_type %in% c('REF','ref'), 'REF', scen_path)) %>%
+  dplyr::mutate(macronutrient = factor(macronutrient, levels = c("perProteinPerCapita","perFatPerCapita"))) %>%
+  dplyr::rename(type = macronutrient)
 
-prob_distrib_macronutrients(as.data.table(macronutrients_en_basic_si), year_fig)
-
+prob_distrib_nutrients(as.data.table(macronutrients_en_basic_si), year_fig, type = 'macronutrients')
+cum_fun_nutrients(macronutrients_en_basic_si, year_fig, type = 'macronutrients')
 
 
 ########################### MACRONUTRIENTS plots ###########################
@@ -4969,6 +4970,43 @@ ggsave(FIG_NUTRITION_micronutrients_diffPer_clean_world, file = file.path(figure
 
 
 
+
+########################### MACRONUTRIENTS SI plots ###########################
+micronutrients_si <- micronutrients %>%
+  select(region, year, nutrient_name, scenario, scen_type, scen_path, total_micronutrient_intake) %>%
+  mutate(scen_path = ifelse(scen_type == 'ref', 'REF', scen_path))
+micronutrients_sii <- micronutrients_si %>%
+  # filter 3 micronutrients
+  dplyr::filter(nutrient_name %in% c('vitamin a','vitamin b12','folate')) %>%
+  # reshape
+  dplyr::rename('type' = 'nutrient_name',
+                'value' = 'total_micronutrient_intake') %>%
+  # stylize
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR'))) %>%
+  dplyr::mutate(type = factor(type, levels = c('vitamin a','vitamin b12','folate')))
+
+micronutrients_diff_sii <- merge(micronutrients_si %>%
+                              dplyr::filter(scen_type != 'ref'),
+                            micronutrients_si %>%
+                              dplyr::filter(scen_type == 'ref') %>%
+                              select(region, year, nutrient_name,
+                                     total_micronutrient_intake_ref = total_micronutrient_intake),
+                            by = c('region','year','nutrient_name')) %>%
+  # compute diff between intake and REF
+  dplyr::mutate(diff = 100*(total_micronutrient_intake - total_micronutrient_intake_ref)/total_micronutrient_intake_ref) %>%
+  # filter 3 micronutrients
+  dplyr::filter(nutrient_name %in% c('vitamin a','vitamin b12','folate')) %>%
+  # reshape
+  dplyr::rename('type' = 'nutrient_name',
+                'value' = 'diff') %>%
+  # stylize
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('REF', 'SPP','SNR','SPPNR'))) %>%
+  dplyr::mutate(type = factor(type, levels = c('vitamin a','vitamin b12','folate')))
+
+prob_distrib_nutrients(as.data.table(micronutrients_sii), year_fig, type = 'micronutrient')
+cum_fun_nutrients(micronutrients_sii, year_fig, type = 'micronutrient')
 
 #####################################################################################
 # FIG - NUTRITION: MICRO, MACRO & ADESA
