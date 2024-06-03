@@ -1,4 +1,5 @@
 require(plyr)
+require(vioplot)
 
 
 prob_distrib_nutrients = function(df, y, type) {
@@ -34,20 +35,21 @@ prob_distrib_nutrients = function(df, y, type) {
       dplyr::filter(region %in% reg)
 
     pl <- ggplot(df_reg) +
-      geom_density(data = df_reg %>% filter(scen_type != 'REF'), aes(x = value,
-                                                                 color = scen_type, fill = scen_type, linetype = scen_path),
+      geom_density(data = df_reg %>% filter(scen_type != 'REF'),
+                   aes(x = value,color = scen_type,
+                       fill = scen_type, linetype = scen_path),
                    linewidth = 0.8, alpha = 0.25) +
       geom_vline(aes(color = scen_type, fill = scen_type, linetype = scen_path, xintercept = medi),
                  data = df_medi_reg, linewidth = 1.5) +
       facet_grid(region ~ type, scales = 'free') +
       scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
-                        name = 'Scenario type',
+                        name = 'Scenario',
                         labels = scen_palette_refVsSppVsSnrVsSppnr.labs)+
       scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
-                         name = 'Scenario type',
+                         name = 'Scenario',
                          labels = scen_palette_refVsSppVsSnrVsSppnr.labs) +
       scale_linetype_manual(values = scen_path_palette_refVsSppVsSnrVsSppnr3,
-                            name = 'Scenario path',
+                            name = 'Pathway',
                             labels = scen_path_palette_refVsSppVsSnrVsSppnr3.labs) +
       labs(y = 'Probability density', x = xlab) +
       theme_light() +
@@ -129,13 +131,13 @@ cum_fun_nutrients = function(df, y, type) {
                  size = 7, alpha = 0.95, shape = 23, stroke = 2) +
       facet_grid(region ~ type, scales = 'free') +
       scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
-                        name = 'Scenario type',
+                        name = 'Scenario',
                         labels = scen_palette_refVsSppVsSnrVsSppnr.labs)+
       scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
-                         name = 'Scenario type',
+                         name = 'Scenario',
                          labels = scen_palette_refVsSppVsSnrVsSppnr.labs) +
       scale_linetype_manual(values = scen_path_palette_refVsSppVsSnrVsSppnr2,
-                            name = 'Scenario path',
+                            name = 'Pathway',
                             labels = scen_path_palette_refVsSppVsSnrVsSppnr2.labs) +
       labs(y = 'Cumulative frequency', x = xlab) +
       theme_light() +
@@ -171,5 +173,112 @@ cum_fun_nutrients = function(df, y, type) {
 
   ggsave(pl, filename = file.path(figures_path, paste0('sdg3_SI_',type,'_cumfun_reg.pdf')),
          width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+}
+
+#' violin_plot_landtype
+#' @param data dataset
+#' @param y figure year
+#' @param type abs or per
+#'
+violin_plot_landtype <- function(data, y, type) {
+  if (type == 'abs') {
+    ylab = expression(paste('Change in thous. ', km^2, ' compared to Reference'))
+  } else {
+    ylab = 'Percentual change compared to Reference [%]'
+  }
+  pl_SI_land_area_violin <- ggplot(data = data %>%
+                                     dplyr::filter(year == y) %>%
+                                     dplyr::select(scen_type, scen_path, land_use_type, diff) %>%
+                                     dplyr::distinct(),
+                                   aes(x = land_use_type,
+                                       y = diff,
+                                       color = land_use_type,
+                                       fill = land_use_type)) +
+    geom_violin(trim = FALSE, alpha = 0.5, width = 1.2) +
+    geom_jitter(width = 0.2, size = 0.5, alpha = 0.7) +
+    geom_boxplot(width=0.2, color="black", alpha=0.5) +
+    geom_hline(aes(yintercept = 0)) +
+    facet_grid(scen_type ~ scen_path) +
+    scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                      breaks = land_use_order_palette) +
+    scale_color_manual(values = land_use_scenario_palette, name = 'Land Type',
+                       breaks = land_use_order_palette) +
+    # labs
+    labs(y = ylab, x = '') +
+    # theme
+    theme_light() +
+    theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+          strip.background = element_blank(),
+          strip.text = element_text(color = 'black', size = 40),
+          strip.text.y = element_text(angle = 0),
+          axis.text.x = element_text(size=30, angle = 45, hjust = 1, vjust = 1),
+          axis.text.y = element_text(size=30),
+          legend.text = element_text(size = 35),
+          legend.title = element_text(size = 40),
+          title = element_text(size = 40))
+  ggsave(pl_SI_land_area_violin, file = file.path(figures_path,paste0('sdg15_SI_land_area_violin_world_',type,'.pdf')),
+         width = 500, height = 500, units = 'mm')
+
+}
+
+#' violin_plot_landtype
+#' @param data dataset
+#' @param y figure year
+#' @param type abs or per
+#'
+violin_plot_landtype_regional <- function(data, y, type) {
+  if (type == 'abs') {
+    ylab = expression(paste('Change in thous. ', km^2, ' compared to Reference'))
+  } else {
+    ylab = 'Percentual change compared to Reference [%]'
+  }
+
+  data <- data %>%
+    dplyr::filter(year == y) %>%
+    dplyr::select(region, scen_type, scen_path, land_use_type, diff) %>%
+    dplyr::distinct()
+
+  for (i in c(1,2)) {
+    reg = unique(data$region)
+    if (i == 1) {
+      reg = reg[1:(length(reg)/2)]
+    } else {
+      reg = reg[(length(reg)/2+1):length(reg)]
+    }
+
+    data_reg <- data %>%
+      dplyr::filter(region %in% reg)
+
+    pl_SI_land_area_violin <- ggplot(data = data_reg,
+                                     aes(x = land_use_type,
+                                         y = diff,
+                                         color = land_use_type,
+                                         fill = land_use_type)) +
+      geom_violin(trim = FALSE, alpha = 0.5) +
+      geom_jitter(width = 0.2, size = 0.5, alpha = 0.7) +
+      geom_boxplot(width=0.2, color="black", alpha=0.5) +
+      geom_hline(aes(yintercept = 0)) +
+      facet_grid(region ~ scen_type + scen_path) +
+      scale_fill_manual(values = land_use_scenario_palette, name = 'Land Type',
+                        breaks = land_use_order_palette) +
+      scale_color_manual(values = land_use_scenario_palette, name = 'Land Type',
+                         breaks = land_use_order_palette) +
+      # labs
+      labs(y = ylab, x = '') +
+      # theme
+      theme_light() +
+      theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+            strip.background = element_blank(),
+            strip.text = element_text(color = 'black', size = 40),
+            strip.text.y = element_text(angle = 0),
+            axis.text.x = element_blank(), #element_text(size=30, angle = 45, hjust = 1, vjust = 1),
+            axis.text.y = element_text(size=30),
+            legend.text = element_text(size = 35),
+            legend.title = element_text(size = 40),
+            title = element_text(size = 40))
+    ggsave(pl_SI_land_area_violin, file = file.path(figures_path,paste0('sdg15_SI_land_area_violin_regional_',type,'_',i,'.pdf')),
+           width = 1000, height = 1500, units = 'mm', limitsize = FALSE)
+  }
 
 }

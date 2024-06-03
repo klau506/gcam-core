@@ -27,6 +27,14 @@ scen_path_palette_refVsSppVsSnrVsSppnr2 = c(
 scen_path_palette_refVsSppVsSnrVsSppnr2.labs <- c('all','plus')
 names(scen_path_palette_refVsSppVsSnrVsSppnr2.labs) = c('all','plus')
 
+scen_path_palette_col_refVsSppVsSnrVsSppnr <-
+  c('all' = '#6b0ead',
+    'plus' = '#66A61E')
+scen_path_palette_col_refVsSppVsSnrVsSppnr.labs <- c('all','plus')
+
+ref_vs_dietaryChange <- c('REF' = 18,
+                          'Dietary\nchange' = 19)
+ref_vs_dietaryChange.labs <- c('Dietary\nchange','REF')
 
 land_use_scenario_palette =
   c('Cropland' = 'chocolate4',

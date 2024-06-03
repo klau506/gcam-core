@@ -82,7 +82,7 @@ plant_percentage <- load_data('food_consumption_regional') %>%
   dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, is_plant, year, Units) %>%
   dplyr::summarise(value = sum(value)) %>%
   dplyr::ungroup() %>%
-  # compute the plant % (plant/total food consumption)
+  # compute the plant % (plant/total protein consumption)
   tidyr::pivot_wider(names_from = 'is_plant', values_from = 'value') %>%
   dplyr::mutate(value = `TRUE` / (`TRUE` + `FALSE`)) %>%
   dplyr::mutate(Units = 'Percentage') %>%
@@ -396,6 +396,54 @@ ggsave(snr_protein_plus, file = file.path(figures_path, paste0('snr_protein_plus
        width = 600, height = 800, units = 'mm')
 
 
+
+##### CHECK =====================================================================
+plant_percentage_world <- plant_percentage %>%
+  dplyr::group_by(scen_type, scen_path, year) %>%
+  dplyr::summarise(value = median(value)) %>%
+  dplyr::ungroup()
+print(plant_percentage_world %>% filter(year == year_fig, scen_type %in% c('ref','spp')))
+plant_percentage %>% filter(year == year_fig, scen_type == 'spp', scen_path == 'plus') %>% summary()
+
+rumin_percentage_world <- rumin_percentage  %>%
+  dplyr::group_by(scen_type, scen_path, year) %>%
+  dplyr::summarise(median_value = median(value),
+                   min_value = min(value),
+                   max_value = max(value)) %>%
+  dplyr::ungroup()
+print(rumin_percentage_world %>% filter(year == year_fig, scen_type %in% c('ref','snr')))
+rumin_percentage %>% filter(year == year_fig, scen_type == 'snr', scen_path == 'plus') %>% summary()
+
+plant_percentage_world <- merge(plant_percentage %>%
+                                  dplyr::filter(scen_type != 'ref'),
+                                plant_percentage %>%
+                                  dplyr::filter(scen_type == 'ref') %>%
+                                  dplyr::select(year, region, value_ref = value) %>%
+                                  dplyr::distinct(),
+                                by = c('year','region')) %>%
+  # diff
+  dplyr::mutate(diff = (value - value_ref)) %>%
+  # statistics
+  dplyr::group_by(scen_type, scen_path, year) %>%
+  dplyr::summarise(value = median(diff)) %>%
+  dplyr::ungroup()
+print(plant_percentage_world %>% filter(year == year_fig, scen_type %in% c('ref','spp')))
+
+rumin_percentage_world <- merge(rumin_percentage %>%
+                                  dplyr::filter(scen_type != 'ref'),
+                                rumin_percentage %>%
+                                  dplyr::filter(scen_type == 'ref') %>%
+                                  dplyr::select(year, region, value_ref = value) %>%
+                                  dplyr::distinct(),
+                                by = c('year','region')) %>%
+  # diff
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = (value - value_ref)) %>%
+  dplyr::group_by(scen_type, scen_path, year) %>%
+  dplyr::summarise(value = median(diff)) %>%
+  dplyr::ungroup()
+print(rumin_percentage_world %>% filter(year == year_fig, scen_type %in% c('ref','snr')))
+
 #####################################################################################
 #####################################################################################
 # DIET COMPOSITION
@@ -669,7 +717,6 @@ ggsave(FIG_LANDWATER_land_indicator_global_forestLand_map,
 
 
 ## EXTENDED FIG
-# aggregate Global Value with Weighted Average
 land_indicator_global_forestLand <- land_indicator_forestLand %>%
   dplyr::mutate(weight = percent_forest * total_land,
                 weight_ref = percent_forest_ref * total_land_ref) %>%
@@ -682,10 +729,12 @@ land_indicator_global_forestLand <- land_indicator_forestLand %>%
   dplyr::mutate(diff = 100*(percent_forest - percent_forest_ref)/percent_forest_ref) %>%
   # compute median by scen
   dplyr::group_by(year, region, scen_type, scen_path) %>%
-  dplyr::summarise(median_diff = median(diff)) %>%
+  dplyr::summarise(median_diff = median(diff),
+                   min_diff = min(diff),
+                   max_diff = max(diff)) %>%
   dplyr::mutate(group = 'Re-/Afforestation area') %>%
-  dplyr::ungroup()
-
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
 
 
 # plot
@@ -728,7 +777,7 @@ pl_land_indicator_global_forestLand_map <- ggplot() +
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 30))
 ggsave(pl_land_indicator_global_forestLand_map,
-       file = file.path(figures_path, paste0('ind_sdg15_forest_map_',year_fig,'.png')),
+       file = file.path(figures_path, paste0('ind_sdg15_forest_map_',year_fig,'.pdf')),
        width = 500, height = 300, units = 'mm')
 
 
@@ -920,7 +969,6 @@ land_indicator_global_managementLand = land_indicator_managementLand %>%
   dplyr::mutate(group = 'Unmanaged area') %>%
   dplyr::ungroup()
 
-
 # plot
 land_indicator_global_managementLand_map <- land_indicator_global_managementLand %>%
   # filter desired year
@@ -931,14 +979,14 @@ land_indicator_global_managementLand_map <- land_indicator_global_managementLand
   # merge with world data
   dplyr::rename('adm0_a3' = 'ISO 3') %>%
   # subset scen
-  dplyr::mutate(scen_type = toupper(scen_type))
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
 
 land_indicator_global_managementLand_map = merge(rnaturalearth::ne_countries(scale = "small", returnclass = "sf") %>%
                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(adm0_a3== 'ROU', 'ROM', adm0_a3)) %>%
                                                    dplyr::mutate('adm0_a3' = dplyr::if_else(sovereignt=='South Sudan', 'SSD', adm0_a3)) %>%
                                                    dplyr::filter(!adm0_a3 %in% c("ATA","FJI")),
                                                  land_indicator_global_managementLand_map, by = 'adm0_a3')
-
 # plot
 pl_land_indicator_global_managementLand_map <- ggplot() +
   # color map by regions
@@ -963,7 +1011,7 @@ pl_land_indicator_global_managementLand_map <- ggplot() +
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 30))
 ggsave(pl_land_indicator_global_managementLand_map,
-       file = file.path(figures_path, paste0('ind_sdg15_unmanaged_map_',year_fig,'.png')),
+       file = file.path(figures_path, paste0('ind_sdg15_unmanaged_map_',year_fig,'.pdf')),
        width = 500, height = 300, units = 'mm')
 
 
@@ -1281,6 +1329,137 @@ ggsave(pl_landType_regional_diffPer_heatmap, file = file.path(figures_path, past
        width = 750, height = 600, units = 'mm', limitsize = FALSE)
 
 
+
+#### SI figures ================================================================
+data <- load_data('land_use_world') %>%
+  aggregate_land_use_type() %>%
+  # compute total area by land_use_type
+  dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup() %>%
+  # diff with respect to Reference
+  dplyr::mutate(diff = value - value[scen_type == "ref"]) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::filter(scen_type != 'REF') %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))) %>%
+  dplyr::mutate(land_use_type = ifelse(land_use_type == 'Shrubs & Grass', 'Shrub & Grass', land_use_type))
+
+violin_plot_landtype(data, year_fig, type = 'abs')
+
+
+
+data <- load_data('land_use_regional') %>%
+  aggregate_land_use_type() %>%
+  # compute total area by land_use_type
+  dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup() %>%
+  # diff with respect to Reference
+  dplyr::mutate(diff = value - value[scen_type == "ref"]) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::filter(scen_type != 'REF') %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))) %>%
+  dplyr::mutate(land_use_type = ifelse(land_use_type == 'Shrubs & Grass', 'Shrub & Grass', land_use_type)) %>%
+  cut_region_names()
+
+violin_plot_landtype_regional(data, year_fig, type = 'abs')
+
+
+
+data <- load_data('land_use_world') %>%
+  aggregate_land_use_type() %>%
+  # compute total area by land_use_type
+  dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup() %>%
+  # diff with respect to Reference
+  dplyr::mutate(diff = 100*(value - value[scen_type == "ref"])/value[scen_type == "ref"]) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::filter(scen_type != 'REF') %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))) %>%
+  dplyr::mutate(land_use_type = ifelse(land_use_type == 'Shrubs & Grass', 'Shrub & Grass', land_use_type))
+
+violin_plot_landtype(data, year_fig, type = 'per')
+
+## CHECK
+check <- data %>%
+  dplyr::group_by(scen_type, scen_path, land_use_type, year) %>%
+  dplyr::summarise(value = median(diff)) %>%
+  dplyr::ungroup()
+print(check %>% filter(year == year_fig, land_use_type == 'Pasture'))
+
+
+
+data <- load_data('land_use_regional') %>%
+  aggregate_land_use_type() %>%
+  # compute total area by land_use_type
+  dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, Units, land_use_type, year) %>%
+  dplyr::summarise(value = sum(value)) %>%
+  dplyr::ungroup() %>%
+  # diff with respect to Reference
+  dplyr::mutate(diff = value - value[scen_type == "ref"]) %>%
+  dplyr::mutate(scen_type = toupper(scen_type)) %>%
+  dplyr::filter(scen_type != 'REF') %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))) %>%
+  dplyr::mutate(land_use_type = ifelse(land_use_type == 'Shrubs & Grass', 'Shrub & Grass', land_use_type)) %>%
+  cut_region_names()
+
+violin_plot_landtype_regional(data, year_fig, type = 'per')
+
+
+#### CHECK ========================================================================
+
+land_indicator_forestLand = merge(load_data('land_use_regional') %>%
+                                    dplyr::filter(scenario != 'ref') %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    aggregate_land_use_type() %>%
+                                    dplyr::mutate(value = value * 100) %>% # convert Thous km2 to Mha
+                                    dplyr::mutate(forest = ifelse(land_use_type == 'Forest', 'Forest', 'NoForest')) %>%
+                                    dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year, forest) %>%
+                                    dplyr::summarize(value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::group_by(region, scenario, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+                                    dplyr::summarize(percent_forest = 100 * sum(value[forest == "Forest"]) / sum(value[forest %in% c("NoForest", "Forest")]),
+                                                     total_land = sum(value[forest %in% c("NoForest", "Forest")])) %>%
+                                    dplyr::ungroup(),
+                                  load_data('land_use_regional') %>%
+                                    dplyr::filter(scenario == 'ref') %>%
+                                    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+                                    aggregate_land_use_type() %>%
+                                    dplyr::mutate(value = value * 100) %>% # convert Thous km2 to Mha
+                                    dplyr::mutate(forest = ifelse(land_use_type == 'Forest', 'Forest', 'NoForest')) %>%
+                                    dplyr::group_by(region, scenario, year, forest) %>%
+                                    dplyr::summarize(value = sum(value)) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::group_by(region, scenario, year) %>%
+                                    dplyr::summarize(percent_forest_ref = 100 * sum(value[forest == "Forest"]) / sum(value[forest %in% c("NoForest", "Forest")]),
+                                                     total_land_ref = sum(value[forest %in% c("NoForest", "Forest")])) %>%
+                                    dplyr::ungroup() %>%
+                                    dplyr::select(-scenario),
+                                  by = c('year','region'))
+
+## FIG
+# aggregate Global Value with Weighted Average
+check <- land_indicator_forestLand %>%
+  dplyr::mutate(weight = percent_forest * total_land,
+                weight_ref = percent_forest_ref * total_land_ref) %>%
+  dplyr::group_by(scenario, region, scen_type, scen_path, final_share, peak_year, slope, year) %>%
+  dplyr::summarize(percent_forest = sum(weight) / sum(total_land),
+                   percent_forest_ref = sum(weight_ref) / sum(total_land_ref)) %>%
+  dplyr::ungroup() %>%
+  # compute Per difference between Reference and runs
+  dplyr::rowwise() %>%
+  dplyr::mutate(diff = 100*(percent_forest - percent_forest_ref)/percent_forest_ref) %>%
+  # compute median by scen
+  dplyr::group_by(year, scen_type, scen_path) %>%
+  dplyr::summarise(median_diff = median(diff),
+                   min_diff = min(diff),
+                   max_diff = max(diff)) %>%
+  dplyr::mutate(group = 'Re-/Afforestation area') %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
+
+print(check %>% filter(year == year_fig))
 
 #####################################################################################
 #####################################################################################
