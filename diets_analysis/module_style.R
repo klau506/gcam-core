@@ -24,6 +24,10 @@ scen_path_palette_refVsSppVsSnrVsSppnr2 = c(
   'all' = 'solid',
   'plus' = 'dashed'
 )
+scen_path_pattern_refVsSppVsSnrVsSppnr2 = c(
+  'all' = 'none',
+  'plus' = 'stripe'
+)
 scen_path_palette_refVsSppVsSnrVsSppnr2.labs <- c('all','plus')
 names(scen_path_palette_refVsSppVsSnrVsSppnr2.labs) = c('all','plus')
 
