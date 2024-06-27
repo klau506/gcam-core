@@ -62,7 +62,7 @@ load_data <- function(dataset_name) {
 # # queries_mort <- get(load(file.path('output',queries_mort_list[1])))
 # # for (file in queries_mort_list[2:length(queries_mort_list)]) queries_mort <- bind_rows(queries_mort, get(load(file.path('output',file))))
 # # save(queries_mort, file = 'output/queries_mort1.RData')
-# assign('queries_mort', get(load('output/queries_mort1.RData')))
+assign('queries_mort', get(load('output/queries_mort1.RData')))
 
 figures_path <- 'figures'
 year_fig <- 2050
@@ -3488,7 +3488,6 @@ waterfall_plot_ghg_regional(data, year_fig, type = 'per')
 #####################################################################################
 
 
-
 pl_deaths_world <- ggplot(data = queries_mort %>%
                             dplyr::mutate(scen_type = toupper(scen_type)) %>%
                             # subset one pm25 and one o3 method
@@ -3907,6 +3906,93 @@ ggsave(pl_deaths_world_regional_diffPer_heatmap, file = file.path(figures_path, 
 
 
 
+#### SI ========================================================================
+weighted_pop_by_iso <- unique(get(load(file.path('inputs','nutrition','weighted_pop_by_iso.RData'))))
+rm(weighted_pop2); gc()
+
+data = merge(queries_mort %>%
+               dplyr::filter(scenario != 'ref') %>%
+               dplyr::mutate(scen_type = toupper(scen_type)) %>%
+               dplyr::mutate(pollutant = toupper(pollutant)) %>%
+               dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
+               dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, pollutant) %>%
+               dplyr::summarise(value = sum(mort)) %>%
+               dplyr::ungroup(),
+             queries_mort %>%
+               dplyr::filter(scenario == 'ref') %>%
+               dplyr::mutate(scen_type = toupper(scen_type)) %>%
+               dplyr::mutate(pollutant = toupper(pollutant)) %>%
+               dplyr::filter(method %in% c('GBD', 'GBD2016')) %>%
+               dplyr::group_by(region, year, scenario, scen_type, pollutant) %>%
+               dplyr::summarise(ref_value = sum(mort)) %>%
+               dplyr::ungroup() %>%
+               dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+             by = c('pollutant','year','region')) %>%
+  dplyr::rename(fasst_region = region) %>%
+  dplyr::left_join(rfasst::fasst_reg %>%
+                     dplyr::rename('iso' = 'subRegionAlt') %>%
+                     dplyr::mutate(iso = tolower(iso)), by = 'fasst_region',
+                   multiple = 'all', relationship = "many-to-many") %>%
+  dplyr::left_join(read.csv('inputs/mappings/iso_GCAM_regID.csv', skip = 6) %>%
+                     select('iso', 'GCAM_region_ID'), by = 'iso') %>%
+  dplyr::left_join(read.csv('inputs/mappings/gcam_id_to_region.csv', skip = 2), by = 'GCAM_region_ID') %>%
+  dplyr::mutate(iso = toupper(iso)) %>%
+  dplyr::left_join(weighted_pop_by_iso %>%
+                     bind_rows(data.frame(
+                       region = rep('Taiwan', 4),
+                       iso = rep('TWN', 4),
+                       weight = rep(1, 4),
+                       GCAM_region_ID = rep(30, 4),
+                       year = c(2010, 2020, 2030, 2050))),
+                   by = c('iso','year','GCAM_region_ID','region'), relationship = "many-to-many") %>%
+  dplyr::filter(!is.na(region)) %>%
+  dplyr::distinct()
+
+data2 <- data %>%
+  dplyr::rowwise() %>%
+  # apply weights
+  dplyr::mutate(ref_value_w = ref_value * weight,
+                value_w = value * weight) %>%
+  dplyr::mutate(ref_value_w = ifelse(is.na(ref_value_w), 0, ref_value_w),
+                value_w = ifelse(is.na(value_w), 0, value_w)) %>%
+  # compute Per difference between Reference and runs
+  dplyr::mutate(diff = ifelse(ref_value_w != 0, 100*(ref_value_w - value_w)/ref_value_w, 0)) %>%
+  # compute by region
+  dplyr::group_by(pollutant, year, scenario, scen_type, scen_path, final_share, peak_year, slope, region) %>%
+  dplyr::summarise(value = sum(value_w),
+                   ref_value = sum(ref_value_w),
+                   diff = sum(diff)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(pollutant = factor(pollutant, levels = c('PM25','O3')))
+
+cum_fun_health(data2, year_fig)
+
+to_print1 <- data2 %>%
+  dplyr::filter(year == year_fig) %>%
+  dplyr::group_by(scen_type, scen_path, pollutant, region) %>%
+  dplyr::summarise(median_value = median(value)) %>%
+  dplyr::ungroup() %>%
+  dplyr::group_by(scen_type, scen_path, region) %>%
+  dplyr::summarise(median_value = sum(median_value)) %>%
+  dplyr::ungroup() %>%
+  tidyr::pivot_wider(names_from = 'scen_path', values_from = 'median_value') %>%
+  dplyr::mutate(diff = 100*(all-plus)/plus)
+View(to_print1)
+
+to_print <- data2 %>%
+  dplyr::filter(year == year_fig) %>%
+  dplyr::group_by(scen_type, scen_path, pollutant, region) %>%
+  dplyr::summarise(median_value = median(value),
+                   median_value_ref = median(ref_value)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(diff = 100*(median_value_ref-median_value)/median_value_ref)
+View(to_print)
+print(to_print %>%
+        dplyr::group_by(pollutant) %>%
+        dplyr::summarise(m_diff = min(diff),
+                         M_diff = max(diff),
+                         diff = median(diff)))
+
 #####################################################################################
 #####################################################################################
 # FIG - GHG & HEALTH
@@ -4222,21 +4308,20 @@ staples_vs_nonstaples_Pcal <- load_data('food_consumption_regional') %>%
 ## SSP2 population data ---
 ssp_data <- read.csv(paste0("inputs/nutrition/SSP2_population_by_demographic.csv"), skip = 1)
 iso_gcam_regions <- read.csv(paste0("inputs/mappings/iso_GCAM_regID.csv"), skip = 6)
-id_gcam_regions <- read.csv(paste0("inputs/mappings/gcam_id_to_region.csv"))
-colnames(id_gcam_regions) = c('GCAM_region_ID', 'region')
+id_gcam_regions <- read.csv(paste0("inputs/mappings/gcam_id_to_region.csv"), skip = 2)
 country_gcam_regions <- read.csv(paste0("inputs/mappings/country_to_gcam_id.csv"))
 regions_key <- dplyr::left_join(country_gcam_regions, id_gcam_regions, by = "GCAM_region_ID") %>%
   dplyr::select(-1)
 
 ssp_data_clean <- iso_gcam_regions %>%
-  select(-region_GCAM3, -GCAM_region_ID) %>%
-  left_join(ssp_data %>%
-              filter(SCENARIO == 'SSP2_v9_130115'),
-            by = "iso", multiple = 'all') %>%
-  select(-MODEL, -REGION) %>%
-  rename(scenario = SCENARIO,
-         variable = VARIABLE,
-         unit = UNIT)
+  dplyr::select(-region_GCAM3, -GCAM_region_ID) %>%
+  dplyr::left_join(ssp_data %>%
+                     dplyr::filter(SCENARIO == 'SSP2_v9_130115'),
+                   by = "iso", multiple = 'all') %>%
+  dplyr::select(-MODEL, -REGION) %>%
+  dplyr::rename(scenario = SCENARIO,
+                variable = VARIABLE,
+                unit = UNIT)
 # Remove X from year columns
 colnames(ssp_data_clean) <- gsub("X", "", colnames(ssp_data_clean))
 # Pivot longer
@@ -4247,47 +4332,54 @@ ssp_data_long <- ssp_data_clean %>%
   mutate(year = as.integer(year))
 # Isolate reference (total) population
 reference_pop <- ssp_data_long %>%
-  filter(variable == "Population") %>%
-  rename(total_pop = value) %>%
-  select(iso, year, total_pop)
+  dplyr::filter(variable == "Population") %>%
+  dplyr::rename(total_pop = value) %>%
+  dplyr::select(iso, year, total_pop)
 # Join and calculate demographic shares of population
 ssp_data_final <- ssp_data_long %>%
   # Remove total male and total female pop, we want by age/sex
-  filter(!variable %in% c("Population|Male", "Population|Female", "Population", NA)) %>%
-  left_join(reference_pop, by = c("iso", "year")) %>%
-  mutate(demo_share = value / total_pop) %>%
-  rename(sub_pop = value)  %>%
-  rename(pop_units = unit)
+  dplyr::filter(!variable %in% c("Population|Male", "Population|Female", "Population", NA)) %>%
+  dplyr::left_join(reference_pop, by = c("iso", "year")) %>%
+  dplyr::mutate(demo_share = value / total_pop) %>%
+  dplyr::rename(sub_pop = value)  %>%
+  dplyr::rename(pop_units = unit)
 
 # Get population by sex and age
 # Population weighting
 total_regional_pop <- ssp_data_final %>%
-  select(-scenario,-iso) %>%
+  dplyr::select(-scenario,-iso) %>%
   # get GCAM regions instead of country names
-  left_join(regions_key, by = "country_name") %>%
+  dplyr::left_join(regions_key, by = "country_name") %>%
   # get total regional population
-  group_by(year, GCAM_region_ID, country_name, region) %>%
+  dplyr::group_by(year, GCAM_region_ID, country_name, region) %>%
   # isolate total population by country
-  distinct(total_pop) %>%
+  dplyr::distinct(total_pop) %>%
   group_by(year, GCAM_region_ID, region) %>%
   # sum for total regional population
-  mutate(total_regional_pop = sum(total_pop)) %>%
-  ungroup()
+  dplyr::mutate(total_regional_pop = sum(total_pop)) %>%
+  dplyr::ungroup()
 
 weighted_pop <- ssp_data_final %>%
-  select(-scenario,-iso) %>%
+  dplyr::select(-scenario) %>%
   # get GCAM regions instead of country names
-  left_join(regions_key, by = "country_name") %>%
+  dplyr::left_join(regions_key, by = "country_name") %>%
   # get total regional population
-  left_join(total_regional_pop) %>%
+  dplyr::left_join(total_regional_pop) %>%
   # weight each country by its population over total regional pop
-  group_by(country_name, year) %>%
-  mutate(weight = total_pop / total_regional_pop) %>%
+  dplyr::group_by(country_name, year) %>%
+  dplyr::mutate(weight = total_pop / total_regional_pop) %>%
+  dplyr::mutate(iso = toupper(iso))
+weighted_pop2 <- weighted_pop %>%
+  dplyr::select(-variable, -demo_share, -sub_pop)
+save(weighted_pop2, file = file.path('inputs','nutrition','weighted_pop_by_iso.RData'))
+
+weighted_pop <- weighted_pop %>%
+  select(-iso) %>%
   # get GCAM population
-  left_join(load_data('pop_all_regions'),
+  dplyr::left_join(load_data('pop_all_regions'),
             by = c("region", "year"), relationship = "many-to-many") %>%
   # compute GCAM population by sex and age for each country
-  mutate(weighted_demographics = demo_share * weight * population)
+  dplyr::mutate(weighted_demographics = demo_share * weight * population)
 
 weighted_pop_sex_age <- weighted_pop %>%
   select(-pop_units, -sub_pop, -total_pop, -demo_share, -weight) %>%

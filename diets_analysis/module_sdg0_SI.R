@@ -84,7 +84,7 @@ p_plant <- ggplot(data = df_plot) +
 
 ############ RUMINANT
 norumin_percentage <- load_data('food_consumption_regional') %>%
-  dplyr::filter(nestingSector1 == 'Protein') %>%
+  dplyr::filter(nestingSector2 == 'Animal') %>%
   dplyr::mutate(is_rumin = ifelse(nestingSector3 == 'Ruminant',TRUE,FALSE)) %>%
   # compute the total and plant Pcal by region
   dplyr::group_by(scenario, scen_type, scen_path, final_share, peak_year, slope, region, is_rumin, year, Units) %>%
@@ -210,7 +210,7 @@ p_legend <- ggplot(df_for_legend) +
   labs(x = '',y = '') +
   annotate(
     "richtext",
-    y = c(78, 84, 73, 96, 67),
+    y = c(78, 84, 62, 93, 53),
     x = c(1.9,0.5,0.6,1.5,0.25),
     label = c("Distribution<br>of protein intake shares<br>following the <i>all</i> pathway",
               "Distribution<br>of protein intake shares<br>following the <i>plus</i> pathway",
@@ -221,10 +221,10 @@ p_legend <- ggplot(df_for_legend) +
   ) +
   geom_curve(
     data = data.frame(
-      x = c(1.55,0.5,0.6,1.3,0.25),
+      x = c(1.55,0.5,0.6,1.25,0.25),
       xend = c(1.35, 0.75, 0.975, 1.03, 0.975),
-      y = c(73.5, 86, 74.5, 94, 67),
-      yend = c(71, 88, 73, 93.75, 65.75)),
+      y = c(73.5, 86, 63.5, 91, 51),
+      yend = c(71, 88, 62, 89.75, 51)),
     aes(x = x, xend = xend, y = y, yend = yend),
     stat = "unique", curvature = 0.2, linewidth = 1, color = "grey12",
     arrow = arrow(angle = 20, length = unit(2, "mm"))
@@ -238,6 +238,7 @@ p_legend <- ggplot(df_for_legend) +
         plot.background = element_rect(fill = "white", color = NA),
         axis.title = element_blank(),
         axis.text = element_blank(),
+        axis.ticks = element_blank(),
         panel.border = element_rect(color = "black", fill = NA, linewidth = 1))
 
 
@@ -251,8 +252,8 @@ legend_shape = ggpubr::get_legend(p_rumin +
                                     guides(color = 'none', fill = 'none'))
 
 pl <- cowplot::ggdraw() +
-  cowplot::draw_plot(cowplot::plot_grid(legend_color,blank_p,ncol=1), x = 0.4625, y = -0.2275, width = 1, height = 1) +
-  cowplot::draw_plot(cowplot::plot_grid(legend_shape,blank_p,ncol=1), x = 0.4625, y = -0.3125, width = 1, height = 1) +
+  cowplot::draw_plot(cowplot::plot_grid(legend_color,blank_p,ncol=1), x = 0.4615, y = -0.2275, width = 1, height = 1) +
+  cowplot::draw_plot(cowplot::plot_grid(legend_shape,blank_p,ncol=1), x = 0.4623, y = -0.3125, width = 1, height = 1) +
   cowplot::draw_plot(p_rumin + theme(legend.position = 'none'),
                      x = 0.0, y = 0.0, width = 0.925, height = 0.485) +
   cowplot::draw_plot(p_plant + theme(legend.position = 'none'),
