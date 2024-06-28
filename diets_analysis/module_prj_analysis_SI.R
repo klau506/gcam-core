@@ -834,14 +834,15 @@ cum_fun_foodbasket = function(df, y) {
     dplyr::filter(year == y) %>%
     dplyr::mutate(scen_type = toupper(scen_type)) %>%
     cut_region_names() %>%
-    dplyr::rename('value' = 'expenditure')
+    dplyr::rename(value = expenditure,
+                  ref_value = ref_expenditure)
 
   dat_tmp <- ddply(df, .(year,region,scen_type,scen_path),
                    summarize,
                    value = unique(value),
                    ecdf = ecdf(value)(unique(value)))
 
-  xlab = 'Avoided premature deaths [%]'
+  xlab = 'Food basket bill [2005$/capita/day]'
 
   for (i in c(1,2)) {
     reg = unique(df$region)
@@ -856,7 +857,7 @@ cum_fun_foodbasket = function(df, y) {
     df_reg <- df %>%
       dplyr::filter(region %in% reg) %>%
       dplyr::mutate(scen_type = 'REF') %>%
-      dplyr::select(pollutant, region, scen_type, scen_path, ref_value) %>%
+      dplyr::select(region, scen_type, scen_path, ref_value) %>%
       dplyr::distinct()
 
     pl <- ggplot(data = dat_tmp_reg %>%
@@ -867,7 +868,7 @@ cum_fun_foodbasket = function(df, y) {
                    filter(scen_type == 'REF'),
                  aes(x = ref_value, y = 1, color = scen_type, fill = scen_type),
                  size = 7, alpha = 0.95, shape = 23, stroke = 2) +
-      facet_wrap(region ~ pollutant, scales = 'free', ncol = 4) +
+      facet_wrap(region ~ ., scales = 'free', ncol = 4) +
       scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
                         name = 'Scenario',
                         labels = scen_palette_refVsSppVsSnrVsSppnr.labs)+
@@ -892,7 +893,7 @@ cum_fun_foodbasket = function(df, y) {
              fill = guide_legend(override.aes = list(linewidth = 5)),
              linetype = guide_legend(keywidth = 10,override.aes = list(linewidth = 5)))
 
-    ggsave(pl, filename = file.path(figures_path, paste0('sdg3_SI_cumfun_reg_',i,'.pdf')),
+    ggsave(pl, filename = file.path(figures_path, paste0('sdg2_SI_cumfun_reg_',i,'.pdf')),
            width = 2000, height = 2000, units = 'mm', limitsize = F)
 
     if (i == 1) { pl1 <- pl } else { pl2 <- pl }
@@ -911,7 +912,7 @@ cum_fun_foodbasket = function(df, y) {
                        x = 0.5, y = 0.025, width = 0.5, height = 0.975) +
     cowplot::draw_plot(cowplot::plot_grid(legend,blank_p,nrow=1), x = 0.225, y = -0.485, width = 1, height = 1)
 
-  ggsave(pl, filename = file.path(figures_path, paste0('sdg3_SI_health_cumfun_reg.pdf')),
+  ggsave(pl, filename = file.path(figures_path, paste0('sdg2_SI_food_basket_cumfun_reg.pdf')),
          width = 2000, height = 2000, units = 'mm', limitsize = F)
 
 }

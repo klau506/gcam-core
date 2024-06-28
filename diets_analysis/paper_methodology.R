@@ -39,12 +39,13 @@ order_facets = function(data, col_scen_type = 'scen_type') {
 
 
 example_data = read.csv(file.path(getwd(), 'exe', 'db.mapping.complete.csv')) %>%
-  select(scenario) %>%
+  dplyr::select(scenario) %>%
   tidyr::separate(scenario, into = c("protein_type", "scenario_pathway", "final_share", "peak_year_title", "peak_year", "slope_title", "slope"), sep = "_", remove = FALSE) %>%
-  filter(protein_type != 'ref') %>%
-  mutate(scenario_pathway = ifelse(grepl('all', scenario_pathway), 'allX', '+X')) %>%
-  mutate(final_share = as.numeric(gsub("[^0-9]", "", final_share))) %>%
-  select(-ends_with('title'))
+  dplyr::filter(protein_type != 'ref') %>%
+  dplyr::mutate(scenario_pathway = ifelse(grepl('all', scenario_pathway), 'all', 'plus')) %>%
+  dplyr::mutate(final_share = as.numeric(gsub("[^0-9]", "", final_share))) %>%
+  dplyr::select(-ends_with('title')) %>%
+  dplyr::mutate(protein_type = toupper(protein_type))
 
 
 # map char to numbers
@@ -62,24 +63,24 @@ data = example_data %>%
 
 # reshape data to plot
 reshaped_data = data %>%
-  select(tidyr::starts_with('col'), protein_type) %>%
-  mutate(across(starts_with("col"), list(prev_value = ~.), .names = "prev_{.col}")) %>%
+  dplyr::select(tidyr::starts_with('col'), protein_type) %>%
+  dplyr::mutate(across(starts_with("col"), list(prev_value = ~.), .names = "prev_{.col}")) %>%
   tidyr::pivot_longer(cols = starts_with("col"), names_to = "variable", values_to = "value") %>%
   tidyr::pivot_longer(cols = starts_with("prev_col"), names_to = "prev_variable", values_to = "prev_value") %>%
-  filter(variable != 'col1_protein_type', prev_variable != 'prev_col5_slope') %>%
-  mutate(pairs = paste(variable, '-', prev_variable)) %>%
-  filter(pairs %in% c('col2_scenario_pathway - prev_col1_protein_type',
+  dplyr::filter(variable != 'col1_protein_type', prev_variable != 'prev_col5_slope') %>%
+  dplyr::mutate(pairs = paste(variable, '-', prev_variable)) %>%
+  dplyr::filter(pairs %in% c('col2_scenario_pathway - prev_col1_protein_type',
                       'col3_final_share - prev_col2_scenario_pathway',
                       'col4_peak_year - prev_col3_final_share',
                       'col5_slope - prev_col4_peak_year')) %>%
-  select(-pairs) %>%
-  mutate(prev_variable = factor(stringr::str_sub(prev_variable, 6, 9))) %>%
-  mutate(variable = factor(stringr::str_sub(variable, 1, 4)))
+  dplyr::select(-pairs) %>%
+  dplyr::mutate(prev_variable = factor(stringr::str_sub(prev_variable, 6, 9))) %>%
+  dplyr::mutate(variable = factor(stringr::str_sub(variable, 1, 4)))
 
 # keep the text for the plot
 data = data %>%
-  select(-scenario) %>%
-  rename('col1_protein_type_text' = 'protein_type',
+  dplyr::select(-scenario) %>%
+  dplyr::rename('col1_protein_type_text' = 'protein_type',
          'col2_scenario_pathway_text' = 'scenario_pathway',
          'col3_final_share_text' = 'final_share',
          'col4_peak_year_text' = 'peak_year',
@@ -91,20 +92,20 @@ result <- lapply(unique_letters, function(letter) {
   columns_to_combine <- data %>%
     dplyr::select(starts_with(letter))
   data %>%
-    mutate(!!paste0(letter, "_combined") := do.call(paste, c(select(., colnames(columns_to_combine)), sep = " - "))) %>%
-    select(contains("_combined"))
+    dplyr::mutate(!!paste0(letter, "_combined") := do.call(paste, c(dplyr::select(., colnames(columns_to_combine)), sep = " - "))) %>%
+    dplyr::select(contains("_combined"))
 })
 
 # Combine the results into a single dataframe
 text_data = bind_cols(result) %>%
   tidyr::pivot_longer(cols = everything(), names_to = c(".value", "letter"), names_sep = "_") %>%
-  select(-letter) %>%
-  mutate(across(1:5, as.character)) %>%
+  dplyr::select(-letter) %>%
+  dplyr::mutate(across(1:5, as.character)) %>%
   tidyr::pivot_longer(cols = 1:5, names_to = 'type', values_to = 'pairs') %>%
-  distinct() %>%
+  dplyr::distinct() %>%
   tidyr::separate(pairs, into = c("text", "value"), sep = " - ") %>%
-  mutate(value = as.numeric(value))
-  # mutate(text = ifelse(text == '1d205', '1.205',
+  dplyr::mutate(value = as.numeric(value))
+  # dplyr::mutate(text = ifelse(text == '1d205', '1.205',
   #                      ifelse(text == '0d805', '1.805',
   #                             ifelse(text == '0d405','0.405',
   #                                    ifelse(text == '0d005', '0.005', text)))))
@@ -115,17 +116,17 @@ curve_factor = 0.075
 # Create the plot with curved lines
 desired_labels = c('Protein type','Scenario pathway','Final share','Peak year','Slope')
 pl = ggplot() +
-  geom_curve(data = reshaped_data %>% filter(protein_type == 'snr') %>% order_facets('protein_type'),
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SNR') %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
-  geom_curve(data = reshaped_data %>% filter(protein_type == 'spp') %>% order_facets('protein_type'),
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPP') %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = -curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
-  geom_curve(data = reshaped_data %>% filter(protein_type == 'sppnr') %>% order_facets('protein_type'),
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPPNR') %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = 0,
@@ -151,7 +152,6 @@ pl = ggplot() +
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   scale_y_reverse()
-ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.png'), width = 500, height = 333, units = 'mm')
 ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width = 500, height = 333, units = 'mm')
 # png(file.path(figures_path,dir_name,"/",'fig1_SI_overview_scen_runs.png'), width = 3401.575, height = 2267.717, res = 150)
 # print(pl)
@@ -170,18 +170,18 @@ ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width
 # # By region
 # # Get total consumption in calories
 # total_regional_calories <- remove_sstcols(dt_ref$food_consumption_regional) %>%
-#   filter(year >= year_s, year <= year_e) %>%
+#   dplyr::filter(year >= year_s, year <= year_e) %>%
 #   group_by(scenario, region, year) %>%
 #   # Aggregate staple and non-staple calories
 #   summarize(value = sum(value)) %>%
 #   left_join(remove_sstcols(dt_ref$pop_all_regions), by = c("year", "scenario", "region")) %>%
 #   # Convert from Pcal to kcal/capita/day
-#   mutate(value = (value * 1e12) / (population * 365),
+#   dplyr::mutate(value = (value * 1e12) / (population * 365),
 #          units = "kcal/capita/day")
 # ## Share of dietary energy supply from staples =================================
 # # Find share of staple and non-staple calories in total calories
 # share_diet_staples_region <- remove_sstcols(dt_ref$staples_nonstaples_regional) %>%
-#   mutate(staples_in_total = Staples/Total,
+#   dplyr::mutate(staples_in_total = Staples/Total,
 #          nonstaples_in_total = NonStaples/Total,
 #          percent_staples_in_total = staples_in_total * 100)
 #
@@ -191,7 +191,7 @@ ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width
 # # join with MDER data, calculate caloric requirements by sex and age
 # adesa_denominator <- weighted_pop_sex_age %>%
 #   left_join(mder, by = "variable") %>%
-#   select(-std) %>%
+#   dplyr::select(-std) %>%
 #   group_by(scenario, scen_type, variable, year, region) %>%
 #   # compute a range because of differing physical activity levels
 #   summarize(cal_req_x_pop = mder * pop_sex_age,
@@ -202,11 +202,11 @@ ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width
 #   summarize(denominator_sum = sum(cal_req_x_pop),
 #             min_denominator_sum = sum(min_cal_req_x_pop),
 #             max_denominator_sum = sum(max_cal_req_x_pop)) %>%
-#   mutate(year = as.numeric(year))
+#   dplyr::mutate(year = as.numeric(year))
 #
 # # add in regional calorie info, calculate ADESA
 # adesa <- left_join(adesa_denominator, total_regional_calories) %>%
-#   # select(-population) %>%
+#   # dplyr::select(-population) %>%
 #   group_by(year, region, scenario, scen_type) %>%
 #   reframe(adesa = (value / denominator_sum) * population * 100, # convert to unitless and percentage
 #           min_adesa = (value / min_denominator_sum) * population * 100,
@@ -215,7 +215,7 @@ ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width
 # # plot: horizontal plot ADESA vs TIME. Colors by adesa > or < 100
 # pl = ggplot(data = adesa %>%
 #               group_by(region) %>%
-#               mutate(region_ok = ifelse(min(adesa) < 100, FALSE, TRUE)) %>%
+#               dplyr::mutate(region_ok = ifelse(min(adesa) < 100, FALSE, TRUE)) %>%
 #               ungroup() %>%
 #               order_facets()) +
 #   geom_line(aes(x = year, y = adesa, group = region,
@@ -223,9 +223,9 @@ ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width
 #             linewidth = 1.5, alpha = 1) +  # Median line
 #   geom_text(data = adesa %>%
 #               group_by(region) %>%
-#               mutate(region_ok = ifelse(min(adesa) < 100, FALSE, TRUE)) %>%
+#               dplyr::mutate(region_ok = ifelse(min(adesa) < 100, FALSE, TRUE)) %>%
 #               ungroup() %>%
-#               filter(year == max(year)) %>%
+#               dplyr::filter(year == max(year)) %>%
 #               order_facets(),
 #             aes(x = year + 0.1, y = adesa + 0.1, label = region, group = region,
 #                 color = region_ok),
