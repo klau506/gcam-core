@@ -4,9 +4,7 @@
 # setwd to file location === #####
 setwd('C:\\Users\\claudia.rodes\\Documents\\IAM_COMPACT\\gcam-iamcompact-xin')
 # setwd('C:\\GCAM\\GCAM_7.0_Claudia\\gcam-core-iamcompact')
-# .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_CP/')
-.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1-gcamdata_no_CP/')
-# .libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1/')
+.libPaths('C:/Users/claudia.rodes/Documents/R/win-library/4.1/')
 library(dplyr)
 library(ggplot2)
 
@@ -22,8 +20,8 @@ source('diets_analysis/module_style.R')
 
 
 # ==============================================================================
-# ================================= Fig 1 SI ===================================
-# ========================== Scenarios parallel plot ===========================
+# ================================= Fig 1.1  ===================================
+# ===================== Scenarios generation + uncert plot =====================
 # ==============================================================================
 
 order_facets = function(data, col_scen_type = 'scen_type') {
@@ -45,7 +43,11 @@ example_data = read.csv(file.path(getwd(), 'exe', 'db.mapping.complete.csv')) %>
   dplyr::mutate(scenario_pathway = ifelse(grepl('all', scenario_pathway), 'all', 'plus')) %>%
   dplyr::mutate(final_share = as.numeric(gsub("[^0-9]", "", final_share))) %>%
   dplyr::select(-ends_with('title')) %>%
-  dplyr::mutate(protein_type = toupper(protein_type))
+  dplyr::mutate(protein_type = toupper(protein_type)) %>%
+  dplyr::select(-scenario) %>%
+  dplyr::distinct() %>%
+  dplyr::mutate(scen_path_pair = paste0(protein_type,'-',scenario_pathway)) %>%
+  dplyr::select(protein_type, scenario_pathway, scen_path_pair, final_share, peak_year, slope)
 
 
 # map char to numbers
@@ -54,12 +56,14 @@ data = example_data %>%
   dplyr::mutate(col1_protein_type = match(protein_type, unique(protein_type)) / (length(unique(protein_type))+1)) %>%
   # mapping col2: scenario_scenario_pathway
   dplyr::mutate(col2_scenario_pathway = match(scenario_pathway, unique(scenario_pathway)) / (length(unique(scenario_pathway))+1)) %>%
-  # mapping col3: final_share
-  dplyr::mutate(col3_final_share = match(final_share, unique(final_share)) / (length(unique(final_share))+1)) %>%
-  # mapping col4: peak_year
-  dplyr::mutate(col4_peak_year = match(peak_year, unique(peak_year)) / (length(unique(peak_year))+1)) %>%
-  # mapping col5: slope
-  dplyr::mutate(col5_slope = match(slope, unique(slope)) / (length(unique(slope))+1))
+  # mapping col3: scen_path_pair
+  dplyr::mutate(col3_scen_path_pair = match(scen_path_pair, unique(scen_path_pair)) / (length(unique(scen_path_pair))+1)) %>%
+  # mapping col4: final_share
+  dplyr::mutate(col4_final_share = match(final_share, unique(final_share)) / (length(unique(final_share))+1)) %>%
+  # mapping col5: peak_year
+  dplyr::mutate(col5_peak_year = match(peak_year, unique(peak_year)) / (length(unique(peak_year))+1)) %>%
+  # mapping col6: slope
+  dplyr::mutate(col6_slope = match(slope, unique(slope)) / (length(unique(slope))+1))
 
 # reshape data to plot
 reshaped_data = data %>%
@@ -67,25 +71,31 @@ reshaped_data = data %>%
   dplyr::mutate(across(starts_with("col"), list(prev_value = ~.), .names = "prev_{.col}")) %>%
   tidyr::pivot_longer(cols = starts_with("col"), names_to = "variable", values_to = "value") %>%
   tidyr::pivot_longer(cols = starts_with("prev_col"), names_to = "prev_variable", values_to = "prev_value") %>%
-  dplyr::filter(variable != 'col1_protein_type', prev_variable != 'prev_col5_slope') %>%
+  dplyr::filter(variable != 'col1_protein_type', prev_variable != 'prev_col6_slope') %>%
   dplyr::mutate(pairs = paste(variable, '-', prev_variable)) %>%
   dplyr::filter(pairs %in% c('col2_scenario_pathway - prev_col1_protein_type',
-                      'col3_final_share - prev_col2_scenario_pathway',
-                      'col4_peak_year - prev_col3_final_share',
-                      'col5_slope - prev_col4_peak_year')) %>%
+                             'col3_scen_path_pair - prev_col2_scenario_pathway',
+                             'col4_final_share - prev_col3_scen_path_pair',
+                             'col5_peak_year - prev_col4_final_share',
+                             'col6_slope - prev_col5_peak_year')) %>%
   dplyr::select(-pairs) %>%
-  dplyr::mutate(prev_variable = factor(stringr::str_sub(prev_variable, 6, 9))) %>%
-  dplyr::mutate(variable = factor(stringr::str_sub(variable, 1, 4)))
+  dplyr::mutate(prev_variable = as.double(stringr::str_sub(prev_variable, 9, 9))) %>%
+  dplyr::mutate(variable = as.double(stringr::str_sub(variable, 4, 4))) %>%
+  # adjust columns
+  dplyr::mutate(prev_variable = ifelse(prev_variable %in% c(1,4:5), prev_variable + 0.1, prev_variable),
+                variable = ifelse(variable %in% c(4:6), variable - 0.1, variable)) %>%
+  dplyr::mutate(prev_variable = ifelse(prev_variable %in% 1:2, prev_variable + 0.05, prev_variable),
+                variable = ifelse(variable %in% c(2), variable - 0.05, variable))
 
 # keep the text for the plot
 data = data %>%
-  dplyr::select(-scenario) %>%
   dplyr::rename('col1_protein_type_text' = 'protein_type',
-         'col2_scenario_pathway_text' = 'scenario_pathway',
-         'col3_final_share_text' = 'final_share',
-         'col4_peak_year_text' = 'peak_year',
-         'col5_slope_text' = 'slope')
-unique_letters = unique(substr(names(data[,6:10]), 1, 4))
+                'col2_scenario_pathway_text' = 'scenario_pathway',
+                'col3_scen_path_pair_text' = 'scen_path_pair',
+                'col4_final_share_text' = 'final_share',
+                'col5_peak_year_text' = 'peak_year',
+                'col6_slope_text' = 'slope')
+unique_letters = unique(substr(names(data[,7:12]), 1, 4))
 
 # Combine columns by letter into pairs
 result <- lapply(unique_letters, function(letter) {
@@ -97,54 +107,98 @@ result <- lapply(unique_letters, function(letter) {
 })
 
 # Combine the results into a single dataframe
-text_data = bind_cols(result) %>%
+text_data2 = bind_cols(result) %>%
   tidyr::pivot_longer(cols = everything(), names_to = c(".value", "letter"), names_sep = "_") %>%
   dplyr::select(-letter) %>%
-  dplyr::mutate(across(1:5, as.character)) %>%
-  tidyr::pivot_longer(cols = 1:5, names_to = 'type', values_to = 'pairs') %>%
+  dplyr::mutate(across(1:6, as.character)) %>%
+  tidyr::pivot_longer(cols = 1:6, names_to = 'type', values_to = 'pairs') %>%
   dplyr::distinct() %>%
   tidyr::separate(pairs, into = c("text", "value"), sep = " - ") %>%
-  dplyr::mutate(value = as.numeric(value))
-  # dplyr::mutate(text = ifelse(text == '1d205', '1.205',
-  #                      ifelse(text == '0d805', '1.805',
-  #                             ifelse(text == '0d405','0.405',
-  #                                    ifelse(text == '0d005', '0.005', text)))))
+  dplyr::mutate(value = as.numeric(value)) %>%
+  dplyr::rename(prev_variable = type,
+                prev_value = value) %>%
+  dplyr::mutate(prev_variable = as.numeric(factor(prev_variable)))
 
 # Curvature factor for controlling the degree of curve
 curve_factor = 0.075
 
 # Create the plot with curved lines
-desired_labels = c('Protein type','Scenario pathway','Final share','Peak year','Slope')
-pl = ggplot() +
-  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SNR') %>% order_facets('protein_type'),
+desired_labels = c('Scenario Protein type','Scenario Pathway','Scenario-Pathway pair',
+                   'Target share','Peak year','Slope')
+pl_gen = ggplot() +
+  # rectangles
+  annotate("rect", xmin = 0.5, xmax = 3.5, ymin = 0.05, ymax = 0.975, fill = "red", alpha = 0.1) +
+  annotate("rect", xmin = 2.5, xmax = 6.5, ymin = 0.025, ymax = 0.95, fill = "blue", alpha = 0.1) +
+  # curves and arrows
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SNR', variable != '3') %>%
+               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.25, prev_variable)) %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
-  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPP') %>% order_facets('protein_type'),
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SNR', variable == '3') %>% order_facets('protein_type'),
+             aes(x = prev_variable, y = prev_value, xend = variable - 0.3, yend = value,
+                 group = interaction(variable, protein_type), color = protein_type),
+             curvature = curve_factor,
+             lineend = "round", linewidth = 0.55, alpha = 0.5,
+             arrow = arrow(type = "closed", length = unit(0.2, "inches"))) +
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPP', variable != '3') %>%
+               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.25, prev_variable)) %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = -curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
-  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPPNR') %>% order_facets('protein_type'),
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPP', variable == '3') %>% order_facets('protein_type'),
+             aes(x = prev_variable, y = prev_value, xend = variable - 0.3, yend = value,
+                 group = interaction(variable, protein_type), color = protein_type),
+             curvature = -curve_factor,
+             lineend = "round", linewidth = 0.55, alpha = 0.5,
+             arrow = arrow(type = "closed", length = unit(0.2, "inches"))) +
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPPNR', variable != '3') %>%
+               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.25, prev_variable)) %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = 0,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
+  geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPPNR', variable == '3') %>% order_facets('protein_type'),
+             aes(x = prev_variable, y = prev_value, xend = variable - 0.3, yend = value,
+                 group = interaction(variable, protein_type), color = protein_type),
+             curvature = 0,
+             lineend = "round", linewidth = 0.55, alpha = 0.5,
+             arrow = arrow(type = "closed", length = unit(0.2, "inches"))) +
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr) +
-  # # text
-  geom_point(data = text_data, aes(x = type, y = value),
-             shape = 21, size = 33, fill = "white", color = "white", alpha = 1) +
-  geom_point(data = text_data, aes(x = type, y = value),
-             shape = 21, size = 33, fill = "#F2F3CB", color = "black", alpha = 0.25) +
-  geom_text(data = text_data,
-            aes(label = text, x = type, y = value), color = 'black', size = 10) +
+  # circles/ellipses
+  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '1'),
+                        aes(x0 = prev_variable, y0 = prev_value, a = 0.2, b = 0.035, angle = 0),
+                        fill = "white", color = "white", alpha = 1) +
+  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '1'),
+                        aes(x0 = prev_variable, y0 = prev_value, a = 0.2, b = 0.035, angle = 0),
+                        fill = "#F2F3CB", color = "grey", alpha = 0.25) +
+  geom_point(data = text_data2 %>% filter(prev_variable %in% c('2','4','5','6')),
+             aes(x = prev_variable, y = prev_value), shape = 21, size = 33,
+             fill = "white", color = "white", alpha = 1) +
+  geom_point(data = text_data2 %>% filter(prev_variable %in% c('2','4','5','6')),
+             aes(x = prev_variable, y = prev_value), shape = 21, size = 33,
+             fill = "#F2F3CB", color = "black", alpha = 0.25) +
+  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '3'),
+                        aes(x0 = prev_variable, y0 = prev_value, a = 0.285, b = 0.05, angle = 0),
+                        fill = "white", color = "white", alpha = 1) +
+  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '3'),
+                        aes(x0 = prev_variable, y0 = prev_value, a = 0.285, b = 0.05, angle = 0),
+                        fill = "#F2F3CB", color = "grey", alpha = 0.25) +
+  # text - bullets
+  geom_text(data = text_data2,
+            aes(label = text, x = prev_variable, y = prev_value), color = 'black', size = 10) +
+  # text - rectangles
+  annotate('text', label = 'Scenario generation', x = 0.35, y = 0.5, angle = 90, vjust = 1, color = 'red', size = 12.5, alpha = 0.5) +
+  annotate('text', label = 'Uncertainty dimensions', x = 6.65, y = 0.5, angle = -90, vjust = 1, color = 'blue', size = 12.5, alpha = 0.5) +
   # theme
-  # labs(title = "Overview of the considered scenarios & uncertainty runs") +
-  xlab("") + ylab("") + scale_x_discrete(labels = desired_labels) +
+  xlab("") + ylab("") +
+  scale_x_continuous(breaks = 1:6, labels = desired_labels) +
   theme_light() +
   theme(legend.key.size = unit(2, "cm"), legend.position = 'none', legend.direction = 'horizontal',
-        strip.background = element_blank(),
+        strip.background = element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),
+        panel.border = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         axis.text.y = element_blank(),
         axis.text.x = element_text(size=30),
@@ -152,100 +206,4 @@ pl = ggplot() +
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   scale_y_reverse()
-ggsave(pl, file = file.path(fig_folder, 'fig1_SI_overview_scen_runs.pdf'), width = 500, height = 333, units = 'mm')
-# png(file.path(figures_path,dir_name,"/",'fig1_SI_overview_scen_runs.png'), width = 3401.575, height = 2267.717, res = 150)
-# print(pl)
-# dev.off()
-
-
-# # ==============================================================================
-# # ================================= Fig 2 SI ===================================
-# # ================================ REG - ADESA =================================
-# # ==============================================================================
-#
-# ###### compute ADESA
-#
-# # Dietary energy supply
-# # Units: kcal/capita/day
-# # By region
-# # Get total consumption in calories
-# total_regional_calories <- remove_sstcols(dt_ref$food_consumption_regional) %>%
-#   dplyr::filter(year >= year_s, year <= year_e) %>%
-#   group_by(scenario, region, year) %>%
-#   # Aggregate staple and non-staple calories
-#   summarize(value = sum(value)) %>%
-#   left_join(remove_sstcols(dt_ref$pop_all_regions), by = c("year", "scenario", "region")) %>%
-#   # Convert from Pcal to kcal/capita/day
-#   dplyr::mutate(value = (value * 1e12) / (population * 365),
-#          units = "kcal/capita/day")
-# ## Share of dietary energy supply from staples =================================
-# # Find share of staple and non-staple calories in total calories
-# share_diet_staples_region <- remove_sstcols(dt_ref$staples_nonstaples_regional) %>%
-#   dplyr::mutate(staples_in_total = Staples/Total,
-#          nonstaples_in_total = NonStaples/Total,
-#          percent_staples_in_total = staples_in_total * 100)
-#
-# # Calculate Average Dietary Supply Adequacy as:
-# # total regional calories / SUM_age,sex(calreq_a,s * pop_a,s)
-#
-# # join with MDER data, calculate caloric requirements by sex and age
-# adesa_denominator <- weighted_pop_sex_age %>%
-#   left_join(mder, by = "variable") %>%
-#   dplyr::select(-std) %>%
-#   group_by(scenario, scen_type, variable, year, region) %>%
-#   # compute a range because of differing physical activity levels
-#   summarize(cal_req_x_pop = mder * pop_sex_age,
-#             min_cal_req_x_pop = min * pop_sex_age,
-#             max_cal_req_x_pop = max * pop_sex_age) %>%
-#   # aggregate caloric requirements to get total regional values
-#   group_by(scenario, scen_type, region, year) %>%
-#   summarize(denominator_sum = sum(cal_req_x_pop),
-#             min_denominator_sum = sum(min_cal_req_x_pop),
-#             max_denominator_sum = sum(max_cal_req_x_pop)) %>%
-#   dplyr::mutate(year = as.numeric(year))
-#
-# # add in regional calorie info, calculate ADESA
-# adesa <- left_join(adesa_denominator, total_regional_calories) %>%
-#   # dplyr::select(-population) %>%
-#   group_by(year, region, scenario, scen_type) %>%
-#   reframe(adesa = (value / denominator_sum) * population * 100, # convert to unitless and percentage
-#           min_adesa = (value / min_denominator_sum) * population * 100,
-#           max_adesa = (value / max_denominator_sum) * population * 100)
-#
-# # plot: horizontal plot ADESA vs TIME. Colors by adesa > or < 100
-# pl = ggplot(data = adesa %>%
-#               group_by(region) %>%
-#               dplyr::mutate(region_ok = ifelse(min(adesa) < 100, FALSE, TRUE)) %>%
-#               ungroup() %>%
-#               order_facets()) +
-#   geom_line(aes(x = year, y = adesa, group = region,
-#                 color = region_ok),
-#             linewidth = 1.5, alpha = 1) +  # Median line
-#   geom_text(data = adesa %>%
-#               group_by(region) %>%
-#               dplyr::mutate(region_ok = ifelse(min(adesa) < 100, FALSE, TRUE)) %>%
-#               ungroup() %>%
-#               dplyr::filter(year == max(year)) %>%
-#               order_facets(),
-#             aes(x = year + 0.1, y = adesa + 0.1, label = region, group = region,
-#                 color = region_ok),
-#             hjust = 0) +
-#   geom_hline(yintercept = 100, linetype = 'dashed', linewidth = 2, color = my_red) +
-#   scale_color_manual(values = c(my_gray,my_green)) +  # Custom color scale
-#   labs(y = 'ADESA value', x = '') +
-#   ggtitle('ADESA World') +
-#   # theme
-#   theme_light() +
-#   theme(legend.key.size = unit(2, "cm"), legend.position = 'none', legend.direction = 'horizontal',
-#         strip.background = element_blank(),
-#         strip.text = element_text(color = 'black', size = 40),
-#         axis.text.x = element_text(size=30),
-#         axis.text.y = element_text(size=30),
-#         legend.text = element_text(size = 35),
-#         legend.title = element_text(size = 40),
-#         title = element_text(size = 40))
-# png(paste0(figures_path,dir_name,"/",'fig2_SI_adesa_vs_time_by_reg.png'), width = 3401.575, height = 2267.717, res = 150)
-# print(pl)
-# dev.off()
-#
-#
+ggsave(pl_gen, file = file.path(fig_folder, 'fig1_SI_overview_scen_generation_uncert.pdf'), width = 750, height = 500, units = 'mm')
