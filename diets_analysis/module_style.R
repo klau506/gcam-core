@@ -31,6 +31,13 @@ scen_path_pattern_refVsSppVsSnrVsSppnr2 = c(
 scen_path_palette_refVsSppVsSnrVsSppnr2.labs <- c('all','plus')
 names(scen_path_palette_refVsSppVsSnrVsSppnr2.labs) = c('all','plus')
 
+scen_path_shape_refVsSppVsSnrVsSppnr2 = c(
+  'all' = 21,
+  'plus' = 23
+)
+scen_path_shape_refVsSppVsSnrVsSppnr2.labs <- c('all','plus')
+names(scen_path_shape_refVsSppVsSnrVsSppnr2.labs) = c('all','plus')
+
 scen_path_palette_col_refVsSppVsSnrVsSppnr <-
   c('all' = '#6b0ead',
     'plus' = '#66A61E')
@@ -39,6 +46,23 @@ scen_path_palette_col_refVsSppVsSnrVsSppnr.labs <- c('all','plus')
 ref_vs_dietaryChange <- c('REF' = 18,
                           'Dietary\nchange' = 19)
 ref_vs_dietaryChange.labs <- c('Dietary\nchange','REF')
+
+RNI_palette = c(
+  'RNI' = '#c40205',
+  'SPP' = '#BD08A2',
+  'SNR' = '#F6AA1C',
+  'SPPNR' = '#0C9425',
+  'REF' = '#000000'
+)
+RNI_shape_palette = c(
+  'RNI' = 4,
+  'SPP' = 21,
+  'SNR' = 21,
+  'SPPNR' = 21,
+  'REF' = 17
+)
+RNI_palette.labs <- c('RNI', 'SPP', "SNR", "SPPNR", 'REF')
+names(RNI_palette.labs) = c('RNI', 'SPP', "SNR", "SPPNR", 'REF')
 
 land_use_scenario_palette =
   c('Cropland' = 'chocolate4',
@@ -183,12 +207,20 @@ remove_depth <- function(data) {
   return(data)
 }
 
-cut_region_names <- function(data) {
-  data <- data %>%
-    dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America\nand Caribbean',
-                                  ifelse(region == 'European Free Trade Association', 'EFTA',
-                                         ifelse(region == 'South America_Northern', 'South America\nNorthern',
-                                                ifelse(region == 'South America_Southern', 'South America\nSouthern', region)))))
+cut_region_names <- function(data, short = F) {
+  if (!short) {
+    data <- data %>%
+      dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America\nand Caribbean',
+                                    ifelse(region == 'European Free Trade Association', 'EFTA',
+                                           ifelse(region == 'South America_Northern', 'South America\nNorthern',
+                                                  ifelse(region == 'South America_Southern', 'South America\nSouthern', region)))))
+  } else {
+    data <- data %>%
+      dplyr::mutate(region = ifelse(region == 'Central America and Caribbean', 'Central America',
+                                    ifelse(region == 'European Free Trade Association', 'EFTA',
+                                           ifelse(region == 'South America_Northern', 'South America N',
+                                                  ifelse(region == 'South America_Southern', 'South America S', region)))))
+  }
 
   return(data)
 }
