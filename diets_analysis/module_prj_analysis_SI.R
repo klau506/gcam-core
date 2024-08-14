@@ -916,3 +916,193 @@ cum_fun_foodbasket = function(df, y) {
          width = 2000, height = 2000, units = 'mm', limitsize = F)
 
 }
+
+
+#' cum_fun_policyCost
+#' @param df data
+#' @param y figure year
+#'
+cum_fun_policyCost = function(df, y) {
+
+  df = df %>%
+    dplyr::filter(year == y) %>%
+    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+    cut_region_names()
+
+  dat_tmp <- ddply(df, .(year,region,scen_type,scen_path),
+                   summarize,
+                   value = unique(value),
+                   ecdf = ecdf(value)(unique(value)))
+
+  xlab = 'Policy Cost [million 1990$]'
+
+  for (i in c(1,2)) {
+    reg = unique(df$region)
+    if (i == 1) {
+      reg = reg[1:(length(reg)/2)]
+    } else {
+      reg = reg[(length(reg)/2+1):length(reg)]
+    }
+
+    dat_tmp_reg <- dat_tmp %>%
+      dplyr::filter(region %in% reg)
+    df_reg <- df %>%
+      dplyr::filter(region %in% reg) %>%
+      dplyr::mutate(scen_type = 'REF') %>%
+      dplyr::select(region, scen_type, scen_path, ref_value) %>%
+      dplyr::distinct()
+
+    pl <- ggplot(data = dat_tmp_reg %>%
+                   filter(scen_type != 'REF'),
+                 aes(value, ecdf, color = scen_type, fill = scen_type, linetype = scen_path)) +
+      geom_line(linewidth = 2) +
+      geom_point(data = df_reg %>%
+                   filter(scen_type == 'REF'),
+                 aes(x = ref_value, y = 1, color = scen_type, fill = scen_type),
+                 size = 7, alpha = 0.95, shape = 23, stroke = 2) +
+      facet_wrap(region ~ ., scales = 'free', ncol = 4) +
+      scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                        name = 'Scenario',
+                        labels = scen_palette_refVsSppVsSnrVsSppnr.labs)+
+      scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                         name = 'Scenario',
+                         labels = scen_palette_refVsSppVsSnrVsSppnr.labs) +
+      scale_linetype_manual(values = scen_path_palette_refVsSppVsSnrVsSppnr2,
+                            name = 'Pathway',
+                            labels = scen_path_palette_refVsSppVsSnrVsSppnr2.labs) +
+      labs(y = 'Cumulative frequency', x = xlab) +
+      theme_light() +
+      theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+            strip.background = element_blank(),
+            strip.text.x = element_text(color = 'black', size = 45),
+            strip.text.y = element_text(color = 'black', size = 45, angle = 0, hjust = 0),
+            axis.title = element_text(size=50),
+            axis.text = element_text(size=45),
+            axis.text.x = element_text(size=45, angle = 45, vjust = 1, hjust = 1),
+            legend.text = element_text(size = 45),
+            legend.title = element_text(size = 50)) +
+      guides(color = guide_legend(override.aes = list(linewidth = 5)),
+             fill = guide_legend(override.aes = list(linewidth = 5)),
+             linetype = guide_legend(keywidth = 10,override.aes = list(linewidth = 5)))
+
+    ggsave(pl, filename = file.path(figures_path, paste0('sdg13_SI_cumfun_reg_',i,'.pdf')),
+           width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+    if (i == 1) { pl1 <- pl } else { pl2 <- pl }
+
+  }
+
+  blank_p <- patchwork::plot_spacer() + theme_void()
+  legend = ggpubr::get_legend(pl1 +
+                                theme(legend.direction = 'horizontal'))
+
+  pl <- cowplot::ggdraw() +
+    cowplot::draw_plot(pl1 + theme(legend.position = 'none'),
+                       x = 0.0, y = 0.025, width = 0.5, height = 0.975) +
+    cowplot::draw_plot(pl2 + theme(legend.position = 'none',
+                                   axis.title.y = element_blank()),
+                       x = 0.5, y = 0.025, width = 0.5, height = 0.975) +
+    cowplot::draw_plot(cowplot::plot_grid(legend,blank_p,nrow=1), x = 0.225, y = -0.485, width = 1, height = 1)
+
+  ggsave(pl, filename = file.path(figures_path, paste0('sdg13_SI_policyCost_cumfun_reg.pdf')),
+         width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+}
+
+
+#' prob_distrib_policyCost
+#' @param df data
+#' @param y figure year
+#'
+prob_distrib_policyCost = function(df, y) {
+
+  df = df %>%
+    dplyr::filter(year == y) %>%
+    dplyr::mutate(scen_type = toupper(scen_type)) %>%
+    cut_region_names() %>%
+    as.data.table()
+
+  df_medi <- df[, .(medi = quantile(value, 0.5)),
+                by=c('year','region',
+                     'scen_type','scen_path')]
+
+  df = data.table(df)
+  xlab = 'Policy Cost [million 1990$]'
+
+  for (i in c(1,2)) {
+    reg = unique(df$region)
+    if (i == 1) {
+      reg = reg[1:(length(reg)/2)]
+    } else {
+      reg = reg[(length(reg)/2+1):length(reg)]
+    }
+
+    df_reg <- df %>%
+      dplyr::filter(region %in% reg)
+    df_medi_reg <- df_medi %>%
+      dplyr::filter(region %in% reg)
+    df_ref_reg <- df %>%
+      dplyr::filter(region %in% reg) %>%
+      dplyr::select(year, region, ref_value, scen_type) %>%
+      dplyr::mutate(scen_type = 'REF') %>%
+      dplyr::distinct()
+
+
+    pl <- ggplot(df_reg) +
+      geom_density(data = df_reg %>% filter(scen_type != 'REF'),
+                   aes(x = value,color = scen_type,
+                       fill = scen_type, linetype = scen_path),
+                   linewidth = 0.8, alpha = 0.25) +
+      geom_vline(aes(color = scen_type, fill = scen_type, linetype = scen_path, xintercept = medi),
+                 data = df_medi_reg, linewidth = 1.5) +
+      geom_point(data = df_ref_reg,
+                 aes(x = ref_value, y = 0, color = scen_type, fill = scen_type),
+                 size = 7, alpha = 0.95, shape = 23, stroke = 2) +
+      facet_wrap(region ~ ., scales = 'free', nrow = 4) +
+      # facet_grid(region ~ ., scales = 'free') +
+      scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                        name = 'Scenario',
+                        labels = scen_palette_refVsSppVsSnrVsSppnr.labs)+
+      scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr,
+                         name = 'Scenario',
+                         labels = scen_palette_refVsSppVsSnrVsSppnr.labs) +
+      scale_linetype_manual(values = scen_path_palette_refVsSppVsSnrVsSppnr2,
+                            name = 'Pathway',
+                            labels = scen_path_palette_refVsSppVsSnrVsSppnr2.labs) +
+      labs(y = 'Probability density', x = xlab) +
+      theme_light() +
+      theme(legend.key.size = unit(2, "cm"), legend.position = 'bottom', legend.direction = 'horizontal',
+            strip.background = element_blank(),
+            strip.text = element_text(color = 'black', size = 45),
+            axis.title = element_text(size=50),
+            axis.text.y = element_text(size=45),
+            axis.text.x = element_text(size=45, angle = 45, hjust = 1, vjust = 1),
+            legend.text = element_text(size = 45),
+            legend.title = element_text(size = 50)) +
+      guides(color = guide_legend(override.aes = list(linewidth = 5)),
+             fill = guide_legend(override.aes = list(linewidth = 5)),
+             linetype = guide_legend(keywidth = 10,override.aes = list(linewidth = 5)))
+
+    ggsave(pl, filename = file.path(figures_path, paste0('sdg13_SI_probdistrib_reg_',i,'.pdf')),
+           width = 1000, height = 3500, units = 'mm', limitsize = F)
+
+    if (i == 1) { pl1 <- pl } else { pl2 <- pl }
+
+  }
+
+  blank_p <- patchwork::plot_spacer() + theme_void()
+  legend = ggpubr::get_legend(pl1 +
+                                theme(legend.direction = 'horizontal'))
+
+  pl <- cowplot::ggdraw() +
+    cowplot::draw_plot(pl1 + theme(legend.position = 'none'),
+                       x = 0.0, y = 0.025, width = 0.5, height = 0.975) +
+    cowplot::draw_plot(pl2 + theme(legend.position = 'none',
+                                   axis.title.y = element_blank()),
+                       x = 0.5, y = 0.025, width = 0.5, height = 0.975) +
+    cowplot::draw_plot(cowplot::plot_grid(legend,blank_p,nrow=1), x = 0.225, y = -0.485, width = 1, height = 1)
+
+  ggsave(pl, filename = file.path(figures_path, paste0('sdg13_SI_probdistrib_reg.pdf')),
+         width = 2000, height = 2000, units = 'mm', limitsize = F)
+
+}
