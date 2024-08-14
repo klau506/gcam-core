@@ -207,3 +207,85 @@ pl_gen = ggplot() +
         title = element_text(size = 40)) +
   scale_y_reverse()
 ggsave(pl_gen, file = file.path(fig_folder, 'fig1_SI_overview_scen_generation_uncert.pdf'), width = 750, height = 500, units = 'mm')
+
+
+
+
+
+
+
+
+
+
+
+
+
+# ==============================================================================
+# ================================== Fig 2  ====================================
+# ============================ NDC-LTT feasibility =============================
+# ==============================================================================
+
+setwd('C:/Users/claudia.rodes/Documents/IAM_COMPACT/gcam-iamcompact-xin/diets_analysis')
+fig_folder = 'figures/methodology'
+
+data = t(read.csv(paste0('mitigation_cost','/scen_run_v1.csv'), skip = 1, header = F))
+colnames(data) <- data[1, ]
+data <- data[-1, ]
+data <- data %>%
+  as.data.frame() %>%
+  dplyr::mutate(across(everything(), ~ gsub('"', '', .))) %>%
+  tidyr::pivot_longer(cols = all_10:plus_90, names_to = 'path_share', values_to = 'value') %>%
+  tidyr::separate(path_share, into = c("pathway", "target"), sep = "_", remove = FALSE) %>%
+  dplyr::mutate(value = ifelse(value == "", NA, value)) %>%
+  as.data.frame() %>%
+  dplyr::arrange(desc(path_share))
+
+pl <- ggplot(df_sorted %>%
+         dplyr::filter(protein_type == 'SPP'),
+       aes(x = slope, y = path_share, fill = !is.na(value))) +
+  geom_tile(color = "white") +
+  scale_fill_manual(values = c("white", "#4682B4"), guide = 'none') +
+  geom_text(aes(label = ifelse(!is.na(value), "x", "")), size = 6) +
+  facet_wrap(. ~ peak_year) +
+  labs(x = "Slope", y = "") +
+  ggpubr::theme_pubr() +
+  theme(axis.text.x = element_text(size = 17.5, angle = 45, hjust = 1, vjust = 1),
+        axis.text.y = element_text(size = 17.5),
+        strip.text = element_text(size = 17.5),
+        axis.title = element_blank()) +
+  theme(panel.spacing.x = unit(1, "cm"))
+ggsave(pl, file = file.path(fig_folder, 'fig_SI_feasibility_NDCLTT_SPP.pdf'), width = 250, height = 300, units = 'mm')
+
+pl <- ggplot(df_sorted %>%
+         dplyr::filter(protein_type == 'SNR'),
+       aes(x = slope, y = path_share, fill = !is.na(value))) +
+  geom_tile(color = "white") +
+  scale_fill_manual(values = c("white", "#4682B4"), guide = 'none') +
+  geom_text(aes(label = ifelse(!is.na(value), "x", "")), size = 6) +
+  facet_wrap(. ~ peak_year) +
+  labs(x = "Slope", y = "") +
+  ggpubr::theme_pubr() +
+  theme(axis.text.x = element_text(size = 17.5, angle = 45, hjust = 1, vjust = 1),
+        axis.text.y = element_text(size = 17.5),
+        strip.text = element_text(size = 17.5),
+        axis.title = element_blank()) +
+  theme(panel.spacing.x = unit(1, "cm"))
+ggsave(pl, file = file.path(fig_folder, 'fig_SI_feasibility_NDCLTT_SNR.pdf'), width = 250, height = 300, units = 'mm')
+
+pl <- ggplot(df_sorted %>%
+         dplyr::filter(protein_type == 'SPPNR'),
+       aes(x = slope, y = path_share, fill = !is.na(value))) +
+  geom_tile(color = "white") +
+  scale_fill_manual(values = c("white", "#4682B4"), guide = 'none') +
+  geom_text(aes(label = ifelse(!is.na(value), "x", "")), size = 6) +
+  facet_wrap(. ~ peak_year) +
+  labs(x = "Slope", y = "") +
+  ggpubr::theme_pubr() +
+  theme(axis.text.x = element_text(size = 17.5, angle = 45, hjust = 1, vjust = 1),
+        axis.text.y = element_text(size = 17.5),
+        strip.text = element_text(size = 17.5),
+        axis.title = element_blank()) +
+  theme(panel.spacing.x = unit(1, "cm"))
+ggsave(pl, file = file.path(fig_folder, 'fig_SI_feasibility_NDCLTT_SPPNR.pdf'), width = 250, height = 300, units = 'mm')
+
+
