@@ -1746,10 +1746,12 @@ ggsave(FIG_LANDWATER_sdg6_water_index_map_SI,
 ############## WATER consumption ===============================================
 
 ## map water consumption vs ref PER
-ag_water_consumption_regional <- load_data('water_irr_rfd_regional') %>%
+ag_water_consumption_regional <- load_data('water_withdrawals_regional') %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
   dplyr::group_by(region, year, scenario, scen_type) %>%
-  dplyr::summarise(value = sum(value))
+  dplyr::summarise(value = median(value)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(unit = 'km^3')
 
 
 ag_water_consumption_regional = merge(ag_water_consumption_regional %>%
@@ -1769,7 +1771,7 @@ ag_water_consumption_regional <- ag_water_consumption_regional %>%
   # compute median by scen
   dplyr::group_by(year, region, scen_type) %>%
   dplyr::summarise(median_diff = median(diff)) %>%
-  dplyr::mutate(group = 'Water consumption') %>%
+  dplyr::mutate(group = 'Water withdrawal') %>%
   dplyr::ungroup()
 
 View(ag_water_consumption_regional %>%
@@ -1798,7 +1800,7 @@ pl_ag_water_consumption_regional_per_map <- ggplot() +
   facet_grid(. ~ scen_type, scales = 'fixed') +
   scale_fill_gradient2(low = "darkgreen", high = "darkred",
                        mid = '#f7f7f7', midpoint = 0,
-                       name = expression(paste("Water consumption difference [%]","\n"))) +
+                       name = expression(paste("Water withdrawal difference [%]","\n"))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
   theme_light() +
@@ -1819,11 +1821,12 @@ ggsave(pl_ag_water_consumption_regional_per_map,
        width = 500, height = 300, units = 'mm')
 
 ## map water consumption vs ref ABS
-ag_water_consumption_regional <- load_data('water_irr_rfd_regional') %>%
+ag_water_consumption_regional <- load_data('water_withdrawals_regional') %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
   dplyr::group_by(region, year, scenario, scen_type) %>%
-  dplyr::summarise(value = sum(value))
-
+  dplyr::summarise(value = median(value)) %>%
+  dplyr::ungroup() %>%
+  dplyr::mutate(unit = 'km^3')
 
 ag_water_consumption_regional = merge(ag_water_consumption_regional %>%
                                    dplyr::filter(scenario != 'ref') %>%
@@ -1842,7 +1845,7 @@ ag_water_consumption_regional <- ag_water_consumption_regional %>%
   # compute median by scen
   dplyr::group_by(year, region, scen_type) %>%
   dplyr::summarise(median_diff = median(diff)) %>%
-  dplyr::mutate(group = 'Water consumption') %>%
+  dplyr::mutate(group = 'Water withdrawal') %>%
   dplyr::ungroup()
 
 # plot
@@ -1868,8 +1871,8 @@ pl_ag_water_consumption_regional_abs_map <- ggplot() +
   facet_grid(. ~ scen_type, scales = 'fixed') +
   scale_fill_gradient2(low = "darkgreen", high = "darkred",
                        mid = '#f7f7f7', midpoint = 0,
-                       name = expression(paste("Water consumption difference","\n[thous. km2]"))) +
-  # theme
+                       name = expression(paste("Water withdrawal difference [", km^3, "]","\n"))) +
+ # theme
   guides(fill = guide_colorbar(title.position = "left")) +
   theme_light() +
   theme(axis.title=element_blank(),
@@ -1892,7 +1895,7 @@ ggsave(pl_ag_water_consumption_regional_abs_map,
 
 
 
-pl_water_consumption_world <- ggplot(data = load_data('water_consumption_world') %>%
+pl_water_consumption_world <- ggplot(data = load_data('water_withdrawals_world') %>%
                                        dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                        dplyr::group_by(year, scen_type) %>%
                                        dplyr::mutate(median_value = median(value)) %>%
@@ -1901,7 +1904,7 @@ pl_water_consumption_world <- ggplot(data = load_data('water_consumption_world')
   geom_line(aes(x = year, y = value, group = scenario, color = scen_type), alpha = 0.3) +  # All runs lines
   geom_line(aes(x = year, y = median_value, color = scen_type), linewidth = 2, alpha = 1, linetype = 'dashed') +  # Median line
   geom_ribbon(aes(x = year, ymin = min_value, ymax = max_value, fill = scen_type), alpha = 0.15) +  # Shadow
-  geom_line(data = load_data('water_consumption_world') %>%
+  geom_line(data = load_data('water_withdrawals_world') %>%
               dplyr::filter(scenario == 'ref') %>%
               dplyr::mutate(scen_type = toupper(scen_type)), aes(x = year, y = value, color = scen_type),
             linewidth = 2, alpha = 1, linetype = 'dashed') +  # Median line REF
@@ -1909,7 +1912,7 @@ pl_water_consumption_world <- ggplot(data = load_data('water_consumption_world')
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
   scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
   # labs
-  labs(y = expression(paste("Annual Water flows (billion ",m^3,")")), x = '') +
+  labs(y = expression(paste("Annual Water flows [",km^3,"]")), x = '') +
   # theme
   theme_light() +
   guides(color = guide_legend(keywidth = 3, override.aes = list(linewidth = 2))) +
@@ -1954,7 +1957,7 @@ pl_water_consumption_agriculture_world_irr_rfd <- ggplot(data = ag_water_consump
   # facet
   # facet_grid(. ~ scen_type) +
   # labs
-  labs(y = expression(paste("RFD water percentage")), x = '') +
+  labs(y = expression(paste("Land type using RFD water [%]")), x = '') +
   # theme
   theme_light() +
   guides(color = guide_legend(keywidth = 3, override.aes = list(linewidth = 2))) +
@@ -1973,7 +1976,7 @@ ggsave(pl_water_consumption_agriculture_world_irr_rfd, file = file.path(figures_
 
 
 
-ag_water_consumption_world <- load_data('water_irr_rfd_world') %>%
+ag_water_consumption_world <- load_data('water_withdrawals_world') %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
   dplyr::group_by(year, scenario, scen_type) %>%
   dplyr::summarise(value = sum(value)) %>%
@@ -1993,7 +1996,7 @@ pl_water_consumption_agriculture_world <- ggplot(data = ag_water_consumption_wor
   # facet
   facet_grid(. ~ scen_type) +
   # labs
-  labs(y = expression(paste("Annual Water flows (thous ",km^2,")")), x = '') +
+  labs(y = expression(paste("Annual Water flows [",km^3,"]")), x = '') +
   # theme
   theme_light() +
   guides(color = guide_legend(keywidth = 3, override.aes = list(linewidth = 2))) +
@@ -2013,7 +2016,7 @@ ggsave(pl_water_consumption_agriculture_world, file = file.path(figures_path,'sd
 
 
 
-ag_water_consumption_world_global <- load_data('water_irr_rfd_world') %>%
+ag_water_consumption_world_global <- load_data('water_withdrawals_world') %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
   dplyr::group_by(year, scenario, scen_type) %>%
   dplyr::summarise(value = sum(value)) %>%
@@ -2031,7 +2034,7 @@ pl_water_consumption_agriculture_world_global <- ggplot(data = ag_water_consumpt
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
   scale_fill_manual(values = scen_palette_refVsSppVsSnrVsSppnr, name = 'Scenario') +
   # labs
-  labs(y = expression(paste("Annual Water flows (thous ",km^2,")")), x = '') +
+  labs(y = expression(paste("Annual Water flows [",km^3,"]")), x = '') +
   # theme
   theme_light() +
   guides(color = guide_legend(keywidth = 3, override.aes = list(linewidth = 2))) +
@@ -2049,20 +2052,20 @@ pl_water_consumption_agriculture_world_global <- ggplot(data = ag_water_consumpt
 ggsave(pl_water_consumption_agriculture_world_global, file = file.path(figures_path,'sdg6_annual_water_agriculture_consumption_global_line.png'), width = 500, height = 400, units = 'mm')
 
 
-to_print <- merge(load_data('water_irr_rfd_world') %>%
+to_print <- merge(load_data('water_withdrawals_world') %>%
                     dplyr::filter(scenario != 'ref') %>%
                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                    dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
+                    dplyr::group_by(year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                     dplyr::summarise(value = sum(value)) %>%
                     dplyr::ungroup(),
-                  load_data('water_irr_rfd_world') %>%
+                  load_data('water_withdrawals_world') %>%
                     dplyr::filter(scenario == 'ref') %>%
                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                    dplyr::group_by(year, scenario, scen_type, water) %>%
+                    dplyr::group_by(year, scenario, scen_type) %>%
                     dplyr::summarise(ref_value = sum(value)) %>%
                     dplyr::ungroup() %>%
                     dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                  by = c('water','year')) %>%
+                  by = c('year')) %>%
   # compute Per difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = 100*(value - ref_value)/ref_value) %>%
@@ -2187,13 +2190,13 @@ ggsave(pl_water_irr_rfd_diffPer_world_bars, file = file.path(figures_path, paste
 
 
 #### ABSOLUTE
-ag_water_consumption_regional_diffAbs <- merge(load_data('water_irr_rfd_regional') %>%
+ag_water_consumption_regional_diffAbs <- merge(load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario != 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                                  dplyr::summarise(value = sum(value)) %>%
                                                  dplyr::ungroup(),
-                                               load_data('water_irr_rfd_regional') %>%
+                                               load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario == 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type) %>%
@@ -2232,7 +2235,7 @@ pl_ag_water_consumption_regional_diffAbs_map <- ggplot() +
   facet_grid(. ~ scen_type, scales = 'fixed') +
   scale_fill_gradient2(low = "darkgreen", high = "darkred",
                        mid = '#f7f7f7', midpoint = 0,
-                       name = expression(paste("Annual Water flows difference (",km^3,")","\n"))) +
+                       name = expression(paste("Annual Water flows difference [",km^3,"]","\n"))) +
   # theme
   guides(fill = guide_colorbar(title.position = "left")) +
   theme_light() +
@@ -2253,13 +2256,13 @@ ggsave(pl_ag_water_consumption_regional_diffAbs_map, file = file.path(figures_pa
 
 
 #### PERCENT
-ag_water_consumption_regional_diffPer <- merge(load_data('water_irr_rfd_regional') %>%
+ag_water_consumption_regional_diffPer <- merge(load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario != 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                                  dplyr::summarise(value = sum(value)) %>%
                                                  dplyr::ungroup(),
-                                               load_data('water_irr_rfd_regional') %>%
+                                               load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario == 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type) %>%
@@ -2322,13 +2325,13 @@ ggsave(pl_ag_water_consumption_regional_diffPer_map, file = file.path(figures_pa
 
 
 #### ABSOLUTE
-ag_water_consumption_regional_diffAbs <- merge(load_data('water_irr_rfd_regional') %>%
+ag_water_consumption_regional_diffAbs <- merge(load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario != 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                                  dplyr::summarise(value = sum(value)) %>%
                                                  dplyr::ungroup(),
-                                               load_data('water_irr_rfd_regional') %>%
+                                               load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario == 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type) %>%
@@ -2356,7 +2359,7 @@ pl_ag_water_consumption_regional_diffAbs_heatmap <- ggplot(ag_water_consumption_
                                                            aes(x = scen_group, y = region, fill = median_diff)) +
   geom_tile() +
   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
-                       name = expression(paste(km^3, " difference")), ) +
+                       name = expression(paste("Annual water flows differente", " [", km^3, "]")), ) +
   facet_wrap(. ~ scen_type) +
   # labs
   labs(y = '', x = 'Scenario type') +
@@ -2377,13 +2380,13 @@ ggsave(pl_ag_water_consumption_regional_diffAbs_heatmap, file = file.path(figure
 
 
 #### PERCENT
-ag_water_consumption_regional_diffPer <- merge(load_data('water_irr_rfd_regional') %>%
+ag_water_consumption_regional_diffPer <- merge(load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario != 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope) %>%
                                                  dplyr::summarise(value = sum(value)) %>%
                                                  dplyr::ungroup(),
-                                               load_data('water_irr_rfd_regional') %>%
+                                               load_data('water_withdrawals_regional') %>%
                                                  dplyr::filter(scenario == 'ref') %>%
                                                  dplyr::mutate(scen_type = toupper(scen_type)) %>%
                                                  dplyr::group_by(region, year, scenario, scen_type) %>%
@@ -2430,100 +2433,100 @@ ggsave(pl_ag_water_consumption_regional_diffPer_heatmap, file = file.path(figure
 
 
 
-#### ABSOLUTE WITH WATER TYPE
-ag_waterType_consumption_regional_diffAbs <- merge(load_data('water_irr_rfd_regional') %>%
-                                                     dplyr::filter(scenario != 'ref') %>%
-                                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                                     dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
-                                                     dplyr::summarise(value = sum(value)) %>%
-                                                     dplyr::ungroup(),
-                                                   load_data('water_irr_rfd_regional') %>%
-                                                     dplyr::filter(scenario == 'ref') %>%
-                                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                                     dplyr::group_by(region, year, scenario, scen_type, water) %>%
-                                                     dplyr::summarise(ref_value = sum(value)) %>%
-                                                     dplyr::ungroup() %>%
-                                                     dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                                   by = c('region','year','water')) %>%
-  # compute Abs difference between Reference and runs
-  dplyr::rowwise() %>%
-  dplyr::mutate(diff = ref_value - value) %>%
-  # create scen_group
-  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
-  # compute median by scen
-  dplyr::group_by(region,year,scen_type,scen_path,scen_group,water) %>%
-  dplyr::summarise(median_diff = median(diff))
-
-pl_ag_waterType_consumption_regional_diffAbs_heatmap <- ggplot(ag_waterType_consumption_regional_diffAbs %>%
-                                                                 dplyr::filter(year == year_fig),
-                                                               aes(x = scen_group, y = region, fill = median_diff)) +
-  geom_tile() +
-  scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
-                       name = expression(paste(km^3, " difference")), ) +
-  facet_grid(scen_type ~ water) +
-  # labs
-  labs(y = '', x = 'Scenario type') +
-  # theme
-  theme_light() +
-  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
-        strip.background = element_blank(),
-        strip.text = element_text(color = 'black', size = 25),
-        strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=25, angle = 90, hjust = 1, vjust = 0.25),
-        axis.text.y = element_text(size=20),
-        legend.text = element_text(size = 25),
-        legend.title = element_text(size = 25),
-        title = element_text(size = 30))
-ggsave(pl_ag_waterType_consumption_regional_diffAbs_heatmap, file = file.path(figures_path, paste0('sdg6_waterType_abs_heatmap_',year_fig,'.png')),
-       width = 500, height = 450, units = 'mm', limitsize = FALSE)
-
-
-#### PERCENT WITH WATER TYPE
-ag_waterType_consumption_regional_diffPer <- merge(load_data('water_irr_rfd_regional') %>%
-                                                     dplyr::filter(scenario != 'ref') %>%
-                                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                                     dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
-                                                     dplyr::summarise(value = sum(value)) %>%
-                                                     dplyr::ungroup(),
-                                                   load_data('water_irr_rfd_regional') %>%
-                                                     dplyr::filter(scenario == 'ref') %>%
-                                                     dplyr::mutate(scen_type = toupper(scen_type)) %>%
-                                                     dplyr::group_by(region, year, scenario, scen_type, water) %>%
-                                                     dplyr::summarise(ref_value = sum(value)) %>%
-                                                     dplyr::ungroup() %>%
-                                                     dplyr::select(-scenario) %>% dplyr::select(-scen_type),
-                                                   by = c('region','year','water')) %>%
-  # compute Per difference between Reference and runs
-  dplyr::rowwise() %>%
-  dplyr::mutate(diff = 100*(ref_value - value)/ref_value) %>%
-  # create scen_group
-  dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
-  # compute median by scen
-  dplyr::group_by(region,year,scen_type,scen_path,scen_group,water) %>%
-  dplyr::summarise(median_diff = median(diff))
-
-pl_ag_waterType_consumption_regional_diffPer_heatmap <- ggplot(ag_waterType_consumption_regional_diffPer %>%
-                                                                 dplyr::filter(year == year_fig),
-                                                               aes(x = scen_group, y = region, fill = median_diff)) +
-  geom_tile() +
-  scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
-                       name = expression(paste("% difference")), ) +
-  facet_grid(scen_type ~ water) +
-  # labs
-  labs(y = '', x = 'Scenario type') +
-  # theme
-  theme_light() +
-  theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
-        strip.background = element_blank(),
-        strip.text = element_text(color = 'black', size = 25),
-        strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=25, angle = 90, hjust = 1, vjust = 0.25),
-        axis.text.y = element_text(size=20),
-        legend.text = element_text(size = 25),
-        legend.title = element_text(size = 25),
-        title = element_text(size = 30))
-ggsave(pl_ag_waterType_consumption_regional_diffPer_heatmap, file = file.path(figures_path, paste0('sdg6_waterType_per_heatmap_',year_fig,'.png')),
-       width = 500, height = 500, units = 'mm', limitsize = FALSE)
+# #### ABSOLUTE WITH WATER TYPE
+# ag_waterType_consumption_regional_diffAbs <- merge(load_data('water_irr_rfd_regional') %>%
+#                                                      dplyr::filter(scenario != 'ref') %>%
+#                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+#                                                      dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
+#                                                      dplyr::summarise(value = sum(value)) %>%
+#                                                      dplyr::ungroup(),
+#                                                    load_data('water_irr_rfd_regional') %>%
+#                                                      dplyr::filter(scenario == 'ref') %>%
+#                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+#                                                      dplyr::group_by(region, year, scenario, scen_type, water) %>%
+#                                                      dplyr::summarise(ref_value = sum(value)) %>%
+#                                                      dplyr::ungroup() %>%
+#                                                      dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+#                                                    by = c('region','year','water')) %>%
+#   # compute Abs difference between Reference and runs
+#   dplyr::rowwise() %>%
+#   dplyr::mutate(diff = ref_value - value) %>%
+#   # create scen_group
+#   dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
+#   # compute median by scen
+#   dplyr::group_by(region,year,scen_type,scen_path,scen_group,water) %>%
+#   dplyr::summarise(median_diff = median(diff))
+#
+# pl_ag_waterType_consumption_regional_diffAbs_heatmap <- ggplot(ag_waterType_consumption_regional_diffAbs %>%
+#                                                                  dplyr::filter(year == year_fig),
+#                                                                aes(x = scen_group, y = region, fill = median_diff)) +
+#   geom_tile() +
+#   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
+#                        name = expression(paste(km^3, " difference")), ) +
+#   facet_grid(scen_type ~ water) +
+#   # labs
+#   labs(y = '', x = 'Scenario type') +
+#   # theme
+#   theme_light() +
+#   theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+#         strip.background = element_blank(),
+#         strip.text = element_text(color = 'black', size = 25),
+#         strip.text.y = element_text(angle = 0),
+#         axis.text.x = element_text(size=25, angle = 90, hjust = 1, vjust = 0.25),
+#         axis.text.y = element_text(size=20),
+#         legend.text = element_text(size = 25),
+#         legend.title = element_text(size = 25),
+#         title = element_text(size = 30))
+# ggsave(pl_ag_waterType_consumption_regional_diffAbs_heatmap, file = file.path(figures_path, paste0('sdg6_waterType_abs_heatmap_',year_fig,'.png')),
+#        width = 500, height = 450, units = 'mm', limitsize = FALSE)
+#
+#
+# #### PERCENT WITH WATER TYPE
+# ag_waterType_consumption_regional_diffPer <- merge(load_data('water_irr_rfd_regional') %>%
+#                                                      dplyr::filter(scenario != 'ref') %>%
+#                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+#                                                      dplyr::group_by(region, year, scenario, scen_type, scen_path, final_share, peak_year, slope, water) %>%
+#                                                      dplyr::summarise(value = sum(value)) %>%
+#                                                      dplyr::ungroup(),
+#                                                    load_data('water_irr_rfd_regional') %>%
+#                                                      dplyr::filter(scenario == 'ref') %>%
+#                                                      dplyr::mutate(scen_type = toupper(scen_type)) %>%
+#                                                      dplyr::group_by(region, year, scenario, scen_type, water) %>%
+#                                                      dplyr::summarise(ref_value = sum(value)) %>%
+#                                                      dplyr::ungroup() %>%
+#                                                      dplyr::select(-scenario) %>% dplyr::select(-scen_type),
+#                                                    by = c('region','year','water')) %>%
+#   # compute Per difference between Reference and runs
+#   dplyr::rowwise() %>%
+#   dplyr::mutate(diff = 100*(ref_value - value)/ref_value) %>%
+#   # create scen_group
+#   dplyr::mutate(scen_group = paste0(scen_path, '_', final_share)) %>%
+#   # compute median by scen
+#   dplyr::group_by(region,year,scen_type,scen_path,scen_group,water) %>%
+#   dplyr::summarise(median_diff = median(diff))
+#
+# pl_ag_waterType_consumption_regional_diffPer_heatmap <- ggplot(ag_waterType_consumption_regional_diffPer %>%
+#                                                                  dplyr::filter(year == year_fig),
+#                                                                aes(x = scen_group, y = region, fill = median_diff)) +
+#   geom_tile() +
+#   scale_fill_gradient2(low = "darkred", mid = "white", high = "darkgreen",
+#                        name = expression(paste("% difference")), ) +
+#   facet_grid(scen_type ~ water) +
+#   # labs
+#   labs(y = '', x = 'Scenario type') +
+#   # theme
+#   theme_light() +
+#   theme(legend.key.size = unit(2, "cm"), legend.position = 'right', legend.direction = 'vertical',
+#         strip.background = element_blank(),
+#         strip.text = element_text(color = 'black', size = 25),
+#         strip.text.y = element_text(angle = 0),
+#         axis.text.x = element_text(size=25, angle = 90, hjust = 1, vjust = 0.25),
+#         axis.text.y = element_text(size=20),
+#         legend.text = element_text(size = 25),
+#         legend.title = element_text(size = 25),
+#         title = element_text(size = 30))
+# ggsave(pl_ag_waterType_consumption_regional_diffPer_heatmap, file = file.path(figures_path, paste0('sdg6_waterType_per_heatmap_',year_fig,'.png')),
+#        width = 500, height = 500, units = 'mm', limitsize = FALSE)
 
 
 ##### SI figs =================================================================
@@ -2537,7 +2540,7 @@ ag_water_consumption_region_irr_rfd <- load_data('water_irr_rfd_regional') %>%
   dplyr::mutate(rfd_per = 100 * value[water == "RFD"] / (value[water == "IRR"] + value[water == "RFD"])) %>%
   dplyr::ungroup()
 
-ag_water_consumption_regional <- load_data('water_irr_rfd_regional') %>%
+ag_water_consumption_regional <- load_data('water_withdrawals_regional') %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
   dplyr::group_by(region, year, scenario, scen_type, scen_path) %>%
   dplyr::summarise(value = sum(value)) %>%
