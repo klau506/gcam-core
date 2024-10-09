@@ -192,7 +192,8 @@ violin_plot_landtype <- function(data, y, type) {
   pl_SI_land_area_violin <- ggplot(data = data %>%
                                      dplyr::filter(year == y) %>%
                                      dplyr::select(scen_type, scen_path, land_use_type, diff) %>%
-                                     dplyr::distinct(),
+                                     dplyr::distinct() %>%
+                                     rename_pathways(),
                                    aes(x = land_use_type,
                                        y = diff,
                                        color = land_use_type,
@@ -417,7 +418,7 @@ rfd_index_water = function(index, y) {
                             name = 'Pathway',
                             labels = scen_path_palette_refVsSppVsSnrVsSppnr3.labs) +
       scale_pattern_manual(values = scen_path_pattern_refVsSppVsSnrVsSppnr2,
-                            name = 'Pathway',
+                            name = 'Pathway2',
                             labels = scen_path_palette_refVsSppVsSnrVsSppnr2.labs) +
       labs(y = ylab, x = '') +
       theme_light() +
@@ -513,7 +514,7 @@ rfd_index_water = function(index, y) {
                        x = 0.5, y = 0.025, width = 0.5, height = 0.975) +
     cowplot::draw_plot(cowplot::plot_grid(legend_color,blank_p,nrow=1), x = 0.125, y = -0.485, width = 1, height = 1) +
     cowplot::draw_plot(cowplot::plot_grid(legend_linetype,blank_p,nrow=1), x = 0.275, y = -0.485, width = 1, height = 1) +
-    cowplot::draw_plot(cowplot::plot_grid(legend_pattern,blank_p,nrow=1), x = 0.36, y = -0.485, width = 1, height = 1)
+    cowplot::draw_plot(cowplot::plot_grid(legend_pattern,blank_p,nrow=1), x = 0.3725, y = -0.485, width = 1, height = 1)
 
   ggsave(pl, filename = file.path(figures_path, paste0('sdg6_SI_water_rfd_share_reg.pdf')),
          width = 1500, height = 1500, units = 'mm', limitsize = F)
@@ -610,10 +611,8 @@ violin_plot_ghg_regional <- function(data, y, type) {
       geom_hline(aes(yintercept = 0)) +
       facet_grid(region ~ scen_type + scen_path,scale = 'free') +
       # facet_wrap(region ~ scen_type + scen_path, scales = 'free', ncol = 6) +
-      scale_fill_manual(values = ghg_emiss, name = 'Land Type',
-                        breaks = ghg_emiss) +
-      scale_color_manual(values = ghg_emiss, name = 'Land Type',
-                         breaks = ghg_emiss) +
+      scale_fill_manual(values = ghg_emiss, name = 'Land Type') +
+      scale_color_manual(values = ghg_emiss, name = 'Land Type') +
       # labs
       labs(y = ylab, x = '') +
       # theme

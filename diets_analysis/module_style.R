@@ -17,7 +17,7 @@ scen_path_palette_refVsSppVsSnrVsSppnr3 = c(
   'plus' = 'dashed',
   'REF' = 'dotted'
 )
-scen_path_palette_refVsSppVsSnrVsSppnr3.labs <- c('all','plus','REF')
+scen_path_palette_refVsSppVsSnrVsSppnr3.labs <- c('GlobT','RegG','REF')
 names(scen_path_palette_refVsSppVsSnrVsSppnr3.labs) = c('all','plus','REF')
 
 scen_path_palette_refVsSppVsSnrVsSppnr2 = c(
@@ -28,20 +28,20 @@ scen_path_pattern_refVsSppVsSnrVsSppnr2 = c(
   'all' = 'none',
   'plus' = 'stripe'
 )
-scen_path_palette_refVsSppVsSnrVsSppnr2.labs <- c('all','plus')
+scen_path_palette_refVsSppVsSnrVsSppnr2.labs <- c('GlobT','RegG')
 names(scen_path_palette_refVsSppVsSnrVsSppnr2.labs) = c('all','plus')
 
 scen_path_shape_refVsSppVsSnrVsSppnr2 = c(
   'all' = 21,
   'plus' = 23
 )
-scen_path_shape_refVsSppVsSnrVsSppnr2.labs <- c('all','plus')
+scen_path_shape_refVsSppVsSnrVsSppnr2.labs <- c('GlobT','RegG')
 names(scen_path_shape_refVsSppVsSnrVsSppnr2.labs) = c('all','plus')
 
 scen_path_palette_col_refVsSppVsSnrVsSppnr <-
   c('all' = '#6b0ead',
     'plus' = '#66A61E')
-scen_path_palette_col_refVsSppVsSnrVsSppnr.labs <- c('all','plus')
+scen_path_palette_col_refVsSppVsSnrVsSppnr.labs <- c('GlobT','RegG')
 
 ref_vs_dietaryChange <- c('REF' = 18,
                           'Dietary\nchange' = 19)

@@ -535,6 +535,23 @@ load_queries = function(queries_name) {
       update_query(., 'pop_all_regions')
 
 
+    ###### ===== GDP ======
+    # gdp PPP per capita by region
+    # for (args in c(3:6)) {
+    #   print(args)
+    #   print(sub_prj_names[args])
+    #   prjj <<- rgcam::loadProject(sub_prj_names[args])
+    #   year_s <- 1990
+    #   year_e <- 2050
+    #   gdp_ppp_pc_regional <<- getQuery(prjj, "GDP per capita PPP by region") %>%
+    #     filter(year >= year_s, year <= year_e)
+    #   save(gdp_ppp_pc_regional, file = paste0('gdp_ppp_pc_regional', sub("^gath", "", sub_prj_names[args])))
+    # }
+    gdp_ppp_pc_regional <<- getQuery(prj, "GDP per capita PPP by region") %>%
+      filter(year >= year_s, year <= year_e) %>%
+      update_query(., 'gdp_ppp_pc_regional')
+
+
     ###### ===== rumin percentage ======
     tmp <- rgcam::getQuery(prj, "food consumption by type (specific)")
     colnames(tmp) <- c('Units', 'scenario', 'region',

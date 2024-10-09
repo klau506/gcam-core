@@ -37,16 +37,16 @@ sub_prj_names <- c(list.files('/scratch/bc3lc/gcam-core-iamcompact-xin/', patter
 print(sub_prj_names)
 print(sub_prj_names[args])
 prj <<- rgcam::loadProject(sub_prj_names[args])
-# year_s <- 1990
-# year_e <- 2050
-# source('diets_analysis/module_queries_extraction.R')
-# source('diets_analysis/module_data.R')
+year_s <- 1990
+year_e <- 2050
+source('diets_analysis/module_queries_extraction.R')
+source('diets_analysis/module_data.R')
 load_queries(paste0("queries_all_", sub_prj_names[args[1]], ".RData"))
 
-### rfasst module
-source('diets_analysis/module_rfasst.R')
-final_db_year <- 2050
-# prj <- rgcam::loadProject('diets_analysis/outputs/gath_all_3.dat')
-desired_scen <- rgcam::listScenarios(prj)
-compute_premature_mortalities(desired_scen, paste0("queries_mort_", sub_prj_names[args[1]]))
+# ### rfasst module
+# source('diets_analysis/module_rfasst.R')
+# final_db_year <- 2050
+# # prj <- rgcam::loadProject('diets_analysis/outputs/gath_all_3.dat')
+# desired_scen <- rgcam::listScenarios(prj)
+# compute_premature_mortalities(desired_scen, paste0("queries_mort_", sub_prj_names[args[1]]))
 

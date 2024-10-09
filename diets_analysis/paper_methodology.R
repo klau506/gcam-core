@@ -40,7 +40,7 @@ example_data = read.csv(file.path(getwd(), 'exe', 'db.mapping.complete.csv')) %>
   dplyr::select(scenario) %>%
   tidyr::separate(scenario, into = c("protein_type", "scenario_pathway", "final_share", "peak_year_title", "peak_year", "slope_title", "slope"), sep = "_", remove = FALSE) %>%
   dplyr::filter(protein_type != 'ref') %>%
-  dplyr::mutate(scenario_pathway = ifelse(grepl('all', scenario_pathway), 'all', 'plus')) %>%
+  dplyr::mutate(scenario_pathway = ifelse(grepl('all', scenario_pathway), 'GlobT', 'RegG')) %>%
   dplyr::mutate(final_share = as.numeric(gsub("[^0-9]", "", final_share))) %>%
   dplyr::select(-ends_with('title')) %>%
   dplyr::mutate(protein_type = toupper(protein_type)) %>%
@@ -131,60 +131,60 @@ pl_gen = ggplot() +
   annotate("rect", xmin = 2.5, xmax = 6.5, ymin = 0.025, ymax = 0.95, fill = "blue", alpha = 0.1) +
   # curves and arrows
   geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SNR', variable != '3') %>%
-               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.25, prev_variable)) %>% order_facets('protein_type'),
+               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.325, prev_variable)) %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
   geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SNR', variable == '3') %>% order_facets('protein_type'),
-             aes(x = prev_variable, y = prev_value, xend = variable - 0.3, yend = value,
+             aes(x = prev_variable, y = prev_value, xend = variable - 0.34, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5,
              arrow = arrow(type = "closed", length = unit(0.2, "inches"))) +
   geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPP', variable != '3') %>%
-               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.25, prev_variable)) %>% order_facets('protein_type'),
+               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.325, prev_variable)) %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = -curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
   geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPP', variable == '3') %>% order_facets('protein_type'),
-             aes(x = prev_variable, y = prev_value, xend = variable - 0.3, yend = value,
+             aes(x = prev_variable, y = prev_value, xend = variable - 0.34, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = -curve_factor,
              lineend = "round", linewidth = 0.55, alpha = 0.5,
              arrow = arrow(type = "closed", length = unit(0.2, "inches"))) +
   geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPPNR', variable != '3') %>%
-               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.25, prev_variable)) %>% order_facets('protein_type'),
+               mutate(prev_variable = ifelse(prev_variable == '3', prev_variable + 0.325, prev_variable)) %>% order_facets('protein_type'),
              aes(x = prev_variable, y = prev_value, xend = variable, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = 0,
              lineend = "round", linewidth = 0.55, alpha = 0.5) +
   geom_curve(data = reshaped_data %>% dplyr::filter(protein_type == 'SPPNR', variable == '3') %>% order_facets('protein_type'),
-             aes(x = prev_variable, y = prev_value, xend = variable - 0.3, yend = value,
+             aes(x = prev_variable, y = prev_value, xend = variable - 0.34, yend = value,
                  group = interaction(variable, protein_type), color = protein_type),
              curvature = 0,
              lineend = "round", linewidth = 0.55, alpha = 0.5,
              arrow = arrow(type = "closed", length = unit(0.2, "inches"))) +
   scale_color_manual(values = scen_palette_refVsSppVsSnrVsSppnr) +
   # circles/ellipses
-  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '1'),
+  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable %in% c('1','2')),
                         aes(x0 = prev_variable, y0 = prev_value, a = 0.2, b = 0.035, angle = 0),
                         fill = "white", color = "white", alpha = 1) +
-  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '1'),
+  ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable %in% c('1','2')),
                         aes(x0 = prev_variable, y0 = prev_value, a = 0.2, b = 0.035, angle = 0),
                         fill = "#F2F3CB", color = "grey", alpha = 0.25) +
-  geom_point(data = text_data2 %>% filter(prev_variable %in% c('2','4','5','6')),
+  geom_point(data = text_data2 %>% filter(prev_variable %in% c('4','5','6')),
              aes(x = prev_variable, y = prev_value), shape = 21, size = 33,
              fill = "white", color = "white", alpha = 1) +
-  geom_point(data = text_data2 %>% filter(prev_variable %in% c('2','4','5','6')),
+  geom_point(data = text_data2 %>% filter(prev_variable %in% c('4','5','6')),
              aes(x = prev_variable, y = prev_value), shape = 21, size = 33,
              fill = "#F2F3CB", color = "black", alpha = 0.25) +
   ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '3'),
-                        aes(x0 = prev_variable, y0 = prev_value, a = 0.285, b = 0.05, angle = 0),
+                        aes(x0 = prev_variable, y0 = prev_value, a = 0.33, b = 0.05, angle = 0),
                         fill = "white", color = "white", alpha = 1) +
   ggforce::geom_ellipse(data = text_data2 %>% filter(prev_variable == '3'),
-                        aes(x0 = prev_variable, y0 = prev_value, a = 0.285, b = 0.05, angle = 0),
+                        aes(x0 = prev_variable, y0 = prev_value, a = 0.33, b = 0.05, angle = 0),
                         fill = "#F2F3CB", color = "grey", alpha = 0.25) +
   # text - bullets
   geom_text(data = text_data2,
@@ -206,13 +206,45 @@ pl_gen = ggplot() +
         legend.title = element_text(size = 40),
         title = element_text(size = 40)) +
   scale_y_reverse()
-ggsave(pl_gen, file = file.path(fig_folder, 'fig1_SI_overview_scen_generation_uncert.pdf'), width = 750, height = 500, units = 'mm')
+ggsave(pl_gen, file = file.path(fig_folder, 'fig1_SI_overview_scen_generation_uncert_plot.pdf'), width = 750, height = 500, units = 'mm')
+
+
+## combination with scenario details table
+pl_table <- ggplot() +
+  xlim(0, 10) + ylim(0, 8) +
+  annotation_custom(grid::rasterGrob(png::readPNG(file.path(fig_folder, 'table_scenarios-2.png')), interpolate = TRUE),
+                    xmin = 0, xmax = 10, ymin = 0, ymax = 8) +
+  theme_void()
+ggsave(pl_table, file = file.path(fig_folder, 'fig1_SI_overview_scen_generation_uncert_table.pdf'), width = 750, height = 500, units = 'mm')
+
+library(magick)
+colored_img <- image_colorize(image_read(file.path(fig_folder, 'arrow.png')), "#FFE5E5", opacity = 100)
+temp_file <- tempfile(fileext = ".png")
+image_write(colored_img, path = temp_file, format = "png")
+pl_arrow <- ggplot() +
+  xlim(0, 5) + ylim(0, 5) +
+  annotation_custom(grid::rasterGrob(png::readPNG(temp_file), interpolate = TRUE),
+                    xmin = 0, xmax = 5, ymin = 0, ymax = 5) +
+  theme_void()
 
 
 
+pl_complete = cowplot::ggdraw() +
+  theme(plot.background = element_rect(fill="white")) +
+  cowplot::draw_plot(pl_gen, x = 0, y = 0.325, width = 1, height = 0.65) +
+  cowplot::draw_plot(pl_table, x = 0.3, y = -0.17, width = 0.65, height = 0.65) +
+  cowplot::draw_plot(pl_arrow, x = 0.1, y = 0.15, width = 0.25, height = 0.25) +
+  # Add a black frame around the second plot
+  annotation_custom(
+    grid::rectGrob(gp = grid::gpar(col = "#FFE5E5", fill = NA, lwd = 20)),
+    xmin = 0.33, xmax = 0.92, ymin = 0.011, ymax = 0.31
+  ) +
+  # remove frame
+  theme_void()
 
 
-
+ggsave(pl_complete, file = file.path(fig_folder, 'fig1_SI_overview_scen_generation_uncert_complete.pdf'),
+       width = 700, height = 850, units = 'mm')
 
 
 
@@ -231,14 +263,17 @@ fig_folder = 'figures/methodology'
 data = t(read.csv(paste0('mitigation_cost','/scen_run_v1.csv'), skip = 1, header = F))
 colnames(data) <- data[1, ]
 data <- data[-1, ]
-data <- data %>%
+df_sorted <- data %>%
   as.data.frame() %>%
   dplyr::mutate(across(everything(), ~ gsub('"', '', .))) %>%
   tidyr::pivot_longer(cols = all_10:plus_90, names_to = 'path_share', values_to = 'value') %>%
   tidyr::separate(path_share, into = c("pathway", "target"), sep = "_", remove = FALSE) %>%
   dplyr::mutate(value = ifelse(value == "", NA, value)) %>%
+  dplyr::mutate_all(~ gsub("plus", "RegG", .)) %>%
+  dplyr::mutate_all(~ gsub("all", "GlobT", .)) %>%
   as.data.frame() %>%
   dplyr::arrange(desc(path_share))
+
 
 pl <- ggplot(df_sorted %>%
          dplyr::filter(protein_type == 'SPP'),

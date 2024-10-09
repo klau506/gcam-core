@@ -29,9 +29,18 @@ aggregate_land_use_type <- function(data) {
                                                   'Hardwood_Forest', 'ProtectedUnmanagedSoftwood_Forest'), 'Forest',
                                   ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
                                          ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
-                                                ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
-                                                       'Other Natural'))))) %>%
+                                                'Other Natural')))) %>%
+                                                # ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
+                                                #        'Other Natural'))))) %>%
     dplyr::select(-landleaf)
+
+  return(data)
+}
+
+rename_pathways <- function(data) {
+  data <- data %>%
+    dplyr::mutate(scen_path = ifelse(scen_path == 'all', 'GlobT',
+                                     ifelse(scen_path == 'plus', 'RegG', scen_path)))
 
   return(data)
 }

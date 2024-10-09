@@ -13,7 +13,7 @@
 create_prj <- function(db_name, desired_scen = NULL, prj_name = NULL) {
   db_path <- file.path(base_path,'output')
   query_path <- file.path(base_path, 'diets_analysis', 'inputs', 'queries')
-  queries <<- '/queries_beh.xml'
+  queries <<- '/queries_beh_policyCost.xml'
 
   # prj name checks and/or definition
   if (!is.null(prj_name)) {
@@ -106,11 +106,11 @@ data_query = function(type, db_path, db_name, prj_name, scenarios) {
   qq <- xml2::xml_find_first(xml, paste0("//*[@title='", type, "']"))
 
   full_nonCO2_emissions_list = c('BC','BC_AWB','C2F6','CF4','CH4','CH4_AGR','CH4_AWB','CO','CO_AWB','H2',
-                            'H2_AWB','HFC125','HFC134a','HFC143a','HFC152a','HFC227ea','HFC23','HFC236fa',
-                            'HFC245fa','HFC32','HFC365mfc','HFC43','N2O','N2O_AGR','N2O_AWB','NH3','NH3_AGR',
-                            'NH3_AWB','NMVOC','NMVOC_AGR','NMVOC_AWB','NOx','NOx_AGR','NOx_AWB','OC','OC_AWB',
-                            'PM10','PM2.5','SF6','SO2_1','SO2_1_AWB','SO2_2','SO2_2_AWB','SO2_3','SO2_3_AWB',
-                            'SO2_4','SO2_4_AWB')
+                                 'H2_AWB','HFC125','HFC134a','HFC143a','HFC152a','HFC227ea','HFC23','HFC236fa',
+                                 'HFC245fa','HFC32','HFC365mfc','HFC43','N2O','N2O_AGR','N2O_AWB','NH3','NH3_AGR',
+                                 'NH3_AWB','NMVOC','NMVOC_AGR','NMVOC_AWB','NOx','NOx_AGR','NOx_AWB','OC','OC_AWB',
+                                 'PM10','PM2.5','SF6','SO2_1','SO2_1_AWB','SO2_2','SO2_2_AWB','SO2_3','SO2_3_AWB',
+                                 'SO2_4','SO2_4_AWB')
 
   for (sc in scenarios) {
     emiss_list = unique(full_nonCO2_emissions_list)
