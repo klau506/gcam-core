@@ -1210,6 +1210,8 @@ ghgType_world_diffAbs_raw <- merge(load_data('ghg_by_ghg_world') %>%
   # compute Abs difference between Reference and runs
   dplyr::rowwise() %>%
   dplyr::mutate(diff = value - ref_value) %>%
+  # kick out FF & CO2 gases
+  dplyr::filter(!group %in% c('CO2','F-Gas')) %>%
   # aesthetics
   dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR')))
 
@@ -1251,8 +1253,10 @@ data <- merge(load_data('ghg_by_ghg_regional') %>%
   dplyr::mutate(diff = value - value_ref) %>%
   dplyr::mutate(scen_type = toupper(scen_type)) %>%
   dplyr::filter(scen_type != 'REF') %>%
+  # kick out FF & CO2 gases
+  dplyr::filter(!ghg %in% c('CO2','F-Gas')) %>%
   dplyr::mutate(scen_type = factor(scen_type, levels = c('SPP','SNR','SPPNR'))) %>%
-  dplyr::mutate(ghg = factor(ghg, levels = c("CH4","CO2","F-Gas","LUC CO2","N2O")))
+  dplyr::mutate(ghg = factor(ghg, levels = c("CH4","LUC CO2","N2O")))
 violin_plot_ghg_regional(data %>% rename_pathways(), year_fig, type = 'abs')
 waterfall_plot_ghg_regional(data, year_fig, type = 'abs')
 
@@ -1486,9 +1490,9 @@ pl_food_econ_basket_bill_regional_diff <- ggplot(food_econ_basket_bill_regional_
         strip.background = element_blank(),
         strip.text = element_text(color = 'black', size = 40),
         strip.text.y = element_text(angle = 0),
-        axis.text.x = element_text(size=25, angle = 90, hjust = 1, vjust = 0.25),
+        axis.text.x = element_text(size=22, angle = 90, hjust = 1, vjust = 0.25),
         axis.text.y = element_text(size=30),
-        legend.text = element_text(size = 35),
+        legend.text = element_text(size = 32),
         legend.title = element_text(size = 40),
         title = element_text(size = 30))
 ggsave(pl_food_econ_basket_bill_regional_diff, file = file.path(figures_path, 'paper', paste0('sgd2_food_econ_basket_bill_regional_diff_',year_fig,'.pdf')),
@@ -1588,7 +1592,7 @@ pl_policyCost_regional_diff_map <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 32), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 30))
 ggsave(pl_policyCost_regional_diff_map,
@@ -1649,7 +1653,7 @@ pl_policyCost_regional_diff_map_withPath <- ggplot() +
         panel.background = element_rect(fill = "#ffffff",
                                         colour = "#ffffff"),
         legend.position = 'bottom',legend.key.height = unit(0.75, 'cm'), legend.key.width = unit(2.5,'cm'),
-        legend.text = element_text(size = 35), legend.title = element_text(size = 30, vjust = 0.95),
+        legend.text = element_text(size = 32), legend.title = element_text(size = 30, vjust = 0.95),
         strip.text = element_text(size = 40, color = 'black'),
         strip.background =element_rect(fill="white"), title = element_text(size = 30))
 ggsave(pl_policyCost_regional_diff_map_withPath,
@@ -1685,7 +1689,7 @@ prob_distrib_policyCost(policyCost_regional_diff_si %>%
 pl = cowplot::ggdraw() +
   cowplot::draw_plot(pl_food_econ_basket_bill_regional_diff +
                        theme(legend.position = 'none') +
-                       labs(y = ''), x = 0.01, y = 0.4, width = 0.975, height = 0.6) +
+                       labs(y = '[%]'), x = 0.01, y = 0.4, width = 0.975, height = 0.6) +
   cowplot::draw_plot(pl_policyCost_regional_diff_map +
                        labs(y = ''), x = 0.01, y = 0.05, width = 0.95, height = 0.4) +
   cowplot::draw_plot_label(label = c("a", "b"), size = 35,

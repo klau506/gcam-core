@@ -123,7 +123,7 @@ text_data2 = bind_cols(result) %>%
 curve_factor = 0.075
 
 # Create the plot with curved lines
-desired_labels = c('Scenario Protein type','Scenario Pathway','Scenario-Pathway pair',
+desired_labels = c('Protein type\nScenario','Scenario\nPathway','Scenario-Pathway pair',
                    'Target share','Peak year','Slope')
 pl_gen = ggplot() +
   # rectangles
@@ -231,13 +231,13 @@ pl_arrow <- ggplot() +
 
 pl_complete = cowplot::ggdraw() +
   theme(plot.background = element_rect(fill="white")) +
-  cowplot::draw_plot(pl_gen, x = 0, y = 0.325, width = 1, height = 0.65) +
-  cowplot::draw_plot(pl_table, x = 0.3, y = -0.17, width = 0.65, height = 0.65) +
-  cowplot::draw_plot(pl_arrow, x = 0.1, y = 0.15, width = 0.25, height = 0.25) +
+  cowplot::draw_plot(pl_gen, x = 0, y = -0.005, width = 1, height = 0.65) +
+  cowplot::draw_plot(pl_table, x = 0.1, y = 0.425, width = 0.8, height = 0.75) +
+  cowplot::draw_plot(pl_arrow, x = -0.075, y = 0.48, width = 0.25, height = 0.25) +
   # Add a black frame around the second plot
   annotation_custom(
     grid::rectGrob(gp = grid::gpar(col = "#FFE5E5", fill = NA, lwd = 20)),
-    xmin = 0.33, xmax = 0.92, ymin = 0.011, ymax = 0.31
+    xmin = 0.11, xmax = 0.9, ymin = 0.635, ymax = 0.975
   ) +
   # remove frame
   theme_void()

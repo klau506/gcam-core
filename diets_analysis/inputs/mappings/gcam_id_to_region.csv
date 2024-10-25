@@ -1,4 +1,6 @@
-﻿GCAM_region_ID,region
+﻿# GCAM region names and ID mapping
+# ----------
+GCAM_region_ID,region
 1,USA
 2,Africa_Eastern
 3,Africa_Northern

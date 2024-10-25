@@ -30,8 +30,6 @@ aggregate_land_use_type <- function(data) {
                                   ifelse(landleaf %in% c('crops','biomass','otherarable'), 'Cropland',
                                          ifelse(landleaf %in% c("pasture (grazed)","pasture (other)"), 'Pasture',
                                                 'Other Natural')))) %>%
-                                                # ifelse(landleaf %in% c("shrubs","grass"), 'Shrubs & Grass',
-                                                #        'Other Natural'))))) %>%
     dplyr::select(-landleaf)
 
   return(data)
