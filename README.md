@@ -1,14 +1,6 @@
-# New Current Policies/NDC/LTT Files
-The infrastructure to build most (but not all) current policy, NDC, and LTT files is now included in the gcam data system. However, in addition to building these new policy xmls (in the xml_policy folder), some files that have been changed outside of the data system exist in input/CP_NDC_LTT. The configuration files for the scenarios are included at:
-1. exe/configuration_CP_EI.xml  (Current Policies plus extrapolation beyond 2030)
-2. exe/configuration_NDC_EI.xml  (Current Policies + NDCs plus extrapolation beyond 2030)
-3. exe/configuration_NDC_LTT.xml (Current Policies + NDCs plus long term targets beyond 2030)
+# New Food Nesting Structure
 
-After building the data system, all these scenarios should run properly. 
-
-NOTE: `tidyr 1.1.3` was used to develop these new chunks. Later versions of `tidyr` have had problems running the new policy chunks. If you are not using `renv`, you may want to install this version of `tidyr` with `devtools::install_version("tidyr", version = "1.1.3")`. 
-
-## Coming Soon: Documentation for how to change policy files in gcamdata
+The Food nesting structure has been modified to support the analysis of Monogastric vs Ruminant animal protein competition. The new structure is described in great depth in the manuscript Rodés-Bachs et al. _Environmental and societal implications of transitioning to sustainable diets_ 2024.
 
 # Global Change Analysis Model (GCAM)
 
